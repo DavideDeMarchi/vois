@@ -1,0 +1,30 @@
+# Script to copy all source files of the vois library to an example subfolder
+#
+# Example usage: scripts/copyto examples/EnergyConsumption
+#
+# This command will copy all the files of the vois library under the examples/EnergyConsumption folder
+#
+#
+
+#vois/*.py to examples/EnergyConsumption/vois/
+#vois/JEOlab/* to examples/EnergyConsumption/JEOlab/
+#vois/vuetify/*.py to examples/EnergyConsumption/vois/vuetify/
+
+echo Copying ./vois to $1...
+
+rm -rf $1/JEOlab/
+rm -rf $1/vois/
+
+cp -r ./vois/JEOlab/ $1/
+
+mkdir -p $1/vois/
+mkdir -p $1/vois/JEOlab
+cp  ./vois/JEOlab/* $1/vois/JEOlab/
+mkdir -p $1/vois/vuetify/
+
+cp ./vois/*.py          $1/vois/
+cp ./vois/vuetify/*.py  $1/vois/vuetify/
+
+cp -r ./vois/data/ $1/vois/
+cp -r ./vois/vuetify/extra $1/vois/vuetify/
+

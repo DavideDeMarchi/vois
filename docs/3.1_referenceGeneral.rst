@@ -1,0 +1,148 @@
+.. _ReferenceGeneral:
+
+General modules
+===============
+
+.. toctree::
+   :maxdepth: 5
+   :caption: Contents:
+
+The general modules of the vois library contain functions and classes of general use.
+
+
+.. image:: figures/line.png
+
+colors module
+-------------
+
+.. automodule:: colors
+    :members:
+    
+.. image:: figures/line.png
+
+download module
+---------------
+
+.. automodule:: download
+    :members:
+    
+.. image:: figures/line.png
+
+eucountries module
+------------------
+
+.. automodule:: eucountries
+    :members:
+    
+.. image:: figures/line.png
+
+geojsonUtils module
+-------------------
+
+.. automodule:: geojsonUtils
+    :members:
+
+.. image:: figures/line.png
+
+interMap module
+---------------
+
+.. automodule:: interMap
+    :members:
+
+.. image:: figures/line.png
+
+ipytrees module
+---------------
+
+.. automodule:: ipytrees
+    :members:
+
+.. image:: figures/line.png
+
+leafletMap module
+-----------------
+
+.. automodule:: leafletMap
+    :members:
+
+.. image:: figures/line.png
+
+svgBubblesChart module
+----------------------
+
+.. automodule:: svgBubblesChart
+    :members:
+
+.. image:: figures/line.png
+
+svgGraph module
+---------------
+
+.. automodule:: svgGraph
+    :members:
+
+.. image:: figures/line.png
+
+svgHeatmap module
+-----------------
+
+.. automodule:: svgHeatmap
+    :members:
+
+.. image:: figures/line.png
+
+svgMap module
+-------------
+
+.. automodule:: svgMap
+    :members:
+
+.. image:: figures/line.png
+
+svgPackedCirclesChart module
+----------------------------
+
+.. automodule:: svgPackedCirclesChart
+
+.. autofunction:: svgPackedCirclesChart.svgPackedCirclesChart
+
+.. image:: figures/line.png
+
+svgRankChart module
+-------------------
+
+.. automodule:: svgRankChart
+    :members:
+
+.. image:: figures/line.png
+
+svgUtils module
+---------------
+
+.. automodule:: svgUtils
+    :members:
+
+.. image:: figures/line.png
+
+treemapPlotly module
+--------------------
+
+.. automodule:: treemapPlotly
+    :members:
+
+.. image:: figures/line.png
+
+urlOpen module
+--------------
+
+.. automodule:: urlOpen
+    :members:
+
+.. image:: figures/line.png
+
+urlUpdate module
+----------------
+
+.. automodule:: urlUpdate
+    :members:

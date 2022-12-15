@@ -1,0 +1,10 @@
+    1. Framework of the app (OK)
+    2. Read input CSV and display the pandas dataframe as a table (OK)
+    3. Add the filtering controls (OK)
+    4. Add Plotly Bar Chart View (OK)
+    5. Add SVG Static Map View (OK)
+    6. Add Interactive Map View (OK)
+    7. Add download functions (OK)
+    8. Manage URL parameters and open external URLs
+    9. Add an interactive AnimatedPieChart
+Final. Add minipanel to footer and function to generate a report in docx format

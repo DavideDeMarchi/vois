@@ -1,0 +1,325 @@
+.. _ReferenceVuetify:
+
+Vuetify modules
+===============
+
+.. toctree::
+   :maxdepth: 5
+   :caption: Contents:
+
+Vuetify modules of vois library contain classes that simplify the usage of ipyvuetify widgets inside a Jupyter notebook or a Voilà application.
+
+
+.. image:: figures/line.png
+
+app class
+---------
+
+.. automodule:: app
+    :members:
+
+.. image:: figures/line.png
+
+basemaps widget
+---------------
+
+.. automodule:: basemaps
+    :members:
+
+.. image:: figures/line.png
+
+button widget
+-------------
+
+.. automodule:: button
+    :members:
+
+.. image:: figures/line.png
+
+card widget
+-----------
+
+.. automodule:: card
+    :members:
+
+.. image:: figures/line.png
+
+cardsGrid widget
+----------------
+
+.. automodule:: cardsGrid
+    :members:
+
+.. image:: figures/line.png
+
+colorPicker widget
+------------------
+
+.. automodule:: colorPicker
+    :members:
+
+.. image:: figures/line.png
+
+datatable widget
+----------------
+
+.. automodule:: datatable
+    :members:
+
+.. image:: figures/line.png
+
+datePicker widget
+-----------------
+
+.. automodule:: datePicker
+    :members:
+
+.. image:: figures/line.png
+
+dialogGeneric widget
+--------------------
+
+.. automodule:: dialogGeneric
+    :members:
+
+.. image:: figures/line.png
+
+dialogMessage widget
+--------------------
+
+.. automodule:: dialogMessage
+    :members:
+    :inherited-members:
+
+.. image:: figures/line.png
+
+dialogWait widget
+-----------------
+
+.. automodule:: dialogWait
+    :members:
+
+.. image:: figures/line.png
+
+dialogYesNo widget
+--------------------
+
+.. automodule:: dialogYesNo
+    :members:
+    :inherited-members:
+
+.. image:: figures/line.png
+
+fab widget
+----------
+
+.. automodule:: fab
+    :members:
+
+.. image:: figures/line.png
+
+footer widget
+-------------
+
+.. automodule:: footer
+    :members:
+
+.. image:: figures/line.png
+
+label widget
+------------
+
+.. automodule:: label
+    :members:
+
+.. image:: figures/line.png
+
+layers widget
+-------------
+
+.. automodule:: layers
+    :members:
+
+.. image:: figures/line.png
+
+menu widget
+-----------
+
+.. automodule:: menu
+    :members:
+
+.. image:: figures/line.png
+
+multiSwitch widget
+------------------
+
+.. automodule:: multiSwitch
+    :members: 
+
+.. image:: figures/line.png
+
+paletteEditor widget
+--------------------
+
+.. automodule:: paletteEditor
+    :members: 
+
+.. image:: figures/line.png
+
+palettePicker widget
+--------------------
+
+.. automodule:: palettePicker
+    :members: 
+
+.. image:: figures/line.png
+
+progress widget
+---------------
+
+.. automodule:: progress
+    :members:
+
+.. image:: figures/line.png
+
+queryStrings module
+-------------------
+
+.. automodule:: queryStrings
+    :members:
+
+.. image:: figures/line.png
+
+radio widget
+------------
+
+.. automodule:: radio
+    :members:
+
+.. image:: figures/line.png
+
+rangeSlider widget
+-------------------
+
+.. automodule:: rangeSlider
+    :members:
+    
+.. image:: figures/line.png
+
+selectImage widget
+------------------
+
+.. automodule:: selectImage
+    :members:
+
+.. image:: figures/line.png
+
+selectMultiple widget
+---------------------
+
+.. automodule:: selectMultiple
+    :members: 
+
+.. image:: figures/line.png
+
+selectSingle widget
+-------------------
+
+.. automodule:: selectSingle
+    :members: 
+    
+.. image:: figures/line.png
+
+settings module
+---------------
+
+.. automodule:: settings
+    :members: 
+    
+.. image:: figures/line.png
+
+sidePanel widget
+----------------
+
+.. automodule:: sidePanel
+    :members: 
+
+.. image:: figures/line.png
+
+slider widget
+-------------
+
+.. automodule:: slider
+    :members: 
+
+.. image:: figures/line.png
+
+snackbar widget
+---------------
+
+.. automodule:: snackbar
+    :members: 
+
+.. image:: figures/line.png
+
+sortableList widget
+-------------------
+
+.. automodule:: sortableList
+    :members: 
+
+.. image:: figures/line.png
+
+switch widget
+-------------
+
+.. automodule:: switch
+    :members: 
+
+.. image:: figures/line.png
+
+tabs widget
+-----------
+
+.. automodule:: tabs
+    :members: 
+
+.. image:: figures/line.png
+
+title bar
+---------
+
+.. automodule:: title
+    :members: 
+    
+.. image:: figures/line.png
+
+toggle widget
+-------------
+
+.. automodule:: toggle
+    :members: 
+
+.. image:: figures/line.png
+
+tooltip widget
+--------------
+
+.. automodule:: tooltip
+    :members: 
+
+.. image:: figures/line.png
+
+treeview widget
+---------------
+
+.. automodule:: treeview
+    :members: 
+
+.. image:: figures/line.png
+
+upload widget
+-------------
+
+.. automodule:: upload
+    :members: 

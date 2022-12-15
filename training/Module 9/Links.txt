@@ -1,0 +1,3 @@
+Mushrooms:     https://jeodpp.jrc.ec.europa.eu/eu/dashboard/voila/render/Vaas/examples/vuetify/appExample2.ipynb
+Multivariate:  https://jeodpp.jrc.ec.europa.eu/eu/dashboard/voila/render/Vaas/examples/vuetify/appExample3.ipynb
+Astronomy:     https://jeodpp.jrc.ec.europa.eu/eu/dashboard/voila/render/APOD.ipynb
