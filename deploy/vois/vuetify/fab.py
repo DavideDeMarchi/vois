@@ -1,22 +1,22 @@
 """Floating-action-button to be displayed in absolute mode on the page. It will display a menu when hovered."""
 # Author(s): Davide.De-Marchi@ec.europa.eu
-# Copyright (C) 2022-2030 European Union (Joint Research Centre)
-#
-# This file is part of BDAP voilalibrary.
-#
-# voilalibrary is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# voilalibrary is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with voilalibrary.  If not, see <https://www.gnu.org/licenses/>.
+# Copyright © European Union 2022-2023
+# 
+# Licensed under the EUPL, Version 1.2 or as soon they will be approved by 
+# the European Commission subsequent versions of the EUPL (the "Licence");
+# 
+# You may not use this work except in compliance with the Licence.
+# 
+# You may obtain a copy of the Licence at:
+# https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the Licence is distributed on an "AS IS"
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied.
+# 
+# See the Licence for the specific language governing permissions and
+# limitations under the Licence.
 import ipyvuetify as v
 
 from ipywidgets import HTML, widgets, Layout
@@ -90,7 +90,7 @@ class fab():
     -------
     Creation and display of two fab widgets for the selection among 3 options::
         
-        from voilalibrary.vuetify import fab
+        from vois.vuetify import fab
         from ipywidgets import widgets
         from IPython.display import display
 
@@ -210,7 +210,7 @@ class fab():
                     content.append(v.Icon(small=self.iconsmall, color=self.iconcolor, children=[icon[i]]))
 
                 b = v.Btn(color=color, dark=dark, icon=False, depressed=True, outlined=outlined, large=large, small=small, x_small=xsmall, 
-                          disabled=disabled, width=width-50, height=height, fab=True,
+                          disabled=disabled, width=width-38, height=height, fab=True,
                           children=content, style_='font-family: %s; font-size: 17; font-weight: %d; text-transform: none' % (fontsettings.font_name, textweight), rounded=True)
                 
                 b.on_event( 'click', self.__on_item_clicked)
@@ -267,20 +267,20 @@ class fab():
                                               width="'100px'", height="'100px'",
                                               style_="left:%s; top:%s; z-index:%d;" % (self.left,self.top,self.zindex), class_="pa-0 ma-0", children=[self.menu])
             else:
-                
                 # Add an element between any element of a list !!!
                 def intersperse(lst, item):
                     result = [item] * (len(lst) * 2 - 1)
                     result[0::2] = lst
                     return result
                 
-                buttons = intersperse(self.listitems, label.label('').draw())
+                #buttons = intersperse(self.listitems, label.label('').draw())
+                buttons = self.listitems
                 
-                if len(self.listitems) > 1: w = len(self.listitems)*self.width - 90
+                if len(self.listitems) > 1: w = len(self.listitems)*(self.width - 30)
                 else:                       w = self.width
                 r = v.Row(no_gutters=True, justify="space-between", children=buttons)
                 self.nav = v.NavigationDrawer(stateless=True, permanent=True, floating=True, fixed=True, left=True, color="transparent", 
-                                              width="%dpx"%w, height="'100px'",
+                                              width='%dpx'%w, height='100px',
                                               style_="left:%s; top:%s; z-index:%d;" % (self.left,self.top,self.zindex), class_="pa-0 ma-0", children=[r])
                 
             display(self.nav)

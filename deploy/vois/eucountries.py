@@ -1,22 +1,22 @@
 """Utility functions and classes to manage information on EU countries."""
 # Author(s): Davide.De-Marchi@ec.europa.eu
-# Copyright (C) 2022-2030 European Union (Joint Research Centre)
-#
-# This file is part of BDAP voilalibrary.
-#
-# voilalibrary is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# voilalibrary is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with voilalibrary.  If not, see <https://www.gnu.org/licenses/>.
+# Copyright © European Union 2022-2023
+# 
+# Licensed under the EUPL, Version 1.2 or as soon they will be approved by 
+# the European Commission subsequent versions of the EUPL (the "Licence");
+# 
+# You may not use this work except in compliance with the Licence.
+# 
+# You may obtain a copy of the Licence at:
+# https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the Licence is distributed on an "AS IS"
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied.
+# 
+# See the Licence for the specific language governing permissions and
+# limitations under the Licence.
 import PIL
 from PIL import Image, ImageDraw, ImageFont
 import requests
@@ -124,7 +124,7 @@ class countries:
     --------
     Get the list of all European Union or Euro Area countries::
     
-        from voilalibrary import eucountries as eu
+        from vois import eucountries as eu
 
         countriesEU = eu.countries.EuropeanUnion()
         print(countriesEU)
@@ -135,13 +135,13 @@ class countries:
     
     Display the flag image of a country given its code::
     
-        from voilalibrary import eucountries as eu
+        from vois import eucountries as eu
         display( eu.countries.byCode('IT').flagImage() )
         
         
     Display the flag image of a country given its name::
     
-        from voilalibrary import eucountries as eu
+        from vois import eucountries as eu
         display( eu.countries.byName('Lithuania').flagImage() )
         
     .. figure:: figures/flag.png
@@ -152,7 +152,7 @@ class countries:
     
     Get the list of all the European Union country codes::
     
-        from voilalibrary import eucountries as eu
+        from vois import eucountries as eu
         display( eu.countries.EuroAreaCodes() )
         
     """
@@ -373,13 +373,13 @@ class languages:
     --------
     Print the list of all European Union languages::
     
-        from voilalibrary import eucountries as eu
+        from vois import eucountries as eu
         names = eu.languages.EuropeanUnionLanguages(sortByName=False)
         print(names)
         
     Print the list of all European Union languages abbreviations::
     
-        from voilalibrary import eucountries as eu
+        from vois import eucountries as eu
         abbrev = eu.languages.EuropeanUnionAbbreviations()
         print(abbrev)
         

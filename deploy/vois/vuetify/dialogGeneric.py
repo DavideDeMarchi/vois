@@ -1,22 +1,22 @@
 """Generic modal dialog-box to ask input from the user."""
 # Author(s): Davide.De-Marchi@ec.europa.eu
-# Copyright (C) 2022-2030 European Union (Joint Research Centre)
-#
-# This file is part of BDAP voilalibrary.
-#
-# voilalibrary is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# voilalibrary is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with voilalibrary.  If not, see <https://www.gnu.org/licenses/>.
+# Copyright © European Union 2022-2023
+# 
+# Licensed under the EUPL, Version 1.2 or as soon they will be approved by 
+# the European Commission subsequent versions of the EUPL (the "Licence");
+# 
+# You may not use this work except in compliance with the Licence.
+# 
+# You may obtain a copy of the Licence at:
+# https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the Licence is distributed on an "AS IS"
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied.
+# 
+# See the Licence for the specific language governing permissions and
+# limitations under the Licence.
 from traitlets import *
 from IPython.display import display
 import ipyvuetify as v
@@ -59,9 +59,11 @@ class dialogGeneric():
     addokcancelbuttons : bool, optional
         If True, the dialog will have 'ok' and 'cancel' buttons in the bottom row (default is False)
     on_ok : function, optional
-        Python function to call when the user clicks on the YES button. The function will receive no parameters (default is None)
+        Python function to call when the user clicks on the OK button. The function will receive no parameters (default is None)
     on_cancel : function, optional
-        Python function to call when the user clicks on the NO button. The function will receive no parameters (default is None)
+        Python function to call when the user clicks on the CANCEL button. The function will receive no parameters (default is None)
+    on_close : function, optional
+        Python function to call when the user clicks on the CLOSE button. The function will receive no parameters (default is None)
     transition : str, optional
         Transition to use for the dialog display and close (default is 'dialog-fade-transition'. See: https://vuetifyjs.com/en/styles/transitions/ for a list of available transitions (substitute 'v-' with 'dialog-'')
     output : ipywidgets.Output, optional
@@ -73,7 +75,7 @@ class dialogGeneric():
     -------
     Creation and display of a modal dialog-box containing a switch widget::
         
-        from voilalibrary.vuetify import dialogGeneric, switch
+        from vois.vuetify import dialogGeneric, switch
         from ipywidgets import widgets
         from IPython.display import display
 
@@ -99,11 +101,12 @@ class dialogGeneric():
    """
         
     def __init__(self, title='', text='', dark=settings.dark_mode, show=False, content=[], width=500, fullscreen=False,
-                 persistent=False, addclosebuttons=True, addokcancelbuttons=False, on_ok=None, on_cancel=None, 
+                 persistent=False, addclosebuttons=True, addokcancelbuttons=False, on_ok=None, on_cancel=None, on_close=None,
                  transition='dialog-fade-transition', output=None, titleheight="dense"):
         
         self.on_ok     = on_ok
         self.on_cancel = on_cancel
+        self.on_close  = on_close
         
         text = text.replace('<br>','\n')
         vvv = text.split('\n')
@@ -175,7 +178,9 @@ class dialogGeneric():
     def close(self,*args):
         """Close the dialog."""
         self.dialog.v_model = False
-        
+        if not self.on_close is None:
+            self.on_close()
+
     # Cliked ok
     def __internal_on_ok(self,*args):
         self.dialog.v_model = False

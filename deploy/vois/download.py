@@ -1,21 +1,22 @@
 """Utility functions for downloading text and binary files"""
 # Author(s): Davide.De-Marchi@ec.europa.eu
-# Copyright (C) 2022-2030 European Union (Joint Research Centre)
-#
-# This file is part of BDAP voilalibrary.
-#
-# voilalibrary is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# voilalibrary is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with voilalibrary.  If not, see <https://www.gnu.org/licenses/>.
+# Copyright © European Union 2022-2023
+# 
+# Licensed under the EUPL, Version 1.2 or as soon they will be approved by 
+# the European Commission subsequent versions of the EUPL (the "Licence");
+# 
+# You may not use this work except in compliance with the Licence.
+# 
+# You may obtain a copy of the Licence at:
+# https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the Licence is distributed on an "AS IS"
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied.
+# 
+# See the Licence for the specific language governing permissions and
+# limitations under the Licence.
 
 from ipywidgets import widgets, Layout
 from IPython.display import display, HTML
@@ -42,7 +43,7 @@ def downloadText(textobj, fileName="download.txt"):
     -------
     In order to download a text file, the Output widget download.output must be displayed inside the notebook. This is required because the download operation is based on the execution of Javascript code, and this requires an Output widget displayed. After the download.output widget is visible, then the download.downloadText function can be called::
     
-        from voilalibrary import download
+        from vois import download
         
         display(download.output)
         
@@ -87,7 +88,7 @@ def downloadBytes(bytesobj, fileName="download.bin"):
     -------
     In order to download a binary file, the Output widget download.output must be displayed inside the notebook. This is required because the download operation is based on the execution of Javascript code, and this requires an Output widget displayed. After the download.output widget is visible, then the download.downloadBytes function can be called::
     
-        from voilalibrary import download
+        from vois import download
         
         display(download.output)
         

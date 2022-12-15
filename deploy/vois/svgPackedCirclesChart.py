@@ -1,22 +1,22 @@
 """SVG Packed Circles chart from a pandas DataFrame."""
 # Author(s): Davide.De-Marchi@ec.europa.eu
-# Copyright (C) 2022-2030 European Union (Joint Research Centre)
-#
-# This file is part of BDAP voilalibrary.
-#
-# voilalibrary is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# voilalibrary is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with voilalibrary.  If not, see <https://www.gnu.org/licenses/>.
+# Copyright © European Union 2022-2023
+# 
+# Licensed under the EUPL, Version 1.2 or as soon they will be approved by 
+# the European Commission subsequent versions of the EUPL (the "Licence");
+# 
+# You may not use this work except in compliance with the Licence.
+# 
+# You may obtain a copy of the Licence at:
+# https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the Licence is distributed on an "AS IS"
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied.
+# 
+# See the Licence for the specific language governing permissions and
+# limitations under the Licence.
 import pandas as pd
 
 import collections
@@ -34,7 +34,15 @@ except:
     import colors
     from vuetify import settings, fontsettings
 
-    
+
+# Basic circle packing algorithm based on 2 algorithms.
+# Circles are first arranged via a version of A1.0 by Huang et al (see
+# https://home.mis.u-picardie.fr/~cli/Publis/circle.pdf for details) and then
+# enclosed in a circle created around them using Matoušek-Sharir-Welzl algorithm
+# used in d3js (see https://beta.observablehq.com/@mbostock/miniball,
+# http://www.inf.ethz.ch/personal/emo/PublFiles/SubexLinProg_ALG16_96.pdf, and
+# https://github.com/d3/d3-hierarchy/blob/master/src/pack/enclose.js)
+
 log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
 log.addHandler(logging.StreamHandler(sys.stdout))
@@ -46,37 +54,17 @@ Fields = collections.namedtuple("Fields", ["id", "datum", "children"])
 
 
 class Circle:
-    """Hierarchy element.
-
-    Used as an intermediate and output data structure.
-
-    """
-
     __slots__ = ["circle", "level", "ex"]
 
     def __init__(self, x=0.0, y=0.0, r=1.0, level=1, ex=None):
-        """Initialize Output data structure.
-
-        Args:
-            x (float): x coordinate of the circle center.
-            y (float): y coordinate of the circle center.
-            r (float): radius of the circle.
-            level (int): depth level of the data for hierarchy representation
-                where 0 is the root of the hierarchy.
-            ex (dict): additional data to be carried by the structure (e.g.
-                label, name, parent_id, ...)
-
-        """
         self.circle = _Circle(x, y, r)
         self.level = level
         self.ex = ex
 
     def __lt__(self, other):
-        """Reversed level order, then normal ordering on datum."""
         return (self.level, self.r) < (other.level, other.r)
 
     def __eq__(self, other):
-        """Compare level and datum. No order on id, children and circle."""
         return (self.level, self.circle, self.ex) == (
             other.level,
             other.circle,
@@ -84,13 +72,11 @@ class Circle:
         )
 
     def __repr__(self):
-        """Representation of Output"""
         return "{}(x={}, y={}, r={}, level={}, ex={!r})".format(
             self.__class__.__name__, self.x, self.y, self.r, self.level, self.ex
         )
 
     def __iter__(self):
-        """Convenience function to unpack circle in triple (x, y, r)"""
         return [self.x, self.y, self.r].__iter__()
 
     @property
@@ -107,7 +93,6 @@ class Circle:
 
 
 def distance(circle1, circle2):
-    """Compute distance between 2 cirlces."""
     x1, y1, r1 = circle1
     x2, y2, r2 = circle2
     x = x2 - x1
@@ -116,16 +101,6 @@ def distance(circle1, circle2):
 
 
 def get_intersection(circle1, circle2):
-    """Calculate intersections of 2 circles
-
-    Based on https://gist.github.com/xaedes/974535e71009fa8f090e
-    Credit to http://stackoverflow.com/a/3349134/798588
-
-    Returns:
-        2 pairs of coordinates. Each pair can be None if there are no or just
-        one intersection.
-
-    """
     x1, y1, r1 = circle1
     x2, y2, r2 = circle2
     dx, dy = x2 - x1, y2 - y1
@@ -163,18 +138,6 @@ def get_intersection(circle1, circle2):
 
 
 def get_placement_candidates(radius, c1, c2, margin):
-    """Generate placement candidates for 2 existing placed circles.
-
-    Args:
-        radius: radius of the new circle to place.
-        c1: first existing placed circle.
-        c2: second existing placed circle.
-        margin: extra padding between the candidates and existing c1 and c2.
-
-    Returns:
-        A pair of candidate cirlces where one or both value can be None.
-
-    """
     margin = radius * _eps * 10.0
     ic1 = _Circle(c1.x, c1.y, c1.r + (radius + margin))
     ic2 = _Circle(c2.x, c2.y, c2.r + (radius + margin))
@@ -191,67 +154,18 @@ def get_placement_candidates(radius, c1, c2, margin):
 
 
 def get_hole_degree_radius_w(candidate, circles):
-    """Calculate the hole degree of a candidate circle.
-
-    Args:
-        candidate: candidate circle.
-        circles: sequence of circles.
-
-    Returns:
-        Squared euclidian distance of the candidate to the circles in argument.
-        Each component of the distance is weighted by the inverse of the radius
-        of the other circle to tilt the choice towards bigger circles.
-
-    """
     return sum(distance(candidate, c) * c.r for c in circles)
 
 
 def get_hole_degree_a1_0(candidate, circles):
-    """Calculate the hole degree of a candidate circle.
-
-    Args:
-        candidate: candidate circle.
-        circles: sequence of circles.
-
-    Returns:
-        minimum distance between the candidate and the circles in argument.
-
-    In the paper, the hole degree defined as (1 - d_min / r_i) where d_min is
-    a minimum disance between the candidate and the circles other than the one
-    used to place the candidate and r_i the radius of the candidate.
-
-    """
     return min(distance(candidate, c) for c in circles)
 
 
 def get_hole_degree_density(candidate, circles):
-    """Calculate the hole degree of a candidate circle.
-
-    Args:
-        candidate: candidate circle.
-        circles: sequence of circles.
-
-    Returns:
-        One minus the density of the configuration. So the result should always
-        be between 0 and 1. See also density.
-
-    """
     return 1.0 - density(circles + [candidate])
 
 
 def place_new_A1_0(radius, next_, const_placed_circles, get_hole_degree):
-    """Place a new circle.
-
-    Args:
-        radius: value to be added.
-        next_: next value to be added after radius.
-        const_placed_circles: circles.
-        get_hole_degree: objective function to maximize.
-
-    Returns:
-        New configuration.
-
-    """
     placed_circles = const_placed_circles[:]
     n_circles = len(placed_circles)
     # If there are 2 or less, place circles on each side of (0, 0)
@@ -292,17 +206,6 @@ def place_new_A1_0(radius, next_, const_placed_circles, get_hole_degree):
 
 
 def pack_A1_0(data):
-    """Pack circles whose area is proportional to the input data.
-
-    This algorithm is based on the Huang et al. heuristic.
-
-    Args:
-        data: sorted (descending) list of value to circlify.
-
-    Returns:
-        list of circlify.Output.
-
-    """
     min_max_ratio = min(data) / max(data)
     if min_max_ratio < _eps:
         log.warning(
@@ -320,7 +223,6 @@ def pack_A1_0(data):
 
 
 def extendBasis(B, p):
-    """Extend basis to ..."""
     if enclosesWeakAll(p, B):
         return [p]
 
@@ -415,11 +317,6 @@ def encloseBasis3(a, b, c):
 
 
 def enclose(circles):
-    """Shamelessly adapted from d3js.
-
-    See https://github.com/d3/d3-hierarchy/blob/master/src/pack/enclose.js
-
-    """
     B = []
     p, e = None, None
     # random.shuffle(circles)
@@ -438,17 +335,6 @@ def enclose(circles):
 
 
 def scale(circle, target, enclosure):
-    """Scale circle in enclosure to fit in the target circle.
-
-    Args:
-        circle: Circle to scale.
-        target: target Circle to scale to.
-        enclosure: allows one to specify the enclosure.
-
-    Returns:
-        scaled circle
-
-    """
     r = target.r / enclosure.r
     t_x, t_y = target.x, target.y
     e_x, e_y = enclosure.x, enclosure.y
@@ -457,41 +343,18 @@ def scale(circle, target, enclosure):
 
 
 def density(circles, enclosure=None):
-    """Computes the relative density of te packed circles.
-
-    Args:
-        circles: packed list of circles.
-
-    Return:
-        Compute the enclosure if not passed as argument and calculates the
-        relative area of the sum of the inner cirlces to the area of the
-        enclosure.
-
-    """
     if not enclosure:
         enclosure = enclose(circles)
     return sum(c.r**2.0 for c in circles if c != enclosure) / enclosure.r**2.0
 
 
 def look_ahead(iterable, n_elems=1):
-    """Fetch look ahead elements of data
-
-    From https://stackoverflow.com/questions/4197805/python-for-loop-look-ahead
-
-    """
     items, nexts = itertools.tee(iterable, 2)
     nexts = itertools.islice(nexts, n_elems, None)
     return itertools.zip_longest(items, nexts)
 
 
 def _handle(data, level, fields=None):
-    """Convert possibly heterogeneous list of float or dict in list of Output.
-
-    Return:
-        list of list of Output. There is one list per level and the (level
-        specific) sub-list sorts data by descending order.
-
-    """
     if fields is None:
         fields = Fields(None, None, None)
     datum_field = fields.datum if fields.datum else "datum"
@@ -516,21 +379,6 @@ def _handle(data, level, fields=None):
 
 
 def _circlify_level(data, target_enclosure, fields, level=1):
-    """Pack and enclose circles whose radius is linked to the input data.
-
-    All the elements of data are expected to be for the same parent circle
-    called enclosure.
-
-    Args:
-        elements (list of Circle): structured data to be process.
-        target_enclosure (Circle): target enclosure to fit the cirlces into.
-        fields (Fields): field names.
-        level (int): level of depth in the hierarchy.
-
-    Returns:
-        list of circlify.Output as value for element of data.
-
-    """
     all_circles = []
     if not data:
         return all_circles
@@ -561,25 +409,6 @@ def circlify(
     id_field="id",
     children_field="children",
 ):
-    """Pack and enclose circles.
-
-    Args:
-        data: sorted (descending) array of values.
-        target_enclosure: target circlify.Circle where circles should fit in.
-            Defaults to unit circle centered on (0, 0).
-        show_enclosure: insert the target enclosure to the output if True.
-        datum_field: field name that contains the float value when the element is
-            a dict.
-        id_field: field name that contains the id when the element is a dict.
-        children_field: field name that contains the children list when the
-            element is a dict.
-
-    Returns:
-        list of circlify.Circle whose *area* is proportional to the
-        corresponding input value.  The list is sorted by ascending level
-        (root to leaf) and descending value (biggest circles first).
-
-    """
     fields = Fields(id=id_field, datum=datum_field, children=children_field)
     if target_enclosure is None:
         target_enclosure = Circle(level=0, x=0.0, y=0.0, r=1.0)
@@ -597,8 +426,7 @@ def svgPackedCirclesChart(df, valuecolumn, labelcolumn, dimension=30.0,
                           title='', titlecolor='black', titleweight=600, titlecentered=False, titlesize=1.6,
                           labelcolor='black', fontsize=1.3, drawscale=True, scaledigits=2):
 
-    """
-    Creation of a packed circles chart given an input DataFrame. Labels are taken from the labelcolumn column of the DataFrame, and numerical values from the valuecolumn column. The chart displays the values with proportional size circles packed toward the centre of the chart.
+    """ Creation of a packed circles chart given an input DataFrame. Labels are taken from the labelcolumn column of the DataFrame, and numerical values from the valuecolumn column. The chart displays the values with proportional size circles packed toward the centre of the chart.
     
     Parameters
     ----------
@@ -628,50 +456,51 @@ def svgPackedCirclesChart(df, valuecolumn, labelcolumn, dimension=30.0,
         Font size in vw coordinates to use for the labels of the circles (default is 1.0)
     drawscale : bool, optional
         If Trues, the chart will display an horizontal scale below the circles (default is True)
-    scaledigits: int, optional
+    scaledigits : int, optional
         Number of decimal digits to display in the tooltip of the scalebar (default is 2)
             
     Returns
     -------
-        a string containing SVG code that can be displayed using commands like: display(HTML(svgstring))
+        a string containing SVG code that can be displayed using display(HTML(...))
+
 
     Example
     -------
-    Creation of a SVG packed circles chart chart to display some values relater to years::
+        Creation of a SVG packed circles chart chart to display some values relater to years::
 
-        from IPython.display import display
-        import pandas as pd
-        import plotly.express as px
+            from IPython.display import display
+            import pandas as pd
+            import plotly.express as px
+            from vois import svgPackedCirclesChart
 
-        table = [['Year', 'Occurrencies'], 
-                 [2016, 251],
-                 [2017, 239],
-                 [2018, 186],
-                 [2019, 142],
-                 [2020, 59],
-                 [2021, 47],
-                 [2022, 95],
-        ]
+            table = [['Year', 'Occurrencies'], 
+                     [2016, 251],
+                     [2017, 239],
+                     [2018, 186],
+                     [2019, 142],
+                     [2020, 59],
+                     [2021, 47],
+                     [2022, 95],
+            ]
 
-        headers = table.pop(0)
-        df = pd.DataFrame(table, columns=headers)
+            headers = table.pop(0)
+            df = pd.DataFrame(table, columns=headers)
 
-        svg = svgPackedCirclesChart.svgPackedCirclesChart(df,
-                                                          'Occurrencies',
-                                                          'Year',
-                                                          dimension=310,
-                                                          colorlist=px.colors.sequential.YlOrRd,
-                                                          labelcolor='#aaaaaa',
-                                                          fontsize=13,
-                                                          title='Occurrencies per year:')
-        display(HTML(svg))
+            svg = svgPackedCirclesChart.svgPackedCirclesChart(df,
+                                                              'Occurrencies',
+                                                              'Year',
+                                                              dimension=310,
+                                                              colorlist=px.colors.sequential.YlOrRd,
+                                                              labelcolor='#aaaaaa',
+                                                              fontsize=13,
+                                                              title='Occurrencies per year:')
+            display(HTML(svg))
 
     .. figure:: figures/packedcircles.png
        :scale: 100 %
        :alt: svgPackedCirclesChart example
 
        Example of a packed circles chart in SVG
-        
     """
 
     if df.shape[0] < 1:
@@ -707,7 +536,7 @@ def svgPackedCirclesChart(df, valuecolumn, labelcolumn, dimension=30.0,
     side = dimension*0.5
     pos = len(circles)-1
     for c in circles:
-        tooltip = "%s: %d\n%s: %d" % (labelcolumn, labels[pos], valuecolumn, c.ex['datum'])
+        tooltip = "%s: %s\n%s: %d" % (labelcolumn, labels[pos], valuecolumn, c.ex['datum'])
         if df.shape[0] == 1: color = colorlist[-1]
         else:                color = ci.GetColor(c.ex['datum'])
         svg += '<circle class="fullrow" cx="%fvw" cy="%fvw" r="%fvw" fill="%s"><title>%s</title></circle>' % (side+c.x*side,titleh+side+c.y*side, c.r*side, color, tooltip)

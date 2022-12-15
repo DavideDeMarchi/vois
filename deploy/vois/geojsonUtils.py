@@ -1,23 +1,22 @@
 """Utility functions to manage geospatial vector data in geojson format."""
 # Author(s): Davide.De-Marchi@ec.europa.eu
-# Copyright (C) 2022-2030 European Union (Joint Research Centre)
-#
-# This file is part of BDAP voilalibrary.
-#
-# voilalibrary is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# voilalibrary is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with voilalibrary.  If not, see <https://www.gnu.org/licenses/>.
+# Copyright © European Union 2022-2023
+# 
+# Licensed under the EUPL, Version 1.2 or as soon they will be approved by 
+# the European Commission subsequent versions of the EUPL (the "Licence");
+# 
+# You may not use this work except in compliance with the Licence.
+# 
+# You may obtain a copy of the Licence at:
+# https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
 
-import json
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the Licence is distributed on an "AS IS"
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied.
+# 
+# See the Licence for the specific language governing permissions and
+# limitations under the Licence.import json
 
 
 # Given a geojson string, returns a json object after having tested that the input string contains a valid geojson
@@ -70,7 +69,7 @@ def geojsonLoadFile(filepath):
     -------
     Load a geojson from file, print the geojson string::
     
-        from voilalibrary import geojsonUtils
+        from vois import geojsonUtils
         
         geojson = geojsonUtils.geojsonLoadFile('./data/example.geojson')
 
@@ -129,7 +128,7 @@ def geojsonAttributes(geojson):
     -------
     Load a geojson from file and print the names of its attributes::
     
-        from voilalibrary import geojsonUtils
+        from vois import geojsonUtils
         
         geojson = geojsonUtils.geojsonLoadFile('./data/example.geojson')
 
@@ -173,7 +172,7 @@ def geojsonAll(geojson, attributeName):
     -------
     Load a geojson from file and print all the values of one if its attributes::
     
-        from voilalibrary import geojsonUtils
+        from vois import geojsonUtils
         
         geojson = geojsonUtils.geojsonLoadFile('./data/example.geojson')
 
@@ -224,7 +223,7 @@ def geojsonJoin(geojson, keyname, addedfieldname, keytovaluedict, innerMode=Fals
     -------
     Load a geojson from file, print some information on attributes and values of the features, then join the features with a dictionary::
     
-        from voilalibrary import geojsonUtils
+        from vois import geojsonUtils
         
         # Load a geojson file
         geojson = geojsonUtils.geojsonLoadFile('./data/example.geojson')

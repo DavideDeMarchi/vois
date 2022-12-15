@@ -1,22 +1,22 @@
 """Simple card with title, subtitle and image."""
 # Author(s): Davide.De-Marchi@ec.europa.eu
-# Copyright (C) 2022-2030 European Union (Joint Research Centre)
-#
-# This file is part of BDAP voilalibrary.
-#
-# voilalibrary is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# voilalibrary is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with voilalibrary.  If not, see <https://www.gnu.org/licenses/>.
+# Copyright © European Union 2022-2023
+# 
+# Licensed under the EUPL, Version 1.2 or as soon they will be approved by 
+# the European Commission subsequent versions of the EUPL (the "Licence");
+# 
+# You may not use this work except in compliance with the Licence.
+# 
+# You may obtain a copy of the Licence at:
+# https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the Licence is distributed on an "AS IS"
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied.
+# 
+# See the Licence for the specific language governing permissions and
+# limitations under the Licence.
 import ipyvuetify as v
 from traitlets import *
 
@@ -66,7 +66,7 @@ class card(v.VuetifyTemplate):
     -------
     Creation of a card to display text and an image::
         
-        from voilalibrary.vuetify import card
+        from vois.vuetify import card
         from ipywidgets import widgets
         from IPython.display import display
 
@@ -93,6 +93,7 @@ class card(v.VuetifyTemplate):
     """
     
     width      = Unicode('400px').tag(sync=True)
+    height     = Unicode('').tag(sync=True)
     color      = Unicode('white').tag(sync=True)
     dark       = Bool(False).tag(sync=True)
     ripple     = Bool(False).tag(sync=True)       # Ripple flag (if True the click on the card is highlighted)
@@ -108,7 +109,7 @@ class card(v.VuetifyTemplate):
     fontsizemultiplier = Float(1.0).tag(sync=True)
     backgroundimageurl = Unicode('').tag(sync=True)
     
-    subtitlemargins = Unicode('ma-0 ml-4 mb-4 mt-0 mr-2').tag(sync=True)
+    subtitlemargins = Unicode('ma-0 ml-4 mb-4 mt-0 mr-4').tag(sync=True)
 
     
     @traitlets.default('template')
@@ -139,6 +140,7 @@ class card(v.VuetifyTemplate):
   <v-card
     class="pa-1 ma-1"
     :width="width"
+    :height="height"
     :color="color"
     :dark="dark"
     raised
@@ -217,6 +219,7 @@ class card(v.VuetifyTemplate):
     def __init__(self,
                  *args,
                  width='400px',
+                 height='',
                  color='white',
                  dark=False,
                  ripple=False,
@@ -239,6 +242,7 @@ class card(v.VuetifyTemplate):
         self.titletooltip = titletooltip
 
         self.width     = width
+        self.height    = height
         self.color     = color
         self.dark      = dark
         self.ripple    = ripple

@@ -1,22 +1,22 @@
 """Button widget to call a python function when clicked."""
 # Author(s): Davide.De-Marchi@ec.europa.eu
-# Copyright (C) 2022-2030 European Union (Joint Research Centre)
-#
-# This file is part of BDAP voilalibrary.
-#
-# voilalibrary is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# voilalibrary is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with voilalibrary.  If not, see <https://www.gnu.org/licenses/>.
+# Copyright © European Union 2022-2023
+# 
+# Licensed under the EUPL, Version 1.2 or as soon they will be approved by 
+# the European Commission subsequent versions of the EUPL (the "Licence");
+# 
+# You may not use this work except in compliance with the Licence.
+# 
+# You may obtain a copy of the Licence at:
+# https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the Licence is distributed on an "AS IS"
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied.
+# 
+# See the Licence for the specific language governing permissions and
+# limitations under the Licence.
 from traitlets import *
 from IPython.display import display
 import ipyvuetify as v
@@ -105,7 +105,7 @@ class button():
     -------
     Creation and display of a some button widgets playing with the parameters::
         
-        from voilalibrary.vuetify import settings, button
+        from vois.vuetify import settings, button
 
         def onclick(arg=None):
             if arg==1: b1.selected = not b1.selected
@@ -267,7 +267,7 @@ class button():
         -------
         Creation of a button and programmatically change of its icon::
                 
-                from voilalibrary.vuetify import settings, button
+                from vois.vuetify import settings, button
                 
                 b = button.button('Test button', textweight=450, width=150, height=46,
                                   selected=True, rounded=True,
@@ -291,7 +291,7 @@ class button():
         -------
         Creation of a button and programmatically change of its icon::
                 
-                from voilalibrary.vuetify import settings, button
+                from vois.vuetify import settings, button
                 
                 b = button.button('Test button', textweight=450, width=250, height=46,
                                   selected=True, rounded=True)

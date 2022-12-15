@@ -1,22 +1,22 @@
 """SVG drawings for general use."""
 # Author(s): Davide.De-Marchi@ec.europa.eu
-# Copyright (C) 2022-2030 European Union (Joint Research Centre)
-#
-# This file is part of BDAP voilalibrary.
-#
-# voilalibrary is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# voilalibrary is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with voilalibrary.  If not, see <https://www.gnu.org/licenses/>.
+# Copyright © European Union 2022-2023
+# 
+# Licensed under the EUPL, Version 1.2 or as soon they will be approved by 
+# the European Commission subsequent versions of the EUPL (the "Licence");
+# 
+# You may not use this work except in compliance with the Licence.
+# 
+# You may obtain a copy of the Licence at:
+# https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the Licence is distributed on an "AS IS"
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied.
+# 
+# See the Licence for the specific language governing permissions and
+# limitations under the Licence.
 from ipywidgets import HTML, widgets, Layout
 from ipyevents import Event
 from IPython.display import display
@@ -72,7 +72,7 @@ def categoriesLegend(title, descriptions, width=200, elemHeight=38, bordercolor=
     -------
     Example of the creation of an SVG drawing for a categories legend::
     
-        from voilalibrary import svgUtils
+        from vois import svgUtils
         import plotly.express as px
 
         svg = svgUtils.categoriesLegend("Legend title",
@@ -227,7 +227,7 @@ def graduatedLegend(df,                          # Pandas dataframe indexed on c
         import numpy as np
         import pandas as pd
         import plotly.express as px
-        from voilalibrary import svgMap, svgUtils
+        from vois import svgMap, svgUtils
 
         countries = svgMap.country_codes
 
@@ -443,7 +443,7 @@ def SmallCircle(text1, text2, percentage, forecolor="#308040", backcolor=None, t
     -------
     Example of a circle to represent a percentage with an animation::
     
-        from voilalibrary import svgUtils
+        from vois import svgUtils
         from random import randrange
 
         percentage = randrange(1000)/10.0
@@ -618,7 +618,7 @@ def AnimatedPieChart(values=[10.0, 25.0, 34.0, 24.0, 23.0], colors=['#2d82c2', '
     -------
     Example of a pie chart::
     
-        from voilalibrary import svgUtils
+        from vois import svgUtils
         import plotly.express as px
         from ipywidgets import widgets
 
@@ -993,7 +993,7 @@ def svgTitle(title='Dashboard title', subtitle1='Subtitle1', subtitle2='Subtitle
     -------
     Example of a title and logo SVG::
     
-        from voilalibrary import svgUtils
+        from vois import svgUtils
         from ipywidgets import HTML, widgets, Layout
 
         outTitle = widgets.Output(layout=Layout(width='99%',                   height='64px'))

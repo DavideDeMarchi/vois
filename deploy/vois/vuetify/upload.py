@@ -1,22 +1,22 @@
 """Widget to upload files from the user local machine"""
 # Author(s): Davide.De-Marchi@ec.europa.eu
-# Copyright (C) 2022-2030 European Union (Joint Research Centre)
-#
-# This file is part of BDAP voilalibrary.
-#
-# voilalibrary is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# voilalibrary is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with voilalibrary.  If not, see <https://www.gnu.org/licenses/>.
+# Copyright © European Union 2022-2023
+# 
+# Licensed under the EUPL, Version 1.2 or as soon they will be approved by 
+# the European Commission subsequent versions of the EUPL (the "Licence");
+# 
+# You may not use this work except in compliance with the Licence.
+# 
+# You may obtain a copy of the Licence at:
+# https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the Licence is distributed on an "AS IS"
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied.
+# 
+# See the Licence for the specific language governing permissions and
+# limitations under the Licence.
 import ipyvuetify as v
 from ipywidgets import widgets, Layout
 from IPython.display import display, HTML
@@ -26,7 +26,7 @@ try:
 except:
     import settings
 
-from voilalibrary.vuetify.extra import FileInput
+from vois.vuetify.extra import FileInput
 
 
 #####################################################################################################################################################
@@ -61,7 +61,7 @@ class upload():
     -------
     Creation and display of a widget for the upload of images::
         
-        from voilalibrary.vuetify import upload
+        from vois.vuetify import upload
         from IPython.display import display
         
         u = upload.upload(accept="image/png, image/jpeg, image/bmp",

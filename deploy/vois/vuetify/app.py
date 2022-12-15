@@ -1,22 +1,22 @@
 """App class to easily define the structure of a typical Voilà dashboard."""
 # Author(s): Davide.De-Marchi@ec.europa.eu
-# Copyright (C) 2022-2030 European Union (Joint Research Centre)
-#
-# This file is part of BDAP voilalibrary.
-#
-# voilalibrary is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# voilalibrary is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with voilalibrary.  If not, see <https://www.gnu.org/licenses/>.
+# Copyright © European Union 2022-2023
+# 
+# Licensed under the EUPL, Version 1.2 or as soon they will be approved by 
+# the European Commission subsequent versions of the EUPL (the "Licence");
+# 
+# You may not use this work except in compliance with the Licence.
+# 
+# You may obtain a copy of the Licence at:
+# https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the Licence is distributed on an "AS IS"
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied.
+# 
+# See the Licence for the specific language governing permissions and
+# limitations under the Licence.
 from traitlets import *
 from ipywidgets import widgets, Layout
 from IPython.display import display, HTML
@@ -210,7 +210,7 @@ class app():
     -------
     Creation of an app class to define the structure of a Voilà dashboard::
       
-        from voilalibrary.vuetify import app, settings
+        from vois.vuetify import app, settings
         import ipyvuetify as v
         
         # Change global settings
@@ -558,7 +558,7 @@ class app():
         border : str, optional
             Border of the panel (default is '1px solid black')
         backcolor : str, optional
-            Background color of the panel (default is 'white'). Please be aware that colors different from 'white' work badly if used for panels that will contain ipywidgets or ipyvuetify widgets. Transparent colors (for example: #ffffff00) or semi-transparent colors (for example: #ffffff55) work well if the panel contains only one of the SVG chart of the voilalibrary (svhHeatmap, svgBubblesChart, etc.)
+            Background color of the panel (default is 'white'). Please be aware that colors different from 'white' work badly if used for panels that will contain ipywidgets or ipyvuetify widgets. Transparent colors (for example: #ffffff00) or semi-transparent colors (for example: #ffffff55) work well if the panel contains only one of the SVG charts of the vois library (svhHeatmap, svgBubblesChart, etc.)
         name : str, optional
             Name of the panel (default is '')
         number : int, optional
@@ -643,7 +643,7 @@ class app():
         border : str, optional
             Border of the panel (default is '1px solid black')
         backcolor : str, optional
-            Background color of the panel (default is 'white'). Please be aware that colors different from 'white' work badly if used for panels that will contain ipywidgets or ipyvuetify widgets. Transparent colors (for example: #ffffff00) or semi-transparent colors (for example: #ffffff55) work well if the panel contains only one of the SVG chart of the voilalibrary (svhHeatmap, svgBubblesChart, etc.)
+            Background color of the panel (default is 'white'). Please be aware that colors different from 'white' work badly if used for panels that will contain ipywidgets or ipyvuetify widgets. Transparent colors (for example: #ffffff00) or semi-transparent colors (for example: #ffffff55) work well if the panel contains only one of the SVG charts of the vois library (svhHeatmap, svgBubblesChart, etc.)
         titleround : bool, optional
             If True the sides of the title are rounded (default is False)
         titlewidth : str, optional

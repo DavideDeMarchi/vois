@@ -1,22 +1,22 @@
 """Simplified creation of v-treeview vuetify widget to display hierarchical data in a tree"""
 # Author(s): Davide.De-Marchi@ec.europa.eu
-# Copyright (C) 2022-2030 European Union (Joint Research Centre)
-#
-# This file is part of BDAP voilalibrary.
-#
-# voilalibrary is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# voilalibrary is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with voilalibrary.  If not, see <https://www.gnu.org/licenses/>.
+# Copyright © European Union 2022-2023
+# 
+# Licensed under the EUPL, Version 1.2 or as soon they will be approved by 
+# the European Commission subsequent versions of the EUPL (the "Licence");
+# 
+# You may not use this work except in compliance with the Licence.
+# 
+# You may obtain a copy of the Licence at:
+# https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the Licence is distributed on an "AS IS"
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied.
+# 
+# See the Licence for the specific language governing permissions and
+# limitations under the Licence.
 from traitlets import *
 import ipyvuetify as v
 from ipywidgets import widgets, Layout, HTML
@@ -272,7 +272,7 @@ class treeviewOperations():
     -------
     Creation and display of a treeview and programmatical activation and opening of the nodes::
         
-        from voilalibrary.vuetify import treeview
+        from vois.vuetify import treeview
         from IPython.display import display
         
         treecard = treeview.createTreeviewFromList(['A','A.1','A.2','A.1.1',
@@ -517,7 +517,7 @@ def createTreeviewFromList(nameslist=[],
     -------
     Creation and display of a treeview::
     
-        from voilalibrary.vuetify import treeview
+        from vois.vuetify import treeview
         from IPython.display import display
         
         treecard = treeview.createTreeviewFromList(['A','A.1','A.2','A.1.1',
@@ -820,7 +820,7 @@ def createTreeviewFromDF2Columns(df,
     -------
     Creation of a treeview from a simple Pandas DataFrame::
     
-        from voilalibrary.vuetify import treeview
+        from vois.vuetify import treeview
         import pandas as pd
 
         table = [['parent', 'child'], ['John', 'Mary'], ['John', 'Peter'], 
@@ -1031,7 +1031,7 @@ def createTreeviewFromDF3Columns(df,
     -------
     Creation of a treeview from a simple Pandas DataFrame::
     
-        from voilalibrary.vuetify import treeview
+        from vois.vuetify import treeview
         import pandas as pd
 
         table = [['parent', 'child', 'nephew'], ['John', 'Mary', 'Johnny'], ['John', 'Peter', 'Lisa'], 

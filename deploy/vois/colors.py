@@ -1,21 +1,22 @@
 """Utility functions and classes to manage colors and color interpolation."""
 # Author(s): Davide.De-Marchi@ec.europa.eu
-# Copyright (C) 2022-2030 European Union (Joint Research Centre)
-#
-# This file is part of BDAP voilalibrary.
-#
-# voilalibrary is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# voilalibrary is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with voilalibrary.  If not, see <https://www.gnu.org/licenses/>.
+# Copyright © European Union 2022-2023
+# 
+# Licensed under the EUPL, Version 1.2 or as soon they will be approved by 
+# the European Commission subsequent versions of the EUPL (the "Licence");
+# 
+# You may not use this work except in compliance with the Licence.
+# 
+# You may obtain a copy of the Licence at:
+# https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the Licence is distributed on an "AS IS"
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied.
+# 
+# See the Licence for the specific language governing permissions and
+# limitations under the Licence.
 import base64
 import PIL
 from PIL import Image, ImageDraw
@@ -93,7 +94,7 @@ def rgb2hex(rgb):
     -------
     Convert a color from (r,g,b) to '#rrggbb'::
     
-        from voilalibrary import colors
+        from vois import colors
         print( colors.rgb2hex( (255,0,0) ) )
         
     """
@@ -118,7 +119,7 @@ def hex2rgb(color):
     -------
     Convert a color from '#rrggbb' to (r,g,b)::
 
-        from voilalibrary import colors
+        from vois import colors
         print( colors.hex2rgb( '#ff0000' ) )
         
     """
@@ -146,7 +147,7 @@ def text2rgb(color):
     -------
     Convert a color from 'rgb(r,g,b)' to (r,g,b)::
     
-        from voilalibrary import colors
+        from vois import colors
         print( colors.text2rgb( 'rgb(255,0,0)' ) )
         
     """
@@ -198,7 +199,7 @@ class colorInterpolator:
     --------
     Creation of a color interpolator from a list of custom colors::
     
-        from voilalibrary import colors
+        from vois import colors
         
         colorlist = ['rgb(247,251,255)',
                      'rgb(198,219,239)',
@@ -211,7 +212,7 @@ class colorInterpolator:
     Creation of a color interpolator using one of the Plotly library predefined colorscales (see `Plotly sequential color scales <https://plotly.com/python/builtin-colorscales/#builtin-sequential-color-scales>`_ and `Plotly qualitative color sequences <https://plotly.com/python/discrete-color/#color-sequences-in-plotly-express>`_ )::
     
         import plotly.express as px
-        from voilalibrary import colors
+        from vois import colors
         
         c = colors.colorInterpolator(px.colors.sequential.Viridis, 0.0, 100.0)
         print( c.GetColor(33.3) )
@@ -219,7 +220,7 @@ class colorInterpolator:
                
     To visualize a color palette from a list of colors, the :py:func:`colors.paletteImage` function can be used::
     
-        from voilalibrary import colors
+        from vois import colors
         import plotly.express as px
 
         img = colors.paletteImage(px.colors.sequential.Blues, width=400, height=40)
@@ -321,7 +322,7 @@ def paletteImage(colorlist, width=400, height=40, interpolate=True):
     --------
     Creation of a color palette image from a list of colors::
     
-        from voilalibrary import colors
+        from vois import colors
         import plotly.express as px
 
         img = colors.paletteImage(px.colors.sequential.Viridis, width=400, height=40)
