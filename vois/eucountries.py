@@ -308,7 +308,7 @@ countries.add('France',      'FR',euro=True,population=66977107)
 countries.add('Hungary',     'HU',population=9775564)
 countries.add('Slovenia',    'SI',euro=True,population=2073894)
 countries.add('Denmark',     'DK',population=5793636)
-countries.add('Croatia',     'HR',population=4087843)
+countries.add('Croatia',     'HR',euro=True,population=4087843)
 countries.add('Malta',       'MT',euro=True,population=484630)
 countries.add('Slovakia',    'SK',euro=True,population=5446771)
 countries.add('Germany',     'DE',euro=True,population=82905782)
@@ -326,7 +326,7 @@ countries.add('Poland',      'PL',population=37974750)
 #countries.add('United Kingdom', 'UK')
 
 countries.add('European Union','EU', iscountry=False, population=eu_total_population)
-countries.add('Euro Area',     'EA', iscountry=False, population=341858176)
+countries.add('Euro Area',     'EA', iscountry=False, population=341858176+4087843)
 
 
 # language class
