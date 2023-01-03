@@ -17,7 +17,7 @@
 # 
 # See the Licence for the specific language governing permissions and
 # limitations under the Licence.import json
-
+import json
 
 # Given a geojson string, returns a json object after having tested that the input string contains a valid geojson
 def geojsonJson(geojson):
