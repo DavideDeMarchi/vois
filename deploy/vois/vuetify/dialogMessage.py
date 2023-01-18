@@ -17,7 +17,6 @@
 # 
 # See the Licence for the specific language governing permissions and
 # limitations under the Licence.
-from traitlets import *
 from IPython.display import display
 import ipyvuetify as v
 
@@ -86,7 +85,10 @@ class dialogMessage(dialogGeneric.dialogGeneric):
         vvv = text.split('\n')
         
         # Create the content to pass to the dialogGeneric
-        kwargs['content'] = [v.Card(children=[ v.CardText(children=[x], class_="mt-n8") for x in vvv ])]
+        if len(vvv) > 0:
+            ctexts = [ v.CardText(children=[vvv[0]], class_="mt-1") ] + [ v.CardText(children=[x], class_="mt-n8") for x in vvv[1:] ]
+            kwargs['content'] = [v.Card(children=ctexts)]
+            
         kwargs['text'] = ''
         kwargs['fullscreen'] = False
         #kwargs['addclosebuttons'] = True

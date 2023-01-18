@@ -17,7 +17,7 @@
 # 
 # See the Licence for the specific language governing permissions and
 # limitations under the Licence.
-from traitlets import *
+import traitlets
 import ipyvuetify as v
 from ipywidgets import widgets, Layout, HTML
 from IPython.display import display
@@ -85,30 +85,22 @@ class CustomTreeview(v.VuetifyTemplate):
     This class is not intended to be called directly, but only through the functions :func:`~treeview.createTreeviewFromList` and :func:`~treeview.createTreeviewFromDF2Columns`.
     """
     
-    items                       = Any([]).tag(sync=True)                       # JSON object to represent the tree (each object has 'id' and 'name' key. 'disabled' is an optional key)
-    selectable                  = Bool(True).tag(sync=True)                    # If True the nodes of the tree have a checkbox to select them
-    activatable                 = Bool(False).tag(sync=True)                   # If True, one the nodes of the tree can be activated
-    open_on_click               = Bool(False).tag(sync=True)                   # If True, the nodes can be opened by clicking on the label
-    active                      = Any(None).tag(sync=True)                     # Id of the node that is active at start
-    selected                    = Any([]).tag(sync=True)                       # List of id of the nodes that are selected on start
-    selectednames               = Any([]).tag(sync=True)                       # List of name of the nodes that are selected at any time
-    opened                      = Any([]).tag(sync=True)                       # List of id of the nodes that are to be opened on start
-    color                       = Unicode('blue').tag(sync=True)               # Color for the selected nodes
-    dark                        = Bool(False).tag(sync=True)                   # If True show text in white
-    transition                  = Bool(False).tag(sync=True)                   # If True applies a transition when nodes are opened and closed
-    on_change                   = Any(None).tag(sync=False)                    # Name of a python function to call when the selected nodes change (user clicking in one of the checkboxes)
-    on_activated                = Any(None).tag(sync=False)                    # Name of a python function to call when the active node changes (user selecting a node)
-    expand_selection_to_parents = Bool(True).tag(sync=True)                    # If True, also the parent nodes are returned as selected when all children are selected
-    search                      = Unicode('').tag(sync=True)                   # Search string to filter the nodes
-    opened_all                  = Bool(False).tag(sync=True)                   # If True all the nodes are opened at start
-
-    iconsshow                   = Bool(False).tag(sync=True)                   # If true displays the icons on node labels
-    iconscolor                  = Unicode('blue').tag(sync=True)               # Color for the icon of the nodes
-    icons_folder_opened         = Unicode('mdi-folder-open').tag(sync=True)    # Name of the icon for a node with children that is opened
-    icons_folder_closed         = Unicode('mdi-folder').tag(sync=True)         # Name of the icon for a node with children that is closed
-    
-    tooltips                    = Bool(False).tag(sync=True)                   # If true displays the tooltip for node labels
-    tooltips_chars              = Int(20).tag(sync=True)                       # If the node text has that this number of chars, the tooltip is not displayed
+    items                       = traitlets.Any([]).tag(sync=True)                       # JSON object to represent the tree (each object has 'id' and 'name' key. 'disabled' is an optional key)
+    selectable                  = traitlets.Bool(True).tag(sync=True)                    # If True the nodes of the tree have a checkbox to select them
+    activatable                 = traitlets.Bool(False).tag(sync=True)                   # If True, one the nodes of the tree can be activated
+    open_on_click               = traitlets.Bool(False).tag(sync=True)                   # If True, the nodes can be opened by clicking on the label
+    active                      = traitlets.Any(None).tag(sync=True)                     # Id of the node that is active at start
+    selected                    = traitlets.Any([]).tag(sync=True)                       # List of id of the nodes that are selected on start
+    selectednames               = traitlets.Any([]).tag(sync=True)                       # List of name of the nodes that are selected at any time
+    opened                      = traitlets.Any([]).tag(sync=True)                       # List of id of the nodes that are to be opened on start
+    color                       = traitlets.Unicode('blue').tag(sync=True)               # Color for the selected nodes
+    dark                        = traitlets.Bool(False).tag(sync=True)                   # If True show text in white
+    transition                  = traitlets.Bool(False).tag(sync=True)                   # If True applies a transition when nodes are opened and closed
+    on_change                   = traitlets.Any(None).tag(sync=False)                    # Name of a python function to call when the selected nodes change (user clicking in one of the checkboxes)
+    on_activated                = traitlets.Any(None).tag(sync=False)                    # Name of a python function to call when the active node changes (user selecting a node)
+    expand_selection_to_parents = traitlets.Bool(True).tag(sync=True)                    # If True, also the parent nodes are returned as selected when all children are selected
+    search                      = traitlets.Unicode('').tag(sync=True)                   # Search string to filter the nodes
+    opened_all                  = traitlets.Bool(False).tag(sync=True)                   # If True all the nodes are opened at start
     
     
     @traitlets.default('template')
@@ -117,7 +109,7 @@ class CustomTreeview(v.VuetifyTemplate):
         # Code to add to activate the icons
         # if item.isfolder is True, the open/closed icon is added, else the item.icon is added
         icons_template = ''
-        if CustomTreeview.iconsshow:
+        if self.iconsshow:
             icons_template = '''
 <template v-slot:prepend="{ item, open }">
       <v-icon color="%s" :disabled="item.disabled" v-if="item.isfolder">
@@ -129,12 +121,12 @@ class CustomTreeview(v.VuetifyTemplate):
       <v-html v-else>
       </v-html>
 </template>
-''' % (CustomTreeview.iconscolor, CustomTreeview.icons_folder_opened, CustomTreeview.icons_folder_closed, CustomTreeview.iconscolor)
+''' % (self.iconscolor, self.icons_folder_opened, self.icons_folder_closed, self.iconscolor)
 
 
         # Code to add to activate the tooltip
         tooltip_template = ''
-        if CustomTreeview.tooltips:
+        if self.tooltips:
             tooltip_template = '''
 <template v-slot:label="{ item }">
     <v-tooltip bottom :disabled="item.name.length < %d">
@@ -146,7 +138,7 @@ class CustomTreeview(v.VuetifyTemplate):
       {{ item.name }}
     </v-tooltip>
 </template>
-''' % CustomTreeview.tooltips_chars
+''' % self.tooltips_chars
 
             
         return '''
@@ -252,7 +244,60 @@ class CustomTreeview(v.VuetifyTemplate):
                 name = self.id2Name(self.items[0], data[0])
                 self.on_activated(name)
 
-
+    # Initialization
+    def __init__(self,
+                 items                       = [],
+                 selectable                  = True,
+                 activatable                 = False,
+                 open_on_click               = False,
+                 active                      = None,
+                 selected                    = [],
+                 selectednames               = [],
+                 opened                      = [],
+                 color                       = 'blue',
+                 dark                        = False,
+                 transition                  = False,
+                 on_change                   = None,
+                 on_activated                = None,
+                 expand_selection_to_parents = True,
+                 search                      = '',
+                 opened_all                  = False,
+                 
+                 iconsshow=False,
+                 iconscolor='blue',
+                 icons_folder_opened='mdi-folder-open',
+                 icons_folder_closed='mdi-folder',
+                 tooltips=False,
+                 tooltips_chars=20,
+                 *args,
+                 **kwargs):
+        
+        self.items                       = items
+        self.selectable                  = selectable
+        self.activatable                 = activatable
+        self.open_on_click               = open_on_click
+        self.active                      = active
+        self.selected                    = selected
+        self.selectednames               = selectednames
+        self.opened                      = opened
+        self.color                       = color
+        self.dark                        = dark
+        self.transition                  = transition
+        self.on_change                   = on_change
+        self.on_activated                = on_activated
+        self.expand_selection_to_parents = expand_selection_to_parents
+        self.search                      = search
+        self.opened_all                  = opened_all
+        
+        self.iconsshow = iconsshow
+        self.iconscolor = iconscolor
+        self.icons_folder_opened = icons_folder_opened
+        self.icons_folder_closed =icons_folder_closed
+        self.tooltips = tooltips
+        self.tooltips_chars = tooltips_chars
+        super().__init__(*args, **kwargs)
+        
+        
 
 ##################################################################################################################################
 # Helper class to operate on a treeview returned by the createTreeviewFromList or createTreeviewFromDF2Columns functions
@@ -343,7 +388,14 @@ class treeviewOperations():
         """
         ids = [self.fullname2id[x] for x in fullnames]
         self.treeview.opened = ids
-        
+    
+    # Open all the nodes of the tree
+    def openAll(self):
+        """
+        Open all the nodes of the treeview
+        """
+        allfullnames = list(self.fullname2id.keys())
+        self.setOpened(allfullnames)
 
     # Get the fullname of the active node
     def getActive(self):
@@ -626,15 +678,11 @@ def createTreeviewFromList(nameslist=[],
     else:
         activeid = None
     
-    CustomTreeview.tooltips            = tooltips
-    CustomTreeview.tooltips_chars      = tooltips_chars
-    CustomTreeview.iconsshow           = iconsshow
-    CustomTreeview.iconscolor          = iconscolor
-    CustomTreeview.icons_folder_opened = icons_folder_opened
-    CustomTreeview.icons_folder_closed = icons_folder_closed
     tree = CustomTreeview(items=[root], selected=selectedids, opened=openedids, on_change=on_change, on_activated=on_activated, 
                           expand_selection_to_parents=expand_selection_to_parents, dark=dark, transition=transition, opened_all=opened_all, 
-                          color=color, selectable=selectable, activatable=activatable, active=activeid, open_on_click=open_on_click)
+                          color=color, selectable=selectable, activatable=activatable, active=activeid, open_on_click=open_on_click,
+                          tooltips=tooltips, tooltips_chars=tooltips_chars,
+                          iconsshow=iconsshow, iconscolor=iconscolor, icons_folder_opened=icons_folder_opened, icons_folder_closed=icons_folder_closed)
     treehtml = v.Html(tag='div', height=height, children=[tree], style_='overflow: hidden;')
     treecard = v.Card(width=width, height=height, elevation=elevation, children=[treehtml],
                       dark=dark, style_='overflow-x: visible;')
@@ -886,15 +934,11 @@ def createTreeviewFromDF2Columns(df,
     #import json
     #print(json.dumps(root, indent=4))
     
-    CustomTreeview.tooltips            = tooltips
-    CustomTreeview.tooltips_chars      = tooltips_chars
-    CustomTreeview.iconsshow           = iconsshow
-    CustomTreeview.iconscolor          = iconscolor
-    CustomTreeview.icons_folder_opened = icons_folder_opened
-    CustomTreeview.icons_folder_closed = icons_folder_closed
     tree = CustomTreeview(items=[root], selected=selectedids, opened=openedids, on_change=on_change, on_activated=on_activated, 
                           expand_selection_to_parents=expand_selection_to_parents, dark=dark, transition=transition, opened_all=opened_all, 
-                          color=color, selectable=selectable, activatable=activatable, active=activeid, open_on_click=open_on_click)
+                          color=color, selectable=selectable, activatable=activatable, active=activeid, open_on_click=open_on_click,
+                          tooltips=tooltips, tooltips_chars=tooltips_chars,
+                          iconsshow=iconsshow, iconscolor=iconscolor, icons_folder_opened=icons_folder_opened, icons_folder_closed=icons_folder_closed)
             
     treehtml = v.Html(tag='div',height=height, children=[tree], style_='overflow: hidden;')
     treecard = v.Card(width=width, height=height, elevation=elevation, children=[treehtml],
@@ -1105,15 +1149,11 @@ def createTreeviewFromDF3Columns(df,
     #import json
     #print(json.dumps(root, indent=4))
     
-    CustomTreeview.tooltips            = tooltips
-    CustomTreeview.tooltips_chars      = tooltips_chars
-    CustomTreeview.iconsshow           = iconsshow
-    CustomTreeview.iconscolor          = iconscolor
-    CustomTreeview.icons_folder_opened = icons_folder_opened
-    CustomTreeview.icons_folder_closed = icons_folder_closed
     tree = CustomTreeview(items=[root], selected=selectedids, opened=openedids, on_change=on_change, on_activated=on_activated, 
                           expand_selection_to_parents=expand_selection_to_parents, dark=dark, transition=transition, opened_all=opened_all, 
-                          color=color, selectable=selectable, activatable=activatable, active=activeid, open_on_click=open_on_click)
+                          color=color, selectable=selectable, activatable=activatable, active=activeid, open_on_click=open_on_click,
+                          tooltips=tooltips, tooltips_chars=tooltips_chars,
+                          iconsshow=iconsshow, iconscolor=iconscolor, icons_folder_opened=icons_folder_opened, icons_folder_closed=icons_folder_closed)
     
     treehtml = v.Html(tag='div',height=height, children=[tree], style_='overflow: hidden;')
     treecard = v.Card(width=width, height=height, elevation=elevation, children=[treehtml],

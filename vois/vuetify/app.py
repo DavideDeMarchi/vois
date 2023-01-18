@@ -17,7 +17,6 @@
 # 
 # See the Licence for the specific language governing permissions and
 # limitations under the Licence.
-from traitlets import *
 from ipywidgets import widgets, Layout
 from IPython.display import display, HTML
 from IPython.core.display import HTML as ipyhtml   # V. I. for urlOpen to work!!!

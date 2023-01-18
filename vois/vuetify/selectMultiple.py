@@ -17,7 +17,6 @@
 # 
 # See the Licence for the specific language governing permissions and
 # limitations under the Licence.
-from traitlets import *
 from IPython.display import display
 import ipyvuetify as v
 

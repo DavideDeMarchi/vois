@@ -17,7 +17,7 @@
 # 
 # See the Licence for the specific language governing permissions and
 # limitations under the Licence.
-from traitlets import *
+import traitlets
 from IPython.display import display
 import ipyvuetify as v
 
@@ -74,8 +74,8 @@ class dialogWait(v.VuetifyTemplate):
        Example of a dialogWait opened during a lenghty operation.
    """
     
-    dialog = Bool(True).tag(sync=True)
-    text = Unicode('').tag(sync=True)
+    dialog = traitlets.Bool(True).tag(sync=True)
+    text = traitlets.Unicode('').tag(sync=True)
     
     darkmode  = ''
     linecolor = settings.textcolor_notdark
@@ -83,7 +83,7 @@ class dialogWait(v.VuetifyTemplate):
         darkmode  = 'dark'
         linecolor = settings.textcolor_dark
     
-    template = Unicode('''
+    template = traitlets.Unicode('''
 <template>
   <div class="text-center">
     <v-dialog

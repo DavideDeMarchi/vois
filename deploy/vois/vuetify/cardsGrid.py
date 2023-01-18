@@ -18,7 +18,7 @@
 # See the Licence for the specific language governing permissions and
 # limitations under the Licence.
 import ipyvuetify as v
-from traitlets import *
+import traitlets
 
 
 class cardsGrid(v.VuetifyTemplate):
@@ -87,18 +87,18 @@ class cardsGrid(v.VuetifyTemplate):
        Example of a cardsGrid to display multiple cards containing texts and an images
     """
     
-    cards     = Any([]).tag(sync=True)           # Cards to display (array of json objects containing "title", "subtitle", "image" tags)
+    cards     = traitlets.Any([]).tag(sync=True)           # Cards to display (array of json objects containing "title", "subtitle", "image" tags)
     
-    width     = Unicode('400px').tag(sync=True)  # Width of the cards
-    height    = Unicode('').tag(sync=True)       # Height of the cards
-    color     = Unicode('white').tag(sync=True)  # Background color
-    cols      = Int(6).tag(sync=True)            # Horizontal column span [1,12] for each of the card
-    dark      = Bool(False).tag(sync=True)       # Dark mode flag (if True the text is displayed in white)
-    ripple    = Bool(False).tag(sync=True)       # Ripple flag (if True the click on the card is highlighted)
-    on_click  = Any(None).tag(sync=False)        # Name of a python function to call when one of the cards is clicked (it will receive as argument the index of the clicked card)
-    responsive         = Bool(False).tag(sync=True)
-    fontsizemultiplier = Float(1.0).tag(sync=True)
-    tooltipwidth = Unicode('600px').tag(sync=True)  # Width of the tooltip
+    width     = traitlets.Unicode('400px').tag(sync=True)  # Width of the cards
+    height    = traitlets.Unicode('').tag(sync=True)       # Height of the cards
+    color     = traitlets.Unicode('white').tag(sync=True)  # Background color
+    cols      = traitlets.Int(6).tag(sync=True)            # Horizontal column span [1,12] for each of the card
+    dark      = traitlets.Bool(False).tag(sync=True)       # Dark mode flag (if True the text is displayed in white)
+    ripple    = traitlets.Bool(False).tag(sync=True)       # Ripple flag (if True the click on the card is highlighted)
+    on_click  = traitlets.Any(None).tag(sync=False)        # Name of a python function to call when one of the cards is clicked (it will receive as argument the index of the clicked card)
+    responsive         = traitlets.Bool(False).tag(sync=True)
+    fontsizemultiplier = traitlets.Float(1.0).tag(sync=True)
+    tooltipwidth = traitlets.Unicode('600px').tag(sync=True)  # Width of the tooltip
 
 
     @traitlets.default('template')

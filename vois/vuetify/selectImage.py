@@ -18,7 +18,7 @@
 # See the Licence for the specific language governing permissions and
 # limitations under the Licence.
 import ipyvuetify as v
-from traitlets import *
+import traitlets 
 
 try:
     from . import settings
@@ -93,17 +93,17 @@ class selectImage(v.VuetifyTemplate):
        Example of a selectImage widget
     """
     
-    images    = Any([]).tag(sync=True)    # images to display (array of json objects containing "name", and "image" tags).
-                                          # Optional tags are "max_width", "max_height", "margins"
-    selection = Any(None).tag(sync=True)
-    label     = Unicode('').tag(sync=True)
-    color     = Unicode(settings.color_first).tag(sync=True)
-    outlined  = Bool(True).tag(sync=True)
-    clearable = Bool(True).tag(sync=True)
-    dense     = Bool(True).tag(sync=True)
-    style     = Unicode('width: %100%; max-width: 100%;').tag(sync=True)
+    images    = traitlets.Any([]).tag(sync=True)    # images to display (array of json objects containing "name", and "image" tags).
+                                                    # Optional tags are "max_width", "max_height", "margins"
+    selection = traitlets.Any(None).tag(sync=True)
+    label     = traitlets.Unicode('').tag(sync=True)
+    color     = traitlets.Unicode(settings.color_first).tag(sync=True)
+    outlined  = traitlets.Bool(True).tag(sync=True)
+    clearable = traitlets.Bool(True).tag(sync=True)
+    dense     = traitlets.Bool(True).tag(sync=True)
+    style     = traitlets.Unicode('width: %100%; max-width: 100%;').tag(sync=True)
     
-    template  = Unicode('''
+    template  = traitlets.Unicode('''
 <v-card style="overflow: hidden;">
   <v-select
     :value="selection"

@@ -18,7 +18,7 @@
 # See the Licence for the specific language governing permissions and
 # limitations under the Licence.
 import ipyvuetify as v
-from traitlets import *
+import traitlets
 
 
 class card(v.VuetifyTemplate):
@@ -92,24 +92,24 @@ class card(v.VuetifyTemplate):
        Example of a card with text and an image
     """
     
-    width      = Unicode('400px').tag(sync=True)
-    height     = Unicode('').tag(sync=True)
-    color      = Unicode('white').tag(sync=True)
-    dark       = Bool(False).tag(sync=True)
-    ripple     = Bool(False).tag(sync=True)       # Ripple flag (if True the click on the card is highlighted)
-    elevation  = Int(5).tag(sync=True)
-    title      = Unicode('Title').tag(sync=True)
-    subtitle   = Unicode('Subtitle').tag(sync=True)
-    icon       = Unicode('').tag(sync=True)
-    iconsize   = Unicode('32px').tag(sync=True)
-    image      = Unicode('').tag(sync=True)
-    imagesize  = Unicode('190px').tag(sync=True)
-    on_click   = Any(None).tag(sync=False)
-    responsive = Bool(False).tag(sync=True)
-    fontsizemultiplier = Float(1.0).tag(sync=True)
-    backgroundimageurl = Unicode('').tag(sync=True)
+    width      = traitlets.Unicode('400px').tag(sync=True)
+    height     = traitlets.Unicode('').tag(sync=True)
+    color      = traitlets.Unicode('white').tag(sync=True)
+    dark       = traitlets.Bool(False).tag(sync=True)
+    ripple     = traitlets.Bool(False).tag(sync=True)       # Ripple flag (if True the click on the card is highlighted)
+    elevation  = traitlets.Int(5).tag(sync=True)
+    title      = traitlets.Unicode('Title').tag(sync=True)
+    subtitle   = traitlets.Unicode('Subtitle').tag(sync=True)
+    icon       = traitlets.Unicode('').tag(sync=True)
+    iconsize   = traitlets.Unicode('32px').tag(sync=True)
+    image      = traitlets.Unicode('').tag(sync=True)
+    imagesize  = traitlets.Unicode('190px').tag(sync=True)
+    on_click   = traitlets.Any(None).tag(sync=False)
+    responsive = traitlets.Bool(False).tag(sync=True)
+    fontsizemultiplier = traitlets.Float(1.0).tag(sync=True)
+    backgroundimageurl = traitlets.Unicode('').tag(sync=True)
     
-    subtitlemargins = Unicode('ma-0 ml-4 mb-4 mt-0 mr-4').tag(sync=True)
+    subtitlemargins = traitlets.Unicode('ma-0 ml-4 mb-4 mt-0 mr-4').tag(sync=True)
 
     
     @traitlets.default('template')

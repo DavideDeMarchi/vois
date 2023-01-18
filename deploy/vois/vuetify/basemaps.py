@@ -21,7 +21,7 @@ import ipyleaflet
 from ipyleaflet import basemaps as ipybasemaps, basemap_to_tiles, LayerGroup
 from jeodpp import inter
 
-from traitlets import Bunch
+import traitlets
 
 try:
     from . import settings
@@ -32,10 +32,10 @@ except:
 
 
 # Empty basemap (gray background)
-emptyBasemap = Bunch({'attribution': '',
-                      'max_zoom': 19, 
-                      'name': 'Empty basemap',
-                      'build_url':   lambda *args, **kwargs: 'https://jeodpp.jrc.ec.europa.eu/services/shared/pngs/gray.png'})
+emptyBasemap = traitlets.Bunch({'attribution': '',
+                                'max_zoom': 19, 
+                                'name': 'Empty basemap',
+                                'build_url':   lambda *args, **kwargs: 'https://jeodpp.jrc.ec.europa.eu/services/shared/pngs/gray.png'})
 
 
 
@@ -98,10 +98,10 @@ def buildBasemap(oldstyledictionary):
     if ipyleaflet.__version__ == '0.9.0':
         return oldstyledictionary
     else:
-        return Bunch({'max_zoom':    oldstyledictionary['max_zoom'],
-                      'name':        oldstyledictionary['name'],
-                      'attribution': oldstyledictionary['attribution'],
-                      'build_url':   lambda *args, **kwargs: oldstyledictionary['url']})
+        return traitlets.Bunch({'max_zoom':    oldstyledictionary['max_zoom'],
+                                'name':        oldstyledictionary['name'],
+                                'attribution': oldstyledictionary['attribution'],
+                                'build_url':   lambda *args, **kwargs: oldstyledictionary['url']})
 
     
 # Given a name and an interapro collections path (example inter.collections.BaseData.Elevation.MERIT.Hillshade), returns a basemap

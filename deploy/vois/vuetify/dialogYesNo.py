@@ -17,7 +17,6 @@
 # 
 # See the Licence for the specific language governing permissions and
 # limitations under the Licence.
-from traitlets import *
 from IPython.display import display
 import ipyvuetify as v
 
@@ -113,7 +112,7 @@ class dialogYesNo(dialogGeneric.dialogGeneric):
         r = v.Row(no_gutters=True, justify="end", children=[byes,bno])
         
         # Create the content to pass to the dialogGeneric
-        kwargs['content'] = [v.Html(tag='div', class_="pa-0 ma-4 mt-n2 mb-2", children=[kwargs['text']]), r]
+        kwargs['content'] = [v.Html(tag='div', class_="pa-0 ma-4 mt-4 mb-2", children=[kwargs['text']]), r]
         kwargs['text'] = ''
         kwargs['fullscreen'] = False
         kwargs['persistent'] = True

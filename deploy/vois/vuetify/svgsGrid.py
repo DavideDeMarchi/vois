@@ -18,7 +18,7 @@
 # See the Licence for the specific language governing permissions and
 # limitations under the Licence.
 import ipyvuetify as v
-from traitlets import *
+import traitlets
 import os
 import base64
 
@@ -102,14 +102,14 @@ class svgsGrid(v.VuetifyTemplate):
        Example of an svgsGrid to display a list of SVG files allowing selection
     """
     
-    svgitems  = Any([]).tag(sync=True)           # SVG files to display (array of json objects containing "title" and "svg" tags)
+    svgitems  = traitlets.Any([]).tag(sync=True)           # SVG files to display (array of json objects containing "title" and "svg" tags)
     
-    width     = Unicode('80px').tag(sync=True)   # Width of the cards
-    height    = Unicode('100px').tag(sync=True)  # Height of the cards
-    color     = Unicode('white').tag(sync=True)  # Background color
-    cols      = Int(6).tag(sync=True)            # Horizontal column span [1,12] for each of the card
-    ripple    = Bool(False).tag(sync=True)       # Ripple flag (if True the click on the card is highlighted)
-    on_click  = Any(None).tag(sync=False)        # Name of a python function to call when one of the cards is clicked (it will receive as argument the index of the clicked card)
+    width     = traitlets.Unicode('80px').tag(sync=True)   # Width of the cards
+    height    = traitlets.Unicode('100px').tag(sync=True)  # Height of the cards
+    color     = traitlets.Unicode('white').tag(sync=True)  # Background color
+    cols      = traitlets.Int(6).tag(sync=True)            # Horizontal column span [1,12] for each of the card
+    ripple    = traitlets.Bool(False).tag(sync=True)       # Ripple flag (if True the click on the card is highlighted)
+    on_click  = traitlets.Any(None).tag(sync=False)        # Name of a python function to call when one of the cards is clicked (it will receive as argument the index of the clicked card)
 
 
     @traitlets.default('template')
