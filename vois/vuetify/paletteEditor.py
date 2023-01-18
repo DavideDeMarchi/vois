@@ -478,7 +478,8 @@ class paletteEditor():
     # Returns the vuetify object to display
     def draw(self):
         """Returns the ipyvuetify object to display (a v.Html object displaying two output widgets)"""
-        return v.Html(tag='div',children=[widgets.VBox([widgets.HBox([self.outputtoolbar,self.outputdialog]),self.outputtitle,self.outputpalette,self.outputlist])])
+        return v.Html(tag='div',children=[widgets.VBox([v.Html(tag='div',children=[''], class_='pa-0 ma-0 mb-2'),
+                                                        widgets.HBox([self.outputtoolbar,self.outputdialog]),self.outputtitle,self.outputpalette,self.outputlist])])
 
     
     # colors property

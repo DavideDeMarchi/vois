@@ -270,6 +270,14 @@ sortableList widget
 
 .. image:: figures/line.png
 
+svgsGrid widget
+---------------
+
+.. automodule:: svgsGrid
+    :members:
+
+.. image:: figures/line.png
+
 switch widget
 -------------
 

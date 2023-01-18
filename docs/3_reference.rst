@@ -101,6 +101,7 @@ Vuetify package
  slider
  snackbar
  sortableList
+ svgsGrid
  switch
  tabs
  title
