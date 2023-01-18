@@ -276,7 +276,7 @@ class colorInterpolator:
             
         """
         if self.minValue >= self.maxValue:  # Avoid division by zero!
-            return self.palette[-1]
+            return rgb2hex(self.palette[-1])
         
         if value < self.minValue: value = self.minValue
         if value > self.maxValue: value = self.maxValue
