@@ -154,7 +154,7 @@ class dialogGeneric():
         # Dialog
         clist = [toolbar]
         if len(text) > 0:
-            clist += [v.CardText(class_='pa-0 ma-0 mt-9', children=['']) ]
+            clist += [ v.CardText(class_='pa-0 ma-0 mt-9', children=['']) ]
             clist += [ v.CardText(children=[x], class_="mt-n5") for x in vvv ]
         clist += content + r
         

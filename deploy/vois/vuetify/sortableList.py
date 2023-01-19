@@ -53,7 +53,7 @@ class sortableList:
     itemNew : function, optional
         Python function called when a new items is added. The function is called with no arguments and it must return the dict initialized with the new item content (default is None). As an alternative, the function can return None, but then the real adding of the new item must be done by directly calling the doAddItem method
     itemContent : function, optional
-        Python function called when an item is displayed. The function is called with an item as its first argument and the index )position of the item= as second argument. The function must return a list containing the ipyvuetify widgets to display the item content (default is None)
+        Python function called when an item is displayed. The function is called with an item as its first argument and the index (position of the item) as second argument. The function must return a list containing the ipyvuetify widgets to display the item content (default is None)
     bottomContent : list of ipyvuetify widgets, optional
         Additional widgets content to display in the bottom line (containing the 'plus' button), aligned to the right (default is [])
     onchange : function, optional
@@ -500,7 +500,12 @@ class sortableList:
             else:
                 index = len(self.cards)
                 
-            c = v.Card(outlined=self.outlined, dark=self.dark, flat=True, dense=True, class_="pa-0 ma-0 mt-1", style_=self.style, ripple=ripple, raised=False,
+            if self.activatable:
+                bottom = "mb-2"
+            else:
+                bottom = ""
+                
+            c = v.Card(outlined=self.outlined, dark=self.dark, flat=True, dense=True, class_="pa-0 ma-0 mt-1 %s"%bottom, style_=self.style, ripple=ripple, raised=False,
                        children=[v.CardTitle(class_="justify-end pa-0 ma-0 mt-n1 mb-n5", children=buttons)] + self.itemContent(item,index))
             c.on_event('click', self.__internal_onclick)
 

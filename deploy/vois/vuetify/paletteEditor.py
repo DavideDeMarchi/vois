@@ -442,7 +442,7 @@ class paletteEditor():
 
 
     # Content of an item
-    def itemContent(self, item):
+    def itemContent(self, item, index):
 
         def onvalue(widget, event, data):
             item["value"] = int(data)

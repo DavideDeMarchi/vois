@@ -952,7 +952,7 @@ class layers():
 
     
     # Content of a layer
-    def layerContent(self, layer):
+    def layerContent(self, layer, index):
         
         # Toggle visibility of the layer
         def onvisible(flag):
