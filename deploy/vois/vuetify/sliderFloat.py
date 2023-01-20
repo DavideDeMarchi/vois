@@ -82,7 +82,7 @@ class sliderFloat():
    """
 
     # Initialization
-    def __init__(self, value=1.0, minvalue=0.0, maxvalue=1.0, text='Select', showpercentage=True, decimals=2, sliderwidth=200, onchange=None):
+    def __init__(self, value=1.0, minvalue=0.0, maxvalue=1.0, text='Select', showpercentage=True, decimals=2, labelwidth=0, sliderwidth=200, onchange=None):
         
         self.onchange = onchange
         
@@ -105,11 +105,19 @@ class sliderFloat():
         self.postchar = ''
         if self.showpercentage: self.postchar = '%'
             
+        self.labelwidth  = labelwidth
         self.sliderwidth = sliderwidth
         
         intvalue = self.float2integer(value)
         
-        self.label  = label.label(text, textweight=400, margins=0, margintop=4, height=22)
+        #self.label  = label.label(text, textweight=400, margins=0, margintop=4, height=22)
+        
+        if self.labelwidth > 0:
+            spx = '%dpx'%self.labelwidth
+            style = 'width: %s; min-width: %s; max-width: %s;'%(spx,spx,spx)
+        else:
+            style = ''
+        self.label = v.Html(tag='div', children=[text], class_='pa-0 ma-0 mt-4', style_=style)
         self.slider = v.Slider(v_model=intvalue,
                                dense=True, xsmall=True, 
                                ticks=False, thumb_size=10, dark=settings.dark_mode,
@@ -182,7 +190,7 @@ class sliderFloat():
     # Draw the widget
     def draw(self):
         """Returns the ipyvuetify object to display (a v.Row widget)"""
-        return v.Row(justify='start', class_='pa-0 ma-0', no_gutters=True, children=[self.label.draw(), self.slider, self.buttons, self.labelvalue], style_="overflow: hidden;")
+        return v.Row(justify='start', class_='pa-0 ma-0', no_gutters=True, children=[self.label, self.slider, self.buttons, self.labelvalue], style_="overflow: hidden;")
 
         
     # Get the slider value
