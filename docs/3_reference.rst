@@ -87,7 +87,6 @@ Vuetify package
  layers
  menu
  multiSwitch
- opacity
  paletteEditor
  palettePicker
  progress
@@ -100,6 +99,7 @@ Vuetify package
  settings
  sidePanel
  slider
+ sliderFloat
  snackbar
  sortableList
  svgsGrid

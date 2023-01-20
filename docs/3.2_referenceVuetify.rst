@@ -158,14 +158,6 @@ multiSwitch widget
 
 .. image:: figures/line.png
 
-opacity widget
---------------
-
-.. automodule:: opacity
-    :members: 
-
-.. image:: figures/line.png
-
 paletteEditor widget
 --------------------
 
@@ -258,6 +250,14 @@ slider widget
 -------------
 
 .. automodule:: slider
+    :members: 
+
+.. image:: figures/line.png
+
+sliderFloat widget
+------------------
+
+.. automodule:: sliderFloat
     :members: 
 
 .. image:: figures/line.png
