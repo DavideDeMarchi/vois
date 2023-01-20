@@ -185,11 +185,11 @@ class sliderFloat():
         return v.Row(justify='start', class_='pa-0 ma-0', no_gutters=True, children=[self.label.draw(), self.slider, self.buttons, self.labelvalue], style_="overflow: hidden;")
 
         
-    # Get the opacity value
+    # Get the slider value
     @property
     def value(self):
         """
-        Get/Set the opacity value.
+        Get/Set the slider value.
         
         Returns
         --------
@@ -200,7 +200,7 @@ class sliderFloat():
         -------
         Programmatically set the slider value
             
-            o.value = 0.56
+            s.value = 0.56
         
         """
         return self.integer2float(self.slider.v_model)
