@@ -82,7 +82,7 @@ class sliderFloat():
    """
 
     # Initialization
-    def __init__(self, value=1.0, minvalue=0.0, maxvalue=1.0, text='Select', showpercentage=True, decimals=2, labelwidth=0, sliderwidth=200, onchange=None):
+    def __init__(self, value=1.0, minvalue=0.0, maxvalue=1.0, text='Select', showpercentage=True, decimals=2, maxint=None, labelwidth=0, sliderwidth=200, onchange=None):
         
         self.onchange = onchange
         
@@ -91,16 +91,19 @@ class sliderFloat():
         self.showpercentage = showpercentage
         self.decimals       = decimals
         
-        if self.decimals <= 1:
-            self.maxint = 10
-        elif self.decimals == 2:
-            self.maxint = 100
-        elif self.decimals == 3:
-            self.maxint = 1000
-        elif self.decimals == 4:
-            self.maxint = 10000
+        if maxint is None:
+            if self.decimals <= 1:
+                self.maxint = 10
+            elif self.decimals == 2:
+                self.maxint = 100
+            elif self.decimals == 3:
+                self.maxint = 1000
+            elif self.decimals == 4:
+                self.maxint = 10000
+            else:
+                self.maxint = 100000
         else:
-            self.maxint = 100000
+            self.maxint = maxint
         
         self.postchar = ''
         if self.showpercentage: self.postchar = '%'
