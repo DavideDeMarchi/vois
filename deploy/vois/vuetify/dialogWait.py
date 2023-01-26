@@ -74,7 +74,7 @@ class dialogWait(v.VuetifyTemplate):
        Example of a dialogWait opened during a lenghty operation.
    """
     
-    dialog = traitlets.Bool(True).tag(sync=True)
+    dialog = traitlets.Bool(True).tag(sync=True)  # Modified on 26/01/2023
     text = traitlets.Unicode('').tag(sync=True)
     
     darkmode  = ''
