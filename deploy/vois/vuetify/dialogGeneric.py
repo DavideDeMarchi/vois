@@ -135,14 +135,16 @@ class dialogGeneric():
 
         # OK and Cancel buttons
         if addokcancelbuttons:
-            bok = v.Btn(text=True, children=['OK'])
-            bok.on_event('click', self.__internal_on_ok)
+            self.bok = v.Btn(text=True, children=['OK'])
+            self.bok.on_event('click', self.__internal_on_ok)
 
-            bcancel = v.Btn(text=True, children=['Cancel'])
-            bcancel.on_event('click', self.__internal_on_cancel)
+            self.bcancel = v.Btn(text=True, children=['Cancel'])
+            self.bcancel.on_event('click', self.__internal_on_cancel)
 
-            r = [v.Row(no_gutters=True, justify="end", class_="pa-0 ma-0 mt-4", children=[bok,bcancel])]
+            r = [v.Row(no_gutters=True, justify="end", class_="pa-0 ma-0 mt-4", children=[self.bok,self.bcancel])]
         else:
+            self.bok     = None
+            self.bcancel = None
             r = []
             
         # Toolbar
@@ -191,4 +193,35 @@ class dialogGeneric():
         self.dialog.v_model = False
         if not self.on_cancel is None:
             self.on_cancel()
+
+    # Enable/disable the ok button
+    @property
+    def okdisabled(self):
+        """
+        Get/Set the disabled status of the ok button.
+        
+        Returns
+        --------
+        flag : bool
+            True if the ok button is disabled, False otherwise
+
+        Example
+        -------
+        Programmatically set the disabled status and print it::
+            
+            dlg.okdisabled = True
+            print(dlg.okdisabled)
+        
+        """
+        if self.bok is None:
+            return True
+        else:
+            return self.bok.disabled
+    
+    
+    # Set the disabled status of the ok button
+    @okdisabled.setter
+    def okdisabled(self, flag):
+        if not self.bok is None:
+            self.bok.disabled = bool(flag)
         

@@ -206,6 +206,14 @@ rangeSlider widget
     
 .. image:: figures/line.png
 
+rangeSliderFloat widget
+-----------------------
+
+.. automodule:: rangeSliderFloat
+    :members:
+    
+.. image:: figures/line.png
+
 selectImage widget
 ------------------
 

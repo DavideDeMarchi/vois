@@ -93,6 +93,7 @@ Vuetify package
  queryStrings
  radio
  rangeSlider
+ rangeSliderFloat
  selectImage
  selectMultiple
  selectSingle

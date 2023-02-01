@@ -30,7 +30,7 @@ except:
 
 
 #####################################################################################################################################################
-# floatSlider control
+# sliderFloat control
 #####################################################################################################################################################
 class sliderFloat():
     """
@@ -53,7 +53,7 @@ class sliderFloat():
     sliderwidth : int, optional
         Width in pixels of the slider component of the widget (default is 200)
     onchange : function, optional
-        Python function to call when the changes the value of opacity. The function will receive a single parameter, containing the new value of the opacity in the range from 0.0 to 1.0 (default is None)
+        Python function to call when the changes the value of the slider. The function will receive a single parameter, containing the new value of the slider in the range from minvalue to maxvalue (default is None)
             
     Example
     -------
@@ -69,7 +69,7 @@ class sliderFloat():
             with output:
                 print(value)
 
-        o = sliderFloat.sliderFloat(0.8, text='Fill opacity:', min=0.0, max=1.0, onchange=onchange)
+        o = sliderFloat.sliderFloat(0.8, text='Fill opacity:', minvalue=0.0, maxvalue=1.0, onchange=onchange)
         
         display(o.draw())
         display(output)
@@ -78,7 +78,7 @@ class sliderFloat():
        :scale: 100 %
        :alt: opacity widget
 
-       Example of an slider widget to select a floting point value.
+       Example of an slider widget to select a floating point value.
    """
 
     # Initialization

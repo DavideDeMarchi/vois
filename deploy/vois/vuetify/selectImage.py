@@ -45,7 +45,7 @@ class selectImage(v.VuetifyTemplate):
     outlined : bool, optional
         If True the selection widget will have a border around it (default is True)
     clearable : Bool, optional
-        If True the selection widget will show a -x- buton to clear the selection (default is True)
+        If True the selection widget will show a -x- button to clear the selection (default is True)
     width : str, optional
         Width of the select widget. It can be expressed as pixels (ex: "400px") or percentage (ex: "50%"). Default is "100%"
     dense : Bool, optional

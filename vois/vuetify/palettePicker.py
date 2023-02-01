@@ -177,6 +177,8 @@ class palettePicker():
         Width of the widget in pixels (default is 400)
     height : int, optional
         Height of the widget in pixels (default is 34)
+    clearable : Bool, optional
+        If True the selection widget will show a -x- button to clear the selection (default is True)
     color : str, optional
         Color of the selection widget (default is settings.color_first)
     onchange : function, optional
@@ -294,7 +296,7 @@ class palettePicker():
      """
     
     def __init__(self, family='sequential', label='', interpolate=True, width=400, height=34,
-                 custompalettes=[],
+                 custompalettes=[], clearable=True,
                  color=settings.color_first, onchange=None):
         
         self.family         = family
@@ -303,6 +305,7 @@ class palettePicker():
         self.interpolate    = interpolate
         self.width          = width
         self.height         = height
+        self.clearable      = clearable
         self.color          = color
         self.onchange       = onchange
         self.index          = -1
@@ -312,6 +315,7 @@ class palettePicker():
                                          color=self.color,
                                          label=self.label,
                                          outlined=True, margins="ma-0 mr-2",
+                                         clearable=self.clearable,
                                          onchange=self.__internal_onchange)
         self.updatePalettes(self.family, self.interpolate)
         
