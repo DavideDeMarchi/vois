@@ -71,7 +71,8 @@ class rangeSliderFloat():
             with output:
                 print(value)
 
-        o = rangeSliderFloat.rangeSliderFloat(1.8, 2.5, text='Select Value in [1.0,3.0]:', minvalue=1.0, maxvalue=3.0, onchange=onchange)
+        o = rangeSliderFloat.rangeSliderFloat(1.8, 2.5, text='Select Value in [1.0,3.0]:',
+                                              minvalue=1.0, maxvalue=3.0, onchange=onchange)
         
         display(o.draw())
         display(output)

@@ -89,6 +89,7 @@ Vuetify package
  multiSwitch
  paletteEditor
  palettePicker
+ palettePickerEx
  progress
  queryStrings
  radio

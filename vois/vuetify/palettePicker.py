@@ -293,7 +293,7 @@ class palettePicker():
        :alt: palettePicker full widget
 
        Example of a palette picker that also manages the palette families
-     """
+    """
     
     def __init__(self, family='sequential', label='', interpolate=True, width=400, height=34,
                  custompalettes=[], clearable=True,
