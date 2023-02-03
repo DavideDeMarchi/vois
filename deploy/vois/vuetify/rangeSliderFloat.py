@@ -52,6 +52,10 @@ class rangeSliderFloat():
         If True, the widget will write the current value as a percentage inside the allowed range and will append the % sign to the right of the current value (default is True)
     decimals : int, optional
         Number of decimal digits to use in case showpercentage is False (default is 2)
+    maxint : int, optional
+        Maximum integer number for the underlining integer slider (defines the slider sensitivity). Default value is None, meaning it will be automatically calculated
+    labelwidth : int, optional
+        Width of the label part of the widgets in pixels (default is 0, meaning it is automatically calculated based on the provided label text)
     sliderwidth : int, optional
         Width in pixels of the slider component of the widget (default is 200)
     onchange : function, optional

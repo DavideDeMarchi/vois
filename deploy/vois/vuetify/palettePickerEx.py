@@ -144,3 +144,82 @@ class palettePickerEx():
         self.p.value = value
         if not self.onchange is None:
             self.onchange(self.p.colors, self.interpolate)
+
+            
+            
+    # familyname property
+    @property
+    def familyname(self):
+        """
+        Get/Set name of the selected family.
+        
+        Returns
+        --------
+        name : str
+            Name of the currently selected family
+
+        Example
+        -------
+        Set and then get the current palette family::
+            
+            picker.familyname = 'qualitative'
+            print(picker.familyname)
+        
+        """
+        return self.sel.value
+        
+    
+    # Select one of the families
+    @familyname.setter
+    def familyname(self, name):
+        self.sel.value = name
+
+        
+    # value property
+    @property
+    def value(self):
+        """
+        Get/Set name of the selected palette.
+        
+        Returns
+        --------
+        name : str
+            Name of the currently selected palette
+
+        Example
+        -------
+        Set and then get the current palette name::
+            
+            picker.value = 'Viridis'
+            print(picker.value)
+        
+        """
+        return self.p.value
+        
+    
+    # Select one of the palette given its name
+    @value.setter
+    def value(self, name):
+        self.p.value = name
+            
+            
+    # colors property
+    @property
+    def colors(self):
+        """
+        Get the colors of the selected palette.
+        
+        Returns
+        --------
+        colorlist : list of strings in '#RRGGBB' format
+            List of colors of the selected palette
+
+        Example
+        -------
+        Get the selected palette colors::
+            
+            print(picker.colors)
+        
+        """
+        return self.p.colors
+            
