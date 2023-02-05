@@ -50,6 +50,8 @@ class sortableList:
         If True, a 'plus' button is displayed that allows for adding new items (default is True)
     newOnTop: bool, optional
         If True, the '+' button adds a new item in first position on the items list (default False, new items are added as last in the items list)
+    newButtonOnTop: bool, optional
+        If True, the '+' button is displayed on top of the first item, otherwise it is displayed below the last item (default is False, the '+' button is on the bottom)
     itemNew : function, optional
         Python function called when a new items is added. The function is called with no arguments and it must return the dict initialized with the new item content (default is None). As an alternative, the function can return None, but then the real adding of the new item must be done by directly calling the doAddItem method
     itemContent : function, optional
@@ -227,22 +229,23 @@ class sortableList:
    
     # Initialization
     def __init__(self, items=[], width=400, maxheightlist=600, outlined=True, dark=settings.dark_mode,
-                 allowNew=True, newOnTop=False, itemNew=None, itemContent=None, bottomContent=[],
+                 allowNew=True, newOnTop=False, newButtonOnTop=False, itemNew=None, itemContent=None, bottomContent=[],
                  onchange=None, onmovedown=None, onmoveup=None, onremoving=None, onremoved=None, onadded=None, buttonstooltip=False,
                  tooltipadd='Add new', tooltipdown='Move down', tooltipup='Move up', tooltipremove='Remove',
                  activatable=False, ondeactivated=None, onactivated=None):
         
-        self._items     = items
-        self.width      = width
-        self.outlined   = outlined
-        self.dark       = dark
+        self._items         = items
+        self.width          = width
+        self.outlined       = outlined
+        self.dark           = dark
 
-        self.allowNew    = allowNew
-        self.newOnTop    = newOnTop
-        self.itemNew     = itemNew
-        self.itemContent = itemContent
+        self.allowNew       = allowNew
+        self.newOnTop       = newOnTop
+        self.newButtonOnTop = newButtonOnTop
+        self.itemNew        = itemNew
+        self.itemContent    = itemContent
         
-        self.bottomContent = bottomContent
+        self.bottomContent  = bottomContent
         
         self.onchange       = onchange
         self.buttonstooltip = buttonstooltip
@@ -520,7 +523,10 @@ class sortableList:
     def draw(self):
         """Returns the ipyvuetify object to display (a v.Html object displaying two output widgets)"""
         if self.allowNew:
-            return v.Html(tag='div',children=[widgets.VBox([self.output,self.outputplus])])
+            if self.newButtonOnTop:
+                return v.Html(tag='div',children=[widgets.VBox([self.outputplus,self.output])])
+            else:
+                return v.Html(tag='div',children=[widgets.VBox([self.output,self.outputplus])])
         else:
             return self.output
     
