@@ -228,7 +228,7 @@ class sortableList:
 
    
     # Initialization
-    def __init__(self, items=[], width=400, maxheightlist=600, outlined=True, dark=settings.dark_mode,
+    def __init__(self, items=[], width=400, maxheightlist=10000, outlined=True, dark=settings.dark_mode,
                  allowNew=True, newOnTop=False, newButtonOnTop=False, itemNew=None, itemContent=None, bottomContent=[],
                  onchange=None, onmovedown=None, onmoveup=None, onremoving=None, onremoved=None, onadded=None, buttonstooltip=False,
                  tooltipadd='Add new', tooltipdown='Move down', tooltipup='Move up', tooltipremove='Remove',

@@ -22,6 +22,7 @@ import ipyvuetify as v
 from ipywidgets import widgets, Layout, HTML
 from IPython.display import display
 import pandas as pd
+import copy
 
 try:
     from . import settings
@@ -160,7 +161,8 @@ class CustomTreeview(v.VuetifyTemplate):
     :selected-color="color"
     :open-on-click="open_on_click"
     @input="change_selection"
-    @update:active="activate">
+    @update:active="activate"
+    @update:open="onopening">
     %s
     %s
 </v-treeview>
@@ -240,10 +242,16 @@ class CustomTreeview(v.VuetifyTemplate):
     # Manage the activation (selection) of a node of the tree
     def vue_activate(self, data):
         if len(data) > 0:
+            self.current_active = data[0]
             if not self.on_activated is None:
                 name = self.id2Name(self.items[0], data[0])
                 self.on_activated(name)
 
+    # Called every time a node is opened or closed
+    def vue_onopening(self, data):
+        self.current_open = data
+                
+            
     # Initialization
     def __init__(self,
                  items                       = [],
@@ -288,6 +296,9 @@ class CustomTreeview(v.VuetifyTemplate):
         self.expand_selection_to_parents = expand_selection_to_parents
         self.search                      = search
         self.opened_all                  = opened_all
+        
+        self.current_active = active
+        self.current_open   = []
         
         self.iconsshow = iconsshow
         self.iconscolor = iconscolor
@@ -344,11 +355,17 @@ class treeviewOperations():
         
     """
     
+    # Initialisation
     def __init__(self, treecard):
         
         # Retrieve the underlying instance of CustomTreeview class
         self.treeview = treecard.children[0].children[0]
         
+        self.doindex()
+
+    
+    # calculate indexing of the treeview nodes
+    def doindex(self):
         # Dictionaries to index the three nodes
         # id2fullname    Map nodes id to the fullname                 # key: id           value : fullname of the node
         # fullname2id    Map nodes fullname to the id                 # key: fullname     value : id of the node
@@ -358,27 +375,28 @@ class treeviewOperations():
         self.fullname2id   = {}
         self.id2parentid   = {}
         self.id2childrenid = {}
-
-        def indexItems(node):
-            self.id2fullname[node['id']]       = node['fullname']
-            self.fullname2id[node['fullname']] = node['id']
-            if 'children' in node:
-                self.id2childrenid[node['id']] = []
-                for n in node['children']:
-                    self.id2parentid[n['id']] = node['id']
-                    self.id2childrenid[node['id']].append(n['id'])
-                    indexItems(n)
-
-        # Calculate the indexing
-        indexItems(self.treeview.items[0])
-
+        self.__indexItems(self.treeview.items[0])
+        
+        
+    # Internal recursive function to create the indexing of the treeview nodes
+    def __indexItems(self,node):
+        self.id2fullname[node['id']]       = node['fullname']
+        self.fullname2id[node['fullname']] = node['id']
+        if 'children' in node:
+            self.id2childrenid[node['id']] = []
+            for n in node['children']:
+                self.id2parentid[n['id']] = node['id']
+                self.id2childrenid[node['id']].append(n['id'])
+                self.__indexItems(n)
+        
 
     # Get the fullnames of the opened nodes
     def getOpened(self):
         """
         Returns the list of the fullnames of the opened nodes of the treeview
         """
-        fullnames = [self.id2fullname[x] for x in self.treeview.opened]
+        #fullnames = [self.id2fullname[x] for x in self.treeview.opened]
+        fullnames = [self.id2fullname[x] for x in self.treeview.current_open]
         return fullnames
 
     # Set the nodes opened given a list of fullnames of the nodes
@@ -386,7 +404,7 @@ class treeviewOperations():
         """
         Set the list of opened nodes of the treeview given their fullnames
         """
-        ids = [self.fullname2id[x] for x in fullnames]
+        ids = list(set([self.fullname2id[x] for x in fullnames]))
         self.treeview.opened = ids
     
     # Open all the nodes of the tree
@@ -402,7 +420,7 @@ class treeviewOperations():
         """
         Returns the fullname of the node that is active in the treeview
         """
-        nodeid = self.treeview.active
+        nodeid = self.treeview.current_active
         if not nodeid is None:
             return self.id2fullname[nodeid]
         return None
@@ -415,6 +433,7 @@ class treeviewOperations():
         if fullname in self.fullname2id:
             nodeid = self.fullname2id[fullname]
             self.treeview.active = nodeid
+            self.treeview.current_active = nodeid
             
             # Opens all the parent nodes
             idparents = []
@@ -427,7 +446,9 @@ class treeviewOperations():
                     nodeid = None
             if not 1 in idparents:
                 idparents.append(1)
-            self.treeview.opened = idparents
+            
+            op = set(self.treeview.opened + idparents)
+            self.treeview.opened = list(op)
             
             
     # Given the fullname of a node, returns the fullname of its first child, or None if the node has no children
@@ -447,7 +468,89 @@ class treeviewOperations():
         """
         Search for a text string in the nodes of the tree
         """
-        self.treeview.search = text2search    
+        self.treeview.search = text2search
+
+        
+    # Retrieve the children of a node
+    def getChildren(self, nodefullname):
+        """
+        Returns the list of full names of the children of a node
+        """
+        
+        # Recursive function
+        def __getchildren(node, nodeid):
+            if node['id'] == nodeid:
+                if 'children' in node:
+                    return [x['id'] for x in node['children']]
+
+            if 'children' in node:
+                for n in node['children']:
+                    res = __getchildren(n, nodeid)
+                    if len(res) > 0:
+                        return res
+            return []
+        
+        if nodefullname in self.fullname2id:
+            nodeid = self.fullname2id[nodefullname]
+            res = __getchildren(self.treeview.items[0],nodeid)
+            return [self.id2fullname[x] for x in res]
+        
+        return []
+        
+        
+        
+    # Dynamic setting of children to nodes
+    def setChildren(self, nodefullname, childrenfullnames):
+        """
+        Dynamically change the children of a node
+
+        Example
+        -------
+        Creation and display of a treeview and programmatically add children to nodes::
+        
+            from vois.vuetify import treeview
+            from IPython.display import display
+
+            treecard = treeview.createTreeviewFromList(['A','A.1','A.2','B'],
+                                                       separator='.',
+                                                       rootName='Root',
+                                                       expand_selection_to_parents=False, 
+                                                       color='green',
+                                                       width='500px',
+                                                       height='350px',
+                                                       selectable=False,
+                                                       activatable=True)
+
+            display(treecard)
+            
+            top = treeview.treeviewOperations(treecard)
+            
+            top.setChildren('A.2', ['A.2.1', 'A.2.2'])
+
+        """
+        
+        # Recursive function
+        def __setchildren(node, nodeid, children):
+            if node['id'] == nodeid:
+                node['children'] = children
+
+            if 'children' in node:
+                for n in node['children']:
+                    __setchildren(n, nodeid, children)
+        
+        if nodefullname in self.fullname2id:
+            nodeid = self.fullname2id[nodefullname]
+            nextid = 1 + max(self.id2fullname.keys())
+            children = []
+            for name in childrenfullnames:
+                c = {'id': nextid, 'name': name, 'fullname': name}
+                children.append(c)
+                nextid += 1
+            
+            root = copy.deepcopy(self.treeview.items[0])
+            __setchildren(root, nodeid, children)
+            self.treeview.items = [root]
+            self.doindex()
     
     
 ##################################################################################################################################
