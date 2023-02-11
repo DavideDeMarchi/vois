@@ -17,26 +17,26 @@ See the Licence for the specific language governing permissions and limitations 
 
 This product includes software developed by third parties:
 
-PIL/PILLOW		-------> HPND
-ipyvuetify		-------> MIT
-plotly 			-------> MIT
-pandas 			-------> BSD-3-Clause
-numpy 			-------> BSD-3-Clause
-Ipython			-------> BSD-3-Clause 
-traitlets		-------> BSD-3-Clause
-ipywidgets		-------> BSD-3-Clause
-ipyleaflet		-------> MIT
-GDAL			-------> Apache 2.0
-ipyevents 		-------> BSD-3-Clause
-ipytree		 	-------> MIT
-circlify 		-------> MIT
-requests 		-------> Apache 2.0
-urllib3		 	-------> MIT
-dateutil 		-------> Apache 2.0
-google fonts 	-------> OFL
-networkx 		-------> BSD-3-Clause
-voila			-------> BSD-3-Clause
-Python			-------> PSF
+PIL/PILLOW      -------> HPND
+ipyvuetify      -------> MIT
+plotly          -------> MIT
+pandas          -------> BSD-3-Clause
+numpy           -------> BSD-3-Clause
+Ipython         -------> BSD-3-Clause 
+traitlets       -------> BSD-3-Clause
+ipywidgets      -------> BSD-3-Clause
+ipyleaflet      -------> MIT
+GDAL            -------> Apache 2.0
+ipyevents       -------> BSD-3-Clause
+ipytree         -------> MIT
+circlify        -------> MIT
+requests        -------> Apache 2.0
+urllib3         -------> MIT
+dateutil        -------> Apache 2.0
+google fonts    -------> OFL
+networkx        -------> BSD-3-Clause
+voila           -------> BSD-3-Clause
+Python          -------> PSF
 
 
 A copy of the Apache 2.0 Licence is provided at the end of this document.

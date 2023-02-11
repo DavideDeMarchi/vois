@@ -399,6 +399,7 @@ class treeviewOperations():
         fullnames = [self.id2fullname[x] for x in self.treeview.current_open]
         return fullnames
 
+    
     # Set the nodes opened given a list of fullnames of the nodes
     def setOpened(self, fullnames):
         """
@@ -406,7 +407,26 @@ class treeviewOperations():
         """
         ids = list(set([self.fullname2id[x] for x in fullnames]))
         self.treeview.opened = ids
-    
+
+        
+    # Get the fullnames of the selected nodes
+    def getSelected(self):
+        """
+        Returns the list of the fullnames of the selected nodes of the treeview
+        """
+        fullnames = [self.id2fullname[x] for x in self.treeview.selected]
+        return fullnames
+        
+        
+    # Set the nodes selected given a list of fullnames of the nodes
+    def setSelected(self, fullnames):
+        """
+        Set the list of selected nodes of the treeview given their fullnames
+        """
+        ids = list(set([self.fullname2id[x] for x in fullnames]))
+        self.treeview.selected = ids
+        
+        
     # Open all the nodes of the tree
     def openAll(self):
         """
@@ -415,6 +435,7 @@ class treeviewOperations():
         allfullnames = list(self.fullname2id.keys())
         self.setOpened(allfullnames)
 
+        
     # Get the fullname of the active node
     def getActive(self):
         """
@@ -425,6 +446,7 @@ class treeviewOperations():
             return self.id2fullname[nodeid]
         return None
 
+    
     # Set the active node by passing its fullname
     def setActive(self, fullname):
         """

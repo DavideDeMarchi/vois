@@ -53,6 +53,8 @@ class dialogGeneric():
         If True, the dialog-box is opened in fullscreen mode (default is False)
     persistent : bool, optional
         If True, clicking outside of the dialog or pressing esc key will not deactivate it (default is False)
+    no_click_animation : bool, optional
+        If True, disables the bounce effect when clicking outside of a dialog's content when using the persistent property (default is False)
     addclosebuttons : bool, optional
         If True, the dialog will have a 'close' button in the top toolbar (default is True)
     addokcancelbuttons : bool, optional
@@ -100,7 +102,8 @@ class dialogGeneric():
    """
         
     def __init__(self, title='', text='', dark=settings.dark_mode, show=False, content=[], width=500, fullscreen=False,
-                 persistent=False, addclosebuttons=True, addokcancelbuttons=False, on_ok=None, on_cancel=None, on_close=None,
+                 persistent=False, no_click_animation=False, 
+                 addclosebuttons=True, addokcancelbuttons=False, on_ok=None, on_cancel=None, on_close=None,
                  transition='dialog-fade-transition', output=None, titleheight="dense"):
         
         self.on_ok     = on_ok
@@ -160,7 +163,8 @@ class dialogGeneric():
             clist += [ v.CardText(children=[x], class_="mt-n5") for x in vvv ]
         clist += content + r
         
-        self.dialog = v.Dialog(width='%d' % width, v_model=show, fullscreen=fullscreen, transition=transition, persistent=persistent,
+        self.dialog = v.Dialog(width='%d' % width, v_model=show, fullscreen=fullscreen, transition=transition,
+                               persistent=persistent, no_click_animation=no_click_animation,
                                style_="background-color: transparent;",
                                children=[v.Card(children=clist)])
         
