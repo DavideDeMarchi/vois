@@ -61,6 +61,8 @@ class card(v.VuetifyTemplate):
         Text to display as tooltip of the whole card (default is '')
     titletooltip : str, optional
         Text to display as tooltip of the card title (default is '')
+    focusedopacity : float, optional
+        Opacity of the card background when the card is clicked (has focus). Default is 0.1
 
     Example
     -------
@@ -97,6 +99,7 @@ class card(v.VuetifyTemplate):
     color      = traitlets.Unicode('white').tag(sync=True)
     dark       = traitlets.Bool(False).tag(sync=True)
     ripple     = traitlets.Bool(False).tag(sync=True)       # Ripple flag (if True the click on the card is highlighted)
+    disabled   = traitlets.Bool(False).tag(sync=True)
     elevation  = traitlets.Int(5).tag(sync=True)
     title      = traitlets.Unicode('Title').tag(sync=True)
     subtitle   = traitlets.Unicode('Subtitle').tag(sync=True)
@@ -110,6 +113,7 @@ class card(v.VuetifyTemplate):
     backgroundimageurl = traitlets.Unicode('').tag(sync=True)
     
     subtitlemargins = traitlets.Unicode('ma-0 ml-4 mb-4 mt-0 mr-4').tag(sync=True)
+    focusedopacity  = traitlets.Float(0.1).tag(sync=True)
 
     
     @traitlets.default('template')
@@ -146,6 +150,7 @@ class card(v.VuetifyTemplate):
     raised
     :elevation="elevation"
     :ripple="ripple"
+    :disabled="disabled"
     @click="clicked"
     style="overflow: hidden;"
     :img="backgroundimageurl"
@@ -214,7 +219,15 @@ class card(v.VuetifyTemplate):
     },
   }
 </script>
-''' % (pre,ttip, title_pre,title_att,title_post, post)
+
+<style>
+.vuetify-styles .v-card--link:focus::before {
+  opacity: %f;
+}
+</style>
+
+
+''' % (pre,ttip, title_pre,title_att,title_post, post, self.focusedopacity)
     
     def __init__(self,
                  *args,
@@ -223,6 +236,7 @@ class card(v.VuetifyTemplate):
                  color='white',
                  dark=False,
                  ripple=False,
+                 disabled=False,
                  elevation=3,
                  title='Title',
                  subtitle='Subtitle',
@@ -236,16 +250,19 @@ class card(v.VuetifyTemplate):
                  backgroundimageurl='',
                  tooltip='',
                  titletooltip='',
+                 focusedopacity=0.1,     # Opacity for the background when the card is clicked (has focus)
                  **kwargs):
 
         self.tooltip      = tooltip
         self.titletooltip = titletooltip
+        self.focusedopacity = focusedopacity
 
         self.width     = width
         self.height    = height
         self.color     = color
         self.dark      = dark
         self.ripple    = ripple
+        self.disabled  = disabled
         self.elevation = elevation
         self.title     = title
         self.subtitle  = subtitle
