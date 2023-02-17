@@ -732,7 +732,7 @@ class app():
             if run_in_voila: persistent = True
 
             background = v.Card(children=[outFullscreen])
-            dialog = v.Dialog(v_model=True, fullscreen=True, transition=transition, persistent=persistent, no_click_animation=True, children=[background])
+            dialog = v.Dialog(v_model=True, fullscreen=True, transition=transition, persistent=persistent, no_click_animation=True, children=[background], style_='z-index:20001;')
             display(dialog)
         else:
             display(self.appbar)

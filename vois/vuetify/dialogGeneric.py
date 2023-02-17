@@ -165,7 +165,7 @@ class dialogGeneric():
         
         self.dialog = v.Dialog(width='%d' % width, v_model=show, fullscreen=fullscreen, transition=transition,
                                persistent=persistent, no_click_animation=no_click_animation,
-                               style_="background-color: transparent;",
+                               style_="background-color: transparent; z-index:20001;", 
                                children=[v.Card(children=clist)])
         
         # Display of the dialog

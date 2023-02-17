@@ -91,6 +91,7 @@ class dialogWait(v.VuetifyTemplate):
       hide-overlay
       persistent
       width="300"
+      style='z-index:20001;'
     >
       <v-card
         color="%s"
