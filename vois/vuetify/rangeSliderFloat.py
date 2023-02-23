@@ -24,9 +24,11 @@ import ipyvuetify as v
 try:
     from . import settings
     from . import label
+    from . import tooltip
 except:
     import settings
     import label
+    import tooltip
 
 
 #####################################################################################################################################################
@@ -58,6 +60,10 @@ class rangeSliderFloat():
         Width of the label part of the widgets in pixels (default is 0, meaning it is automatically calculated based on the provided label text)
     sliderwidth : int, optional
         Width in pixels of the slider component of the widget (default is 200)
+    resetbutton: bool, optional
+        If True a reset button is displayed, allowing for resetting the widget to its initial value (default is False)
+    showtooltip: bool, optional
+        If True the up and down buttons will have a tooltip (default is False)
     onchange : function, optional
         Python function to call when the changes the range value of the slider. The function will receive a single parameter, containing the new value of the opacity in the range from 0.0 to 1.0 (default is None)
             
@@ -89,7 +95,8 @@ class rangeSliderFloat():
    """
 
     # Initialization
-    def __init__(self, selectedminvalue, selectedmaxvalue, minvalue=0.0, maxvalue=1.0, text='Select', showpercentage=True, decimals=2, maxint=None, labelwidth=0, sliderwidth=200, onchange=None):
+    def __init__(self, selectedminvalue, selectedmaxvalue, minvalue=0.0, maxvalue=1.0, text='Select', showpercentage=True, decimals=2, maxint=None, 
+                 labelwidth=0, sliderwidth=200, resetbutton=False, showtooltip=False, onchange=None):
         
         self.onchange = onchange
         
@@ -117,9 +124,10 @@ class rangeSliderFloat():
             
         self.labelwidth  = labelwidth
         self.sliderwidth = sliderwidth
+        self.resetbutton = resetbutton
         
-        intvaluemin = self.float2integer(selectedminvalue)
-        intvaluemax = self.float2integer(selectedmaxvalue)
+        self.intvaluemin = self.float2integer(selectedminvalue)
+        self.intvaluemax = self.float2integer(selectedmaxvalue)
         
         #self.label  = label.label(text, textweight=400, margins=0, margintop=4, height=22)
         
@@ -129,7 +137,7 @@ class rangeSliderFloat():
         else:
             style = ''
         self.label = v.Html(tag='div', children=[text], class_='pa-0 ma-0 mt-4', style_=style)
-        self.slider = v.RangeSlider(v_model=[intvaluemin,intvaluemax],
+        self.slider = v.RangeSlider(v_model=[self.intvaluemin,self.intvaluemax],
                                     dense=True, xsmall=True, 
                                     ticks=False, thumb_size=10, dark=settings.dark_mode,
                                     color=settings.color_first, track_color="grey",
@@ -140,27 +148,70 @@ class rangeSliderFloat():
         self.slider.on_event('change', self.onsliderchange)
         
         if self.showpercentage:
-            self.labelvaluemin = v.Html(tag='div', children=[str(intvaluemin) + self.postchar], class_='pa-0 ma-0 mt-4 ml-4')
-            self.labelvaluemax = v.Html(tag='div', children=[str(intvaluemax) + self.postchar], class_='pa-0 ma-0 mt-4')
+            self.labelvaluemin = v.Html(tag='div', children=[str(self.intvaluemin) + self.postchar], class_='pa-0 ma-0 mt-4 ml-4')
+            self.labelvaluemax = v.Html(tag='div', children=[str(self.intvaluemax) + self.postchar], class_='pa-0 ma-0 mt-4')
         else:
             self.labelvaluemin = v.Html(tag='div', children=['{:.{prec}f}'.format(selectedminvalue, prec=self.decimals) + self.postchar], class_='pa-0 ma-0 mt-4 ml-4')
             self.labelvaluemax = v.Html(tag='div', children=['{:.{prec}f}'.format(selectedmaxvalue, prec=self.decimals) + self.postchar], class_='pa-0 ma-0 mt-4')
 
-        self.bupmin = v.Btn(icon=True, small=True, rounded=False, elevation=0, width=15, height=20, class_='pa-0 ma-0', children=[v.Icon(color='grey', children=['mdi-menu-up'])])
-        self.bupmin.on_event('click', self.onupmin)
-        self.cupmin = v.Card(children=[self.bupmin], elevation=0, class_='pa-0 ma-0 mr-1 mt-2', style_="overflow: hidden;")
-        self.bdnmin = v.Btn(icon=True, small=True, rounded=False, elevation=0, width=15, height=20, class_='pa-0 ma-0', children=[v.Icon(color='grey', children=['mdi-menu-down'])])
-        self.bdnmin.on_event('click', self.ondnmin)
-        self.cdnmin = v.Card(children=[self.bdnmin], elevation=0, class_='pa-0 ma-0 mr-1 mt-n1', style_="overflow: hidden;")
-        self.buttonsmin = widgets.VBox([self.cupmin,self.cdnmin])
-        
-        self.bupmax = v.Btn(icon=True, small=True, rounded=False, elevation=0, width=15, height=20, class_='pa-0 ma-0', children=[v.Icon(color='grey', children=['mdi-menu-up'])])
-        self.bupmax.on_event('click', self.onupmax)
-        self.cupmax = v.Card(children=[self.bupmax], elevation=0, class_='pa-0 ma-0 mr-1 mt-2', style_="overflow: hidden;")
-        self.bdnmax = v.Btn(icon=True, small=True, rounded=False, elevation=0, width=15, height=20, class_='pa-0 ma-0', children=[v.Icon(color='grey', children=['mdi-menu-down'])])
-        self.bdnmax.on_event('click', self.ondnmax)
-        self.cdnmax = v.Card(children=[self.bdnmax], elevation=0, class_='pa-0 ma-0 mr-1 mt-n1', style_="overflow: hidden;")
-        self.buttonsmax = widgets.VBox([self.cupmax,self.cdnmax])
+        if self.resetbutton:
+            self.bupmin = v.Btn(icon=True, small=True, rounded=False, elevation=0, width=15, height=20, class_='pa-0 ma-0', children=[v.Icon(color='grey', children=['mdi-menu-right'])])
+            self.bupmin.on_event('click', self.onupmin)
+            self.cupmin = v.Card(children=[self.bupmin], elevation=0, class_='pa-0 ma-0 mr-1 mt-4', style_="overflow: hidden;")
+            if showtooltip: self.cupmin = tooltip.tooltip("Increase min",self.cupmin)
+
+            self.bdnmin = v.Btn(icon=True, small=True, rounded=False, elevation=0, width=15, height=20, class_='pa-0 ma-0', children=[v.Icon(color='grey', children=['mdi-menu-left'])])
+            self.bdnmin.on_event('click', self.ondnmin)
+            self.cdnmin = v.Card(children=[self.bdnmin], elevation=0, class_='pa-0 ma-0 mr-1 mt-4', style_="overflow: hidden;")
+            if showtooltip: self.cdnmin = tooltip.tooltip("Decrease min",self.cdnmin)
+
+            self.bresmin = v.Btn(icon=True, xsmall=True, rounded=False, elevation=0, width=20, height=20, class_='pa-0 ma-0', children=[v.Icon(color='grey', children=['mdi-close'])])
+            self.bresmin.on_event('click', self.onresetmin)
+            self.cresmin = v.Card(children=[self.bresmin], elevation=0, class_='pa-0 ma-0 mr-1 mt-4', style_="overflow: hidden;")
+            if showtooltip: self.cresmin = tooltip.tooltip("Reset min value",self.cresmin)
+                
+            self.buttonsmin = widgets.HBox([self.cdnmin,self.cresmin,self.cupmin])
+
+            self.bupmax = v.Btn(icon=True, small=True, rounded=False, elevation=0, width=15, height=20, class_='pa-0 ma-0', children=[v.Icon(color='grey', children=['mdi-menu-right'])])
+            self.bupmax.on_event('click', self.onupmax)
+            self.cupmax = v.Card(children=[self.bupmax], elevation=0, class_='pa-0 ma-0 mr-1 mt-4', style_="overflow: hidden;")
+            if showtooltip: self.cupmax = tooltip.tooltip("Increase max",self.cupmax)
+
+            self.bdnmax = v.Btn(icon=True, small=True, rounded=False, elevation=0, width=15, height=20, class_='pa-0 ma-0', children=[v.Icon(color='grey', children=['mdi-menu-left'])])
+            self.bdnmax.on_event('click', self.ondnmax)
+            self.cdnmax = v.Card(children=[self.bdnmax], elevation=0, class_='pa-0 ma-0 mr-1 mt-4', style_="overflow: hidden;")
+            if showtooltip: self.cdnmax = tooltip.tooltip("Decrease max",self.cdnmax)
+
+            self.bresmax = v.Btn(icon=True, xsmall=True, rounded=False, elevation=0, width=20, height=20, class_='pa-0 ma-0', children=[v.Icon(color='grey', children=['mdi-close'])])
+            self.bresmax.on_event('click', self.onresetmax)
+            self.cresmax = v.Card(children=[self.bresmax], elevation=0, class_='pa-0 ma-0 mr-1 mt-4', style_="overflow: hidden;")
+            if showtooltip: self.cresmax = tooltip.tooltip("Reset max value",self.cresmax)
+                
+            self.buttonsmax = widgets.HBox([self.cdnmax,self.cresmax,self.cupmax])
+        else:
+            self.bupmin = v.Btn(icon=True, small=True, rounded=False, elevation=0, width=15, height=20, class_='pa-0 ma-0', children=[v.Icon(color='grey', children=['mdi-menu-up'])])
+            self.bupmin.on_event('click', self.onupmin)
+            self.cupmin = v.Card(children=[self.bupmin], elevation=0, class_='pa-0 ma-0 mr-1 mt-2', style_="overflow: hidden;")
+            if showtooltip: self.cupmin = tooltip.tooltip("Increase min",self.cupmin)
+
+            self.bdnmin = v.Btn(icon=True, small=True, rounded=False, elevation=0, width=15, height=20, class_='pa-0 ma-0', children=[v.Icon(color='grey', children=['mdi-menu-down'])])
+            self.bdnmin.on_event('click', self.ondnmin)
+            self.cdnmin = v.Card(children=[self.bdnmin], elevation=0, class_='pa-0 ma-0 mr-1 mt-n1', style_="overflow: hidden;")
+            if showtooltip: self.cdnmin = tooltip.tooltip("Decrease min",self.cdnmin)
+
+            self.buttonsmin = widgets.VBox([self.cupmin,self.cdnmin])
+
+            self.bupmax = v.Btn(icon=True, small=True, rounded=False, elevation=0, width=15, height=20, class_='pa-0 ma-0', children=[v.Icon(color='grey', children=['mdi-menu-up'])])
+            self.bupmax.on_event('click', self.onupmax)
+            self.cupmax = v.Card(children=[self.bupmax], elevation=0, class_='pa-0 ma-0 mr-1 mt-2', style_="overflow: hidden;")
+            if showtooltip: self.cupmax = tooltip.tooltip("Increase max",self.cupmax)
+
+            self.bdnmax = v.Btn(icon=True, small=True, rounded=False, elevation=0, width=15, height=20, class_='pa-0 ma-0', children=[v.Icon(color='grey', children=['mdi-menu-down'])])
+            self.bdnmax.on_event('click', self.ondnmax)
+            self.cdnmax = v.Card(children=[self.bdnmax], elevation=0, class_='pa-0 ma-0 mr-1 mt-n1', style_="overflow: hidden;")
+            if showtooltip: self.cdnmax = tooltip.tooltip("Decrease max",self.cdnmax)
+
+            self.buttonsmax = widgets.VBox([self.cupmax,self.cdnmax])
         
     # Input event on the slider
     def oninput(self, *args):
@@ -212,6 +263,13 @@ class rangeSliderFloat():
             self.slider.v_model = [v1-1, v2]
             self.onsliderchange()
     
+    # Click on the reset min button
+    def onresetmin(self, *args):
+        v1,v2 = self.slider.v_model
+        self.slider.v_model = [self.intvaluemin, v2]
+        self.onsliderchange()
+
+        
     # Click on the up button
     def onupmax(self, *args):
         v1,v2 = self.slider.v_model
@@ -225,7 +283,14 @@ class rangeSliderFloat():
         if v2 > v1:
             self.slider.v_model = [v1, v2-1]
             self.onsliderchange()
-            
+        
+    # Click on the reset max button
+    def onresetmax(self, *args):
+        v1,v2 = self.slider.v_model
+        self.slider.v_model = [v1, self.intvaluemax]
+        self.onsliderchange()
+        
+        
     # Conversion of float value [minvalue,maxvalue] to integer in [0,self.maxint]
     def float2integer(self, value):
         return int(self.maxint * (max(self.minvalue, min(self.maxvalue, float(value))) - self.minvalue) / (self.maxvalue - self.minvalue))

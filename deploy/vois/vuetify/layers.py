@@ -701,7 +701,7 @@ class interaproLayer():
             pathvalue = ''
             if not self.path is None: pathvalue = str(self.path)
 
-            tf_name      = v.TextField(label='Layer name:',         v_model=self.name, color=settings.color_first, class_="pa-0 ma-0 ml-4 mr-4", autofocus=True)
+            tf_name      = v.TextField(label='Layer name:',         v_model=self.name, color=settings.color_first, class_="pa-0 ma-0 mt-7 ml-4 mr-4", autofocus=True)
             btnupload    = v.Btn(icon=True, class_="mr-0", children=[v.Icon(children=['mdi-folder-open-outline'])])
             btndownload  = v.Btn(icon=True, class_="mr-0", children=[v.Icon(children=['mdi-content-save'])])
             btnupload.on_event('click', onupload)

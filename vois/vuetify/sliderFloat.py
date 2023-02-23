@@ -24,9 +24,11 @@ import ipyvuetify as v
 try:
     from . import settings
     from . import label
+    from . import tooltip
 except:
     import settings
     import label
+    import tooltip
 
 
 #####################################################################################################################################################
@@ -56,6 +58,10 @@ class sliderFloat():
         Width of the label part of the widgets in pixels (default is 0, meaning it is automatically calculated based on the provided label text)
     sliderwidth : int, optional
         Width in pixels of the slider component of the widget (default is 200)
+    resetbutton: bool, optional
+        If True a reset button is displayed, allowing for resetting the widget to its initial value (default is False)
+    showtooltip: bool, optional
+        If True the up and down buttons will have a tooltip (default is False)
     onchange : function, optional
         Python function to call when the changes the value of the slider. The function will receive a single parameter, containing the new value of the slider in the range from minvalue to maxvalue (default is None)
             
@@ -86,7 +92,8 @@ class sliderFloat():
    """
 
     # Initialization
-    def __init__(self, value=1.0, minvalue=0.0, maxvalue=1.0, text='Select', showpercentage=True, decimals=2, maxint=None, labelwidth=0, sliderwidth=200, onchange=None):
+    def __init__(self, value=1.0, minvalue=0.0, maxvalue=1.0, text='Select', showpercentage=True, decimals=2, maxint=None, 
+                 labelwidth=0, sliderwidth=200, resetbutton=False, showtooltip=False, onchange=None):
         
         self.onchange = onchange
         
@@ -114,8 +121,9 @@ class sliderFloat():
             
         self.labelwidth  = labelwidth
         self.sliderwidth = sliderwidth
+        self.resetbutton = resetbutton
         
-        intvalue = self.float2integer(value)
+        self.int_initial_value = self.float2integer(value)
         
         #self.label  = label.label(text, textweight=400, margins=0, margintop=4, height=22)
         
@@ -125,7 +133,7 @@ class sliderFloat():
         else:
             style = ''
         self.label = v.Html(tag='div', children=[text], class_='pa-0 ma-0 mt-4', style_=style)
-        self.slider = v.Slider(v_model=intvalue,
+        self.slider = v.Slider(v_model=self.int_initial_value,
                                dense=True, xsmall=True, 
                                ticks=False, thumb_size=10, dark=settings.dark_mode,
                                color=settings.color_first, track_color="grey",
@@ -136,17 +144,39 @@ class sliderFloat():
         self.slider.on_event('change', self.onsliderchange)
         
         if self.showpercentage:
-            self.labelvalue = v.Html(tag='div', children=[str(intvalue) + self.postchar], class_='pa-0 ma-0 mt-4')
+            self.labelvalue = v.Html(tag='div', children=[str(self.int_initial_value) + self.postchar], class_='pa-0 ma-0 mt-4')
         else:
             self.labelvalue = v.Html(tag='div', children=['{:.{prec}f}'.format(value, prec=self.decimals) + self.postchar], class_='pa-0 ma-0 mt-4')
 
-        self.bup = v.Btn(icon=True, small=True, rounded=False, elevation=0, width=15, height=20, class_='pa-0 ma-0', children=[v.Icon(color='grey', children=['mdi-menu-up'])])
-        self.bup.on_event('click', self.onup)
-        self.cup = v.Card(children=[self.bup], elevation=0, class_='pa-0 ma-0 mr-1 mt-2', style_="overflow: hidden;")
-        self.bdn = v.Btn(icon=True, small=True, rounded=False, elevation=0, width=15, height=20, class_='pa-0 ma-0', children=[v.Icon(color='grey', children=['mdi-menu-down'])])
-        self.bdn.on_event('click', self.ondn)
-        self.cdn = v.Card(children=[self.bdn], elevation=0, class_='pa-0 ma-0 mr-1 mt-n1', style_="overflow: hidden;")
-        self.buttons = widgets.VBox([self.cup,self.cdn])
+        if self.resetbutton:
+            self.bup = v.Btn(icon=True, small=True, rounded=False, elevation=0, width=15, height=20, class_='pa-0 ma-0', children=[v.Icon(color='grey', children=['mdi-menu-right'])])
+            self.bup.on_event('click', self.onup)
+            self.cup = v.Card(children=[self.bup], elevation=0, class_='pa-0 ma-0 mr-1 mt-4', style_="overflow: hidden;")
+            if showtooltip: self.cup = tooltip.tooltip("Increase",self.cup)
+
+            self.bdn = v.Btn(icon=True, small=True, rounded=False, elevation=0, width=15, height=20, class_='pa-0 ma-0', children=[v.Icon(color='grey', children=['mdi-menu-left'])])
+            self.bdn.on_event('click', self.ondn)
+            self.cdn = v.Card(children=[self.bdn], elevation=0, class_='pa-0 ma-0 mr-1 mt-4', style_="overflow: hidden;")
+            if showtooltip: self.cdn = tooltip.tooltip("Decrease",self.cdn)
+
+            self.bres = v.Btn(icon=True, xsmall=True, rounded=False, elevation=0, width=20, height=20, class_='pa-0 ma-0', children=[v.Icon(color='grey', children=['mdi-close'])])
+            self.bres.on_event('click', self.onreset)
+            self.cres = v.Card(children=[self.bres], elevation=0, class_='pa-0 ma-0 mr-1 mt-4', style_="overflow: hidden;")
+            if showtooltip: self.cres = tooltip.tooltip("Reset value",self.cres)
+                
+            self.buttons = widgets.HBox([self.cdn,self.cres,self.cup])
+        else:
+            self.bup = v.Btn(icon=True, small=True, rounded=False, elevation=0, width=15, height=20, class_='pa-0 ma-0', children=[v.Icon(color='grey', children=['mdi-menu-up'])])
+            self.bup.on_event('click', self.onup)
+            self.cup = v.Card(children=[self.bup], elevation=0, class_='pa-0 ma-0 mr-1 mt-2', style_="overflow: hidden;")
+            if showtooltip: self.cup = tooltip.tooltip("Increase",self.cup)
+
+            self.bdn = v.Btn(icon=True, small=True, rounded=False, elevation=0, width=15, height=20, class_='pa-0 ma-0', children=[v.Icon(color='grey', children=['mdi-menu-down'])])
+            self.bdn.on_event('click', self.ondn)
+            self.cdn = v.Card(children=[self.bdn], elevation=0, class_='pa-0 ma-0 mr-1 mt-n1', style_="overflow: hidden;")
+            if showtooltip: self.cdn = tooltip.tooltip("Decrease",self.cdn)
+            
+            self.buttons = widgets.VBox([self.cup,self.cdn])
         
         
     # Input event on the slider
@@ -186,6 +216,10 @@ class sliderFloat():
             self.slider.v_model = self.slider.v_model - 1
             self.onsliderchange()
     
+    def onreset(self, *args):
+        self.slider.v_model = self.int_initial_value
+        self.onsliderchange()
+
     # Conversion of float value [minvalue,maxvalue] to integer in [0,self.maxint]
     def float2integer(self, value):
         return int(self.maxint * (max(self.minvalue, min(self.maxvalue, float(value))) - self.minvalue) / (self.maxvalue - self.minvalue))
