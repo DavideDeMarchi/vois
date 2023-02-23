@@ -159,7 +159,7 @@ class sliderFloat():
             self.cdn = v.Card(children=[self.bdn], elevation=0, class_='pa-0 ma-0 mr-1 mt-4', style_="overflow: hidden;")
             if showtooltip: self.cdn = tooltip.tooltip("Decrease",self.cdn)
 
-            self.bres = v.Btn(icon=True, xsmall=True, rounded=False, elevation=0, width=20, height=20, class_='pa-0 ma-0', children=[v.Icon(color='grey', children=['mdi-close'])])
+            self.bres = v.Btn(icon=True, x_small=True, rounded=False, elevation=0, width=15, height=15, class_='pa-0 ma-0', children=[v.Icon(color='grey', children=['mdi-close'])])
             self.bres.on_event('click', self.onreset)
             self.cres = v.Card(children=[self.bres], elevation=0, class_='pa-0 ma-0 mr-1 mt-4', style_="overflow: hidden;")
             if showtooltip: self.cres = tooltip.tooltip("Reset value",self.cres)

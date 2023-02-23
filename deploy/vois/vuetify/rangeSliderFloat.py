@@ -165,7 +165,7 @@ class rangeSliderFloat():
             self.cdnmin = v.Card(children=[self.bdnmin], elevation=0, class_='pa-0 ma-0 mr-1 mt-4', style_="overflow: hidden;")
             if showtooltip: self.cdnmin = tooltip.tooltip("Decrease min",self.cdnmin)
 
-            self.bresmin = v.Btn(icon=True, xsmall=True, rounded=False, elevation=0, width=20, height=20, class_='pa-0 ma-0', children=[v.Icon(color='grey', children=['mdi-close'])])
+            self.bresmin = v.Btn(icon=True, x_small=True, rounded=False, elevation=0, width=15, height=15, class_='pa-0 ma-0', children=[v.Icon(color='grey', children=['mdi-close'])])
             self.bresmin.on_event('click', self.onresetmin)
             self.cresmin = v.Card(children=[self.bresmin], elevation=0, class_='pa-0 ma-0 mr-1 mt-4', style_="overflow: hidden;")
             if showtooltip: self.cresmin = tooltip.tooltip("Reset min value",self.cresmin)
@@ -182,7 +182,7 @@ class rangeSliderFloat():
             self.cdnmax = v.Card(children=[self.bdnmax], elevation=0, class_='pa-0 ma-0 mr-1 mt-4', style_="overflow: hidden;")
             if showtooltip: self.cdnmax = tooltip.tooltip("Decrease max",self.cdnmax)
 
-            self.bresmax = v.Btn(icon=True, xsmall=True, rounded=False, elevation=0, width=20, height=20, class_='pa-0 ma-0', children=[v.Icon(color='grey', children=['mdi-close'])])
+            self.bresmax = v.Btn(icon=True, x_small=True, rounded=False, elevation=0, width=15, height=15, class_='pa-0 ma-0', children=[v.Icon(color='grey', children=['mdi-close'])])
             self.bresmax.on_event('click', self.onresetmax)
             self.cresmax = v.Card(children=[self.bresmax], elevation=0, class_='pa-0 ma-0 mr-1 mt-4', style_="overflow: hidden;")
             if showtooltip: self.cresmax = tooltip.tooltip("Reset max value",self.cresmax)
