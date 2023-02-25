@@ -264,8 +264,8 @@ class sortableList:
         self.onactivated    = onactivated
         self.activeindex    = -1
         
-        self.output     = widgets.Output(layout=Layout(max_height='%dpx'%maxheightlist))
-        self.outputplus = widgets.Output()
+        self.output     = v.Card(flat=True, max_height='%dpx'%maxheightlist, children=[])
+        self.outputplus = v.Card(flat=True, children=[])
 
         self.cards    = []
         self.bdowns   = []
@@ -277,13 +277,12 @@ class sortableList:
         if self.allowNew:
             self.plusbutton = v.Btn(icon=True, dark=self.dark, children=[v.Icon(children=['mdi-plus'])])
             self.plusbutton.on_event('click', self.onadd)
-            with self.outputplus:
-                if self.buttonstooltip:
-                    display(v.Row(no_gutters=True, style_=self.style, justify='space-between',
-                                  children=[tooltip.tooltip(self.tooltipadd, self.plusbutton)] + self.bottomContent))
-                else:
-                    display(v.Row(no_gutters=True, style_=self.style, justify='space-between',
-                                  children=[self.plusbutton] + self.bottomContent))
+            if self.buttonstooltip:
+                self.outputplus.children = [v.Row(no_gutters=True, style_=self.style, justify='space-between',
+                                                  children=[tooltip.tooltip(self.tooltipadd, self.plusbutton)] + self.bottomContent)]
+            else:
+                self.outputplus.children = [v.Row(no_gutters=True, style_=self.style, justify='space-between',
+                                                  children=[self.plusbutton] + self.bottomContent)]
             
 
         # Add all the items
@@ -293,8 +292,7 @@ class sortableList:
         if self.activatable: bottomspace = 'mb-2'
         else:                bottomspace = ''
         self.col = v.Col(class_="pa-0 ma-0 %s"%bottomspace, children=self.cards)
-        with self.output:
-            display(self.col)
+        self.output.children = [self.col]
         
 
     # Click on + button
@@ -331,9 +329,7 @@ class sortableList:
         if self.activatable: bottomspace = 'mb-2'
         else:                bottomspace = ''
         self.col = v.Col(class_="pa-0 ma-0 %s"%bottomspace, children=self.cards)
-        self.output.clear_output(wait=True)
-        with self.output:
-            display(self.col)
+        self.output.children = [self.col]
         if self.onchange:
             self.onchange()
 
@@ -348,7 +344,6 @@ class sortableList:
 
     # Move item down
     def ondown(self, widget, event, data):
-        self.output.clear_output(wait=True)
         index = self.bdowns.index(widget)
         
         wasactive = False
@@ -359,21 +354,21 @@ class sortableList:
         if index+1 == self.activeindex:
             changewithactive = True
             
-        with self.output:
-            a = index
-            b = index + 1
-            self.updateCard(self._items[a], a)
-            self.updateCard(self._items[b], b)
-            self._items[b],   self._items[a]   = self._items[a],   self._items[b]
-            self.cards[b],    self.cards[a]    = self.cards[a],    self.cards[b]
-            self.bdowns[b],   self.bdowns[a]   = self.bdowns[a],   self.bdowns[b]
-            self.bups[b],     self.bups[a]     = self.bups[a],     self.bups[b]
-            self.bremoves[b], self.bremoves[a] = self.bremoves[a], self.bremoves[b]
-            self.update_buttons()
-            if self.activatable: bottomspace = 'mb-2'
-            else:                bottomspace = ''
-            self.col = v.Col(class_="pa-0 ma-0 %s"%bottomspace, children=self.cards)
-            display(self.col)
+        a = index
+        b = index + 1
+        self.updateCard(self._items[a], a)
+        self.updateCard(self._items[b], b)
+        self._items[b],   self._items[a]   = self._items[a],   self._items[b]
+        self.cards[b],    self.cards[a]    = self.cards[a],    self.cards[b]
+        self.bdowns[b],   self.bdowns[a]   = self.bdowns[a],   self.bdowns[b]
+        self.bups[b],     self.bups[a]     = self.bups[a],     self.bups[b]
+        self.bremoves[b], self.bremoves[a] = self.bremoves[a], self.bremoves[b]
+        self.update_buttons()
+        if self.activatable: bottomspace = 'mb-2'
+        else:                bottomspace = ''
+        self.col = v.Col(class_="pa-0 ma-0 %s"%bottomspace, children=self.cards)
+        self.output.children = [self.col]
+        
         if self.onchange:
             self.onchange()
         if self.onmovedown:
@@ -387,7 +382,6 @@ class sortableList:
 
     # Move item up
     def onup(self, widget, event, data):
-        self.output.clear_output(wait=True)
         index = self.bups.index(widget)
         
         wasactive = False
@@ -398,21 +392,21 @@ class sortableList:
         if index-1 == self.activeindex:
             changewithactive = True
             
-        with self.output:
-            a = index - 1
-            b = index
-            self.updateCard(self._items[a], a)
-            self.updateCard(self._items[b], b)
-            self._items[b],   self._items[a]   = self._items[a],   self._items[b]
-            self.cards[b],    self.cards[a]    = self.cards[a],    self.cards[b]
-            self.bdowns[b],   self.bdowns[a]   = self.bdowns[a],   self.bdowns[b]
-            self.bups[b],     self.bups[a]     = self.bups[a],     self.bups[b]
-            self.bremoves[b], self.bremoves[a] = self.bremoves[a], self.bremoves[b]
-            self.update_buttons()
-            if self.activatable: bottomspace = 'mb-2'
-            else:                bottomspace = ''
-            self.col = v.Col(class_="pa-0 ma-0 %s"%bottomspace, children=self.cards)
-            display(self.col)
+        a = index - 1
+        b = index
+        self.updateCard(self._items[a], a)
+        self.updateCard(self._items[b], b)
+        self._items[b],   self._items[a]   = self._items[a],   self._items[b]
+        self.cards[b],    self.cards[a]    = self.cards[a],    self.cards[b]
+        self.bdowns[b],   self.bdowns[a]   = self.bdowns[a],   self.bdowns[b]
+        self.bups[b],     self.bups[a]     = self.bups[a],     self.bups[b]
+        self.bremoves[b], self.bremoves[a] = self.bremoves[a], self.bremoves[b]
+        self.update_buttons()
+        if self.activatable: bottomspace = 'mb-2'
+        else:                bottomspace = ''
+        self.col = v.Col(class_="pa-0 ma-0 %s"%bottomspace, children=self.cards)
+        self.output.children = [self.col]
+        
         if self.onchange:
             self.onchange()
         if self.onmoveup:
@@ -426,7 +420,6 @@ class sortableList:
             
     # Remove item
     def ondel(self, widget, event, data):
-        self.output.clear_output(wait=True)
         index = self.bremoves.index(widget)
         if self.onremoving:
             self.onremoving(index)
@@ -445,8 +438,8 @@ class sortableList:
         del self.bremoves[index]
         self.col.children = self.col.children[:index] + self.col.children[index+1 :]
         self.update_buttons()
-        with self.output:
-            display(self.col)
+        self.output.children = [self.col]
+        
         if self.onchange:
             self.onchange()
         if self.onremoved:
@@ -548,7 +541,6 @@ class sortableList:
     # Set the items
     @items.setter
     def items(self, items):
-        self.output.clear_output(wait=True)
         self._items = items
         
         self.cards    = []
@@ -565,8 +557,7 @@ class sortableList:
         if self.activatable: bottomspace = 'mb-2'
         else:                bottomspace = ''
         self.col = v.Col(class_="pa-0 ma-0 %s"%bottomspace, children=self.cards)
-        with self.output:
-            display(self.col)
+        self.output.children = [self.col]
             
         if self.onchange:
             self.onchange()
