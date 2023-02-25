@@ -63,6 +63,8 @@ class card(v.VuetifyTemplate):
         Text to display as tooltip of the card title (default is '')
     focusedopacity : float, optional
         Opacity of the card background when the card is clicked (has focus). Default is 0.1
+    textcolor : str, optional
+        Color of the text (default is 'black')
 
     Example
     -------
