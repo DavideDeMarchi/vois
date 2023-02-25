@@ -114,6 +114,7 @@ class card(v.VuetifyTemplate):
     
     subtitlemargins = traitlets.Unicode('ma-0 ml-4 mb-4 mt-0 mr-4').tag(sync=True)
     focusedopacity  = traitlets.Float(0.1).tag(sync=True)
+    textcolor       = traitlets.Unicode('black').tag(sync=True)
 
     
     @traitlets.default('template')
@@ -185,11 +186,11 @@ class card(v.VuetifyTemplate):
            {
             switch( this.$vuetify.breakpoint.name )
               {
-               case 'xs': return 'font-size: ' + (0.75*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'sm': return 'font-size: ' + (1.00*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'md': return 'font-size: ' + (1.25*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'lg': return 'font-size: ' + (1.45*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'xl': return 'font-size: ' + (1.60*this.fontsizemultiplier).toFixed(3) + 'em;'
+               case 'xs': return 'color: %s; font-size: ' + (0.75*this.fontsizemultiplier).toFixed(3) + 'em;'
+               case 'sm': return 'color: %s; font-size: ' + (1.00*this.fontsizemultiplier).toFixed(3) + 'em;'
+               case 'md': return 'color: %s; font-size: ' + (1.25*this.fontsizemultiplier).toFixed(3) + 'em;'
+               case 'lg': return 'color: %s; font-size: ' + (1.45*this.fontsizemultiplier).toFixed(3) + 'em;'
+               case 'xl': return 'color: %s; font-size: ' + (1.60*this.fontsizemultiplier).toFixed(3) + 'em;'
               }
            }
          else
@@ -204,11 +205,11 @@ class card(v.VuetifyTemplate):
            {
             switch( this.$vuetify.breakpoint.name )
               {
-               case 'xs': return 'font-size: ' + (0.8*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'sm': return 'font-size: ' + (0.9*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'md': return 'font-size: ' + (1.0*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'lg': return 'font-size: ' + (1.1*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'xl': return 'font-size: ' + (1.2*this.fontsizemultiplier).toFixed(3) + 'em;'
+               case 'xs': return 'color: %s; font-size: ' + (0.8*this.fontsizemultiplier).toFixed(3) + 'em;'
+               case 'sm': return 'color: %s; font-size: ' + (0.9*this.fontsizemultiplier).toFixed(3) + 'em;'
+               case 'md': return 'color: %s; font-size: ' + (1.0*this.fontsizemultiplier).toFixed(3) + 'em;'
+               case 'lg': return 'color: %s; font-size: ' + (1.1*this.fontsizemultiplier).toFixed(3) + 'em;'
+               case 'xl': return 'color: %s; font-size: ' + (1.2*this.fontsizemultiplier).toFixed(3) + 'em;'
               }
            }
          else
@@ -227,7 +228,10 @@ class card(v.VuetifyTemplate):
 </style>
 
 
-''' % (pre,ttip, title_pre,title_att,title_post, post, self.focusedopacity)
+''' % (pre,ttip, title_pre,title_att,title_post, post,
+       self.textcolor,self.textcolor,self.textcolor,self.textcolor,self.textcolor,
+       self.textcolor,self.textcolor,self.textcolor,self.textcolor,self.textcolor,
+       self.focusedopacity)
     
     def __init__(self,
                  *args,
@@ -251,12 +255,14 @@ class card(v.VuetifyTemplate):
                  tooltip='',
                  titletooltip='',
                  focusedopacity=0.1,     # Opacity for the background when the card is clicked (has focus)
+                 textcolor='black',
                  **kwargs):
 
-        self.tooltip      = tooltip
-        self.titletooltip = titletooltip
+        self.tooltip        = tooltip
+        self.titletooltip   = titletooltip
         self.focusedopacity = focusedopacity
-
+        self.textcolor      = textcolor
+ 
         self.width     = width
         self.height    = height
         self.color     = color
