@@ -22,8 +22,10 @@ import ipyvuetify as v
 
 try:
     from . import settings
+    from . import tooltip
 except:
     import settings
+    import tooltip
 
 
 #####################################################################################################################################################
@@ -40,7 +42,9 @@ class tabs:
     labels : list of strings
         Strings to be displayed as text of the options
     contents : list of widgets, optional
-        Widgets to be alternatively displayed when each of the tabs option is selected (for instance could be a list of ipywidgets.Output widgets)
+        Widgets to be alternatively displayed when each of the tabs option is selected (for instance could be a list of ipywidgets.Output widgets). Default is None
+    tooltips : list of strings, optional
+        List of strings to be used as tooltips for the single tabs, in order (default is None)
     color : str, optional
         Color used for the widget (default is the color_first defined in the settings.py module)
     dark : bool, optional
@@ -87,7 +91,7 @@ class tabs:
    """
 
     # Initialization
-    def __init__(self, index, labels, contents=None, color=settings.color_first, dark=settings.dark_mode, onchange=None, row=True):
+    def __init__(self, index, labels, contents=None, tooltips=None, color=settings.color_first, dark=settings.dark_mode, onchange=None, row=True):
         
         self.index    = index
         self.labels   = labels
@@ -97,10 +101,16 @@ class tabs:
         if dark: s = "color: %s;" % settings.textcolor_dark
             
         self.tab_list = []
+        self.tab_list_with_tooltips = []
         i = 0
-        for label in self.labels:
+        for index,label in enumerate(self.labels):
             t = v.Tab(children=[label], style_=s, disabled=False)
             t.on_event('click', self.__internal_onchange)
+            if isinstance(tooltips, list) and len(tooltips) > index:
+                self.tab_list_with_tooltips.append(tooltip.tooltip(tooltips[index],t))
+            else:
+                self.tab_list_with_tooltips.append(t)
+                
             self.tab_list.append(t)
             i += 1
             
@@ -119,7 +129,7 @@ class tabs:
         self.tabswidget = v.Tabs(v_model=self.index, vertical=not row, dense=True, class_='pa-0 ma-0', 
                                  #background_color='white', color=settings.textcolor_notdark,
                                  background_color=backcolor, color=textcolor, 
-                                 children=[slider] + self.tab_list + content_list)
+                                 children=[slider] + self.tab_list_with_tooltips + content_list)
         
    
 
