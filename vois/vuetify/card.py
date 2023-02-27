@@ -65,6 +65,10 @@ class card(v.VuetifyTemplate):
         Opacity of the card background when the card is clicked (has focus). Default is 0.1
     textcolor : str, optional
         Color of the text (default is 'black')
+    titleweight : int, optional
+        Font weight for the title (default is 700)
+    subtitleweight : int, optional
+        Font weight for the subtitle (default is 400)
 
     Example
     -------
@@ -117,6 +121,8 @@ class card(v.VuetifyTemplate):
     subtitlemargins = traitlets.Unicode('ma-0 ml-4 mb-4 mt-0 mr-4').tag(sync=True)
     focusedopacity  = traitlets.Float(0.1).tag(sync=True)
     textcolor       = traitlets.Unicode('black').tag(sync=True)
+    titleweight     = traitlets.Int(700).tag(sync=True)
+    subtitleweight  = traitlets.Int(400).tag(sync=True)
 
     
     @traitlets.default('template')
@@ -188,16 +194,16 @@ class card(v.VuetifyTemplate):
            {
             switch( this.$vuetify.breakpoint.name )
               {
-               case 'xs': return 'color: %s; font-size: ' + (0.75*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'sm': return 'color: %s; font-size: ' + (1.00*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'md': return 'color: %s; font-size: ' + (1.25*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'lg': return 'color: %s; font-size: ' + (1.45*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'xl': return 'color: %s; font-size: ' + (1.60*this.fontsizemultiplier).toFixed(3) + 'em;'
+               case 'xs': return 'color: %s; font-weight: %d; font-size: ' + (0.75*this.fontsizemultiplier).toFixed(3) + 'em;'
+               case 'sm': return 'color: %s; font-weight: %d; font-size: ' + (1.00*this.fontsizemultiplier).toFixed(3) + 'em;'
+               case 'md': return 'color: %s; font-weight: %d; font-size: ' + (1.25*this.fontsizemultiplier).toFixed(3) + 'em;'
+               case 'lg': return 'color: %s; font-weight: %d; font-size: ' + (1.45*this.fontsizemultiplier).toFixed(3) + 'em;'
+               case 'xl': return 'color: %s; font-weight: %d; font-size: ' + (1.60*this.fontsizemultiplier).toFixed(3) + 'em;'
               }
            }
          else
            {
-            return 'font-size: ' + (1.25*this.fontsizemultiplier).toFixed(3) + 'em;'
+            return 'colors: %s; font-weight: %d; font-size: ' + (1.25*this.fontsizemultiplier).toFixed(3) + 'em;'
            }
       },
         
@@ -207,16 +213,16 @@ class card(v.VuetifyTemplate):
            {
             switch( this.$vuetify.breakpoint.name )
               {
-               case 'xs': return 'color: %s; font-size: ' + (0.8*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'sm': return 'color: %s; font-size: ' + (0.9*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'md': return 'color: %s; font-size: ' + (1.0*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'lg': return 'color: %s; font-size: ' + (1.1*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'xl': return 'color: %s; font-size: ' + (1.2*this.fontsizemultiplier).toFixed(3) + 'em;'
+               case 'xs': return 'color: %s; font-weight: %d; font-size: ' + (0.8*this.fontsizemultiplier).toFixed(3) + 'em;'
+               case 'sm': return 'color: %s; font-weight: %d; font-size: ' + (0.9*this.fontsizemultiplier).toFixed(3) + 'em;'
+               case 'md': return 'color: %s; font-weight: %d; font-size: ' + (1.0*this.fontsizemultiplier).toFixed(3) + 'em;'
+               case 'lg': return 'color: %s; font-weight: %d; font-size: ' + (1.1*this.fontsizemultiplier).toFixed(3) + 'em;'
+               case 'xl': return 'color: %s; font-weight: %d; font-size: ' + (1.2*this.fontsizemultiplier).toFixed(3) + 'em;'
               }
            }
          else
            {
-            return 'font-size: ' + (1.0*this.fontsizemultiplier).toFixed(3) + 'em;'
+            return 'color: %s; font-weight: %d; font-size: ' + (1.0*this.fontsizemultiplier).toFixed(3) + 'em;'
            }
         },
     },
@@ -231,8 +237,8 @@ class card(v.VuetifyTemplate):
 
 
 ''' % (pre,ttip, title_pre,title_att,title_post, post,
-       self.textcolor,self.textcolor,self.textcolor,self.textcolor,self.textcolor,
-       self.textcolor,self.textcolor,self.textcolor,self.textcolor,self.textcolor,
+       self.textcolor,self.titleweight,    self.textcolor,self.titleweight,    self.textcolor,self.titleweight,    self.textcolor,self.titleweight,    self.textcolor,self.titleweight,    self.textcolor,self.titleweight, 
+       self.textcolor,self.subtitleweight, self.textcolor,self.subtitleweight, self.textcolor,self.subtitleweight, self.textcolor,self.subtitleweight, self.textcolor,self.subtitleweight, self.textcolor,self.subtitleweight, 
        self.focusedopacity)
     
     def __init__(self,
@@ -258,12 +264,16 @@ class card(v.VuetifyTemplate):
                  titletooltip='',
                  focusedopacity=0.1,     # Opacity for the background when the card is clicked (has focus)
                  textcolor='black',
+                 titleweight=700,
+                 subtitleweight=400,
                  **kwargs):
 
         self.tooltip        = tooltip
         self.titletooltip   = titletooltip
         self.focusedopacity = focusedopacity
         self.textcolor      = textcolor
+        self.titleweight    = titleweight
+        self.subtitleweight = subtitleweight
  
         self.width     = width
         self.height    = height
