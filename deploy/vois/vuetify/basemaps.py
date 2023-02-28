@@ -114,7 +114,7 @@ def buildBdapLayer(name, collectionpath):
                          'url': 'https://jeodpp.jrc.ec.europa.eu/jeodpp-inter-view/?x={x}&y={y}&z={z}&procid=%s'%procid})
     
 
-# Given a int or a string returns a ba1Gemap
+# Given a int or a string returns a basemap
 def preprocessBasemap(bm):
     if type(bm) is int or type(bm) is str:
         if bm == 1 or bm == 'OpenStreetMap.Mapnik':
@@ -499,7 +499,7 @@ def map_clear(m):
     m.layers = (m.layers[1],)
     
     
-# Change the basemap for a map
+# Change the basemap for a map and returns the layer
 def map_setbasemap(m, bm=None):
     if bm is None:
         layer = basemap_to_tiles(emptyBasemap)
@@ -508,6 +508,8 @@ def map_setbasemap(m, bm=None):
         layer = basemapTileLayer(bm)
     newlayers = [layer] + list(m.layers[1:])
     m.layers = tuple(newlayers)
+    
+    return layer
 
     
 #####################################################################################################################################################
@@ -564,6 +566,8 @@ class basemaps():
         self.dark   = dark
         self.width  = width
         self.height = height
+        
+        self.basemap_layer = basemapTileLayer('OpenStreetMap.EC')
     
         self.treecard = treeview.createTreeviewFromList(basemapList(addBDAPbasemaps=addBDAPbasemaps),
                                                         rootName=rootName, separator='.', 
@@ -592,7 +596,7 @@ class basemaps():
         if firstchild:  # if the activated node has children: activate its first child
             self.top.setActive(firstchild)
         else:
-            map_setbasemap(self.m, arg)
+            self.basemap_layer = map_setbasemap(self.m, arg)
 
             
     # Returns the vuetify object to display (the treeview widget)
@@ -600,3 +604,12 @@ class basemaps():
         """Returns the ipyvuetify object to display (the internal v.Card containing the treeview)"""
         return self.treecard
             
+        
+    # current_layer property
+    @property
+    def current_layer(self):
+        """
+        Get the currently select layer (instance of ipyleaflet.leaflet.TileLayer class)
+        """
+        return self.basemap_layer
+        
