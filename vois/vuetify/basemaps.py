@@ -535,7 +535,9 @@ class basemaps():
         If True the treeview will contain also some BDAP layers selectable as basemaps (default is True)
     rootName: str, optional
         Name to use as the root node of the basemaps treeview (default is 'Basemaps')
-
+    onchange : function, optional
+        Python function to call when the user selects a different basemap. The function will receive no parameters. (default is None)
+        
     Example
     -------
     Creation of a basemap selection widget::
@@ -560,12 +562,13 @@ class basemaps():
        Example of a basemaps selection widget
     """
     
-    def __init__(self, m, color=settings.color_first, dark=settings.dark_mode, width=320, height=650, addBDAPbasemaps=True, rootName='Basemaps'):
-        self.m      = m
-        self.color  = color
-        self.dark   = dark
-        self.width  = width
-        self.height = height
+    def __init__(self, m, color=settings.color_first, dark=settings.dark_mode, width=320, height=650, addBDAPbasemaps=True, rootName='Basemaps', onchange=None):
+        self.m        = m
+        self.color    = color
+        self.dark     = dark
+        self.width    = width
+        self.height   = height
+        self.onchange = onchange
         
         self.basemap_layer = basemapTileLayer('OpenStreetMap.EC')
     
@@ -597,6 +600,8 @@ class basemaps():
             self.top.setActive(firstchild)
         else:
             self.basemap_layer = map_setbasemap(self.m, arg)
+            if not self.onchange is None:
+                self.onchange()
 
             
     # Returns the vuetify object to display (the treeview widget)
@@ -609,7 +614,7 @@ class basemaps():
     @property
     def current_layer(self):
         """
-        Get the currently select layer (instance of ipyleaflet.leaflet.TileLayer class)
+        Get the currently select layer (instance of ipyleaflet.leaflet.TileLayer class or ipyleaflet.leaflet.LayerGroup class)
         """
         return self.basemap_layer
         
