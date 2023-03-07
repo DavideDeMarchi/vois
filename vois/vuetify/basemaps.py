@@ -508,7 +508,7 @@ def map_setbasemap(m, bm=None):
         layer = basemapTileLayer(bm)
     newlayers = [layer] + list(m.layers[1:])
     m.layers = tuple(newlayers)
-    
+   
     return layer
 
     

@@ -87,6 +87,7 @@ Vuetify package
  layers
  menu
  multiSwitch
+ page
  paletteEditor
  palettePicker
  palettePickerEx

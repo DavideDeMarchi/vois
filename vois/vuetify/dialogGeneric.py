@@ -41,6 +41,8 @@ class dialogGeneric():
         Title of the dialog-box to be displayed in the top toolbar (default is '')
     text : str, optional
         Text to display on top of the dialog-box body (default is '')
+    color: str, optional
+        Color of the title bar of the dialog (default is settings.color_first)
     dark : bool, optional
         Flag that controls the color of the text in foreground (if True, the text will be displayed in white, elsewhere in black)
     show : bool, optional
@@ -101,7 +103,7 @@ class dialogGeneric():
        Example of a dialogGeneric containing a switch widget.
    """
         
-    def __init__(self, title='', text='', dark=settings.dark_mode, show=False, content=[], width=500, fullscreen=False,
+    def __init__(self, title='', text='', color=settings.color_first, dark=settings.dark_mode, show=False, content=[], width=500, fullscreen=False,
                  persistent=False, no_click_animation=False, 
                  addclosebuttons=True, addokcancelbuttons=False, on_ok=None, on_cancel=None, on_close=None,
                  transition='dialog-fade-transition', output=None, titleheight="dense"):
@@ -154,7 +156,7 @@ class dialogGeneric():
         ttitle  = v.ToolbarTitle(children=[title], style_=styletext)
         spacer  = v.Spacer()
         titems  = v.ToolbarItems(children=[bclose])
-        toolbar = v.Toolbar(height=titleheight, dark=dark, color=settings.color_first, children=[bx,ttitle,spacer,titems])
+        toolbar = v.Toolbar(height=titleheight, dark=dark, color=color, children=[bx,ttitle,spacer,titems])
         
         # Dialog
         clist = [toolbar]

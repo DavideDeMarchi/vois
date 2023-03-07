@@ -158,6 +158,14 @@ multiSwitch widget
 
 .. image:: figures/line.png
 
+page widget
+-----------
+
+.. automodule:: page
+    :members: 
+
+.. image:: figures/line.png
+
 paletteEditor widget
 --------------------
 

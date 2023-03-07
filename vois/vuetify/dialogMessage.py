@@ -49,7 +49,7 @@ class dialogMessage(dialogGeneric.dialogGeneric):
     addclosebuttons : bool, optional
         If True, the dialog will have a 'close' button in the top toolbar (default is True)
     transition : str, optional
-        Transition to use for the dialog display and close (default is 'dialog-fade-transition'. See: https://vuetifyjs.com/en/styles/transitions/ for a list of available transitions (substitute 'v-' with 'dialog-'')
+        Transition to use for the dialog display and close (default is 'dialog-fade-transition'). See: https://vuetifyjs.com/en/styles/transitions/ for a list of available transitions (substitute 'v-' with 'dialog-')
     output : ipywidgets.Output, optional
         Output widget on which the widget has to be displayed
     titleheight : str, optional
