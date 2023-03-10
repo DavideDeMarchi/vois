@@ -142,7 +142,7 @@ Unit tests are done using unittest python test runner. See documentation at http
 
 At the moment only simple tests are implemented in the test.py module (root folder)
 
-To execute the tests, run:
+To execute the tests, please run:
 
 ```
 python test.py
