@@ -96,17 +96,6 @@ classifiers = [  # Optional
   "Programming Language :: Python :: 3 :: Only",
 ]
 
-# This field lists other packages that your project depends on to run.
-# Any package you put here will be installed by pip when your project is
-# installed, so they must be valid existing projects.
-#
-# For an analysis of this field vs pip's requirements files see:
-# https://packaging.python.org/discussions/install-requires-vs-requirements/
-dependencies = [ # Optional
-  "sphinx-copybutton",
-  "ipyvuetify"
-]
-
 # List URLs that are relevant to your project
 #
 # This field corresponds to the "Project-URL" and "Home-Page" metadata fields:
@@ -124,3 +113,20 @@ dependencies = [ # Optional
 
 [tool.setuptools]
 py-modules = ["vois"]
+
+# This field lists other packages that your project depends on to run.
+# Any package you put here will be installed by pip when your project is
+# installed, so they must be valid existing projects.
+#
+# For an analysis of this field vs pip's requirements files see:
+# https://packaging.python.org/discussions/install-requires-vs-requirements/
+dependencies = [ # Optional
+  "sphinx-copybutton",
+  "pandas",
+  "ipyvuetify",
+  "ipytree",
+  "ipyevents",
+  "plotly",
+  "ipyleaflet",
+]
+
