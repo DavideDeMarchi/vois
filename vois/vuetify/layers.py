@@ -21,9 +21,13 @@ import ipyvuetify as v
 from ipywidgets import widgets, Layout
 from IPython.display import display, HTML
 import ipyleaflet
-from jeodpp import inter
 import base64
 import json
+
+try:
+    from jeodpp import inter
+except:
+    pass
 
 try:
     from . import settings

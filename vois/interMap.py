@@ -24,7 +24,10 @@ import math
 from ipywidgets import widgets, Layout
 from ipyleaflet import SearchControl, WidgetControl, LegendControl, ScaleControl, FullScreenControl
 
-from jeodpp import inter, imap
+try:
+    from jeodpp import inter, imap
+except:
+    pass
 
 
 try:
