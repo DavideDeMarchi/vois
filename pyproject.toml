@@ -103,7 +103,8 @@ classifiers = [  # Optional
 # For an analysis of this field vs pip's requirements files see:
 # https://packaging.python.org/discussions/install-requires-vs-requirements/
 dependencies = [ # Optional
-  "sphinx-copybutton"
+  "sphinx-copybutton",
+  "ipyvuetify"
 ]
 
 # List URLs that are relevant to your project
@@ -121,3 +122,5 @@ dependencies = [ # Optional
 "Bug Reports" = "https://github.com/DavideDeMarchi/vois/issues"
 "Source" = "https://github.com/DavideDeMarchi/vois/"
 
+[tool.setuptools]
+py-modules = ["vois"]
