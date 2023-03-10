@@ -96,23 +96,6 @@ classifiers = [  # Optional
   "Programming Language :: Python :: 3 :: Only",
 ]
 
-# List URLs that are relevant to your project
-#
-# This field corresponds to the "Project-URL" and "Home-Page" metadata fields:
-# https://packaging.python.org/specifications/core-metadata/#project-url-multiple-use
-# https://packaging.python.org/specifications/core-metadata/#home-page-optional
-#
-# Examples listed include a pattern for specifying where the package tracks
-# issues, where the source is hosted, where to say thanks to the package
-# maintainers, and where to support the project financially. The key is
-# what's used to render the link text on PyPI.
-[project.urls]  # Optional
-"Homepage" = "https://github.com/DavideDeMarchi/vois"
-"Bug Reports" = "https://github.com/DavideDeMarchi/vois/issues"
-"Source" = "https://github.com/DavideDeMarchi/vois/"
-
-[tool.setuptools]
-py-modules = ["vois"]
 
 # This field lists other packages that your project depends on to run.
 # Any package you put here will be installed by pip when your project is
@@ -130,3 +113,20 @@ dependencies = [ # Optional
   "ipyleaflet",
 ]
 
+# List URLs that are relevant to your project
+#
+# This field corresponds to the "Project-URL" and "Home-Page" metadata fields:
+# https://packaging.python.org/specifications/core-metadata/#project-url-multiple-use
+# https://packaging.python.org/specifications/core-metadata/#home-page-optional
+#
+# Examples listed include a pattern for specifying where the package tracks
+# issues, where the source is hosted, where to say thanks to the package
+# maintainers, and where to support the project financially. The key is
+# what's used to render the link text on PyPI.
+[project.urls]  # Optional
+"Homepage" = "https://github.com/DavideDeMarchi/vois"
+"Bug Reports" = "https://github.com/DavideDeMarchi/vois/issues"
+"Source" = "https://github.com/DavideDeMarchi/vois/"
+
+[tool.setuptools]
+py-modules = ["vois"]
