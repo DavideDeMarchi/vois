@@ -2,7 +2,9 @@
 
 Python library to simplify some common tasks related to the creation of advanced Voilà dashboards inside the JRC Big Data Analytics Platform (BDAP).
 
-The online documentation for vois library is available [here](https://jeodpp.jrc.ec.europa.eu/services/shared/vois/)
+The online documentation for vois library is available [here](https://vois.readthedocs.io/en/latest/1_intro.html)
+
+The PDF documentation for vois library is available [here](https://vois.readthedocs.io/_/downloads/en/latest/pdf/)
 
 The vois library contains:
 
@@ -20,7 +22,7 @@ VOIS library is released under a
 
 ## Examples
 
-The **examples/notebooks** subfolder contains one notebook for each of the source modules of the vois library. All the examples used in the Reference Manual of the online documentation are reported into these notebooks, for instance the examples described [here](https://jeodpp.jrc.ec.europa.eu/services/shared/vois/3.1_referenceGeneral.html#module-colors) can be found in **examples/notebooks/colors.ipynb**
+The **examples/notebooks** subfolder contains one notebook for each of the source modules of the vois library. All the examples used in the Reference Manual of the online documentation are reported into these notebooks, for instance the examples described [here](https://vois.readthedocs.io/en/latest/3.1_referenceGeneral.html#module-colors) can be found in **examples/notebooks/colors.ipynb**
 
 The **examples/EnergyConsumption** subfolder contains a complete step-by-step dashboard that displays EUROSTAT data on Energy Consumption in Europe.
 
@@ -55,7 +57,7 @@ These are the links to all the steps of the example dashboard deployed and publi
 
 ## Dependencies
 
-The vois library is primarily intended to be used inside JEO-lab, the JupyterLab environment of JRC BDAP.
+The vois was originally developed inside JEO-lab, the JupyterLab environment of JRC BDAP.
 
 The main dependencies are:
 
@@ -70,6 +72,7 @@ The **interapro** BDAP library (https://jeodpp.jrc.ec.europa.eu/services/process
 All these dependencies are already installed inside the "Interactive Processing - JupyterLab - Python 3" docker image that is available on JEO-lab (https://jeodpp.jrc.ec.europa.eu/jhub/)
 
 The same docker image is used by the BDAP Voilà servers.
+
 
 ## Install
 
