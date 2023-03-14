@@ -20,7 +20,6 @@ User Guide
    2_tutorial
    3_reference
    4_help
-   5_vaas
    6_license
    7_tables
 
