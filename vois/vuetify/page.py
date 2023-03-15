@@ -60,6 +60,8 @@ class page():
         If True the text on the footer bar will be displayed in white, otherwise in black color (defaul is False)
     logoappurl : str, optional
         String containing the url of the application logo, to be displayed on the left side of the title bar (default is '')
+    logowidth : int, optional
+        Width in pixels of the logo button (default is 40)
     on_logoapp : function, optional
         Python function to call when the user clicks on the pplication logo. The function will receive no parameters (default is None)
     copyrighttext : str, optional
@@ -148,7 +150,7 @@ class page():
         children = []
         
         if not self.logoapp is None:
-            btn_logo = v.Btn(text=True, rounded=False, ripple=False, style_='width: 40px; height: 40px;', class_='pa-0 ma-0 ml-1', children=[self.logoapp])
+            btn_logo = v.Btn(text=True, rounded=False, ripple=False, style_='width: %dpx; height: 40px;'%self.logowidth, class_='pa-0 ma-0 ml-1', children=[self.logoapp])
             btn_logo.on_event('click', self.click_on_logoapp)
             if len(self.appname) > 0:
                 children.append(tooltip.tooltip("Info on %s"%self.appname, btn_logo))
@@ -226,6 +228,7 @@ class page():
                  footercolor=settings.color_second,
                  footerdark=False,
                  logoappurl='',
+                 logowidth=40,
                  on_logoapp=None,
                  copyrighttext='',
                  show_back=True,
@@ -248,6 +251,7 @@ class page():
         
         self.footercolor = footercolor
         self.footerdark  = footerdark
+        self.logowidth   = logowidth
         
         self.copyrighttext = copyrighttext
         self.show_back     = show_back

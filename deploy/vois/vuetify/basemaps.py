@@ -19,7 +19,11 @@
 # limitations under the Licence.
 import ipyleaflet
 from ipyleaflet import basemaps as ipybasemaps, basemap_to_tiles, LayerGroup
-from jeodpp import inter
+
+try:
+    from jeodpp import inter
+except:
+    pass
 
 import traitlets
 
