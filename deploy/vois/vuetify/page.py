@@ -264,7 +264,7 @@ class page():
         self.transition    = transition
         
         if len(logoappurl) > 0:
-            self.logoapp = v.Img(class_='pa-0 ma-0 mr-2', max_width=40, src=logoappurl)
+            self.logoapp = v.Img(class_='pa-0 ma-0 mr-2', max_width=self.logowidth, src=logoappurl)
         else:
             self.logoapp = None
         
