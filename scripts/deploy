@@ -21,29 +21,3 @@ cp ./vois/vuetify/*.py  ./deploy/vois/vuetify/
 
 cp -r ./vois/data/ ./deploy/vois/
 cp -r ./vois/vuetify/extra ./deploy/vois/vuetify/
-
-exit
-
-echo Copying ./vois to ../voila-training-june-2022 ...
-rm -rf ../voila-training-june-2022/vois/src/*.py
-rm -rf ../voila-training-june-2022/vois/src/vuetify/*.py
-rm -rf ../voila-training-june-2022/vois/src/vuetify/extra/*
-
-cp ./vois/vuetify/extra/* ../voila-training-june-2022/vois/src/vuetify/extra/
-cp ./vois/vuetify/*.py    ../voila-training-june-2022/vois/src/vuetify/
-cp ./vois/*.py            ../voila-training-june-2022/vois/src/
-
-cp ./vois/JEOlab/* ../voila-training-june-2022/vois/notebooks/JEOlab/
-cp ./vois/data/*   ../voila-training-june-2022/vois/notebooks/data/
-
-rm -f ../voila-training-june-2022/vois/notebooks/vuetify/*.ipynb
-rm -f ../voila-training-june-2022/vois/notebooks/*.ipynb
-cp ./examples/notebooks/*.ipynb          ../voila-training-june-2022/vois/notebooks/
-cp ./examples/notebooks/vuetify/*.ipynb  ../voila-training-june-2022/vois/notebooks/vuetify/
-
-rm -rf ../voila-training-june-2022/examples/EnergyConsumption/
-cp -r ./examples/EnergyConsumption/  ../voila-training-june-2022/examples/
-
-rm -rf ../voila-training-june-2022/training/
-cp -r ./training/  ../voila-training-june-2022/training/
-
