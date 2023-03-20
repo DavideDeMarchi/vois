@@ -107,14 +107,6 @@ cd docs
 make html
 ```
 
-After compilation, in order to put the documentation in production, open a JEO-desk terminal and execute these commands:
-
-
-```
-cd docs
-cp -r _build/html/* /mnt/cidstorage/cidweb/www/services/shared/vois/
-```
-
 
 The documentation is generated in html format in `_build/html` and can be read with your browser (open `index.html`).
 
