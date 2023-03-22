@@ -225,10 +225,12 @@ class CustomTreeview(v.VuetifyTemplate):
     # Updates self.selectednames with the selected nodes
     def updateSelectedNames(self):
         if self.expand_selection_to_parents:
-            self.expandSelectionToParents(self.items[0])
+            for i in self.items:
+                self.expandSelectionToParents(i)
         self.selected.sort()
         self.selectednames = set()
-        self.id2Names_selected(self.items[0],self.selected)
+        for i in self.items:
+            self.id2Names_selected(i,self.selected)
         self.selectednames = sorted(list(self.selectednames))
     
     # Manage event "input": when a checkbox of the tree is clicked
@@ -375,7 +377,8 @@ class treeviewOperations():
         self.fullname2id   = {}
         self.id2parentid   = {}
         self.id2childrenid = {}
-        self.__indexItems(self.treeview.items[0])
+        for i in self.treeview.items:
+            self.__indexItems(i)
         
         
     # Internal recursive function to create the indexing of the treeview nodes
@@ -808,6 +811,140 @@ def createTreeviewFromList(nameslist=[],
                           color=color, selectable=selectable, activatable=activatable, active=activeid, open_on_click=open_on_click,
                           tooltips=tooltips, tooltips_chars=tooltips_chars,
                           iconsshow=iconsshow, iconscolor=iconscolor, icons_folder_opened=icons_folder_opened, icons_folder_closed=icons_folder_closed)
+    treehtml = v.Html(tag='div', height=height, children=[tree], style_='overflow: hidden;')
+    treecard = v.Card(width=width, height=height, elevation=elevation, children=[treehtml],
+                      dark=dark, style_='overflow-x: visible;')
+    
+    return treecard
+
+
+
+
+##################################################################################################################################
+# Create a flat ipyvuetify Treeview from a list of names
+# Returns an ipyvuetify widget containing the tree
+# Example:
+# createFlatTreeview(['A','B','C','D'])
+##################################################################################################################################
+def createFlatTreeview(nameslist=[],
+                       select_all=True,
+                       on_change=None,
+                       on_activated=None,
+                       displayfullname=True,
+                       width='200px', height='500px',
+                       elevation=0,
+                       color=settings.color_first,
+                       dark=settings.dark_mode,
+                       transition=False,
+                       selectable=True,
+                       activatable=False,
+                       active=None,
+                       selected=[],
+                       disabled=[],
+                       iconsshow=False,
+                       iconscolor=settings.color_first,
+                       iconsDict=None,
+                       tooltips=False,
+                       tooltips_chars=20):
+    """
+    Create a flat treeview form a list of strings
+
+    Parameters
+    ----------
+    nameslist : list, optional
+        List of strings that contain a hierarchical structure, considering the separator character (default is [])
+    select_all : bool, optional
+        Flag to control the initial selection of all the nodes of the tree (default is True)
+    on_change : function, optional
+        Python function to call when the selected nodes change caused by user clicking in one of the checkboxes (default is None)
+    on_activated : function, optional
+        Python function to call when the active item changes (user selecting a node) (default is None)
+    displayfullname : bool, optional
+        If True the nodes will display the full names, id False only the last part splitted by the separator (default is True)
+    width : str, optional
+        Width of the treeview widget (default is '200px')
+    height : str, optional
+        Height of the treeview widget (default is '500px')
+    elevation : int, optional
+        Elevation to assign to the widget (default is 0)
+    color : str, optional
+        Color to be used as main color of the Treeview widget (default is settings.color_first)
+    dark : bool, optional
+        If True, the treeview widget will have a dark background (default is settings.dark_mode)
+    transition : bool, optional
+        If True applies a transition when nodes are opened and closed (default is False)
+    selectable : bool, optional
+        If True the nodes of the tree have a checkbox to select them (default is True)
+    activatable : bool, optional
+        If True, one of the nodes of the tree can be activated (default is False)
+    active : str, optional
+        Name of the node to activate on start (default is None)
+    selected : list of str, optional
+        List of fullnames of the nodes to select at start (default is []).
+    disabled : list of str, optional
+        List of fullnames of the nodes to display as disabled in the tree (default is [])
+    iconsshow : bool, optional
+        If True, an icon is added to each node of the tree (default is False)
+    iconscolor : str, optional
+        Color of the icons (default is settings.color_first)
+    iconsDict: dict, optional
+        Dictionary to apply icons to the fullnames of the items, if iconsshow is True (default is None)
+    tooltips : bool, optional
+        If True the nodes will show the tooltip (default is False)
+    tooltips_chars : int, optional
+        Minimum lenght of the node label to show the tooltip (default is 20)
+        
+    Returns
+    -------
+    v.Card: ipyvuetify Card widget
+        An ipyvuetify v.Card widget having a v.Html as its only child. The v.Html has a treeview.CustomTreeview widget as its only child
+
+    Example
+    -------
+    Creation and display of a treeview::
+    
+        from vois.vuetify import treeview
+        from IPython.display import display
+        
+        treecard = treeview.createFlatTreeview(['A','B','C','D','E'], color='green', height='150px')
+        display(treecard)
+
+    .. figure:: figures/treeview4.png
+       :scale: 100 %
+       :alt: flat treeview widget
+
+       Flat treeview widget created from a list of strings.
+    """
+    
+    
+    nextid = 1
+    roots = []
+    names2id = {}
+    for name in nameslist:
+        elem = {'id': nextid, 'name': name, 'fullname': name}
+        if name in disabled: elem['disabled'] = True
+        if not iconsDict is None:
+            if name in iconsDict:
+                elem['icon'] = iconsDict[name]
+        roots.append(elem)
+        names2id[name] = nextid
+        nextid += 1
+
+    selectedids = []
+    if select_all: selectedids = [(x+1) for x in range(nextid)]
+    else:          selectedids = [names2id[x] for x in selected if x in names2id]
+    
+    # Convert active name to id
+    if not active is None:
+        activeid = names2id[active]
+    else:
+        activeid = None
+    
+    tree = CustomTreeview(items=roots, selected=selectedids, on_change=on_change, on_activated=on_activated, 
+                          expand_selection_to_parents=False, dark=dark, transition=transition, 
+                          color=color, selectable=selectable, activatable=activatable, active=activeid, 
+                          tooltips=tooltips, tooltips_chars=tooltips_chars,
+                          iconsshow=iconsshow, iconscolor=iconscolor)
     treehtml = v.Html(tag='div', height=height, children=[tree], style_='overflow: hidden;')
     treecard = v.Card(width=width, height=height, elevation=elevation, children=[treehtml],
                       dark=dark, style_='overflow-x: visible;')
