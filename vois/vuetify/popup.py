@@ -53,6 +53,10 @@ class popup:
         Color used for the button (default is the color_first defined in the settings.py module)
     rounded : bool, optional
         If True the button will be rounded (default is the button_rounded defined in the settings.py module)
+    outlined : bool, optional
+        If True the button will be outlined (default is True)
+    text : bool, optional
+        If True the button will display only the text and/or the icon, with no background (default is False)
     popupwidth : int, optional
         Width of the popup window in pixels (default is 160). The popup cannot have a width smaller than the width of the button
     popupheight : int, optional
@@ -97,6 +101,8 @@ class popup:
                  icon=None,
                  color=settings.color_first,
                  rounded=settings.button_rounded,
+                 outlined=True,
+                 text=False,
                  popupwidth=160,
                  popupheight=250):
 
@@ -107,12 +113,17 @@ class popup:
         card = v.Card(width='%dpx'%popupwidth, height='%dpx'%popupheight, elevation=1,
                       children=[widget], style_='overflow: auto;')
         
-        children = [buttontext]
-        if not icon is None:
-            children.append(v.Icon(small=True, children=[icon], class_='pa-0 ma-0 ml-2'))
+        children = []
+        leftspace = 0
+        if len(buttontext) > 0:
+            children.append(buttontext)
+            leftspace = 2
             
-        self.btn = v.Btn(v_on='menuData.on', color=color, fab=False, dark=True, depressed=True,
-                         disabled=False, width=buttonwidth, buttonheight=40, rounded=rounded, outlined=True,
+        if not icon is None:
+            children.append(v.Icon(small=True, children=[icon], class_='pa-0 ma-0 ml-%d'%leftspace))
+            
+        self.btn = v.Btn(v_on='menuData.on', color=color, fab=False, dark=True, depressed=True, text=text,
+                         disabled=False, width=buttonwidth, buttonheight=40, rounded=rounded, outlined=outlined,
                          style_='font-family: %s; font-weight: %d; text-transform: none' % (fontsettings.font_name, 450),
                          children=children)
 
