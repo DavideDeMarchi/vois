@@ -91,6 +91,7 @@ Vuetify package
  paletteEditor
  palettePicker
  palettePickerEx
+ popup
  progress
  queryStrings
  radio

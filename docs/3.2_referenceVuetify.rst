@@ -190,6 +190,14 @@ palettePickerEx widget
 
 .. image:: figures/line.png
 
+popup widget
+------------
+
+.. automodule:: popup
+    :members:
+
+.. image:: figures/line.png
+
 progress widget
 ---------------
 
