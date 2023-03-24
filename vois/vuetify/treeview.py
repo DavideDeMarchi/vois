@@ -237,7 +237,7 @@ class CustomTreeview(v.VuetifyTemplate):
     def vue_change_selection(self, data):
         #print(data)
         self.selected = data
-        if not self.on_change is None:
+        if self.selectable and not self.on_change is None:
             self.updateSelectedNames()
             self.on_change(self.selectednames)
             
@@ -245,9 +245,16 @@ class CustomTreeview(v.VuetifyTemplate):
     def vue_activate(self, data):
         if len(data) > 0:
             self.current_active = data[0]
-            if not self.on_activated is None:
-                name = self.id2Name(self.items[0], data[0])
-                self.on_activated(name)
+            if self.activatable and not self.on_activated is None:
+                for i in self.items:
+                    name = self.id2Name(i,data[0])
+                    if not name is None:
+                        self.on_activated(name)
+                        break
+        else:
+            self.current_active = None
+            if self.activatable and not self.on_activated is None:
+                self.on_activated(None)
 
     # Called every time a node is opened or closed
     def vue_onopening(self, data):
