@@ -126,8 +126,12 @@ dependencies = [ # Optional
 # what's used to render the link text on PyPI.
 [project.urls]  # Optional
 "Homepage" = "https://github.com/DavideDeMarchi/vois"
+homepage = "https://github.com/DavideDeMarchi/vois"
 "Bug Reports" = "https://github.com/DavideDeMarchi/vois/issues"
+documentation = "https://vois.readthedocs.io/en/latest/"
 "Source" = "https://github.com/DavideDeMarchi/vois/"
+Source = "https://github.com/DavideDeMarchi/vois/"
+repository = "https://github.com/DavideDeMarchi/vois/"
 
 [tool.setuptools]
 py-modules = ["vois"]
