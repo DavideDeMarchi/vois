@@ -933,8 +933,8 @@ def AnimatedPieChart(values=[10.0, 25.0, 34.0, 24.0, 23.0], colors=['#2d82c2', '
             px = xp - cx
             py = cy - yp
             
-            with out:
-                print(x,y, xp,yp )
+            #with out:
+            #    print(x,y, xp,yp )
                 
             clickdist,clickangle = cart2polar(px,py)
             if clickdist >= rmin and clickdist <= radius:
