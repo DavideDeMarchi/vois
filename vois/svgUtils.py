@@ -295,7 +295,8 @@ def graduatedLegend(df,                          # Pandas dataframe indexed on c
     x2 = x1 + w
     wlineette = width // 20
     
-    y1 = height // 18
+    #y1 = height // 18
+    y1 = 2*fontsize
     h = height - int(1.5*y1)
     if len(legendunits) > 0:
         h -= y1//2
