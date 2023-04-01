@@ -61,6 +61,12 @@ class popup:
         Width of the popup window in pixels (default is 160). The popup cannot have a width smaller than the width of the button
     popupheight : int, optional
         Height of the popup window in pixels (default is 250)
+    open_on_hover : bool, optional
+        If True the popup opens/closes when hovering the button, otherwise it opens/closes on click on the button (default is True)
+    close_on_click : bool, optional
+        Designates if popup should close on outside click (default is True)
+    close_on_content_click : bool, optional
+        Designates if popup should close when its content is clicked  (default is True)
 
     Note
     ----
@@ -104,7 +110,10 @@ class popup:
                  outlined=True,
                  text=False,
                  popupwidth=160,
-                 popupheight=250):
+                 popupheight=250,
+                 open_on_hover=True,
+                 close_on_click=True,
+                 close_on_content_click=True):
 
         # The popup cannot have a width smaller than the width of the button
         if popupwidth < buttonwidth: popupwidth = buttonwidth
@@ -127,7 +136,7 @@ class popup:
                          style_='font-family: %s; font-weight: %d; text-transform: none' % (fontsettings.font_name, 450),
                          children=children)
 
-        self.menu = v.Menu(offset_y=True, open_on_hover=True, dense=True,
+        self.menu = v.Menu(offset_y=True, open_on_hover=open_on_hover, dense=True, close_on_click=close_on_click, close_on_content_click=close_on_content_click,
                            v_slots=[{'name': 'activator', 'variable': 'menuData', 'children': self.btn, }],
                            children=[card])
     
