@@ -132,7 +132,7 @@ class popup:
             children.append(v.Icon(small=True, children=[icon], class_='pa-0 ma-0 ml-%d'%leftspace))
             
         self.btn = v.Btn(v_on='menuData.on', color=color, fab=False, dark=True, depressed=True, text=text,
-                         disabled=False, width=buttonwidth, buttonheight=40, rounded=rounded, outlined=outlined,
+                         disabled=False, width=buttonwidth, buttonheight=buttonheight, rounded=rounded, outlined=outlined,
                          style_='font-family: %s; font-weight: %d; text-transform: none' % (fontsettings.font_name, 450),
                          children=children)
 
