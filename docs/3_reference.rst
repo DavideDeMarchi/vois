@@ -85,6 +85,7 @@ Vuetify package
  footer
  label
  layers
+ mainPage
  menu
  multiSwitch
  page

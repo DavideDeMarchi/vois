@@ -142,6 +142,14 @@ layers widget
 
 .. image:: figures/line.png
 
+mainPage widget
+---------------
+
+.. automodule:: mainPage
+    :members:
+
+.. image:: figures/line.png
+
 menu widget
 -----------
 
