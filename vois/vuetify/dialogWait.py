@@ -50,6 +50,9 @@ class dialogWait(v.VuetifyTemplate):
     ----------
     text : str, optional
         Text to display on top of the dialog-box body (default is '')
+    indeterminate : bool, optional
+        If True the progress bar will constantly animate (to be used when completion progress is unknown). Default is True.
+        If set to False, setting the value property of the dialog (e.g.: dlg.value = 30) to the percentage will change the progress bar.
     output : ipywidgets.Output, optional
         Output widget on which the widget has to be displayed
             
@@ -74,16 +77,20 @@ class dialogWait(v.VuetifyTemplate):
        Example of a dialogWait opened during a lenghty operation.
    """
     
-    dialog = traitlets.Bool(True).tag(sync=True)  # Modified on 26/01/2023
-    text = traitlets.Unicode('').tag(sync=True)
+    dialog        = traitlets.Bool(True).tag(sync=True)
+    text          = traitlets.Unicode('').tag(sync=True)
+    indeterminate = traitlets.Bool(True).tag(sync=True)
+    value         = traitlets.Int(40).tag(sync=True)
     
-    darkmode  = ''
-    linecolor = settings.textcolor_notdark
-    if settings.dark_mode:
-        darkmode  = 'dark'
-        linecolor = settings.textcolor_dark
+    @traitlets.default('template')
+    def _template(self):
+        darkmode  = ''
+        linecolor = settings.textcolor_notdark
+        if settings.dark_mode:
+            darkmode  = 'dark'
+            linecolor = settings.textcolor_dark
     
-    template = traitlets.Unicode('''
+        return '''
 <template>
   <div class="text-center">
     <v-dialog
@@ -100,7 +107,8 @@ class dialogWait(v.VuetifyTemplate):
         <v-card-text>
           <br>{{ text }}
           <v-progress-linear
-            indeterminate
+            :indeterminate="indeterminate"
+            :value="value"
             color="%s"
             class="mb-0 mt-2"
           ></v-progress-linear>
@@ -108,16 +116,21 @@ class dialogWait(v.VuetifyTemplate):
       </v-card>
     </v-dialog>
   </div>
-</template>''' % (settings.color_first, darkmode, linecolor) ).tag(sync=True)
+</template>''' % (settings.color_first, darkmode, linecolor)
     
     
-    def __init__(self, output=None, text='Please wait...', *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, output=None, text='Please wait...', indeterminate=True, *args, **kwargs):
+        
         self.text = text
+        self.indeterminate = indeterminate
+        self.value = 0
+        super().__init__(*args, **kwargs)
+        
         if not output is None:
             with output:
                 display(self)
        
+    
     def close(self):
         """Close the dialogWait."""
         self.dialog = False
