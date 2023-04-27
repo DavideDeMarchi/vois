@@ -57,8 +57,12 @@ class palettePickerEx():
     ----------
     family : str, optional
         Family of the palette, one of these values: ['carto', 'cmocean', 'cyclical', 'diverging', 'plotlyjs', 'qualitative', 'sequential', 'custom'] (default is 'sequential')
+    value : str, optional
+        Name of the initially selected palette (default is 'Viridis')
     interpolate : bool, optional
         If True the colors are displayed as interpolated (default is True)
+    show_interpolate_switch : bool, optional
+        If True an interpolate switch is shown to enable or disable the interpolated display of the selected palette (default is True)
     width : int, optional
         Width of the widget in pixels (default is 400)
     onchange : function, optional
@@ -91,25 +95,30 @@ class palettePickerEx():
     """
     
     # Initialization
-    def __init__(self, family='sequential', interpolate=True, onchange=None, width=400):
+    def __init__(self, family='sequential', value='Viridis', interpolate=True, show_interpolate_switch=True, onchange=None, width=400):
         self.family      = family
         self.interpolate = interpolate
         self.onchange    = onchange
         self.width       = width
+        
+        self.show_interpolate_switch = show_interpolate_switch
 
         self.p = None
         self.sel = selectSingle.selectSingle('Family:', families, selection=family, width=200, onchange=self.onchangeFamily, marginy=1, clearable=False)
         self.sw  = switch.switch(self.interpolate, "Interpolate", onchange=self.onchangeInterpolate)
 
         self.p = palettePicker.palettePicker(family=self.family, custompalettes=custompalettes, label='Palette:', width=self.width, height=26, onchange=self.onchangePalette)
-        self.p.value = 'Viridis'
+        self.p.value = value
 
         self.spacer = v.Html(tag='div',children=[' '], style_='width: 10px;')
 
     
     # Draw the widget
     def draw(self):
-        r = widgets.HBox([self.sel.draw(), self.spacer, self.sw.draw()])
+        if self.show_interpolate_switch:
+            r = widgets.HBox([self.sel.draw(), self.spacer, self.sw.draw()])
+        else:
+            r = self.sel.draw()
         return widgets.VBox([r, self.p.draw()])
 
 
