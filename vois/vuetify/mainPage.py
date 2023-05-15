@@ -337,7 +337,7 @@ class mainPage():
                     overflow: hidden;
                 }
                 .responsive3 {
-                    width: 22vh;
+                    width: 14vw;
                     vertical-align: middle;
                     height: auto;
                 }
