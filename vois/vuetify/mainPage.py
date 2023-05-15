@@ -81,7 +81,7 @@ class mainPage():
     buttonbox_toppercent : float, optional
         Top position of the box containing the buttons, in percentage of the screen height, measured from the top of the page. Default is 43.0.
     creditbox_widthpercent : float, optional
-        Width of the box containing the credits, in percentage of the screen width. Default is 26.0.
+        Width of the box containing the credits, in percentage of the screen width. Default is 80.0.
     creditbox_heightpercent : float, optional
         Height of the box containing the credits, in percentage of the screen height. Default is 17.0.
     creditbox_toppercent : float, optional
@@ -162,7 +162,7 @@ class mainPage():
                  buttonbox_widthpercent=80.0,
                  buttonbox_heightpercent=50.0,
                  buttonbox_toppercent=43.0,
-                 creditbox_widthpercent=26.0,
+                 creditbox_widthpercent=80.0,
                  creditbox_heightpercent=17.0,
                  creditbox_toppercent=80.0,
                  creditbox_opacity=0.6,
