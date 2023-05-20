@@ -342,6 +342,14 @@ tabs widget
 
 .. image:: figures/line.png
 
+textlist widget
+---------------
+
+.. automodule:: textlist
+    :members: 
+
+.. image:: figures/line.png
+
 title bar
 ---------
 

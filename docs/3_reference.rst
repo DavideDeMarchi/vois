@@ -110,6 +110,7 @@ Vuetify package
  svgsGrid
  switch
  tabs
+ textlist
  title
  toggle
  tooltip
