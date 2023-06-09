@@ -1,0 +1,16 @@
+# MANIFEST.in
+
+include vois/*.py
+include vois/*.ipynb
+include vois/vuetify/*.py
+include vois/vuetify/*.ipynb
+include vois/vuetify/extra/*
+include vois/JEOlab/*
+include vois/data/*
+include vois/examples/notebooks/*.ipynb
+include vois/examples/notebooks/vuetify/*.ipynb
+include vois/examples/notebooks/JEOlab/*
+include vois/examples/notebooks/data/*
+include vois/examples/EnergyConsumption/*
+include vois/examples/EnergyConsumption/JEOlab/*
+include vois/examples/EnergyConsumption/data/*
