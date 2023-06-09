@@ -1,13 +1,13 @@
 # MANIFEST.in
 
-include vois/*.py
-include vois/vuetify/*.py
-include vois/vuetify/extra/*.py
-include vois/vuetify/extra/*.vue
+include src/*.py
+include src/vuetify/*.py
+include src/vuetify/extra/*.py
+include src/vuetify/extra/*.vue
 
-recursive-exclude vois *.ipynb
-recursive-exclude vois *.xml
-recursive-exclude vois *.geojson
+recursive-exclude src *.ipynb
+recursive-exclude src *.xml
+recursive-exclude src *.geojson
 
 prune __pycache__
 prune */__pycache__ 
