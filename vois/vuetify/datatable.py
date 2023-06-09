@@ -235,7 +235,7 @@ class datatable(v.VuetifyTemplate):
             if col in unsortable_columns: 
                 sortable = False
                 
-            h = {"text": col.upper(), "value": col, "sortable": sortable}
+            h = {"text": str(col).upper(), "value": col, "sortable": sortable}
             
             if col in dictwidth:
                 h["width"] = dictwidth[col]

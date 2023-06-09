@@ -645,7 +645,7 @@ def AnimatedPieChart(values=[10.0, 25.0, 34.0, 24.0, 23.0], colors=['#2d82c2', '
         display(out)    
 
 
-    .. figure:: figures/pieChart.png
+    .. figure:: figures/pieChart2.png
        :scale: 100 %
        :alt: pieChart example
 
