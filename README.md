@@ -1,4 +1,4 @@
-![logo](./docs/figures/vois_horizontal_small.png)
+![logo](./vois.png)
 
 Python library to simplify some common tasks related to the creation of advanced Voilà dashboards inside the JRC Big Data Analytics Platform (BDAP).
 
