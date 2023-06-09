@@ -9,15 +9,15 @@ echo Copying ./vois to ./deploy ...
 rm -rf ./deploy/JEOlab/
 rm -rf ./deploy/vois/
 
-cp -r ./vois/JEOlab/ ./deploy/
+cp -r ./src/vois/JEOlab/ ./deploy/
 
 mkdir -p ./deploy/vois/
 mkdir -p ./deploy/vois/JEOlab
-cp  ./vois/JEOlab/* ./deploy/vois/JEOlab/
+cp  ./src/vois/JEOlab/* ./deploy/vois/JEOlab/
 
 mkdir -p ./deploy/vois/vuetify/
-cp ./vois/*.py          ./deploy/vois/
-cp ./vois/vuetify/*.py  ./deploy/vois/vuetify/
+cp ./src/vois/*.py          ./deploy/vois/
+cp ./src/vois/vuetify/*.py  ./deploy/vois/vuetify/
 
-cp -r ./vois/data/ ./deploy/vois/
-cp -r ./vois/vuetify/extra ./deploy/vois/vuetify/
+cp -r ./src/vois/data/ ./deploy/vois/
+cp -r ./src/vois/vuetify/extra ./deploy/vois/vuetify/
