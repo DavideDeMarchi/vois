@@ -18,6 +18,10 @@ exclude src/vois/vuetify/.gitkeep
 exclude src/vois/*.ipynb
 exclude src/vois/vuetify/*.ipynb
 
+exclude src/vois/__pycache__
+exclude src/vois/vuetify/__pycache__
+exclude src/vois/vuetify/extra/__pycache__
+
 prune __pycache__
 prune */__pycache__ 
 recursive-exclude */__pycache__ *
