@@ -7,14 +7,14 @@ prune logo
 prune scripts
 prune tests
 
-exclude vois/.gitignore
-exclude vois/.gitkeep
+exclude src/vois/.gitignore
+exclude src/vois/.gitkeep
 
-exclude vois/vuetify/.gitignore
-exclude vois/vuetify/.gitkeep
+exclude src/vois/vuetify/.gitignore
+exclude src/vois/vuetify/.gitkeep
 
-exclude vois/*.ipynb
-exclude vois/vuetify/*.ipynb
+exclude src/vois/*.ipynb
+exclude src/vois/vuetify/*.ipynb
 
 prune __pycache__
 prune */__pycache__ 
