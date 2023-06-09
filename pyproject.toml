@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 # Created following this tutorial: https://realpython.com/pypi-publish-python-package/
 #
@@ -19,7 +23,7 @@ name = "vois"  # Required
 #
 # For a discussion on single-sourcing the version, see
 # https://packaging.python.org/guides/single-sourcing-package-version/
-version = "1.0.3"  # Required
+version = "1.0.4"  # Required
 
 # This is a one-line description or tagline of what your project does. This
 # corresponds to the "Summary" metadata field:
@@ -137,6 +141,6 @@ documentation = "https://vois.readthedocs.io/en/latest/"
 Source = "https://github.com/DavideDeMarchi/vois/"
 repository = "https://github.com/DavideDeMarchi/vois/"
 
-[tool.setuptools]
-py-modules = ["vois"]
 
+[tool.setuptools]
+packages = ["vois"]

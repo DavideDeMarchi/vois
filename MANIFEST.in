@@ -1,13 +1,20 @@
 # MANIFEST.in
 
-include src/*.py
-include src/vuetify/*.py
-include src/vuetify/extra/*.py
-include src/vuetify/extra/*.vue
+prune deploy
+prune docs
+prune examples
+prune logo
+prune scripts
+prune tests
 
-recursive-exclude src *.ipynb
-recursive-exclude src *.xml
-recursive-exclude src *.geojson
+exclude vois/.gitignore
+exclude vois/.gitkeep
+
+exclude vois/vuetify/.gitignore
+exclude vois/vuetify/.gitkeep
+
+exclude vois/*.ipynb
+exclude vois/vuetify/*.ipynb
 
 prune __pycache__
 prune */__pycache__ 
