@@ -18,6 +18,12 @@ folder **vois/vuetify**: classes to simplify the development of GUIs using ipyvu
 VOIS library is released under a
 [EUPL Version 1.2](https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12) license.
 
+## Setup
+
+The vois library can be installed using this command:
+
+`pip install vois`
+
 
 ## Tutorial
 
