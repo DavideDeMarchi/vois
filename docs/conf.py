@@ -17,8 +17,8 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath('..'))
-sys.path.insert(0, os.path.abspath('../vois'))
-sys.path.insert(0, os.path.abspath('../vois/vuetify'))
+sys.path.insert(0, os.path.abspath('../src/vois'))
+sys.path.insert(0, os.path.abspath('../src/vois/vuetify'))
 sys.path.insert(0, os.path.abspath('./_templates'))
 
 
