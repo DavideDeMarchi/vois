@@ -6,6 +6,9 @@ The online documentation for the vois library is available [here](https://vois.r
 
 The PDF documentation for the vois library is available [here](https://vois.readthedocs.io/_/downloads/en/latest/pdf/)
 
+The source repository is available [here](https://code.europa.eu/jrc-bdap/vois)
+
+
 The vois library contains:
 
 folder **vois**: helper functions for tasks not directly related to ipyvuetify (manage geojson files, create an interactive map to display custom geojson, simplify visualization of hierarchical data in Plotly, create custom SVG visualizations, etc.)
