@@ -98,7 +98,9 @@ class app():
     titlesvgclass : str, optional
         Class margins and padding to apply to the titlesvg drawing (default is 'pa-0 ma-0')
     titlecredits : str, optional
-        Credits string to be displayed on the left side of the title bar (default is '')
+        Credits string to be displayed on the right side of the title bar (default is '')
+    titlecredits2 : str, optional
+        Secondary credits string to be displayed on the right side of the title bar (default is '')
     titlestyle : str, optional
         CSS style to apply to the main title of the dashboard (default is '', an example could be: 'font-family: "Times New Roman", Times, serif; font-weight: bold; font-size: 22px;')
     titlespacestyle : str, optional
@@ -181,6 +183,8 @@ class app():
         Python function to call when the user clicks on one of the tabs of the title bar. The function will receive a parameter of type string containing the text of the tab
     onclickcredits : function, optional
         Python function to call when the user clicks on the credits button on the title bar. The function will receive no parameters
+    onclickcredits2 : function, optional
+        Python function to call when the user clicks on the secondary credits button on the title bar. The function will receive no parameters
     onclicklogo : function, optional
         Python function to call when the user clicks on the logo image on the title bar. The function will receive no parameters
     onclickfooter : function, optional
@@ -282,6 +286,7 @@ class app():
                  titlesvg='',
                  titlesvgclass='pa-0 ma-0',
                  titlecredits='',
+                 titlecredits2='',
                  titlestyle='',      # 'font-family: "Times New Roman", Times, serif; font-weight: bold; font-size: 22px;'
                  titlespacestyle='width: 50px; min-width: 50px;',
                  titleheight=70,
@@ -329,6 +334,7 @@ class app():
 
                  onclicktab=None,            # Function with 1 string argument string containing the text of the tab
                  onclickcredits=None,        # Function with 0 arguments
+                 onclickcredits2=None,       # Function with 0 arguments
                  onclicklogo=None,           # Function with 0 arguments
                  onclickfooter=None,         # Function with 1 string argument string containing the text of the button
                  onclickminipanel=None,      # Function with 1 string argument integer containing the index of the icon
@@ -337,6 +343,7 @@ class app():
         # Storing input parameters
         self.title = title
         self.titlecredits = titlecredits
+        self.titlecredits2 = titlecredits2
         self.titlestyle = titlestyle
         self.titleheight = measure2str(titleheight)
         self.totalheight = measure2str(totalheight)
@@ -374,6 +381,7 @@ class app():
 
         self.onclicktab = onclicktab
         self.onclickcredits = onclickcredits
+        self.onclickcredits2 = onclickcredits2
         self.onclicklogo = onclicklogo
         self.onclickfooter = onclickfooter
         
@@ -448,6 +456,14 @@ class app():
             self.credits = v.Btn(text=True, color=buttontext, dark=self.dark, children=[self.titlecredits], rounded=settings.button_rounded, style_='text-transform: none;')
             self.credits.on_event('click', self.__internal_onclickCredits)
 
+        self.credits2 = v.Html(tag='div', children=[''])
+        if len(self.titlecredits2) > 0:
+            if self.onclickcredits2 is None:
+                self.credits2 = v.Btn(text=True, color=buttontext, dark=self.dark, children=[self.titlecredits2], rounded=settings.button_rounded, style_='text-transform: none; cursor: initial;')
+            else:
+                self.credits2 = v.Btn(text=True, color=buttontext, dark=self.dark, children=[self.titlecredits2], rounded=settings.button_rounded, style_='text-transform: none;')
+                self.credits2.on_event('click', self.__internal_onclickCredits2)
+            
         self.tlist = []
         for t in self.titletabs:
             telem = v.Tab(style_='%s %s' % ('', self.titletabsstile), children=[t])
@@ -465,7 +481,7 @@ class app():
         card1 = v.Card(height=titleheight, color='transparent', elevation=0, children=[self.abih],    class_="d-flex align-center")
         card2 = v.Card(height=titleheight, color='transparent', elevation=0, children=[self.abt],     class_="d-flex align-center", style_='overflow: hidden; width: %s;' % self.titlewidth)
         card3 = v.Card(height=titleheight, color='transparent', elevation=0, children=[self.tabs],    class_="d-flex align-center")
-        card4 = v.Card(height=titleheight, color='transparent', elevation=0, children=[self.credits], class_="d-flex align-center")
+        card4 = v.Card(height=titleheight, color='transparent', elevation=0, children=[self.credits, self.credits2], class_="d-flex align-center")
         card5 = v.Card(height=titleheight, color='transparent', elevation=0, children=[self.logoimg], class_="d-flex align-center mr-1")
         
         if len(self.titletabs) > 0:
@@ -768,6 +784,11 @@ class app():
         if not self.onclickcredits is None:
             self.onclickcredits()
         
+    # Manage click on the title credits2 button
+    def __internal_onclickCredits2(self, widget, event, data):
+        if not self.onclickcredits2 is None:
+            self.onclickcredits2()
+            
     # When the panel has bee closed
     def __internal_panelclosed(self):
         self.outpanel.clear_output()
