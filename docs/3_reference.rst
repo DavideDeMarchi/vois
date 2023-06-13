@@ -7,6 +7,12 @@
 Reference manual
 ================
 
+Setup
+-----
+
+The vois library can be installed by executing: **pip install vois**
+
+
 Packages
 --------
 
