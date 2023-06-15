@@ -45,47 +45,48 @@ The dashboard is created in 10 (+1) steps, here listed:
 +----------+-----------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------+
 |   Step   | Description                                   |   Link to dashboard                                                                                                                            |  Source code                                                                     |
 +==========+===============================================+================================================================================================================================================+==================================================================================+
-|     1    | Creation of the dashboard structure           |  `Link 1 <https://jeodpp.jrc.ec.europa.eu/eu/dashboard/voila/render/Vaas/EnergyConsumption/EnergyConsumption.1.ipynb>`_                        | `Source 1 <./_static/_static/EnergyConsumption.1.html>`_                         |
+|     1    | Creation of the dashboard structure           |  `Link 1 <https://davidedemarchi-voila.hf.space/voila/render/tutorial/EnergyConsumption.1.ipynb>`_                                                | `Source 1 <./_static/_static/EnergyConsumption.1.html>`_                         |
 |          |                                               |                                                                                                                                                |                                                                                  |
 |          | using the :py:class:`app.app` class           |                                                                                                                                                |                                                                                  |
 +----------+-----------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------+
-|     2    | Use Pandas to read the input CSVs and         |  `Link 2 <https://jeodpp.jrc.ec.europa.eu/eu/dashboard/voila/render/Vaas/EnergyConsumption/EnergyConsumption.2.ipynb>`_                        | `Source 2 <./_static/_static/EnergyConsumption.2.html>`_                         |
+|     2    | Use Pandas to read the input CSVs and         |  `Link 2 <https://davidedemarchi-voila.hf.space/voila/render/tutorial/EnergyConsumption.2.ipynb>`_                                             | `Source 2 <./_static/_static/EnergyConsumption.2.html>`_                         |
 |          |                                               |                                                                                                                                                |                                                                                  |
 |          | display the DataFrame as a table              |                                                                                                                                                |                                                                                  |
 +----------+-----------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------+
-|     3    | Add the filtering controls to the dashboard   |  `Link 3 <https://jeodpp.jrc.ec.europa.eu/eu/dashboard/voila/render/Vaas/EnergyConsumption/EnergyConsumption.3.ipynb>`_                        | `Source 3 <./_static/_static/EnergyConsumption.3.html>`_                         |
+|     3    | Add the filtering controls to the dashboard   |  `Link 3 <https://davidedemarchi-voila.hf.space/voila/render/tutorial/EnergyConsumption.3.ipynb>`_                                             | `Source 3 <./_static/_static/EnergyConsumption.3.html>`_                         |
 |          |                                               |                                                                                                                                                |                                                                                  |
 |          | to select countries and sector                |                                                                                                                                                |                                                                                  |
 +----------+-----------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------+
-|     4    | Add the Plotly Bar Chart View                 |  `Link 4 <https://jeodpp.jrc.ec.europa.eu/eu/dashboard/voila/render/Vaas/EnergyConsumption/EnergyConsumption.4.ipynb>`_                        | `Source 4 <./_static/_static/EnergyConsumption.4.html>`_                         |
+|     4    | Add the Plotly Bar Chart View                 |  `Link 4 <https://davidedemarchi-voila.hf.space/voila/render/tutorial/EnergyConsumption.4.ipynb>`_                                             | `Source 4 <./_static/_static/EnergyConsumption.4.html>`_                         |
 +----------+-----------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------+
-|     5    | Add the SVG Static Map View                   |  `Link 5 <https://jeodpp.jrc.ec.europa.eu/eu/dashboard/voila/render/Vaas/EnergyConsumption/EnergyConsumption.5.ipynb>`_                        | `Source 5 <./_static/_static/EnergyConsumption.5.html>`_                         |
+|     5    | Add the SVG Static Map View                   |  `Link 5 <https://davidedemarchi-voila.hf.space/voila/render/tutorial/EnergyConsumption.5.ipynb>`_                                             | `Source 5 <./_static/_static/EnergyConsumption.5.html>`_                         |
 +----------+-----------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------+
-|     6    | Add the Dynamic Map View                      |  `Link 6 <https://jeodpp.jrc.ec.europa.eu/eu/dashboard/voila/render/Vaas/EnergyConsumption/EnergyConsumption.6.ipynb>`_                        | `Source 6 <./_static/_static/EnergyConsumption.6.html>`_                         |
+|     6    | Add the Dynamic Map View                      |  `Link 6 <https://davidedemarchi-voila.hf.space/voila/render/tutorial/EnergyConsumption.6.ipynb>`_                                             | `Source 6 <./_static/_static/EnergyConsumption.6.html>`_                         |
 +----------+-----------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------+
-|     7    | Add the functions for downloading chart,      |  `Link 7 <https://jeodpp.jrc.ec.europa.eu/eu/dashboard/voila/render/Vaas/EnergyConsumption/EnergyConsumption.7.ipynb>`_                        | `Source 7 <./_static/_static/EnergyConsumption.7.html>`_                         |
+|     7    | Add the functions for downloading chart,      |  `Link 7 <https://davidedemarchi-voila.hf.space/voila/render/tutorial/EnergyConsumption.7.ipynb>`_                                             | `Source 7 <./_static/_static/EnergyConsumption.7.html>`_                         |
 |          |                                               |                                                                                                                                                |                                                                                  |
 |          | table and map                                 |                                                                                                                                                |                                                                                  |
 +----------+-----------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------+
-|     8    | Manage the parameters passsed in the URL      |  `Link 8 <https://jeodpp.jrc.ec.europa.eu/eu/dashboard/voila/render/Vaas/EnergyConsumption/EnergyConsumption.8.ipynb>`_                        | `Source 8 <./_static/_static/EnergyConsumption.8.html>`_                         |
+|     8    | Manage the parameters passsed in the URL      |  `Link 8 <https://davidedemarchi-voila.hf.space/voila/render/tutorial/EnergyConsumption.8.ipynb>`_                                             | `Source 8 <./_static/_static/EnergyConsumption.8.html>`_                         |
 |          |                                               |                                                                                                                                                |                                                                                  |
 |          | and open external URLs                        |                                                                                                                                                |                                                                                  |
 +----------+-----------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------+
-|     9    | Add an interactive AnimatedPieChart in        |  `Link 9 <https://jeodpp.jrc.ec.europa.eu/eu/dashboard/voila/render/Vaas/EnergyConsumption/EnergyConsumption.9.ipynb>`_                        | `Source 9 <./_static/_static/EnergyConsumption.9.html>`_                         |
+|     9    | Add an interactive AnimatedPieChart in        |  `Link 9 <https://davidedemarchi-voila.hf.space/voila/render/tutorial/EnergyConsumption.9.ipynb>`_                                             | `Source 9 <./_static/_static/EnergyConsumption.9.html>`_                         |
 |          |                                               |                                                                                                                                                |                                                                                  |
 |          | SVG to select the consumption sector          |                                                                                                                                                |                                                                                  |
 +----------+-----------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------+
-|  Final   | Add minipanel to footer bar and function to   |  `Link Final <https://jeodpp.jrc.ec.europa.eu/eu/dashboard/voila/render/Vaas/EnergyConsumption/EnergyConsumption.Final.ipynb>`_                | `Source final <./_static/_static/EnergyConsumption.Final.html>`_                 |
+|  Final   | Add minipanel to footer bar and function to   |  `Link Final <https://davidedemarchi-voila.hf.space/voila/render/tutorial/EnergyConsumption.Final.ipynb>`_                                     | `Source final <./_static/_static/EnergyConsumption.Final.html>`_                 |
 |          |                                               |                                                                                                                                                |                                                                                  |
 |          | generate and download report in docx format   |                                                                                                                                                |                                                                                  |
 +----------+-----------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------+
-|  Final   | A "dark" version of the final dashboard       |  `Link Final dark <https://jeodpp.jrc.ec.europa.eu/eu/dashboard/voila/render/Vaas/EnergyConsumption/EnergyConsumption.Final.ThemeDark.ipynb>`_ | `Source final dark <./_static/_static/EnergyConsumption.Final.ThemeDark.html>`_  |
+|  Final   | A "dark" version of the final dashboard       |  `Link Final dark <https://davidedemarchi-voila.hf.space/voila/render/tutorial/EnergyConsumption.Final.ThemeDark.ipynb>`_                      | `Source final dark <./_static/_static/EnergyConsumption.Final.ThemeDark.html>`_  |
 |          |                                               |                                                                                                                                                |                                                                                  |
 |  dark    |                                               |                                                                                                                                                |                                                                                  |
 +----------+-----------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------+
 
    
 .. image:: figures/line.png
+
 
 Step 1: Creation of the dashboard structure
 -------------------------------------------
@@ -1162,3 +1163,87 @@ Here is the final dashboard changed to use the dark theme:
    :alt: Dark version of the final dashboard
 
    Dark version of the final dashboard
+
+
+MultiPage Demo
+==============
+
+New classes added to the **vois library** allow for easy creation of multi-pages application: :py:class:`mainPage.mainPage` class and :py:class:`page.page` class.
+
+The mainPage class creates a fullscreen page displaying a background image, a title/subtitle/logo and some buttons. Each button on the mainPage can open a specific page.
+
+A minimal example of a multi-page application can be created by running this example code::
+
+    from vois.vuetify import mainPage, page
+    from random import randrange
+
+    from ipywidgets import widgets, Layout
+
+    output = widgets.Output(layout=Layout(width='0px', height='0px'))
+    display(output)
+
+    title     = 'MultiPage Demo'
+    logo      = 'https://jeodpp.jrc.ec.europa.eu/services/shared/pngs/BDAP_Logo1024transparent.png'
+    copyright = 'European Commission - Joint Research Centre'
+
+    def randomPicture():
+        return 'https://picsum.photos/seed/%d/200/200'%randrange(1000)
+
+    def onclick1():
+        p = page.page(title, 'Function 1', output, titlecolor='#808dc4', titledark=True, footercolor='#cccccc',
+                      logoappurl=logo, copyrighttext=copyright)
+        card = p.create()
+        card.children = ['Put widgets into the empty space of the page1']
+        p.open()    
+
+    def onclick2():
+        p = page.page(title, 'Function 2', output, titlecolor='#808dc4', titledark=True, footercolor='#cccccc',
+                      logoappurl=logo, copyrighttext=copyright)
+        card = p.create()
+        card.children = ['Put widgets into the empty space of the page2']
+        p.open()    
+
+    m = mainPage.mainPage(title='MultiPage Demo',
+                          subtitle='Showcase how easy is to create a multi-page app',
+                          credits="vois library development team",
+                          titlebox_widthpercent=50, titlebox_opacity=0.2, titlebox_border=0,
+                          vois_show=True, vois_opacity=0.1,
+                          button_widthpercent=23, button_heightpercent=14, button_elevation=16, button_opacity=0.6,
+                          background_image=55,
+                          background_filter='blur(2px) brightness(1.2) contrast(0.7) sepia(0.05) saturate(1.2)',
+                          creditbox_opacity=0,
+                          text_color='#222222')
+
+    m.addButton('Function 1', tooltip='Tooltip text to display on hover function1',
+                image=randomPicture(), onclick=onclick1)
+
+    m.addButton('Function 2', tooltip='Tooltip text to display on hover function2',
+                image=randomPicture(), onclick=onclick2)
+
+    for i in range(3,7): m.addButton('Function %d'%i, image=randomPicture())
+
+    m.open()
+
+.. figure:: figures/mainPage.png
+    :scale: 100 %
+    :alt: mainPage widget
+
+    Example of a mainPage
+
+
+The vois library provides sixty wallpapers that can be used as backgrounds to the mainPage of an application, by simply passing an integer value in the range [0,59] to the **background_image** parameter of the mainPage initialization function. 
+
+.. figure:: figures/wallpapers.png
+    :scale: 50 %
+    :alt: wallpapers
+
+    Preview of the standard wallpapers provided by the vois library
+    
+In case there is the need for a custom background image, any valid URL string can be passed in the background_image parameter. To customize the appearance of the background image (for instance adding some blur, contrast, etc.), the **background_filter** parameter can be set with a string containing the CSS image filters to apply (example: 'blur(2px) contrast(0.7)'). See https://developer.mozilla.org/en-US/docs/Web/CSS/filter for a list of available filters.
+
+A similar example of a basic multi-page application can be found here: `Multi Page Demo code <./_static/_static/MultiPageDemo.html>`_
+
+The corresponding running dashboard can be opened here: `Multi Page Demo <https://davidedemarchi-voila.hf.space/voila/render/tutorial/MultipageDemo.ipynb>`_
+
+
+

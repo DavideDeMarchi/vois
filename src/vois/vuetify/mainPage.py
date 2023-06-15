@@ -104,10 +104,7 @@ class mainPage():
         from vois.vuetify import mainPage
         from random import randrange
         
-        def on_click():
-            pass
-            
-        def onclick():
+        def onclick1():
             print("Clicked Function 1")
 
         m = mainPage.mainPage(title='mainPage demo',
@@ -125,7 +122,7 @@ class mainPage():
                     subtitle='Launch calculation of ...',
                     tooltip='Tooltip text to display on hover',
                     image='https://picsum.photos/seed/%d/200/200'%randrange(1000),
-                    onclick=onclick)
+                    onclick=onclick1)
 
         for i in range(2,7): m.addButton('Function %d'%i, image='https://picsum.photos/seed/%d/200/200'%randrange(1000))
 
