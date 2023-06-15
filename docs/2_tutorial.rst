@@ -45,7 +45,7 @@ The dashboard is created in 10 (+1) steps, here listed:
 +----------+-----------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------+
 |   Step   | Description                                   |   Link to dashboard                                                                                                                            |  Source code                                                                     |
 +==========+===============================================+================================================================================================================================================+==================================================================================+
-|     1    | Creation of the dashboard structure           |  `Link 1 <https://davidedemarchi-voila.hf.space/voila/render/tutorial/EnergyConsumption.1.ipynb>`_                                                | `Source 1 <./_static/_static/EnergyConsumption.1.html>`_                         |
+|     1    | Creation of the dashboard structure           |  `Link 1 <https://davidedemarchi-voila.hf.space/voila/render/tutorial/EnergyConsumption.1.ipynb>`_                                             | `Source 1 <./_static/_static/EnergyConsumption.1.html>`_                         |
 |          |                                               |                                                                                                                                                |                                                                                  |
 |          | using the :py:class:`app.app` class           |                                                                                                                                                |                                                                                  |
 +----------+-----------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------+
@@ -1168,7 +1168,7 @@ Here is the final dashboard changed to use the dark theme:
 MultiPage Demo
 ==============
 
-New classes added to the **vois library** allow for easy creation of multi-pages application: :py:class:`mainPage.mainPage` class and :py:class:`page.page` class.
+New classes added to the **vois library** allow for easy creation of multi-pages applications: :py:class:`mainPage.mainPage` class and :py:class:`page.page` class.
 
 The mainPage class creates a fullscreen page displaying a background image, a title/subtitle/logo and some buttons. Each button on the mainPage can open a specific page.
 
@@ -1190,29 +1190,29 @@ A minimal example of a multi-page application can be created by running this exa
         return 'https://picsum.photos/seed/%d/200/200'%randrange(1000)
 
     def onclick1():
-        p = page.page(title, 'Function 1', output, titlecolor='#808dc4', titledark=True, footercolor='#cccccc',
-                      logoappurl=logo, copyrighttext=copyright)
+        p = page.page(title, 'Function 1', output, titlecolor='#808dc4', titledark=True,
+                      footercolor='#cccccc', logoappurl=logo, copyrighttext=copyright)
         card = p.create()
         card.children = ['Put widgets into the empty space of the page1']
         p.open()    
 
     def onclick2():
-        p = page.page(title, 'Function 2', output, titlecolor='#808dc4', titledark=True, footercolor='#cccccc',
-                      logoappurl=logo, copyrighttext=copyright)
+        p = page.page(title, 'Function 2', output, titlecolor='#808dc4', titledark=True,
+                      footercolor='#cccccc', logoappurl=logo, copyrighttext=copyright)
         card = p.create()
         card.children = ['Put widgets into the empty space of the page2']
         p.open()    
 
     m = mainPage.mainPage(title='MultiPage Demo',
-                          subtitle='Showcase how easy is to create a multi-page app',
-                          credits="vois library development team",
-                          titlebox_widthpercent=50, titlebox_opacity=0.2, titlebox_border=0,
-                          vois_show=True, vois_opacity=0.1,
-                          button_widthpercent=23, button_heightpercent=14, button_elevation=16, button_opacity=0.6,
-                          background_image=55,
-                          background_filter='blur(2px) brightness(1.2) contrast(0.7) sepia(0.05) saturate(1.2)',
-                          creditbox_opacity=0,
-                          text_color='#222222')
+            subtitle='Showcase how easy is to create a multi-page app',
+            credits="vois library development team",
+            titlebox_widthpercent=50, titlebox_opacity=0.2, titlebox_border=0,
+            vois_show=True, vois_opacity=0.1,
+            button_widthpercent=23, button_heightpercent=14,button_elevation=16, button_opacity=0.6,
+            background_image=55,
+            background_filter='blur(2px) brightness(1.2) contrast(0.7) sepia(0.05) saturate(1.2)',
+            creditbox_opacity=0,
+            text_color='#222222')
 
     m.addButton('Function 1', tooltip='Tooltip text to display on hover function1',
                 image=randomPicture(), onclick=onclick1)
@@ -1243,7 +1243,7 @@ In case there is the need for a custom background image, any valid URL string ca
 
 A similar example of a basic multi-page application can be found here: `Multi Page Demo code <./_static/_static/MultiPageDemo.html>`_
 
-The corresponding running dashboard can be opened here: `Multi Page Demo <https://davidedemarchi-voila.hf.space/voila/render/tutorial/MultipageDemo.ipynb>`_
+The corresponding running dashboard can be viewed here: `Multi Page Demo <https://davidedemarchi-voila.hf.space/voila/render/tutorial/MultipageDemo.ipynb>`_
 
 
 
