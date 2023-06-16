@@ -61,4 +61,4 @@ These are the links to all the steps of the example dashboard deployed and publi
 
 An example multi-page dashboard can be viewed at this link: [Example multi-page dashboard](https://davidedemarchi-voila.hf.space/voila/render/tutorial/MultipageDemo.ipynb)
 
-![screenshot](./docs/figures/multipage.png)
+![screenshot](https://jeodpp.jrc.ec.europa.eu/services/shared/pngs/multipage.png)
