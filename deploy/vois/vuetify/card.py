@@ -51,6 +51,8 @@ class card(v.VuetifyTemplate):
         Size of the area where the image is displayed (default is '190px')
     on_click : function, optional
         Python function to call when the user clicks on the card. The function will receive no parameters. (default is None)
+    argument : any, optional
+        Argument to pass to the on_click python function (default is None)
     responsive : bool, optional
         If True, the font size is automatically changed according to the page size (default is False)
     fontsizemultiplier : float, optional
@@ -114,6 +116,7 @@ class card(v.VuetifyTemplate):
     image      = traitlets.Unicode('').tag(sync=True)
     imagesize  = traitlets.Unicode('190px').tag(sync=True)
     on_click   = traitlets.Any(None).tag(sync=False)
+    argument   = traitlets.Any(None).tag(sync=False)
     responsive = traitlets.Bool(False).tag(sync=True)
     fontsizemultiplier = traitlets.Float(1.0).tag(sync=True)
     backgroundimageurl = traitlets.Unicode('').tag(sync=True)
@@ -257,6 +260,7 @@ class card(v.VuetifyTemplate):
                  image='',
                  imagesize='190px',
                  on_click=None,
+                 argument=None,
                  responsive=False,
                  fontsizemultiplier=1.0,
                  backgroundimageurl='',
@@ -296,6 +300,7 @@ class card(v.VuetifyTemplate):
         else:               self.imagesize = imagesize
         
         self.on_click = on_click
+        self.argument = argument
         
         self.responsive         = responsive
         self.fontsizemultiplier = fontsizemultiplier
@@ -306,4 +311,7 @@ class card(v.VuetifyTemplate):
     # Manage event "click"
     def vue_clicked(self, data):
         if not self.on_click is None:
-            self.on_click()
+            if self.argument is None:
+                self.on_click()
+            else:
+                self.on_click(self.argument)

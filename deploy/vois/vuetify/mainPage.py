@@ -104,10 +104,7 @@ class mainPage():
         from vois.vuetify import mainPage
         from random import randrange
         
-        def on_click():
-            pass
-            
-        def onclick():
+        def onclick1():
             print("Clicked Function 1")
 
         m = mainPage.mainPage(title='mainPage demo',
@@ -125,7 +122,7 @@ class mainPage():
                     subtitle='Launch calculation of ...',
                     tooltip='Tooltip text to display on hover',
                     image='https://picsum.photos/seed/%d/200/200'%randrange(1000),
-                    onclick=onclick)
+                    onclick=onclick1)
 
         for i in range(2,7): m.addButton('Function %d'%i, image='https://picsum.photos/seed/%d/200/200'%randrange(1000))
 
@@ -363,7 +360,7 @@ class mainPage():
 
 
     # Add a button
-    def addButton(self, title, subtitle='', tooltip='', image='', onclick=None):
+    def addButton(self, title, subtitle='', tooltip='', image='', onclick=None, argument=None):
         """
         Add a button to the page
         
@@ -378,14 +375,17 @@ class mainPage():
         image : str, optional
             Image to show on the right side of the button (default is '')
         onclick : function, optional
-            Python function to call when the user clicks on the button. The function will receive no parameters (default is None)
+            Python function to call when the user clicks on the button. The function will receive the argument value as parameter if it is not None, otherwise it will be calle with no parameters. Default is None
+        argument : any, optional
+            Argument to pass to the onclick python function (default is None)
             
         """
         self.buttons.append({'title':    title,
                              'subtitle': subtitle,
                              'tooltip':  tooltip,
                              'image':    image,
-                             'onclick':  onclick})
+                             'onclick':  onclick,
+                             'argument': argument})
         
         
     # Display the page as a fullscreen dialog-box
@@ -401,7 +401,7 @@ class mainPage():
             c = card.card(elevation=self.button_elevation, width='%fvw'%self.button_widthpercent, imagesize="%fvh"%self.button_heightpercent, responsive=True,
                           title=b['title'], subtitle=b['subtitle'], titletooltip=b['tooltip'],
                           color='#ffffff%0.2X'%int(self.button_opacity*255), fontsizemultiplier=1.1, subtitleweight=400,
-                          image=b['image'], on_click=b['onclick'], textcolor=self.text_color)
+                          image=b['image'], on_click=b['onclick'], argument=b['argument'], textcolor=self.text_color)
             if len(children) > 0:
                 children.append(self.spacer)
             children.append(c)
