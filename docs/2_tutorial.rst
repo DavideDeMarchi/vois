@@ -12,6 +12,9 @@ Tutorial
    :maxdepth: 5
 
 
+Energy consumption dashboard
+============================
+
 This tutorial will provide a step by step description of the construction of a dashboard to analyse and display data on Energy Consumption in Europe. The steps of the example dashboard are available as notebooks inside the **examples/EnergyConsumption** subfolder. The data for this example has been downloaded from EUROSTAT web site, in particular:
 
 `File ten00124_linear.csv: Energy consumption data <https://ec.europa.eu/eurostat/databrowser/view/ten00124/default/map?lang=en>`_
@@ -32,7 +35,7 @@ This tutorial will provide a step by step description of the construction of a d
 
 
 Dashboard steps
-===============
+^^^^^^^^^^^^^^^
 
 Scope of the example dashboard on "Energy Consumption in Europe" is to demonstrate a real example of a dashboard built using the **vois library**. 
 
@@ -1244,6 +1247,3 @@ In case there is the need for a custom background image, any valid URL string ca
 A similar example of a basic multi-page application can be found here: `Multi Page Demo code <./_static/_static/MultiPageDemo.html>`_
 
 The corresponding running dashboard can be viewed here: `Multi Page Demo <https://davidedemarchi-voila.hf.space/voila/render/tutorial/MultipageDemo.ipynb>`_
-
-
-
