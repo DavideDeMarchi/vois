@@ -42,6 +42,10 @@ class iconButton():
         Tooltip text for the button (default is '')
     color : str, optional
         Color used for the widget (default is the color_first defined in the settings.py module)
+    outlined : bool, optional
+        If True applies a thin border to the button (default is False)
+    rounded : bool, optional
+        If True the shape of the button is rounded (default is True)
     large : bool, optional
         If True makes the button large (default is False)
     small : bool, optional
