@@ -126,6 +126,14 @@ footer widget
 
 .. image:: figures/line.png
 
+iconButton widget
+-----------------
+
+.. automodule:: iconButton
+    :members:
+
+.. image:: figures/line.png
+
 label widget
 ------------
 

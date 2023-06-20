@@ -89,6 +89,7 @@ Vuetify package
  fab
  fontsettings
  footer
+ iconButton
  label
  layers
  mainPage
