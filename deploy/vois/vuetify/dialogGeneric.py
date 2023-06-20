@@ -49,8 +49,8 @@ class dialogGeneric():
         Flag to immediately show the dialog-box upon creation (default is False)
     content: list of ipyvuetify widgets, optional
         List of ipyvuietify widgets to be displayed in the body of the dialog-box (default is [])
-    width : int, optional
-        Width in pixel of the dialog-box (default is 500 pixels)
+    width : int or str, optional
+        Width of the dialog-box. If an integer is passed the width is intended in pixels. Default is 500 pixels
     fullscreen : bool, optional
         If True, the dialog-box is opened in fullscreen mode (default is False)
     persistent : bool, optional
@@ -165,7 +165,11 @@ class dialogGeneric():
             clist += [ v.CardText(children=[x], class_="mt-n5") for x in vvv ]
         clist += content + r
         
-        self.dialog = v.Dialog(width='%d' % width, v_model=show, fullscreen=fullscreen, transition=transition,
+        if type(width)==int:
+            swidth = "%dpx"%width
+        else:
+            swidth = str(width)
+        self.dialog = v.Dialog(width=swidth, v_model=show, fullscreen=fullscreen, transition=transition,
                                persistent=persistent, no_click_animation=no_click_animation,
                                style_="background-color: transparent; z-index:20001;", 
                                children=[v.Card(children=clist)])

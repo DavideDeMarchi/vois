@@ -44,8 +44,8 @@ class dialogMessage(dialogGeneric.dialogGeneric):
         Flag that controls the color of the text in foreground (if True, the text will be displayed in white, elsewhere in black)
     show : bool, optional
         Flag to immediately show the dialog-box upon creation (default is False)
-    width : int, optional
-        Width in pixel of the dialog-box (default is 500 pixels)
+    width : int or str, optional
+        Width of the dialog-box. If an integer is passed the width is intended in pixels. Default is 500 pixels
     addclosebuttons : bool, optional
         If True, the dialog will have a 'close' button in the top toolbar (default is True)
     transition : str, optional
