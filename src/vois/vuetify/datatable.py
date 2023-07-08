@@ -156,7 +156,7 @@ class datatable(v.VuetifyTemplate):
                 :footer-props="{'items-per-page-options': [10000000]}">
                 <template v-slot:no-data> 
                   <v-alert :value="true" :color="color" :dark="dark" icon="mdi-alert">
-                    No use-cases to display
+                    No records to display
                   </v-alert>
                 </template>
                 <template v-slot:no-results>

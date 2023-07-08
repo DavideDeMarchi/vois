@@ -160,6 +160,7 @@ class card(v.VuetifyTemplate):
     :color="color"
     :dark="dark"
     raised
+    hover
     :elevation="elevation"
     :ripple="ripple"
     :disabled="disabled"
@@ -182,7 +183,7 @@ class card(v.VuetifyTemplate):
           <div :class="subtitlemargins" :style="fontSizeSubTitle" v-html="subtitle"/>
       </div>
       <v-avatar class="ma-n1" :size="imagesize" tile >
-         <v-img :src="image"></v-img>
+         <v-img :src="image" contain></v-img>
       </v-avatar>
     </div>
   </v-card>
