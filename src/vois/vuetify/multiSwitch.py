@@ -76,13 +76,13 @@ class multiSwitch():
         
         output = widgets.Output()
 
-        def onchange(index):
+        def onchange(values):
             with output:
-                print(index)
+                print(values)
 
         m = multiSwitch.multiSwitch([False, True, False], ['Option 1', 'Option 2', 'Option 3'],
                                     tooltips=['Tooltip for option 1'], 
-                                    onchange=onchange, row=False, width=150, rounded=Falseoutlined=True,
+                                    onchange=onchange, row=False, width=150, rounded=False, outlined=True,
                                     colorselected='#FFA300', colorunselected='#aaaaaa')
 
         display(m.draw())

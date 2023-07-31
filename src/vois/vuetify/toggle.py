@@ -65,6 +65,10 @@ class toggle():
         Color used for the buttons when they are not selected (default is settings.color_second)
     dark : bool, optional
         Flag that controls the color of the text in foreground (if True, the text will be displayed in white, elsewhere in black)
+    paddingrow : int, optional
+        Horizontal padding among toggle buttons (1 unit means 4 pixels). Default is 1
+    paddingcol : int, optional
+        vertical padding among toggle buttons (1 unit means 4 pixels). Default is 2
 
     Example
     -------
@@ -97,7 +101,8 @@ class toggle():
     # Initialization
     def __init__(self, index, labels, tooltips=None, color=settings.color_first, onchange=None,
                  row=True, width=150, justify='space-between', rounded=settings.button_rounded, outlined=False,
-                 colorselected=settings.color_first, colorunselected=settings.color_second, dark=settings.dark_mode):
+                 colorselected=settings.color_first, colorunselected=settings.color_second, dark=settings.dark_mode,
+                 paddingrow=1, paddingcol=2):
         
         self.index    = index    # Index of the selected button
         self.labels   = labels
@@ -112,6 +117,8 @@ class toggle():
         self.colorselected   = colorselected
         self.colorunselected = colorunselected
         self.dark            = dark
+        self.paddingrow      = paddingrow
+        self.paddingcol      = paddingcol
         
         self.__createButtons()
         
@@ -126,12 +133,8 @@ class toggle():
             if i < len(self.tooltips):
                 tooltip = self.tooltips[i]
             
-            if self.row: c = "pa-0 ma-0 mr-1"
-            else:
-                if i == len(self.labels)-1:
-                    c = "pa-0 ma-0 mb-7"
-                else:
-                    c = "pa-0 ma-0 mb-2"
+            if self.row: c = "pa-0 ma-0 mr-%d"%self.paddingrow
+            else:        c = "pa-0 ma-0 mb-%d"%self.paddingcol
                     
             b = button.button(label, dark=self.dark, class_=c, onclick=self.__internal_onchange, argument=i, width=self.width, tooltip=tooltip, selected=(i==self.index),
                               rounded=self.rounded, outlined=self.outlined, colorselected=self.colorselected, colorunselected=self.colorunselected)
