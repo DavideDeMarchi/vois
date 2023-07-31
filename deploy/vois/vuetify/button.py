@@ -88,6 +88,8 @@ class button():
         Flag to invert the text and backcolor (default is the value of settings.dark_mode)
     rounded : bool, optional
         Flag to display the button with rounded corners (default is the value of settings.button_rounded)
+    tile : bool, optional
+        Flag to remove the button small border (default is False)
     colorselected : str, optional
         Color used for the button when it is selected (default is settings.color_first)
     colorunselected : str, optional
@@ -148,7 +150,7 @@ class button():
     def __init__(self, text, onclick=None, argument=None, width=100, height=36, selected=False, disabled=False, tooltip='', large=False, small=False, xsmall=False, outlined=False, textweight=500,
                  href=None, target=None, onlytext=False, textcolor=None,  class_="pa-0 ma-0",
                  icon=None, iconlarge=False, iconsmall=False, iconleft=False, iconcolor='black',
-                 autoselect=False, dark=settings.dark_mode, rounded=settings.button_rounded,
+                 autoselect=False, dark=settings.dark_mode, rounded=settings.button_rounded, tile=False,
                  colorselected=settings.color_first, colorunselected=settings.color_second
                 ):
         self.onclick    = onclick
@@ -185,7 +187,7 @@ class button():
                 else:                   childs = [self.text, icn]
             
         self.b = v.Btn(color=color, dark=dark, icon=onlytext, depressed=True, outlined=outlined, large=large, small=small, x_small=xsmall, 
-                       disabled=disabled, width=width, min_width=width, height=height, min_height=height, href=href, target=target,
+                       disabled=disabled, width=width, min_width=width, height=height, min_height=height, href=href, target=target, tile=tile, 
                        children=childs, style_='font-family: %s; font-size: 17; font-weight: %d; text-transform: none' % (fontsettings.font_name, textweight), rounded=rounded)
                 
         self.b.on_event('click', self.__internal_onclick)

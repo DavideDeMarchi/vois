@@ -68,7 +68,9 @@ class toggle():
     paddingrow : int, optional
         Horizontal padding among toggle buttons (1 unit means 4 pixels). Default is 1
     paddingcol : int, optional
-        vertical padding among toggle buttons (1 unit means 4 pixels). Default is 2
+        Vertical padding among toggle buttons (1 unit means 4 pixels). Default is 2
+    tile : bool, optional
+        Flag to remove the buttons small border (default is False)
 
     Example
     -------
@@ -102,7 +104,7 @@ class toggle():
     def __init__(self, index, labels, tooltips=None, color=settings.color_first, onchange=None,
                  row=True, width=150, justify='space-between', rounded=settings.button_rounded, outlined=False,
                  colorselected=settings.color_first, colorunselected=settings.color_second, dark=settings.dark_mode,
-                 paddingrow=1, paddingcol=2):
+                 paddingrow=1, paddingcol=2, tile=False):
         
         self.index    = index    # Index of the selected button
         self.labels   = labels
@@ -119,6 +121,7 @@ class toggle():
         self.dark            = dark
         self.paddingrow      = paddingrow
         self.paddingcol      = paddingcol
+        self.tile            = tile
         
         self.__createButtons()
         
@@ -137,7 +140,7 @@ class toggle():
             else:        c = "pa-0 ma-0 mb-%d"%self.paddingcol
                     
             b = button.button(label, dark=self.dark, class_=c, onclick=self.__internal_onchange, argument=i, width=self.width, tooltip=tooltip, selected=(i==self.index),
-                              rounded=self.rounded, outlined=self.outlined, colorselected=self.colorselected, colorunselected=self.colorunselected)
+                              rounded=self.rounded, tile=self.tile, outlined=self.outlined, colorselected=self.colorselected, colorunselected=self.colorunselected)
             self.buttons.append(b)
             i += 1
 
