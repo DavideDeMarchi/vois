@@ -567,7 +567,7 @@ def AnimatedPieChart(values=[10.0, 25.0, 34.0, 24.0, 23.0], colors=['#2d82c2', '
                      fillpercentage=FillPercentage.fill60, backcolor="#f1f1f1", dimension=400,
                      textcolor=settings.select_textcolor, fontsize=15, textweight=400, decimals=1,
                      centertext='', centercolor=settings.select_textcolor, centerfontsize=18, centertextweight=500,
-                     onclick=None, additional_argument=None, is_selected=False):
+                     onclick=None, additional_argument=None, is_selected=False, displayvalues=True):
     """
     Creation of an animated pie chart in SVG format. Given an array of float values, and optional labels, the function draws a pie chart that fills its slices with a short animation. An ipywidgets.Output instance is returned, which has the SVG chart displayed in it. By passing a value to the onclick parameter, it is possible to manage the click event on the slices of the pie, providing interactivity to the drawing. The capture of the click event is done using the `ipyevents library <https://github.com/mwcraig/ipyevents>`_ .
     
@@ -609,6 +609,8 @@ def AnimatedPieChart(values=[10.0, 25.0, 34.0, 24.0, 23.0], colors=['#2d82c2', '
         Additional parameter passed to the onclick function when the user clicks on one of the slices of the pie (default is None)
     is_selected : bool, optional
         Flag to select the pie chart (default is False)
+    displayvalues: bool, optional
+        If True each slide of the pie will display, inside parenthesis, the corresponding value (default is True)
    
     
     Return
@@ -737,12 +739,19 @@ def AnimatedPieChart(values=[10.0, 25.0, 34.0, 24.0, 23.0], colors=['#2d82c2', '
         strvalue = '{:.{prec}f}'.format(perc[i], prec=decimals)
 
         if not labels is None and i < len(labels):
-            text = '%s<br>%s%%<br>(%s)' % (labels[i],strvalue,values[i])
+            if displayvalues:
+                text = '%s<br>%s%%<br>(%s)' % (labels[i],strvalue,values[i])
+            else:
+                text = '%s<br>%s%%' % (labels[i],strvalue)
+                     
             
             if text[:9] == 'no answer' or text[:12] == 'no<br>answer': color = color_no_answer    # Request for same color for all the "no answer" slices
             #print(text)
         else:
-            text = strvalue + '<br>(' + str(values[i])+ ')'
+            if displayvalues:
+                text = strvalue + '<br>(' + str(values[i])+ ')'
+            else:
+                text = strvalue
         
         fulltext = centertext + ': ' + text.replace('<br>',' ')
         tooltip = '<title>%s</title>' % (fulltext)
