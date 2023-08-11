@@ -167,6 +167,12 @@ class page():
         
         children.append(v.Spacer())
         
+        for cb in self.custom_buttons:
+            iconname,tooltiptext,callback = cb
+            btn = v.Btn(icon=True, class_="pa-0 ma-0 mt-1", dark=self.titledark, children=[v.Icon(children=[iconname])])
+            btn.on_event('click', callback)
+            children.append(tooltip.tooltip(tooltiptext, btn))
+        
         if self.show_back:
             btn_back = v.Btn(icon=True, class_="pa-0 ma-0 mt-1", dark=self.titledark, children=[v.Icon(children=['mdi-arrow-left'])])
             btn_back.on_event('click', self.click_on_back)
@@ -215,7 +221,15 @@ class page():
             if not self.onclose is None:
                 self.onclose()
         
+        
+    # Add a custom buttom to the page (before the call to create!)
+    def customButtonAdd(self, iconname, tooltiptext, callback):
+        self.custom_buttons.append((iconname,tooltiptext,callback))   # Each item has an icon name, a tooltip string and a callback function
     
+    # Remove all custom buttons
+    def customButtonClear(self):
+        self.custom_buttons = []
+        
     
     # Initialization
     def __init__(self,
@@ -262,6 +276,8 @@ class page():
         self.on_logoapp    = on_logoapp
         
         self.transition    = transition
+        
+        self.custom_buttons = []   # Each item has an icon name, a tooltip string and a callback function
         
         if len(logoappurl) > 0:
             self.logoapp = v.Img(class_='pa-0 ma-0 mr-2', max_width=self.logowidth, src=logoappurl)
