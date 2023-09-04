@@ -23,6 +23,7 @@ from PIL import Image, ImageDraw
 from io import BytesIO
 import math
 import random
+import numpy as np
 
 
 # Returns True if the (r,g,b) color id dark
@@ -239,26 +240,8 @@ class colorInterpolator:
         self.minValue = minValue
         self.maxValue = maxValue
         
-        self.colors = []
-        for color in colorlist:
-            self.colors.append(string2rgb(color))
+        self.colors = [string2rgb(color) for color in colorlist]
         
-        self.palette = []
-        for i in range(len(self.colors)):
-            if i == 0:
-                self.palette.append(self.colors[i])
-            else:
-                c1 = self.colors[i-1]
-                c2 = self.colors[i]
-                
-                for j in range(51):
-                    w2 = float(j)/50.0
-                    w1 = 1.0 - w2
-                    r = int(c1[0]*w1 + c2[0]*w2)
-                    g = int(c1[1]*w1 + c2[1]*w2)
-                    b = int(c1[2]*w1 + c2[2]*w2)
-                    self.palette.append((r,g,b))
-                    
                     
     # Return '#rrggbb' color linearly interpolated 
     def GetColor(self, value):
@@ -281,17 +264,49 @@ class colorInterpolator:
         if value < self.minValue: value = self.minValue
         if value > self.maxValue: value = self.maxValue
         
-        n = len(self.palette)
+        n = len(self.colors)
         
-        v = (value - self.minValue) / (self.maxValue - self.minValue)
-        idx = int(float((n-1)*v) + 0.5)
+        a = list(np.linspace(self.minValue, self.maxValue, n))
+        i2 = next(x[0] for x in enumerate(a) if x[1] >= value)
+        i1 = i2 - 1
+        
+        d1 = abs(value - a[i1])
+        d2 = abs(a[i2] - value)
+        d = d1 + d2
+        w1 = 1.0 - d1/d
+        w2 = 1.0 - w1
+        
+        c1 = self.colors[i1]
+        c2 = self.colors[i2]
 
-        if idx <  0: idx = 0
-        if idx >= n: idx = n - 1
+        r = int(c1[0]*w1 + c2[0]*w2)
+        g = int(c1[1]*w1 + c2[1]*w2)
+        b = int(c1[2]*w1 + c2[2]*w2)
+       
+        return rgb2hex((r,g,b))
         
-        return rgb2hex(self.palette[idx])
         
-                  
+    # Interpolate colors and returns a list of num_classes colors
+    def GetColors(self, num_classes):
+        """
+        Returns a list of colors in the '#rrggbb' format covering all the input colors
+        
+        Parameters
+        ----------
+        num_classes : int
+            Number of colors to interpolate
+                
+        Returns
+        -------
+        A list of strings containing the colors represented as hexadecimals in the '#rrggbb' format
+        """
+        if num_classes >= 2:
+            return [self.GetColor(perc) for perc in np.linspace(0.0, 100.0, num_classes)]
+        
+        return self.colors
+               
+        
+        
     # repr
     def __repr__(self):
         s = [str(x) for x in self.colors]
