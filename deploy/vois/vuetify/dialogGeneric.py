@@ -106,7 +106,7 @@ class dialogGeneric():
     def __init__(self, title='', text='', color=settings.color_first, dark=settings.dark_mode, show=False, content=[], width=500, fullscreen=False,
                  persistent=False, no_click_animation=False, 
                  addclosebuttons=True, addokcancelbuttons=False, on_ok=None, on_cancel=None, on_close=None,
-                 transition='dialog-fade-transition', output=None, titleheight="dense"):
+                 transition='dialog-fade-transition', output=None, titleheight="dense", customclass=""):
         
         self.on_ok     = on_ok
         self.on_cancel = on_cancel
@@ -172,6 +172,7 @@ class dialogGeneric():
         self.dialog = v.Dialog(width=swidth, v_model=show, fullscreen=fullscreen, transition=transition,
                                persistent=persistent, no_click_animation=no_click_animation,
                                style_="background-color: transparent; z-index:20001;", 
+                               content_class=customclass,
                                children=[v.Card(children=clist)])
         
         # Display of the dialog
