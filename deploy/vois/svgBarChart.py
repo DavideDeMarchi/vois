@@ -325,9 +325,9 @@ def svgBarChart(title='',
                 stddev = stddevs[pos]
                 
                 h = value_to_height(stddev)
-                svg += '<line x1="%f" y1="%f" x2="%f" y2="%f" stroke-width="%f" stroke="%s"/>' % (x+0.5*welemnet,y-0.5*h, x+0.5*welemnet, y+0.5*h, strokew_axis, strokecol_axis)    
-                svg += '<line x1="%f" y1="%f" x2="%f" y2="%f" stroke-width="%f" stroke="%s"/>' % (x+0.2*welemnet,y-0.5*h, x+0.8*welemnet, y-0.5*h, strokew_axis, strokecol_axis)    
-                svg += '<line x1="%f" y1="%f" x2="%f" y2="%f" stroke-width="%f" stroke="%s"/>' % (x+0.2*welemnet,y+0.5*h, x+0.8*welemnet, y+0.5*h, strokew_axis, strokecol_axis)    
+                svg += '<line x1="%f" y1="%f" x2="%f" y2="%f" stroke-width="%f" stroke="%s"/>' % (x+0.5*welemnet,y-h, x+0.5*welemnet, y+h, strokew_axis, strokecol_axis)    
+                svg += '<line x1="%f" y1="%f" x2="%f" y2="%f" stroke-width="%f" stroke="%s"/>' % (x+0.2*welemnet,y-h, x+0.8*welemnet, y-h, strokew_axis, strokecol_axis)    
+                svg += '<line x1="%f" y1="%f" x2="%f" y2="%f" stroke-width="%f" stroke="%s"/>' % (x+0.2*welemnet,y+h, x+0.8*welemnet, y+h, strokew_axis, strokecol_axis)    
             
             if showvalues:
                 svg += '<text style="pointer-events: none" x="%f" y="%f" text-anchor="middle" font-family="%s" font-size="%f" fill="%s" font-weight="500">%s</text>' % (x+0.5*welemnet, y-0.1*fontsize, fontsettings.font_name, fontsize*0.7, xaxistextcolor, f.format(value))
