@@ -301,7 +301,7 @@ class colorInterpolator:
         A list of strings containing the colors represented as hexadecimals in the '#rrggbb' format
         """
         if num_classes >= 2:
-            return [self.GetColor(perc) for perc in np.linspace(0.0, 100.0, num_classes)]
+            return [self.GetColor(perc) for perc in np.linspace(self.minValue, self.maxValue, num_classes)]
         
         return self.colors
                

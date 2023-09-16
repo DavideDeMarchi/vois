@@ -47,6 +47,7 @@ General package
  interMap
  ipytrees
  leafletMap
+ svgBarChart
  svgBubblesChart
  svgGraph
  svgHeatmap

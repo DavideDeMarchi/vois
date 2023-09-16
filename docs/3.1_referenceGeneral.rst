@@ -68,6 +68,14 @@ leafletMap module
 
 .. image:: figures/line.png
 
+svgBarChart module
+----------------------
+
+.. automodule:: svgBarChart
+    :members:
+
+.. image:: figures/line.png
+
 svgBubblesChart module
 ----------------------
 

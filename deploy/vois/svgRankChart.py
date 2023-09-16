@@ -107,7 +107,7 @@ def svgRankChart(title='Ranking of labels',
 
     Example
     -------
-    Creation of a SVG chart chart to display some names ordered by correspondent values::
+    Creation of a SVG chart to display some names ordered by correspondent values::
 
         from IPython.display import display
         from ipywidgets import widgets
@@ -293,7 +293,7 @@ def svgRankChart(title='Ranking of labels',
         return svg
     
     # Pixels to add to the output Widget in order to not see the scrollbars
-    added_pixels_width  = 10
+    added_pixels_width  = 20
     added_pixels_height = 20
     
     # Create an output widget and display SVG in it
