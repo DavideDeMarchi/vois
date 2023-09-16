@@ -48,6 +48,7 @@ def svgBarChart(title='',
                 showvalues=False,
                 textweight=400,
                 colorlist=['rgb(247,251,255)', 'rgb(222,235,247)', 'rgb(198,219,239)', 'rgb(158,202,225)', 'rgb(107,174,214)','rgb(66,146,198)', 'rgb(33,113,181)', 'rgb(8,81,156)', 'rgb(8,48,107)'], # Blues inverted
+                colors_on_minmax_values=True,
                 fixedcolors=False,
                 enabledeselect=False,
                 selectcolor='red',
@@ -92,6 +93,8 @@ def svgBarChart(title='',
         List of colors to assign to the rectangles based on the numerical values (default is the inverted Plotly px.colors.sequential.Blues, see `Plotly sequential color scales <https://plotly.com/python/builtin-colorscales/#builtin-sequential-color-scales>`_ and `Plotly qualitative color sequences <https://plotly.com/python/discrete-color/#color-sequences-in-plotly-express>`_ )
     fixedcolors : bool, optional
         If True, the list of colors is assigned to the values in their original order (and colorlist must contain the same number of elements!). Default is False
+    colors_on_minmax_values: bool, optional
+        If True, the colors are stretched on the min and max effective values, otherwise on the minallowed,maxallowed values range (default is True)
     enabledeselect : bool, optional
         If True, a click on a selected element deselects it, and the on_change function is called with None as argument (default is False)
     selectcolor : str, optional
@@ -226,7 +229,11 @@ def svgBarChart(title='',
         maxvalue = maxallowed_value
 
     if minvalue >= maxvalue: maxvalue = minvalue + 1
-    ci = colors.colorInterpolator(colorlist,minvalue,maxvalue)
+    
+    if colors_on_minmax_values:
+        ci = colors.colorInterpolator(colorlist,min(values),max(values))
+    else:
+        ci = colors.colorInterpolator(colorlist,minvalue,maxvalue)
     
     strokew_axis            = 0.2
     strokew_horizontal_ines = 0.06
