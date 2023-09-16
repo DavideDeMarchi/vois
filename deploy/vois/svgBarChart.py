@@ -256,7 +256,7 @@ def svgBarChart(title='',
         y = svgheight - 0.7*hTitle - helem
         return y, helem
         
-    debug = widgets.Output()
+    #debug = widgets.Output()
 
     
     # Create the SVG drawing and returns a string
@@ -426,4 +426,4 @@ def svgBarChart(title='',
                             
     d.on_dom_event(handle_event)
 
-    return out, debug
+    return out #, debug
