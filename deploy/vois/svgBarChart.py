@@ -324,8 +324,13 @@ def svgBarChart(title='',
                 stroke  = barstrokecolor
 
             y, helem = rect_ycoords(value)
+
+            tooltip = f.format(value)
+            if not stddevs is None:
+                stddev = stddevs[pos]
+                tooltip += ' ± %s'%f.format(stddev)
                 
-            svg += '<rect class="barhover" x="%f" y="%f" width="%f" height="%f" fill="%s" stroke-width="%f" stroke="%s"><title>%s: %s</title></rect>' % (x, y, welemnet, helem, col, strokew, stroke, name, f.format(value))
+            svg += '<rect class="barhover" x="%f" y="%f" width="%f" height="%f" fill="%s" stroke-width="%f" stroke="%s"><title>%s: %s</title></rect>' % (x, y, welemnet, helem, col, strokew, stroke, name, tooltip)
             svg += '<text style="pointer-events: none" x="%f" y="%f" text-anchor="middle" font-family="%s" font-size="%f" fill="%s" font-weight="%d">%s</text>' % (x+0.5*welemnet, svgheight, fontsettings.font_name, fontsize, xaxistextcolor, textweight, name)
             
             if not stddevs is None:
