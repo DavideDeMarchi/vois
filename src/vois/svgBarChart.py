@@ -41,10 +41,21 @@ def svgBarChart(title='',
                 names=[],
                 values=[],
                 stddevs=None,
+                selectedname=None,
                 fontsize=1.1,
                 titlecolor='black',
                 barstrokecolor='black',
                 xaxistextcolor='black',
+                xaxistextsizemultiplier=1.0,
+                xaxistextangle=0.0,
+                xaxistextextraspace=0.0,
+                xaxistextdisplacey=0.0,
+                valuestextsizemultiplier=0.7,
+                valuestextangle=0.0,
+                strokew_axis=0.2,
+                strokew_horizontal_lines=0.06,
+                strokecol_axis="#bbbbbb",
+                strokecol_horizontal_lines="#dddddd",
                 showvalues=False,
                 textweight=400,
                 colorlist=['rgb(247,251,255)', 'rgb(222,235,247)', 'rgb(198,219,239)', 'rgb(158,202,225)', 'rgb(107,174,214)','rgb(66,146,198)', 'rgb(33,113,181)', 'rgb(8,81,156)', 'rgb(8,48,107)'], # Blues inverted
@@ -61,7 +72,7 @@ def svgBarChart(title='',
                 maxallowed_value=None,       # Maximum value allowed
                 on_change=None):             # Function to call when the selected name is changed
     """
-    Creation of a chart given a list of labels and corresponding numerical values. The labels are ordered according to the decreasing values and displayed as a vertical list of rectangles. Click on the rectangles is managed by calling a custom python function.
+    Creation of a vertical bar chart given a list of labels and corresponding numerical values. Click on the rectangles is managed by calling a custom python function.
     
     Parameters
     ----------
@@ -77,6 +88,8 @@ def svgBarChart(title='',
         List of numerical values of the same length of the names list (default is [])
     stddevs : list of float, optional
         List of numerical values representing the standard deviation of the values, to be displayed on top of the columns (default is None)
+    selectedname : str, optional
+        Name of the selected item (default is None)
     fontsize : float, optional
         Size of the standard font to use for names in vh coordinates (default is 1.1vh). The chart title will be displayed with sizes proportional to the fontsize parameter (up to two times for the chart title)
     titlecolor : str, optional
@@ -85,6 +98,26 @@ def svgBarChart(title='',
         Color for the bars border (default is 'black')
     xaxistextcolor: str, optional
         Color of labels on the X axis (default is 'black')
+    xaxistextsizemultiplier: float, optional
+        Multiplier factor to calculate the x axis label size from the default fontsize (default is 1.0)
+    xaxistextangle : float, optional
+        Angle in degree to rotate x axis labels (default is 0.0)
+    xaxistextextraspace : float, optional
+        Extra space to reserve to xaxis labels (default is 0.0)
+    xaxistextdisplacey : float, optional
+        Positional displace in y coordinate to apply to the xaxis labels (default is 0.0)
+    valuestextsizemultiplier : float, optional
+        Multiplier factor to calculate the values text size from the default fontsize (default is 0.7)
+    valuestextangle : float, optional
+        Angle in degree to rotate the values text on top of the bars (default is 0.0)
+    strokew_axis : float, optional
+        Stroke width of the lines that define the x and y axis (default is 0.2)
+    strokew_horizontal_lines : float, optional
+        Stroke width of the secondary horizontal lines starting from the y axis (default is 0.06)
+    strokecol_axis : str, optional
+        Color to use for the lines of the x and y axis (default is "#bbbbbb")
+    strokecol_horizontal_lines : str, optional
+        Color to use for the secondary horizontal lines starting from the y axis (default is "#dddddd")
     showvalues: bool, optional
         If True the value of each bar is shown on top of the bar (default is False)
     textweight : int, optional
@@ -203,10 +236,12 @@ def svgBarChart(title='',
         
         
     numbers = range(0,len(names))
-    #ordered = sorted(zip(names,values,numbers), key=lambda x: -x[1]) # Reverse order
     ordered = list(zip(names,values,numbers))
     
     selected = -1
+    if not selectedname is None:
+        if selectedname in names:
+            selected = names.index(selectedname)
 
     mean = statistics.mean(values)
     if len(names) <= 1:
@@ -235,18 +270,13 @@ def svgBarChart(title='',
     else:
         ci = colors.colorInterpolator(colorlist,minvalue,maxvalue)
     
-    strokew_axis            = 0.2
-    strokew_horizontal_ines = 0.06
-    
-    strokecol_axis            = "#bbbbbb"
-    strokecol_horizontal_ines = "#dddddd"
-    
+   
     xstart = 4.0
     xend   = 99.0
     xtext = xstart - 0.8                        # X right coordinate for Y axis texts
     x0 = xstart - 0.6                           # X corresponding to X axis origin
     x1 = xend   + 0.99
-    y0 = svgheight - 0.7*hTitle + strokew_axis  # Y corresponding to Y axis origin
+    y0 = svgheight - xaxistextextraspace - 0.7*hTitle + strokew_axis  # Y corresponding to Y axis origin
     y1 = 0.5*hTitle
     welem = (xend - xstart)/len(names)
     welemnet = (barpercentwidth/100.0)*welem
@@ -255,12 +285,12 @@ def svgBarChart(title='',
     
     # Convert a numerical value to an height in svg coordinates
     def value_to_height(value):
-        return (svgheight - 1.7*hTitle) * (value - minvalue)/(maxvalue - minvalue)
+        return (svgheight - xaxistextextraspace - 1.7*hTitle) * (value - minvalue)/(maxvalue - minvalue)
     
     # Given a numerical value of one of the bar, returns the y svg coordinates of the rectangle
     def rect_ycoords(value):
         helem = value_to_height(value)
-        y = svgheight - 0.7*hTitle - helem
+        y = svgheight - xaxistextextraspace - 0.7*hTitle - helem
         return y, helem
         
     #debug = widgets.Output()
@@ -274,9 +304,9 @@ def svgBarChart(title='',
         svg += '''
     <style type="text/css">
          @import url('%s');
-         .barhover:hover {cursor: pointer; stroke-width: 0.2; stroke: %s; }
+         .barhover:hover {cursor: pointer; stroke-width: %f; stroke: %s; }
     </style>     
-    ''' % (fontsettings.font_url,hovercolor)
+    ''' % (fontsettings.font_url, strokew_axis, hovercolor)
     
         #svg += '<rect x="0.0" y="0.0" width="%f" height="%f" fill="none" stroke-width="0.2" stroke="red"></rect>' % (svgwidth,svgheight)
         
@@ -293,22 +323,22 @@ def svgBarChart(title='',
         # Horizontal lines
         ymax, helem = rect_ycoords(maxvalue)        
         dy = (y0 - ymax)/4.0
-        svg += '<line x1="%f" y1="%f" x2="%f" y2="%f" stroke-width="%f" stroke="%s"/>' % (x0,ymax, x1, ymax, strokew_horizontal_ines, strokecol_horizontal_ines)
+        svg += '<line x1="%f" y1="%f" x2="%f" y2="%f" stroke-width="%f" stroke="%s"/>' % (x0,ymax, x1, ymax, strokew_horizontal_lines, strokecol_horizontal_lines)
         svg += '<text style="pointer-events: none" x="%f" y="%f" text-anchor="end" font-family="%s" font-size="%f" fill="%s" font-weight="400">%s</text>' % (xtext, ymax+fontsize*0.25, fontsettings.font_name, fontsize*0.65, xaxistextcolor, f.format(maxvalue))
         
         y = ymax + dy
-        svg += '<line x1="%f" y1="%f" x2="%f" y2="%f" stroke-width="%f" stroke="%s"/>' % (x0,y, x1, y, strokew_horizontal_ines, strokecol_horizontal_ines)
+        svg += '<line x1="%f" y1="%f" x2="%f" y2="%f" stroke-width="%f" stroke="%s"/>' % (x0,y, x1, y, strokew_horizontal_lines, strokecol_horizontal_lines)
         svg += '<text style="pointer-events: none" x="%f" y="%f" text-anchor="end" font-family="%s" font-size="%f" fill="%s" font-weight="400">%s</text>' % (xtext, y+fontsize*0.25, fontsettings.font_name, fontsize*0.65, xaxistextcolor, f.format(0.75*(maxvalue-minvalue)))
         
         y = 0.5*(ymax + y0)
-        svg += '<line x1="%f" y1="%f" x2="%f" y2="%f" stroke-width="%f" stroke="%s"/>' % (x0,y, x1, y, strokew_horizontal_ines, strokecol_horizontal_ines)
+        svg += '<line x1="%f" y1="%f" x2="%f" y2="%f" stroke-width="%f" stroke="%s"/>' % (x0,y, x1, y, strokew_horizontal_lines, strokecol_horizontal_lines)
         svg += '<text style="pointer-events: none" x="%f" y="%f" text-anchor="end" font-family="%s" font-size="%f" fill="%s" font-weight="400">%s</text>' % (xtext, y+fontsize*0.25, fontsettings.font_name, fontsize*0.65, xaxistextcolor, f.format(0.5*(maxvalue-minvalue)))
         
         y = ymax + 3.0*dy
-        svg += '<line x1="%f" y1="%f" x2="%f" y2="%f" stroke-width="%f" stroke="%s"/>' % (x0,y, x1, y, strokew_horizontal_ines, strokecol_horizontal_ines)
+        svg += '<line x1="%f" y1="%f" x2="%f" y2="%f" stroke-width="%f" stroke="%s"/>' % (x0,y, x1, y, strokew_horizontal_lines, strokecol_horizontal_lines)
         svg += '<text style="pointer-events: none" x="%f" y="%f" text-anchor="end" font-family="%s" font-size="%f" fill="%s" font-weight="400">%s</text>' % (xtext, y+fontsize*0.25, fontsettings.font_name, fontsize*0.65, xaxistextcolor, f.format(0.25*(maxvalue-minvalue)))
        
-        
+    
         # Vertical bars
         x = xstart
         for name,value,pos in ordered:
@@ -317,10 +347,10 @@ def svgBarChart(title='',
             else:            col = ci.GetColor(value)
                 
             if showselection and pos==selected:
-                strokew = 0.2
+                strokew = strokew_axis
                 stroke  = selectcolor
             else:
-                strokew = 0.05
+                strokew = strokew_axis*0.3
                 stroke  = barstrokecolor
 
             y, helem = rect_ycoords(value)
@@ -329,20 +359,32 @@ def svgBarChart(title='',
             if not stddevs is None:
                 stddev = stddevs[pos]
                 tooltip += ' ± %s'%f.format(stddev)
+
+            xt = x+0.5*welemnet
+            yt = svgheight + xaxistextdisplacey - xaxistextextraspace
+            rotation = ''
+            if xaxistextangle != 0.0:
+                rotation = 'dominant-baseline="central" transform="rotate(%f, %f, %f)"'%(xaxistextangle,xt,yt)
                 
             svg += '<rect class="barhover" x="%f" y="%f" width="%f" height="%f" fill="%s" stroke-width="%f" stroke="%s"><title>%s: %s</title></rect>' % (x, y, welemnet, helem, col, strokew, stroke, name, tooltip)
-            svg += '<text style="pointer-events: none" x="%f" y="%f" text-anchor="middle" font-family="%s" font-size="%f" fill="%s" font-weight="%d">%s</text>' % (x+0.5*welemnet, svgheight, fontsettings.font_name, fontsize, xaxistextcolor, textweight, name)
+            svg += '<text style="pointer-events: none" x="%f" y="%f" text-anchor="middle" font-family="%s" font-size="%f" fill="%s" font-weight="%d" %s>%s</text>' % (xt, yt, fontsettings.font_name, fontsize*xaxistextsizemultiplier,
+                                                                                                                                                                      xaxistextcolor, textweight, rotation, name)
             
             if not stddevs is None:
                 stddev = stddevs[pos]
                 
                 h = value_to_height(stddev)
-                svg += '<line x1="%f" y1="%f" x2="%f" y2="%f" stroke-width="%f" stroke="%s"/>' % (x+0.5*welemnet,y-h, x+0.5*welemnet, y+h, strokew_axis, strokecol_axis)    
-                svg += '<line x1="%f" y1="%f" x2="%f" y2="%f" stroke-width="%f" stroke="%s"/>' % (x+0.2*welemnet,y-h, x+0.8*welemnet, y-h, strokew_axis, strokecol_axis)    
-                svg += '<line x1="%f" y1="%f" x2="%f" y2="%f" stroke-width="%f" stroke="%s"/>' % (x+0.2*welemnet,y+h, x+0.8*welemnet, y+h, strokew_axis, strokecol_axis)    
+                svg += '<line style="pointer-events: none" x1="%f" y1="%f" x2="%f" y2="%f" stroke-width="%f" stroke="%s"/>' % (x+0.5*welemnet,y-h, x+0.5*welemnet, y+h, strokew_axis, strokecol_axis)    
+                svg += '<line style="pointer-events: none" x1="%f" y1="%f" x2="%f" y2="%f" stroke-width="%f" stroke="%s"/>' % (x+0.2*welemnet,y-h, x+0.8*welemnet, y-h, strokew_axis, strokecol_axis)    
+                svg += '<line style="pointer-events: none" x1="%f" y1="%f" x2="%f" y2="%f" stroke-width="%f" stroke="%s"/>' % (x+0.2*welemnet,y+h, x+0.8*welemnet, y+h, strokew_axis, strokecol_axis)    
             
             if showvalues:
-                svg += '<text style="pointer-events: none" x="%f" y="%f" text-anchor="middle" font-family="%s" font-size="%f" fill="%s" font-weight="500">%s</text>' % (x+0.5*welemnet, y-0.1*fontsize, fontsettings.font_name, fontsize*0.7, xaxistextcolor, f.format(value))
+                xt = x+0.5*welemnet
+                yt = y-0.1*fontsize
+                rotation = ''
+                if valuestextangle != 0.0:
+                    rotation = 'dominant-baseline="central" transform="rotate(%f, %f, %f)"'%(valuestextangle,xt,yt)
+                svg += '<text style="pointer-events: none" x="%f" y="%f" text-anchor="middle" font-family="%s" font-size="%f" fill="%s" font-weight="500" %s>%s</text>' % (xt, yt, fontsettings.font_name, fontsize*valuestextsizemultiplier, xaxistextcolor, rotation, f.format(value))
                 
             x += welem
 
