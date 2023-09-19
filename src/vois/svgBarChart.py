@@ -298,7 +298,7 @@ def svgBarChart(title='',
     
     # Create the SVG drawing and returns a string
     def createSVG():
-        preserve = 'xMidYMid meet'
+        preserve = 'xMinYMin slice'
         svg = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" viewBox="0 0 %f %f" preserveAspectRatio="%s" width="%fvw" height="%fvh">' % (svgwidth,svgheight, preserve, width,height)
 
         svg += '''
@@ -308,7 +308,7 @@ def svgBarChart(title='',
     </style>     
     ''' % (fontsettings.font_url, strokew_axis, hovercolor)
     
-        #svg += '<rect x="0.0" y="0.0" width="%f" height="%f" fill="none" stroke-width="0.2" stroke="red"></rect>' % (svgwidth,svgheight)
+        ###svg += '<rect x="0.0" y="0.0" width="%f" height="%f" fill="none" stroke-width="0.2" stroke="red"></rect>' % (svgwidth,svgheight)
         
         # Title
         svg += '<text x="%f" y="%f" text-anchor="middle" font-family="%s" font-size="%f" fill="%s" font-weight="%d">%s</text>' % (svgwidth/2.0, 2.2*titlefontsize/3.0, fontsettings.font_name, titlefontsize, titlecolor, textweight+100, title)
@@ -413,8 +413,8 @@ def svgBarChart(title='',
         def event_to_svg_coordinates(event):
 
             # Distance from the drawing to the border of the output widget (given the 30 pixels added!!!)
-            dx_left   = 16.0
-            dx_right  = 14.0
+            dx_left   = 6.0
+            dx_right  = 24.0
             dy_top    = 5.0
             dy_bottom = 27.0
 
