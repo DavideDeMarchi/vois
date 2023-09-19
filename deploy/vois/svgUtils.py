@@ -185,12 +185,8 @@ def graduatedLegend(df,                          # Pandas dataframe indexed on c
         The correspondance between the values assigned to features and the colors list is done by calculating a range of values [min,max] to linearly map the values to the colors. This range is defined by calculating the mean and standard deviation of the country values and applying this formula [mean - stdevnumber*stddev, mean + stdevnumber*stddev]. Default is 2.0
     fill : str, optional
         Fill color to use for the features that are not joined (default is '#f1f1f1')
-    stroke : str, optional
-        Color to use for the border of countries (default is '#232323')
     stroke_selected : str, optional
-        Color to use for the border of the selected features (default is '#00ffff')
-    stroke_width: float, optional
-        Width of the border of the country polygons in pixels (default is 3.0)
+        Color to use for the selected features (default is '#00ffff')
     decimals : int, optional
         Number of decimals for the legend numbers display (default is 2)
     minallowed_value : float, optional
@@ -404,6 +400,282 @@ def graduatedLegend(df,                          # Pandas dataframe indexed on c
             if polybary[code] >= y1 and polybary[code] <= y2:
                 svg += '<text x="%d" y="%d" text-anchor="end" font-size="%f" font-family="%s" font-weight="bold" fill="%s">%s</text>' % (x1-wlineette/2, polybary[code]+fontsize2/3, fontsize2, fontsettings.font_name, textcolor, code)
                 svg += '<line x1="%d" y1="%d" x2="%d" y2="%d" style="stroke:%s; stroke-width:%f" />' % (x1, polybary[code], x2, polybary[code], stroke_selected, barthickness)
+    
+    svg += '</svg>'
+    return svg
+
+
+
+
+###########################################################################################################################################################################
+# Returns svg string containing a vertical graduated/colors legend
+###########################################################################################################################################################################
+def graduatedLegendVWVH(df,                          # Pandas dataframe indexed on code_column and containing 'value' and 'label' columns
+                    code_column=None,            # Name of the column containing the code of the country (None = the country code is the index of the dataframe)
+                    value_column='value',        # Name of the column containing the value
+                    label_column='label',        # Name of the column containing the label
+                    codes_selected=[],           # codes of the countries selected
+                    colorlist=['#0d0887', '#46039f', '#7201a8', '#9c179e', '#bd3786', '#d8576b', '#ed7953', '#fb9f3a', '#fdca26', '#f0f921'],   # default color scale
+                    stdevnumber=2.0,             # Number of stddev to calculate (minvalue,maxvalue) range
+                    fill='#f1f1f1',              # fill color for countries
+                    stroke_selected='#00ffff',   # stroke color for border of selected country
+                    decimals=2,                  # Number of decimals for the legend number display
+                    minallowed_value=None,       # Minimum value allowed
+                    maxallowed_value=None,       # Maximum value allowed
+                    hoveronempty=False,          # If True highlights polygon on hover even if no value present in input df for the polygon
+                    legendtitle='',              # Title to add to the legend (top)
+                    legendunits='',              # Units of measure to add to the legend (bottom)
+                    fontsize=20,
+                    width=20.0,
+                    height=40.0,
+                    bordercolor='black',
+                    textcolor='black',
+                    dark=False):
+    """
+    Creation of graduated legend in SVG format. Given a Pandas DataFrame in the same format of the one in input to :py:func:`interMap.geojsonMap` function, this functions generates an SVG drawing displaying a graduated colors legend. 
+
+    Parameters
+    ----------
+    df : Pandas DataFrame
+        Pandas DataFrame to use for assigning values to features. It has to contain at least a column with numeric values.
+    code_column : str, optional
+        Name of the column of the df Pandas DataFrame containing the unique code of the features. This column is used to perform the join with the internal attribute of the geojson vector dataset that contains the unique code. If the code_column is None, the code is taken from the index of the DataFrame, (default is None)
+    value_column : str, optional
+        Name of the column of the Pandas DataFrame containing the values to be assigned to the features using the join on geojson unique codes (default is 'value')
+    label_column : str, optional
+        Name of the column of the Pandas DataFrame containing the label to be assigned to the features using the join on geojson unique codes (default is 'label')
+    codes_selected : list of strings, optional
+        List of codes of features to display as selected (default is [])
+    colorlist : list of colors, optional
+        List of colors to assign to the country polygons (default is the Plotly px.colors.sequential.Plasma, see `Plotly sequential color scales <https://plotly.com/python/builtin-colorscales/#builtin-sequential-color-scales>`_ and `Plotly qualitative color sequences <https://plotly.com/python/discrete-color/#color-sequences-in-plotly-express>`_ )
+    stdevnumber : float, optional
+        The correspondance between the values assigned to features and the colors list is done by calculating a range of values [min,max] to linearly map the values to the colors. This range is defined by calculating the mean and standard deviation of the country values and applying this formula [mean - stdevnumber*stddev, mean + stdevnumber*stddev]. Default is 2.0
+    fill : str, optional
+        Fill color to use for the features that are not joined (default is '#f1f1f1')
+    stroke_selected : str, optional
+        Color to use for the border of the selected features (default is '#00ffff')
+    decimals : int, optional
+        Number of decimals for the legend numbers display (default is 2)
+    minallowed_value : float, optional
+        Minimum value allowed, to force the calculation of the [min,max] range to map the values to the colors
+    maxallowed_value : float, optional
+        Maximum value allowed, to force the calculation of the [min,max] range to map the values to the colors
+    hoveronempty : bool, optional
+        If True highlights polygon on hover even if no value present in input df for the feature (default is False)
+    legendtitle : str, optional
+        Title to add on top of the legend (default is '')
+    legendunits : str, optional
+        Units of measure to add to the bottom of the legend (default is '')
+    fontsize : int, optional
+        Size in pixels of the font used for texts (default is 20)
+    width : float, optional
+        Width of the SVG drawing in vw units (default is 20.0)
+    height : float, optional
+        Height of the SVG drawing in vh units (default is 40.0)
+    bordercolor : str, optional
+        Color for lines and rects of the legend (default is 'black')
+    textcolor : str, optional
+        Color for texts of the legend (default is 'black')
+    dark : bool, optional
+        If True, the bordercolor and textcolor are set to white (default is False)
+        
+    Returns
+    -------
+        a string containing SVG text to display the graduated legend
+
+    Example
+    -------
+    Creation of a SVG drawing to display a graduated legend. Input is prepared in the same way of the example provided for the :py:func:`interMap.geojsonMap` function::
+        
+        import numpy as np
+        import pandas as pd
+        import plotly.express as px
+        from vois import svgMap, svgUtils
+
+        countries = svgMap.country_codes
+
+        # Generate random values and create a dictionary: key=countrycode, value=random in [0.0,100.0]
+        d = dict(zip(countries, list(np.random.uniform(size=len(countries),low=0.0,high=100.0))))
+
+        # Create a pandas dataframe from the dictionary
+        df = pd.DataFrame(d.items(), columns=['iso2code', 'value'])
+
+        svg = svgUtils.graduatedLegend(df, code_column='iso2code',
+                                       codes_selected=['IT', 'FR', 'CH'],
+                                       stroke_selected='red',
+                                       colorlist=px.colors.sequential.Viridis[::-1],
+                                       stdevnumber=2.0,
+                                       legendtitle='2020 Total energy consumption',
+                                       legendunits='KTOE per 100K inhabit.',
+                                       fontsize=18,
+                                       width=340, height=600)
+        display(HTML(svg))
+
+    .. figure:: figures/graduatedLegend.png
+       :scale: 100 %
+       :alt: graduatedLegend example
+
+       Example of a graduatedLegend in SVG
+        
+    """
+
+    if df.shape[0] <= 0:
+        minvalue = 1.0
+        maxvalue = 2.0
+    else:
+        mean = df[value_column].mean()
+        if df.shape[0] <= 1:
+            minvalue = mean
+            maxvalue = mean
+        else:
+            stddev = df[value_column].std()
+            valuemin = df[value_column].min()
+            valuemax = df[value_column].max()
+
+            minvalue = mean - stdevnumber*stddev
+            maxvalue = mean + stdevnumber*stddev
+
+            if minvalue < valuemin: minvalue = valuemin
+            if maxvalue > valuemax: maxvalue = valuemax
+
+        if not minallowed_value is None:
+            if minvalue < minallowed_value: minvalue = minallowed_value
+        if not maxallowed_value is None:
+            if maxvalue > maxallowed_value: maxvalue = maxallowed_value
+        
+    #print(mean,stddev, minvalue, maxvalue)
+
+    if minvalue >= maxvalue: maxvalue = minvalue + 1
+    ci = colors.colorInterpolator(colorlist,minvalue,maxvalue)
+
+    if dark:
+        if bordercolor=='black': bordercolor='white'
+        if textcolor  =='black': textcolor  ='white'
+
+    # Sizable dimensioning
+    svgwidth = 100.0
+    aspectratio = 0.5*height / width   # In landscape mode, usually the height is half the width dimension!!!
+    svgheight = svgwidth * aspectratio
+            
+    # Positioning of the legend
+    w = svgwidth / 5.0
+    x1 = (svgwidth-w)/2
+    x2 = x1 + w
+    wlineette = svgwidth / 25.0
+    
+    #y1 = height // 18
+    y1 = 2*fontsize
+    h = svgheight - 1.5*y1
+    if len(legendunits) > 0:
+        h -= y1/2.0
+    y2 = y1 + h
+    
+    barthickness = width/50.0
+    fontsize1 = fontsize*0.92
+    fontsize2 = fontsize*0.85
+    
+    # Calculate the legend in SVG format
+    preserve = 'xMidYMid meet'
+    svg = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" viewBox="0 0 %f %f" preserveAspectRatio="%s" width="%fvw" height="%fvh">' % (svgwidth,svgheight, preserve, width,height)
+    
+    svg += '''
+  <style type="text/css">
+     @import url('%s');
+''' % fontsettings.font_url
+
+    # Colors indexed by iso2_code of countries
+    polycolors = {}    # Fill color of the polygon
+    polyclass  = {}    # class to assign to the polygon ("country" or "")
+    polybary   = {}    # Y coordinate of the bar on the legend highlighted when hover on a country
+    
+    country_codes = df[code_column].unique()
+    
+    for c in country_codes:
+        polycolors[c] = fill
+        polybary[c]   = -1000
+        if hoveronempty:
+            polyclass[c] = 'country'
+        else:
+            polyclass[c] = ''
+        
+    # Set colors for all the countries
+    for index, row in df.iterrows():
+        if code_column is None: code = index
+        else:                   code = row[code_column]
+        value = row[value_column]
+        polycolors[code] = ci.GetColor(value)
+        polyclass[code]  = 'country'
+
+        if label_column in df:
+            v = row[label_column]
+        else:
+            v = str(value)
+                
+        y = y2 - (y2-y1) * (value - minvalue) / (maxvalue - minvalue)
+        if y < y1: y = y1
+        if y > y2: y = y2
+        polybary[code] = y
+        
+    #print(minvalue,maxvalue, y1, y2)
+        
+    # Add color for every polygon
+    for c in country_codes:
+        svg += 'svg #%s { fill: %s; }\n' % (c, polycolors[c])
+        
+    svg += '</style>'
+
+    
+    # Legend on the right
+    if len(legendtitle) > 0:
+        svg += '<text x="%d" y="%d" text-anchor="middle" font-size="%f" font-family="%s" font-weight="bold" fill="%s">%s</text>' % (x1+w/2.0, y1-fontsize, fontsize, fontsettings.font_name, textcolor, legendtitle)
+        
+    if len(legendunits) > 0:
+        svg += '<text x="%f" y="%f" text-anchor="middle" font-size="%f" font-family="%s" font-weight="bold" fill="%s">%s</text>' % (x1+w/2.0, y2+fontsize*1.5, fontsize2, fontsettings.font_name, textcolor, legendunits)
+        
+    svg += '<rect x="%f" y="%f" width="%f" height="%f" style="fill:none; stroke-width:%f; stroke:%s;" />' % (x1, y1, w, h, barthickness*4.0, bordercolor)
+    
+    y = y1
+    while y <= y2:
+        value = maxvalue - (y - y1) * (maxvalue - minvalue) / (y2 - y1)
+        svg += '<line x1="%f" y1="%f" x2="%f" y2="%f" style="stroke:%s;stroke-width:%f" />' % ( x1,y,x2,y, ci.GetColor(value), barthickness )
+        y += 0.06666
+        
+    svg += '<line x1="%f" y1="%f" x2="%f" y2="%f" style="stroke:%s; stroke-width:%f" />' % ( x2,y2,x2+wlineette,y2, bordercolor, barthickness/2.0 )
+    svg += '<line x1="%f" y1="%f" x2="%f" y2="%f" style="stroke:%s; stroke-width:%f" />' % ( x2,y1,x2+wlineette,y1, bordercolor, barthickness/2.0 )
+
+    xtext = x2 + wlineette*1.25
+    
+    valmin = '{:.{prec}f}'.format(minvalue, prec=decimals)
+    svg += '<text x="%f" y="%f" font-size="%f" font-family="%s" fill="%s">%s</text>' % (xtext, y2+fontsize2/3, fontsize1, fontsettings.font_name, textcolor, valmin)
+    
+    valmax = '{:.{prec}f}'.format(maxvalue, prec=decimals)
+    svg += '<text x="%f" y="%f" font-size="%f" font-family="%s" fill="%s">%s</text>' % (xtext, int(y1+fontsize2*0.4), fontsize1, fontsettings.font_name, textcolor, valmax)
+    
+    valmed = '{:.{prec}f}'.format((minvalue+maxvalue)/2.0, prec=decimals)
+    if valmed != valmin and valmed != valmax:
+        y = (y1+y2)/2.0
+        svg += '<line x1="%f" y1="%f" x2="%f" y2="%f" style="stroke:%s; stroke-width:%f" />' % ( x2,y,x2+wlineette,y, bordercolor, barthickness/2.0 )
+        svg += '<text x="%f" y="%f" font-size="%f" font-family="%s" fill="%s">%s</text>' % (xtext, y+fontsize2/3.0, fontsize1, fontsettings.font_name, textcolor, valmed)
+        
+    val = '{:.{prec}f}'.format(minvalue + 3.0*(maxvalue-minvalue)/4.0, prec=decimals)
+    if val != valmed and val != valmax:
+        y = y1+(y2-y1)/4.0
+        svg += '<line x1="%f" y1="%f" x2="%f" y2="%f" style="stroke:%s; stroke-width:%f" />' % ( x2,y,x2+wlineette,y, bordercolor, barthickness/2.0 )
+        svg += '<text x="%f" y="%f" font-size="%f" font-family="%s" fill="%s">%s</text>' % (xtext, y+fontsize2/3.0, fontsize1, fontsettings.font_name, textcolor, val)
+        
+    val = '{:.{prec}f}'.format(minvalue + (maxvalue-minvalue)/4.0, prec=decimals)
+    if val != valmin and val != valmed:
+        y = y1+3.0*(y2-y1)/4.0
+        svg += '<line x1="%f" y1="%f" x2="%f" y2="%f" style="stroke:%s; stroke-width:%f" />' % ( x2,y,x2+wlineette,y, bordercolor, barthickness/2.0 )
+        svg += '<text x="%f" y="%f" font-size="%f" font-family="%s" fill="%s">%s</text>' % (xtext, y+fontsize2/3.0, fontsize1, fontsettings.font_name, textcolor, val)
+    
+    
+    # Add horizontal lines in the legend for the selected countries
+    for code in codes_selected:
+        if code in country_codes:
+            if polybary[code] >= y1 and polybary[code] <= y2:
+                svg += '<text x="%f" y="%f" text-anchor="end" font-size="%f" font-family="%s" font-weight="bold" fill="%s">%s</text>' % (x1-wlineette/2, polybary[code]+fontsize2/3, fontsize2, fontsettings.font_name, textcolor, code)
+                svg += '<line x1="%f" y1="%f" x2="%f" y2="%f" style="stroke:%s; stroke-width:%f" />' % (x1, polybary[code], x2, polybary[code], stroke_selected, barthickness*3.0)
     
     svg += '</svg>'
     return svg
