@@ -49,6 +49,7 @@ def svgBarChart(title='',
                 xaxistextsizemultiplier=1.0,
                 xaxistextangle=0.0,
                 xaxistextextraspace=0.0,
+                yaxistextextraspace=5.0,
                 xaxistextdisplacey=0.0,
                 valuestextsizemultiplier=0.7,
                 valuestextangle=0.0,
@@ -106,6 +107,8 @@ def svgBarChart(title='',
         Angle in degree to rotate x axis labels (default is 0.0)
     xaxistextextraspace : float, optional
         Extra space to reserve to xaxis labels (default is 0.0)
+    yaxistextextraspace : float, optional
+        Extra space to reserve to yaxis labels in percentage (default is 5.0)
     xaxistextdisplacey : float, optional
         Positional displace in y coordinate to apply to the xaxis labels (default is 0.0)
     valuestextsizemultiplier : float, optional
@@ -281,7 +284,7 @@ def svgBarChart(title='',
             minvalue = yaxis_min
             maxvalue = yaxis_max
    
-    xstart = 4.0
+    xstart = yaxistextextraspace
     xend   = 99.0
     xtext = xstart - 0.8                        # X right coordinate for Y axis texts
     x0 = xstart - 0.6                           # X corresponding to X axis origin
@@ -318,7 +321,7 @@ def svgBarChart(title='',
     </style>     
     ''' % (fontsettings.font_url, strokew_axis, hovercolor)
     
-        svg += '<rect x="0.0" y="0.0" width="%f" height="%f" fill="none" stroke-width="0.2" stroke="red"></rect>' % (svgwidth,svgheight)
+        ###svg += '<rect x="0.0" y="0.0" width="%f" height="%f" fill="none" stroke-width="0.2" stroke="red"></rect>' % (svgwidth,svgheight)
         
         # Title
         svg += '<text x="%f" y="%f" text-anchor="middle" font-family="%s" font-size="%f" fill="%s" font-weight="%d">%s</text>' % (svgwidth/2.0, 2.2*titlefontsize/3.0, fontsettings.font_name, titlefontsize, titlecolor, textweight+100, title)
@@ -423,8 +426,8 @@ def svgBarChart(title='',
         def event_to_svg_coordinates(event):
 
             # Distance from the drawing to the border of the output widget (given the 30 pixels added!!!)
-            dx_left   = 16.0
-            dx_right  = 14.0
+            dx_left   = 2.0
+            dx_right  = 28.0
             dy_top    = 5.0
             dy_bottom = 27.0
 
