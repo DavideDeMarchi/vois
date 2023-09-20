@@ -409,7 +409,7 @@ def svgBarChart(title='',
     added_pixels_height = 30
     
     # Create an output widget and display SVG in it
-    out = widgets.Output(layout=Layout(width='calc(%fvw + %dpx)'%(width,added_pixels_width), height='calc(%fvh + %dpx)'%(height,added_pixels_height), margin='0px 0px 0px 0px', border='1px dashed green'))
+    out = widgets.Output(layout=Layout(width='calc(%fvw + %dpx)'%(width,added_pixels_width), height='calc(%fvh + %dpx)'%(height,added_pixels_height), margin='0px 0px 0px 0px')) #, border='1px dashed green'))
 
     svg = createSVG()
     with out:
