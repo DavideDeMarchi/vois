@@ -56,6 +56,8 @@ class button():
         Tooltip text to show when the user hovers on the button (default is '')
     large : bool, optional
         Flag that sets the large version of the button (default is False)
+    xlarge : bool, optional
+        Flag that sets the xlarge version of the button (default is False)
     small : bool, optional
         Flag that sets the small version of the button (default is False)
     xsmall : bool, optional
@@ -147,7 +149,7 @@ class button():
 
    
     # Initialization
-    def __init__(self, text, onclick=None, argument=None, width=100, height=36, selected=False, disabled=False, tooltip='', large=False, small=False, xsmall=False, outlined=False, textweight=500,
+    def __init__(self, text, onclick=None, argument=None, width=100, height=36, selected=False, disabled=False, tooltip='', large=False, xlarge=False, small=False, xsmall=False, outlined=False, textweight=500,
                  href=None, target=None, onlytext=False, textcolor=None,  class_="pa-0 ma-0",
                  icon=None, iconlarge=False, iconsmall=False, iconleft=False, iconcolor='black',
                  autoselect=False, dark=settings.dark_mode, rounded=settings.button_rounded, tile=False,
@@ -186,7 +188,7 @@ class button():
                 if len(self.text) == 0: childs = [icn]
                 else:                   childs = [self.text, icn]
             
-        self.b = v.Btn(color=color, dark=dark, icon=onlytext, depressed=True, outlined=outlined, large=large, small=small, x_small=xsmall, 
+        self.b = v.Btn(color=color, dark=dark, icon=onlytext, depressed=True, outlined=outlined, large=large, xlarge=xlarge, small=small, x_small=xsmall, 
                        disabled=disabled, width=width, min_width=width, height=height, min_height=height, href=href, target=target, tile=tile, 
                        children=childs, style_='font-family: %s; font-size: 17; font-weight: %d; text-transform: none' % (fontsettings.font_name, textweight), rounded=rounded)
                 
