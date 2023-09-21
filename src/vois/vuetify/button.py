@@ -45,9 +45,9 @@ class button():
     argument : any, optional
         Argument to be passed to the onclick function when user click on the label (default is None)
     width : int, optional
-        Wuidth of the button widget in pixels (default is 20)
+        Width of the button widget in pixels (default is 100)
     height : int, optional
-        Height of the button widget in pixels (default is 20)
+        Height of the button widget in pixels (default is 36)
     selected : bool, optional
         Flag to show the button as selected (default is False)
     disabled : bool, optional

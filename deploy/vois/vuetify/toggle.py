@@ -52,7 +52,9 @@ class toggle():
     row : bool, optional
         Flag to display the buttons horizontally or vertically (default is True)
     width : int, optional
-        Width in pixels of the buttons
+        Width in pixels of the buttons (default is 150)
+    height : int, optional
+        Height in pixels of the buttons (default is 36)
     justify : str, optional
         In case of horizontal placement, applies the justify-content css property. Available options are: start, center, end, space-between and space-around.
     rounded : bool, optional
@@ -110,7 +112,7 @@ class toggle():
 
     # Initialization
     def __init__(self, index, labels, tooltips=None, color=settings.color_first, onchange=None,
-                 row=True, width=150, justify='space-between', rounded=settings.button_rounded, outlined=False,
+                 row=True, width=150, height=36, justify='space-between', rounded=settings.button_rounded, outlined=False,
                  colorselected=settings.color_first, colorunselected=settings.color_second, dark=settings.dark_mode,
                  paddingrow=1, paddingcol=2, tile=False, small=False, xsmall=False, large=False, xlarge=False):
         
@@ -121,6 +123,7 @@ class toggle():
         self.onchange = onchange
         self.row      = row
         self.width    = width
+        self.height   = height
         self.justify  = justify
         self.rounded  = rounded
         self.outlined = outlined
@@ -152,7 +155,7 @@ class toggle():
             else:        c = "pa-0 ma-0 mb-%d"%self.paddingcol
                     
             b = button.button(label, dark=self.dark, class_=c, small=self.small, xsmall=self.xsmall, large=self.large, xlarge=self.xlarge,
-                              onclick=self.__internal_onchange, argument=i, width=self.width, tooltip=tooltip, selected=(i==self.index),
+                              onclick=self.__internal_onchange, argument=i, width=self.width, height=self.height, tooltip=tooltip, selected=(i==self.index),
                               rounded=self.rounded, tile=self.tile, outlined=self.outlined, colorselected=self.colorselected, colorunselected=self.colorunselected)
             self.buttons.append(b)
             i += 1
