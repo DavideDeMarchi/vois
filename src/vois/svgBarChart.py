@@ -41,6 +41,7 @@ def svgBarChart(title='',
                 names=[],
                 values=[],
                 stddevs=None,
+                dictnames=None,
                 selectedname=None,
                 fontsize=1.1,
                 titlecolor='black',
@@ -91,6 +92,8 @@ def svgBarChart(title='',
         List of numerical values of the same length of the names list (default is [])
     stddevs : list of float, optional
         List of numerical values representing the standard deviation of the values, to be displayed on top of the columns (default is None)
+    dictnames : dict, optional
+        Dictionary to convert codes to names when displaying the selection (default is None)
     selectedname : str, optional
         Name of the selected item (default is None)
     fontsize : float, optional
@@ -379,7 +382,12 @@ def svgBarChart(title='',
             if xaxistextangle != 0.0:
                 rotation = 'dominant-baseline="central" transform="rotate(%f, %f, %f)"'%(xaxistextangle,xt,yt)
                 
-            svg += '<rect class="barhover" x="%f" y="%f" width="%f" height="%f" fill="%s" stroke-width="%f" stroke="%s"><title>%s: %s</title></rect>' % (x, y, welemnet, helem, col, strokew, stroke, name, tooltip)
+            fullname = name
+            if not dictnames is None and name in dictnames:
+                fullname = dictnames[name]
+                
+            svg += '<rect class="barhover" x="%f" y="%f" width="%f" height="%f" fill="%s" stroke-width="%f" stroke="%s"><title>%s: %s</title></rect>' % (x, y, welemnet, helem, col, strokew, stroke, fullname, tooltip)
+            
             svg += '<text style="pointer-events: none" x="%f" y="%f" text-anchor="middle" font-family="%s" font-size="%f" fill="%s" font-weight="%d" %s>%s</text>' % (xt, yt, fontsettings.font_name, fontsize*xaxistextsizemultiplier,
                                                                                                                                                                       xaxistextcolor, textweight, rotation, name)
             

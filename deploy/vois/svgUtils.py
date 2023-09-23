@@ -147,6 +147,7 @@ def graduatedLegend(df,                          # Pandas dataframe indexed on c
                     code_column=None,            # Name of the column containing the code of the country (None = the country code is the index of the dataframe)
                     value_column='value',        # Name of the column containing the value
                     label_column='label',        # Name of the column containing the label
+                    dictnames=None,              # Dict to convert codes to names
                     codes_selected=[],           # codes of the countries selected
                     colorlist=['#0d0887', '#46039f', '#7201a8', '#9c179e', '#bd3786', '#d8576b', '#ed7953', '#fb9f3a', '#fdca26', '#f0f921'],   # default color scale
                     stdevnumber=2.0,             # Number of stddev to calculate (minvalue,maxvalue) range
@@ -177,6 +178,8 @@ def graduatedLegend(df,                          # Pandas dataframe indexed on c
         Name of the column of the Pandas DataFrame containing the values to be assigned to the features using the join on geojson unique codes (default is 'value')
     label_column : str, optional
         Name of the column of the Pandas DataFrame containing the label to be assigned to the features using the join on geojson unique codes (default is 'label')
+    dictnames : dict, optional
+        Dictionary to convert codes to names when displaying the selection (default is None)
     codes_selected : list of strings, optional
         List of codes of features to display as selected (default is [])
     colorlist : list of colors, optional
@@ -313,12 +316,16 @@ def graduatedLegend(df,                          # Pandas dataframe indexed on c
     polycolors = {}    # Fill color of the polygon
     polyclass  = {}    # class to assign to the polygon ("country" or "")
     polybary   = {}    # Y coordinate of the bar on the legend highlighted when hover on a country
+    polyover   = {}    # True if a value is outside of the legend
+    polyname   = {}    # Name assigned to the polygon
     
     country_codes = df[code_column].unique()
     
     for c in country_codes:
         polycolors[c] = fill
         polybary[c]   = -1000
+        polyover[c]   = False
+        
         if hoveronempty:
             polyclass[c] = 'country'
         else:
@@ -328,6 +335,11 @@ def graduatedLegend(df,                          # Pandas dataframe indexed on c
     for index, row in df.iterrows():
         if code_column is None: code = index
         else:                   code = row[code_column]
+
+        polyname[code] = code
+        if not dictnames is None and code in dictnames:
+            polyname[code] = dictnames[code]
+            
         value = row[value_column]
         polycolors[code] = ci.GetColor(value)
         polyclass[code]  = 'country'
@@ -342,6 +354,9 @@ def graduatedLegend(df,                          # Pandas dataframe indexed on c
         if y > y2: y = y2
         polybary[code] = y
         
+        if value < minvalue or value > maxvalue:
+            polyover[code] = True
+            
     #print(minvalue,maxvalue, y1, y2)
         
     # Add color for every polygon
@@ -398,8 +413,12 @@ def graduatedLegend(df,                          # Pandas dataframe indexed on c
     for code in codes_selected:
         if code in country_codes:
             if polybary[code] >= y1 and polybary[code] <= y2:
-                svg += '<text x="%d" y="%d" text-anchor="end" font-size="%f" font-family="%s" font-weight="bold" fill="%s">%s</text>' % (x1-wlineette/2, polybary[code]+fontsize2/3, fontsize2, fontsettings.font_name, textcolor, code)
-                svg += '<line x1="%d" y1="%d" x2="%d" y2="%d" style="stroke:%s; stroke-width:%f" />' % (x1, polybary[code], x2, polybary[code], stroke_selected, barthickness)
+                svg += '<text x="%f" y="%f" text-anchor="end" font-size="%f" font-family="%s" font-weight="bold" fill="%s">%s<title>%s</title></text>' % (x1-wlineette/2, polybary[code]+fontsize2/3, fontsize2, fontsettings.font_name, textcolor, polyname[code], polyname[code])
+
+                dash = ''
+                if polyover[code]:
+                    dash = 'stroke-dasharray="%f,%f"' % (wlineette*1.1, wlineette*0.5)
+                svg += '<line x1="%d" y1="%d" x2="%d" y2="%d" style="stroke:%s; stroke-width:%f" %s />' % (x1, polybary[code], x2, polybary[code], stroke_selected, barthickness, dash)
     
     svg += '</svg>'
     return svg
