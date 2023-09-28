@@ -200,7 +200,7 @@ class palettePicker():
 
         p = palettePicker.palettePicker(onchange=onchange)
 
-        display(p)
+        display(p.draw())
         display(output)
 
     .. figure:: figures/palettePicker.png

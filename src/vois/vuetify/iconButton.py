@@ -82,7 +82,7 @@ class iconButton():
 
     # Initialization
     def __init__(self, icon='mdi-alert-outline', tooltip='', color=settings.color_first,
-                 outlined=False, rounded=True,
+                 outlined=False, rounded=True, width=None,
                  large=False, small=False, x_large=False, x_small=False, margins='pa-0 ma-0',
                  onclick=None, argument=None):
         
@@ -91,6 +91,7 @@ class iconButton():
         self._color   = color
         self.outlined = outlined
         self.rounded  = rounded
+        self.width    = width
         self.large    = large
         self.small    = small
         self.x_large  = x_large
@@ -112,9 +113,15 @@ class iconButton():
         self.btn = v.Btn(icon=flagicon, class_=self.margins, outlined=self.outlined, rounded=self.rounded,
                          large=self.large, small=self.small, x_large=self.x_large, x_small=self.x_small,
                          dark=settings.dark_mode, color=self._color,
+                         width=self.width, min_width=self.width, max_width=self.width,
                          children=[v.Icon(children=[self.icon],
                                           large=self.large, small=self.small,
                                           x_large=self.x_large, x_small=self.x_small)])
+        if not self.width is None:
+            self.btn.min_width = self.width
+            self.btn.max_width = self.width
+            self.btn.width     = self.width
+            
         self.btn.on_event('click', self.__internal_onclick)
         
         if len(self._tooltip) > 0:
