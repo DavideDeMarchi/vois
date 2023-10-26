@@ -35,6 +35,8 @@ def RGB(r,g,b):
     return '#{:02X}{:02X}{:02X}'.format(r, g, b)
     
 custompalettes = [
+    { "name": "Greyscale", "colors": ['#000000', '#FFFFFF']},
+    
     { "name": "Simple", "colors": ['#000000', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF', '#FFFFFF']},
     
     { "name": "Dem",    "colors": [RGB(255,255,170), RGB( 39,168, 39), RGB( 11,128, 64), RGB(255,255,  0), RGB(255,186,  3),
@@ -84,7 +86,7 @@ class palettePickerEx():
 
         p = palettePickerEx.palettePickerEx(onchange=onchange)
 
-        display(p)
+        display(p.draw())
         display(output)
 
     .. figure:: figures/palettePickerEx.png
