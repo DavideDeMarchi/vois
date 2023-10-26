@@ -58,7 +58,9 @@ class colorPicker():
     textweight : int, optional
         Weight of the text to be shown in the button (default is 400, Bold is any value greater or equal to 500)
     onchange : function, optional
-        Python function to call when the user selects a different color. The function will receive no parameters. (default is None)
+        Python function to call when the user selects a different color. The function will receive the argument parameter. If the argument is None, the function will receive no parameters. (default is None)
+    argument : any, optional
+        Argument to be passed to the onchange function (default is None)
     offset_x : bool, optional
         If True the popup window will be opened on the right of the color button (default is False)
     offset_y : bool, optional
@@ -111,7 +113,7 @@ class colorPicker():
     
     def __init__(self, color="#FF0000", dark=settings.dark_mode, width=40, height=30, rounded=False, canvas_height=100,
                        show_canvas=True, show_mode_switch=True, show_inputs=True, show_swatches=True,
-                       swatches_max_height=164, text='', textweight=400, onchange=None,
+                       swatches_max_height=164, text='', textweight=400, onchange=None, argument=None,
                        offset_x=False, offset_y=True,
                        disabled=False):
         
@@ -129,6 +131,7 @@ class colorPicker():
         self.text       = text
         self.textweight = textweight
         self.onchange   = onchange
+        self.argument   = argument
         self.offset_x   = offset_x
         self.offset_y   = offset_y
         self._disabled  = disabled
@@ -158,7 +161,10 @@ class colorPicker():
             self.button.color = self._color
             self.button.dark  = self.textDark(self._color)
             if self.onchange:
-                self.onchange()
+                if self.argument is None:
+                    self.onchange()
+                else:
+                    self.onchange(self.argument)
         
         
     # Returns the vuetify object to display (the v.Menu)
