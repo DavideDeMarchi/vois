@@ -49,6 +49,10 @@ class popup:
         Height of the button in pixels (default is 40)
     icon : str, optional
         Name of the icon to be displayed inside the button (default is None)
+    icon_small : bool, optional
+        If True the icon will be small (default is True)
+    icon_large : bool, optional
+        If True the icon will be small (default is False)
     color : str, optional
         Color used for the button (default is the color_first defined in the settings.py module)
     rounded : bool, optional
@@ -105,6 +109,8 @@ class popup:
                  buttonwidth=140,
                  buttonheight=40,
                  icon=None,
+                 icon_small=True,
+                 icon_large=False,
                  color=settings.color_first,
                  rounded=settings.button_rounded,
                  outlined=True,
@@ -129,7 +135,7 @@ class popup:
             leftspace = 2
             
         if not icon is None:
-            children.append(v.Icon(small=True, children=[icon], class_='pa-0 ma-0 ml-%d'%leftspace))
+            children.append(v.Icon(small=icon_small, large=icon_large, children=[icon], class_='pa-0 ma-0 ml-%d'%leftspace))
             
         self.btn = v.Btn(v_on='menuData.on', color=color, fab=False, dark=True, depressed=True, text=text,
                          disabled=False, width=buttonwidth, height=buttonheight, rounded=rounded, outlined=outlined,
