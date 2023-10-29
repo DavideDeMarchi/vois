@@ -203,7 +203,10 @@ class colorPicker():
             self.button.color = self._color
             self.button.dark  = self.textDark(self._color)
             if self.onchange:
-                self.onchange()
+                if self.argument is None:
+                    self.onchange()
+                else:
+                    self.onchange(self.argument)
 
                 
     # disabled property
