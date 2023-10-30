@@ -73,6 +73,8 @@ class popup:
         Designates if popup should close on outside click (default is True)
     close_on_content_click : bool, optional
         Designates if popup should close when its content is clicked  (default is True)
+    title: str, optional
+        Text to add at the top of the popup (default is '')
     show_close_button : bool, optional
         If True a close icon button is displayed on the top-right side of the popup to ease the closing of the popup (default is False). It can be useful mainly when close_on_click is set to False.
 
@@ -126,6 +128,7 @@ class popup:
                  open_on_hover=True,
                  close_on_click=True,
                  close_on_content_click=True,
+                 title='',
                  show_close_button=False):
 
         # The popup cannot have a width smaller than the width of the button
@@ -133,14 +136,20 @@ class popup:
             
         # Add a close button on top
         children = [widget]
-        if show_close_button:
-            def onclick(*args):
-                self.menu.v_model = False
-                
-            spacer = v.Html(tag='div',children=[' '], style_='width: %dpx; height: 1px;'%(popupwidth-30))
-            bclose = v.Btn(icon=True, small=True, children=[v.Icon(small=True, children=['mdi-close'])])
-            bclose.on_event('click', onclick)
-            r = v.Row(no_gutters=True, justify="start", children=[spacer,bclose], class_='pa-0 ma-0')
+        if show_close_button or len(title)> 0:
+            
+            if show_close_button:
+                def onclick(*args):
+                    self.menu.v_model = False
+                    
+                bclose = v.Btn(icon=True, small=True, children=[v.Icon(small=True, children=['mdi-close'])])
+                bclose.on_event('click', onclick)
+            else:
+                bclose = v.Html(tag='div',children=[''])
+            
+            htitle = v.Html(tag='div',children=[title], class_='pa-0 ma-1', style_='width: %dpx; height: 1px;'%(popupwidth-38))
+                                
+            r = v.Row(no_gutters=True, justify="start", children=[htitle,bclose], class_='pa-0 ma-0')
             children = [r, widget]
             popupheight += 30
             
