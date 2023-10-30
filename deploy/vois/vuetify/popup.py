@@ -159,9 +159,11 @@ class popup:
         
         children = []
         leftspace = 0
+        flagicon = not icon is None
         if len(buttontext) > 0:
             children.append(buttontext)
             leftspace = 2
+            flagicon = False
             
         if not icon is None:
             children.append(v.Icon(small=icon_small, large=icon_large, children=[icon], class_='pa-0 ma-0 ml-%d'%leftspace))
@@ -171,8 +173,8 @@ class popup:
         else:
             class_ = "pa-0 ma-%s" % (str(margins))
             
-        self.btn = v.Btn(v_on='menuData.on', color=color, fab=False, dark=True, depressed=True, text=text, class_=class_,
-                         disabled=False, width=buttonwidth, height=buttonheight, rounded=rounded, outlined=outlined,
+        self.btn = v.Btn(v_on='menuData.on', color=color, fab=False, dark=True, depressed=True, icon=flagicon, text=text, class_=class_,
+                         disabled=False, width=buttonwidth, max_width=buttonwidth, height=buttonheight, rounded=rounded, outlined=outlined,
                          style_='font-family: %s; font-weight: %d; text-transform: none' % (fontsettings.font_name, 450),
                          children=children)
         
