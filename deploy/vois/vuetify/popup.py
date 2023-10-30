@@ -23,11 +23,9 @@ import ipyvuetify as v
 try:
     from . import settings
     from . import fontsettings
-    from . import tooltip
 except:
     import settings
     import fontsettings
-    import tooltip
 
 
 #####################################################################################################################################################
@@ -53,6 +51,10 @@ class popup:
         If True the icon will be small (default is True)
     icon_large : bool, optional
         If True the icon will be small (default is False)
+    margins : int, optional
+        Dimension of the margins on all directions (default is 0)
+    margintop : int, optional
+        Dimension of the margin on top of the label (default is None)
     color : str, optional
         Color used for the button (default is the color_first defined in the settings.py module)
     rounded : bool, optional
@@ -111,6 +113,8 @@ class popup:
                  icon=None,
                  icon_small=True,
                  icon_large=False,
+                 margins=0,
+                 margintop=None,
                  color=settings.color_first,
                  rounded=settings.button_rounded,
                  outlined=True,
@@ -137,13 +141,18 @@ class popup:
         if not icon is None:
             children.append(v.Icon(small=icon_small, large=icon_large, children=[icon], class_='pa-0 ma-0 ml-%d'%leftspace))
             
-        self.btn = v.Btn(v_on='menuData.on', color=color, fab=False, dark=True, depressed=True, text=text,
+        if not margintop is None:
+            class_ = "pa-0 ma-%s mt-%s" % (str(margins), str(margintop))
+        else:
+            class_ = "pa-0 ma-%s" % (str(margins))
+            
+        self.btn = v.Btn(v_on='menuData.on', color=color, fab=False, dark=True, depressed=True, text=text, class_=class_,
                          disabled=False, width=buttonwidth, height=buttonheight, rounded=rounded, outlined=outlined,
                          style_='font-family: %s; font-weight: %d; text-transform: none' % (fontsettings.font_name, 450),
                          children=children)
-
+        
         self.menu = v.Menu(offset_y=True, open_on_hover=open_on_hover, dense=True, close_on_click=close_on_click, close_on_content_click=close_on_content_click,
-                           v_slots=[{'name': 'activator', 'variable': 'menuData', 'children': self.btn, }],
+                           v_slots=[{'name': 'activator', 'variable': 'menuData', 'children': self.btn }],
                            children=[card])
     
     # Returns the vuetify object to display
