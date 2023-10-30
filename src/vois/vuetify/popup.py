@@ -73,6 +73,8 @@ class popup:
         Designates if popup should close on outside click (default is True)
     close_on_content_click : bool, optional
         Designates if popup should close when its content is clicked  (default is True)
+    show_close_button : bool, optional
+        If True a close icon button is displayed on the top-right side of the popup to ease the closing of the popup (default is False). It can be useful mainly when close_on_click is set to False.
 
     Note
     ----
@@ -123,14 +125,28 @@ class popup:
                  popupheight=250,
                  open_on_hover=True,
                  close_on_click=True,
-                 close_on_content_click=True):
+                 close_on_content_click=True,
+                 show_close_button=False):
 
         # The popup cannot have a width smaller than the width of the button
         if popupwidth < buttonwidth: popupwidth = buttonwidth
             
+        # Add a close button on top
+        children = [widget]
+        if show_close_button:
+            def onclick(*args):
+                self.menu.v_model = False
+                
+            spacer = v.Html(tag='div',children=[' '], style_='width: %dpx; height: 1px;'%(popupwidth-30))
+            bclose = v.Btn(icon=True, small=True, children=[v.Icon(small=True, children=['mdi-close'])])
+            bclose.on_event('click', onclick)
+            r = v.Row(no_gutters=True, justify="start", children=[spacer,bclose], class_='pa-0 ma-0')
+            children = [r, widget]
+            popupheight += 30
+            
         html = v.Html(tag='div', width='%dpx'%popupwidth, height='%dpx'%popupheight, children=[widget], style_='overflow: auto;')
         card = v.Card(width='%dpx'%popupwidth, height='%dpx'%popupheight, elevation=1,
-                      children=[widget], style_='overflow: auto;')
+                      children=children, style_='overflow: auto;')
         
         children = []
         leftspace = 0
@@ -151,9 +167,10 @@ class popup:
                          style_='font-family: %s; font-weight: %d; text-transform: none' % (fontsettings.font_name, 450),
                          children=children)
         
-        self.menu = v.Menu(offset_y=True, open_on_hover=open_on_hover, dense=True, close_on_click=close_on_click, close_on_content_click=close_on_content_click,
+        self.menu = v.Menu(v_model=False, offset_y=True, open_on_hover=open_on_hover, dense=True, 
+                           close_on_click=close_on_click, close_on_content_click=close_on_content_click,
                            v_slots=[{'name': 'activator', 'variable': 'menuData', 'children': self.btn }],
-                           children=[card])
+                           children=[card], style_='overflow: hidden;')
     
     # Returns the vuetify object to display
     def draw(self):
