@@ -116,6 +116,7 @@ dependencies = [ # Optional
   "requests >= 2.28.0",
   "urllib3 >= 1.26.0",
   "sphinx-copybutton",
+  "sphinx_rtd_theme",
   "ipykernel",
   "pandas",
   "ipyvuetify",
