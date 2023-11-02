@@ -83,6 +83,7 @@ Vuetify package
  colorPicker
  datatable
  datePicker
+ dayCalendar
  dialogGeneric
  dialogMessage
  dialogWait

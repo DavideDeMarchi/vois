@@ -76,6 +76,14 @@ datePicker widget
 
 .. image:: figures/line.png
 
+dayCalendar widget
+------------------
+
+.. automodule:: dayCalendar
+    :members:
+
+.. image:: figures/line.png
+
 dialogGeneric widget
 --------------------
 
