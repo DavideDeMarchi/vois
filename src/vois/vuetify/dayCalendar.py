@@ -20,8 +20,7 @@
 import ipyvuetify as v
 from ipywidgets import widgets, Layout
 
-from dateutil import rrule
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from dateutil.relativedelta import relativedelta
 
 try:
@@ -35,10 +34,10 @@ except:
 def number_of_weeks(start, end):
     start_date = datetime.strptime(start, '%Y-%m-%d').date()
     end_date   = datetime.strptime(end,   '%Y-%m-%d').date()
-    weeks = rrule.rrule(rrule.WEEKLY, dtstart=start_date, until=end_date)
-    return weeks.count()
-
-
+    start_monday = start_date + timedelta(days=-start_date.weekday())
+    end_monday   = end_date   + timedelta(days=-end_date.weekday())
+    delta = end_monday - start_monday
+    return 1 + delta.days // 7
 
 #####################################################################################################################################################
 # Calendar that displays days inside an interval of dates and optional events
@@ -118,14 +117,14 @@ class dayCalendar():
             self.end = end
             
         self._color   = color
-        self._days    = days
+        self._days    = list(set(days))
         self.width    = width
         self.height   = height
         self.on_click = on_click
         
         self.cal = v.Calendar(v_model='', start=self.start, end=self.end, now='1899-12-31', type='custom-weekly',
                               event_more=False, event_height=6, events=[], event_color=self._color, short_weekdays=True,
-                              hide_header=False, show_month_on_first=True, weekdays=[0,1,2,3,4,5,6], dark=dark)
+                              hide_header=False, show_month_on_first=True, weekdays=[1,2,3,4,5,6,0], dark=dark)                  # Week start on Monday: standard ISO!
         self.cal.on_event('input', self.__internal_on_click)
         self.cal.on_event('click:event', self.__internal_on_click)
 
