@@ -80,6 +80,14 @@ class CustomTreeview(v.VuetifyTemplate):
         Minimum lenght of the node label to show the tooltip (default is 20)
     search : str, optional
         Filter to display only the nodes of the tree that contain the text (default is '' which means that all the nodes of the tree are displayed)
+    item_height : int, optional
+        Item height in pixels (default is 24)
+    font_size : int, optional
+        Font size in pixels (default is 15)
+    icon_size : int, optional
+        Icon size in pixels (default is 18)
+    checkbox_size : int, optional
+        Checkbox size in pixels (default is 24)
         
     Note
     ----
@@ -174,8 +182,8 @@ class CustomTreeview(v.VuetifyTemplate):
     padding-right: 0px;
 }
 .vuetify-styles .v-treeview--dense .v-treeview-node__root {
-    min-height: 24px;
-    font-size: 15px;
+    min-height: %dpx;
+    font-size: %dpx;
 }
 .vuetify-styles .v-application--is-ltr .v-treeview-node__checkbox {
     margin-left: 0px;
@@ -183,14 +191,14 @@ class CustomTreeview(v.VuetifyTemplate):
 }
 
 .vuetify-styles .v-treeview-node__checkbox {
-    width: 18px;
+    width: %dpx;
 }
 .vuetify-styles .v-icon.v-icon {
-    font-size: 18px;
+    font-size: %dpx;
 }
 
 </style>
-''' % (tooltip_template, icons_template)
+''' % (tooltip_template, icons_template, self.item_height, self.font_size, self.checkbox_size, self.icon_size)
     
     
     # Expand the selection to parents that have all childrens selected
@@ -279,6 +287,10 @@ class CustomTreeview(v.VuetifyTemplate):
                  expand_selection_to_parents = True,
                  search                      = '',
                  opened_all                  = False,
+                 item_height                 = 24,     # Item height in pixels
+                 font_size                   = 15,     # Font size in pixels
+                 icon_size                   = 18,     # Icon size in pixels
+                 checkbox_size               = 24,     # Checkbox size in pixels
                  
                  iconsshow=False,
                  iconscolor='blue',
@@ -305,6 +317,11 @@ class CustomTreeview(v.VuetifyTemplate):
         self.expand_selection_to_parents = expand_selection_to_parents
         self.search                      = search
         self.opened_all                  = opened_all
+        
+        self.item_height                 = item_height      # Item height in pixels
+        self.font_size                   = font_size        # Font size in pixels
+        self.icon_size                   = icon_size        # Icon size in pixels
+        self.checkbox_size               = checkbox_size    # Checkbox size in pixels
         
         self.current_active = active
         self.current_open   = []
@@ -622,7 +639,11 @@ def createTreeviewFromList(nameslist=[],
                            iconroot=None,
                            iconsDict=None,
                            tooltips=False,
-                           tooltips_chars=20):
+                           tooltips_chars=20,
+                           item_height=24,
+                           font_size=15,
+                           icon_size=18,
+                           checkbox_size=24):
     """
     Create a treeview form a list of strings and a separator that defines the hierarchical structure (example: ['A', 'A.1', 'A.2', 'B', 'B.3']).
 
@@ -694,7 +715,15 @@ def createTreeviewFromList(nameslist=[],
         If True the nodes will show the tooltip (default is False)
     tooltips_chars : int, optional
         Minimum lenght of the node label to show the tooltip (default is 20)
-        
+    item_height : int, optional
+        Item height in pixels (default is 24)
+    font_size : int, optional
+        Font size in pixels (default is 15)
+    icon_size : int, optional
+        Icon size in pixels (default is 18)
+    checkbox_size : int, optional
+        Checkbox size in pixels (default is 24)
+
     Returns
     -------
     v.Card: ipyvuetify Card widget
@@ -817,7 +846,8 @@ def createTreeviewFromList(nameslist=[],
                           expand_selection_to_parents=expand_selection_to_parents, dark=dark, transition=transition, opened_all=opened_all, 
                           color=color, selectable=selectable, activatable=activatable, active=activeid, open_on_click=open_on_click,
                           tooltips=tooltips, tooltips_chars=tooltips_chars,
-                          iconsshow=iconsshow, iconscolor=iconscolor, icons_folder_opened=icons_folder_opened, icons_folder_closed=icons_folder_closed)
+                          iconsshow=iconsshow, iconscolor=iconscolor, icons_folder_opened=icons_folder_opened, icons_folder_closed=icons_folder_closed,
+                          item_height=item_height, font_size=font_size, icon_size=icon_size, checkbox_size=checkbox_size)
     treehtml = v.Html(tag='div', height=height, children=[tree], style_='overflow: hidden;')
     treecard = v.Card(width=width, height=height, elevation=elevation, children=[treehtml],
                       dark=dark, style_='overflow-x: visible;')
@@ -852,7 +882,11 @@ def createFlatTreeview(nameslist=[],
                        iconscolor=settings.color_first,
                        iconsDict=None,
                        tooltips=False,
-                       tooltips_chars=20):
+                       tooltips_chars=20,
+                       item_height=24,
+                       font_size=15,
+                       icon_size=18,
+                       checkbox_size=24):
     """
     Create a flat treeview form a list of strings
 
@@ -900,7 +934,15 @@ def createFlatTreeview(nameslist=[],
         If True the nodes will show the tooltip (default is False)
     tooltips_chars : int, optional
         Minimum lenght of the node label to show the tooltip (default is 20)
-        
+    item_height : int, optional
+        Item height in pixels (default is 24)
+    font_size : int, optional
+        Font size in pixels (default is 15)
+    icon_size : int, optional
+        Icon size in pixels (default is 18)
+    checkbox_size : int, optional
+        Checkbox size in pixels (default is 24)
+
     Returns
     -------
     v.Card: ipyvuetify Card widget
@@ -951,7 +993,8 @@ def createFlatTreeview(nameslist=[],
                           expand_selection_to_parents=False, dark=dark, transition=transition, 
                           color=color, selectable=selectable, activatable=activatable, active=activeid, 
                           tooltips=tooltips, tooltips_chars=tooltips_chars,
-                          iconsshow=iconsshow, iconscolor=iconscolor)
+                          iconsshow=iconsshow, iconscolor=iconscolor,
+                          item_height=item_height, font_size=font_size, icon_size=icon_size, checkbox_size=checkbox_size)
     treehtml = v.Html(tag='div', height=height, children=[tree], style_='overflow: hidden;')
     treecard = v.Card(width=width, height=height, elevation=elevation, children=[treehtml],
                       dark=dark, style_='overflow-x: visible;')
@@ -1053,7 +1096,11 @@ def createTreeviewFromDF2Columns(df,
                                  iconscolumnName1=None,
                                  iconscolumnName2=None,
                                  tooltips=False,
-                                 tooltips_chars=20):
+                                 tooltips_chars=20,
+                                 item_height=24,
+                                 font_size=15,
+                                 icon_size=18,
+                                 checkbox_size=24):
     """
     Create a two levels treeview form the strings contained in two columns of a Pandas DataFrame.
 
@@ -1127,7 +1174,15 @@ def createTreeviewFromDF2Columns(df,
         If True the nodes will show the tooltip (default is False)
     tooltips_chars : int, optional
         Minimum lenght of the node label to show the tooltip (default is 20)
-        
+    item_height : int, optional
+        Item height in pixels (default is 24)
+    font_size : int, optional
+        Font size in pixels (default is 15)
+    icon_size : int, optional
+        Icon size in pixels (default is 18)
+    checkbox_size : int, optional
+        Checkbox size in pixels (default is 24)
+
     Returns
     -------
     v.Card
@@ -1207,7 +1262,8 @@ def createTreeviewFromDF2Columns(df,
                           expand_selection_to_parents=expand_selection_to_parents, dark=dark, transition=transition, opened_all=opened_all, 
                           color=color, selectable=selectable, activatable=activatable, active=activeid, open_on_click=open_on_click,
                           tooltips=tooltips, tooltips_chars=tooltips_chars,
-                          iconsshow=iconsshow, iconscolor=iconscolor, icons_folder_opened=icons_folder_opened, icons_folder_closed=icons_folder_closed)
+                          iconsshow=iconsshow, iconscolor=iconscolor, icons_folder_opened=icons_folder_opened, icons_folder_closed=icons_folder_closed,
+                          item_height=item_height, font_size=font_size, icon_size=icon_size, checkbox_size=checkbox_size)
             
     treehtml = v.Html(tag='div',height=height, children=[tree], style_='overflow: hidden;')
     treecard = v.Card(width=width, height=height, elevation=elevation, children=[treehtml],
@@ -1256,7 +1312,11 @@ def createTreeviewFromDF3Columns(df,
                                  iconscolumnName2=None,
                                  iconscolumnName3=None,
                                  tooltips=False,
-                                 tooltips_chars=20):
+                                 tooltips_chars=20,
+                                 item_height=24,
+                                 font_size=15,
+                                 icon_size=18,
+                                 checkbox_size=24):
     """
     Create a three levels treeview form the strings contained in three columns of a Pandas DataFrame.
 
@@ -1334,7 +1394,15 @@ def createTreeviewFromDF3Columns(df,
         If True the nodes will show the tooltip (default is False)
     tooltips_chars : int, optional
         Minimum lenght of the node label to show the tooltip (default is 20)
-        
+    item_height : int, optional
+        Item height in pixels (default is 24)
+    font_size : int, optional
+        Font size in pixels (default is 15)
+    icon_size : int, optional
+        Icon size in pixels (default is 18)
+    checkbox_size : int, optional
+        Checkbox size in pixels (default is 24)
+
     Returns
     -------
     v.Card
@@ -1422,7 +1490,8 @@ def createTreeviewFromDF3Columns(df,
                           expand_selection_to_parents=expand_selection_to_parents, dark=dark, transition=transition, opened_all=opened_all, 
                           color=color, selectable=selectable, activatable=activatable, active=activeid, open_on_click=open_on_click,
                           tooltips=tooltips, tooltips_chars=tooltips_chars,
-                          iconsshow=iconsshow, iconscolor=iconscolor, icons_folder_opened=icons_folder_opened, icons_folder_closed=icons_folder_closed)
+                          iconsshow=iconsshow, iconscolor=iconscolor, icons_folder_opened=icons_folder_opened, icons_folder_closed=icons_folder_closed,
+                          item_height=item_height, font_size=font_size, icon_size=icon_size, checkbox_size=checkbox_size)
     
     treehtml = v.Html(tag='div',height=height, children=[tree], style_='overflow: hidden;')
     treecard = v.Card(width=width, height=height, elevation=elevation, children=[treehtml],
