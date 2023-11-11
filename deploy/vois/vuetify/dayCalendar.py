@@ -103,7 +103,8 @@ class dayCalendar():
                  days=[],                                       # List of strings in "YYYY-MM-DD" format to highlight some of the days
                  width=340,                                     # Width on pixels
                  height=None,                                   # Height in pixels
-                 on_click=None                                  # Function called at the clik on a day (will receive the day as string in "YYYY-MM-DD" format as parameter)
+                 on_click=None,                                 # Function called at the click on a day (will receive the day as string in "YYYY-MM-DD" format as parameter)
+                 on_click_event=None                            # Function called at the click on an event (will receive the day as string in "YYYY-MM-DD" format as parameter)
                 ):
         
         if isinstance(start,datetime) or isinstance(start,date):
@@ -116,17 +117,18 @@ class dayCalendar():
         else:
             self.end = end
             
-        self._color   = color
-        self._days    = list(set(days))
-        self.width    = width
-        self.height   = height
-        self.on_click = on_click
+        self._color         = color
+        self._days          = list(set(days))
+        self.width          = width
+        self.height         = height
+        self.on_click       = on_click
+        self.on_click_event = on_click_event
         
         self.cal = v.Calendar(v_model='', start=self.start, end=self.end, now='1899-12-31', type='custom-weekly',
                               event_more=False, event_height=6, events=[], event_color=self._color, short_weekdays=True,
                               hide_header=False, show_month_on_first=True, weekdays=[1,2,3,4,5,6,0], dark=dark)                  # Week start on Monday: standard ISO!
         self.cal.on_event('input', self.__internal_on_click)
-        self.cal.on_event('click:event', self.__internal_on_click)
+        self.cal.on_event('click:event', self.__internal_on_click_event)
 
         self.days2events()
         
@@ -147,17 +149,20 @@ class dayCalendar():
         self.cal.events = self.events
 
         
-    # Manage click on a day or on an event
+    # Manage click on a day
     def __internal_on_click(self, widget, event, data):
+        if not self.on_click is None:
+            self.on_click(data)
+        
+        
+    # Manage click on an event
+    def __internal_on_click_event(self, widget, event, data):
         if 'event' in data:
             day = data['event']['start']
-        else:
-            day = data
-
-        if not self.on_click is None:
-            self.on_click(day)
-        
-        
+            if not self.on_click_event is None:
+                self.on_click_event(day)
+            
+            
     # Returns the vuetify object to display (the Output widget containing the card containing the calendar)
     def draw(self):
         """Returns the ipyvuetify object to display (the internal Output widget)"""
