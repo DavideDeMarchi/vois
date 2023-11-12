@@ -20,6 +20,7 @@
 import ipyvuetify as v
 from ipywidgets import widgets, Layout
 
+import collections
 from datetime import datetime, date, timedelta
 from dateutil.relativedelta import relativedelta
 
@@ -57,13 +58,17 @@ class dayCalendar():
     dark : bool, optional
         If True, the calendar will have a dark background (default is settings.dark_mode)
     days: list of str, optional
-        List of days to be highlighted as strings in "YYYY-MM-DD" format (default is [])
+        List of days to be highlighted as strings in "YYYY-MM-DD" format (default is []). The list can contain repeated days (see show_count below).
+    show_count: bool, optional
+        If True, the event bar will show the number of events on each of the highlighted days (default is False)
     width : int, optional
         Width of the widget in pixels (default is 340)
     height : int, optional
         Height of the widget in pixels (default is None). If None is passed, the height will be calculated depending on the range of dates defined by start and end parameters.
     on_click : function, optional
         Python function to call when the user clicks on one day of the calendar. The function will receive as parameter a string in "YYYY-MM-DD" format. (default is None)
+    on_click _event: function, optional
+        Python function to call when the user clicks on the highlighting bar of one day of the calendar. The function will receive as parameter a string in "YYYY-MM-DD" format. (default is None)
 
     Example
     -------
@@ -101,6 +106,7 @@ class dayCalendar():
                  color=settings.color_first,                    # Color used to highlight the events
                  dark=settings.dark_mode,
                  days=[],                                       # List of strings in "YYYY-MM-DD" format to highlight some of the days
+                 show_count=False,                              # If True shows in each higlighted day one char '°' for each repetition inside the days list
                  width=340,                                     # Width on pixels
                  height=None,                                   # Height in pixels
                  on_click=None,                                 # Function called at the click on a day (will receive the day as string in "YYYY-MM-DD" format as parameter)
@@ -118,7 +124,8 @@ class dayCalendar():
             self.end = end
             
         self._color         = color
-        self._days          = list(set(days))
+        self._days          = days
+        self.show_count     = show_count
         self.width          = width
         self.height         = height
         self.on_click       = on_click
@@ -145,7 +152,11 @@ class dayCalendar():
     
     # Convert a list of days in events for the calendar widget
     def days2events(self):
-        self.events = [{'name': '', 'start': d} for d in self._days]
+        if self.show_count:
+             # See https://en.wikipedia.org/wiki/List_of_Unicode_characters
+            self.events = [{'name': '\u02DA'*count, 'start': day } for day,count in collections.Counter(self._days).items()]
+        else:
+            self.events = [{'name': '', 'start': d} for d in list(set(self._days))]
         self.cal.events = self.events
 
         
