@@ -54,10 +54,14 @@ class page():
         Color to use for the title bar background (default is settings.color_first)
     titledark : bool, optional
         If True the text on the title bar will be displayed in white, otherwise in black color (defaul is True)
+    titleheight : int, optional
+        Height of the title bar in pixels (default is 54)
     footercolor : str, optional
         Color to use fir the footer bar background (default is settings.color_second)
     footerdark : bool, optional
         If True the text on the footer bar will be displayed in white, otherwise in black color (defaul is False)
+    footerheight : int, optional
+        Height of the footer bar in pixels (default is 30)
     logoappurl : str, optional
         String containing the url of the application logo, to be displayed on the left side of the title bar (default is '')
     logowidth : int, optional
@@ -184,11 +188,11 @@ class page():
             children.append(tooltip.tooltip("Display application help", btn_help))
 
         if self.show_credits:
-            btn_credits = v.Btn(text=True, rounded=False, ripple=False, style_='width: 170px;  height: 50px;', class_='pa-0 ma-0 mr-1', children=[self.logoCredits])
+            btn_credits = v.Btn(text=True, rounded=False, ripple=False, style_='width: 170px;  height: %dpx;'%(self.titleheight-4), class_='pa-0 ma-0 mr-1', children=[self.logoCredits])
             btn_credits.on_event('click', self.click_on_credits)
             children.append(tooltip.tooltip("Open credits info", btn_credits))
             
-        self.appbar = v.AppBar(height=54, min_height=54, max_height=54, color=self.titlecolor, children=children)
+        self.appbar = v.AppBar(height=self.titleheight, min_height=self.titleheight, max_height=self.titleheight, color=self.titlecolor, children=children)
 
 
         # Content of the footer bar
@@ -199,10 +203,12 @@ class page():
         copyicon = v.Icon(class_="pa-0 ma-0 mr-2", small=True, color=textcolor, children=['mdi-copyright'])
         ctext = v.Card(flat=True, color=self.footercolor, style_='color: %s;'%textcolor, children=[self.copyrighttext])
         frow = v.Row(class_='pa-0 ma-0 mt-n2 mb-n3', justify="center", no_gutters=True, children=[copyicon,ctext])
-        self.footer = v.Footer(color=self.footercolor, padless=True, children=[frow], class_='pa-0 ma-0', style_='height: 30px; overflow: hidden;')
+        self.footer = v.Footer(color=self.footercolor, padless=True, children=[frow], class_='pa-0 ma-0', rounded=False,
+                               height=self.footerheight, max_height=self.footerheight, min_height=self.footerheight,
+                               style_='height: %dpx; overflow: hidden; border-bottom-left-radius: 0; border-bottom-right-radius: 0;'%self.footerheight)
 
         # Main content of the page: a card to be filled with custom content
-        self.height = 'calc(100vh - 84px)'
+        self.height = 'calc(100vh - %dpx)'%(self.titleheight+self.footerheight)
         self.card = v.Card(children=[], elevation=5,class_="pa-0 ma-0", style_='width: 100vw; max-width: 100vw; height: %s; max-height: %s;'%(self.height,self.height))
         return self.card
     
@@ -239,8 +245,10 @@ class page():
                  onclose=None,
                  titlecolor=settings.color_first,
                  titledark=True,
+                 titleheight=54,
                  footercolor=settings.color_second,
                  footerdark=False,
+                 footerheight=30,
                  logoappurl='',
                  logowidth=40,
                  on_logoapp=None,
@@ -260,12 +268,14 @@ class page():
         self.output  = output
         self.onclose = onclose
         
-        self.titlecolor = titlecolor
-        self.titledark  = titledark
+        self.titlecolor  = titlecolor
+        self.titledark   = titledark
+        self.titleheight = titleheight
         
-        self.footercolor = footercolor
-        self.footerdark  = footerdark
-        self.logowidth   = logowidth
+        self.footercolor  = footercolor
+        self.footerdark   = footerdark
+        self.footerheight = footerheight
+        self.logowidth    = logowidth
         
         self.copyrighttext = copyrighttext
         self.show_back     = show_back
