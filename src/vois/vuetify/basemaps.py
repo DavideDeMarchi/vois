@@ -574,7 +574,8 @@ class basemaps():
         self.height   = height
         self.onchange = onchange
         
-        self.basemap_layer = basemapTileLayer('OpenStreetMap.EC')
+        self.name = 'OpenStreetMap.EC'
+        self.basemap_layer = basemapTileLayer(self.name)
     
         self.treecard = treeview.createTreeviewFromList(basemapList(addBDAPbasemaps=addBDAPbasemaps),
                                                         rootName=rootName, separator='.', 
@@ -594,7 +595,8 @@ class basemaps():
         """
         Set the default basemap (OpenStreetMap.EC)
         """
-        self.__on_activated('OpenStreetMap.EC')
+        self.name = 'OpenStreetMap.EC'
+        self.__on_activated(self.name)
         
 
     # Manage activation of a node of the tree: change the basemap on the self.m map instance
@@ -603,6 +605,7 @@ class basemaps():
         if firstchild:  # if the activated node has children: activate its first child
             self.top.setActive(firstchild)
         else:
+            self.name = arg
             self.basemap_layer = map_setbasemap(self.m, arg)
             if not self.onchange is None:
                 self.onchange()
@@ -621,4 +624,33 @@ class basemaps():
         Get the currently select layer (instance of ipyleaflet.leaflet.TileLayer class or ipyleaflet.leaflet.LayerGroup class)
         """
         return self.basemap_layer
+
+    
+    # value property: get and sets the current name of the basemap
+    @property
+    def value(self):
+        """
+        Get/Set the active basemap name.
+        
+        Returns
+        --------
+        name : str
+            Name of the basemap
+
+        Example
+        -------
+        Programmatically select one of the basemaps and print the value selected::
+            
+            b.value = 'Esri.WorldImagery'
+            print(b.value)
+        
+        """
+        return self.name
+    
+    # Set the current basemap by passing a name
+    @value.setter
+    def value(self, name):
+        self.name = name
+        self.__on_activated(self.name)
+    
         
