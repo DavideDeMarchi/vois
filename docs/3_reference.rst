@@ -55,6 +55,7 @@ General package
  svgPackedCirclesChart
  svgRankChart
  svgUtils
+ textpopup
  treemapPlotly
  urlOpen
  urlUpdate

@@ -133,6 +133,14 @@ svgUtils module
 
 .. image:: figures/line.png
 
+textpopup module
+----------------
+
+.. automodule:: textpopup
+    :members:
+
+.. image:: figures/textpopup.png
+
 treemapPlotly module
 --------------------
 
