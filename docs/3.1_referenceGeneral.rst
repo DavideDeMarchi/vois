@@ -139,7 +139,7 @@ textpopup module
 .. automodule:: textpopup
     :members:
 
-.. image:: figures/textpopup.png
+.. image:: figures/line.png
 
 treemapPlotly module
 --------------------
