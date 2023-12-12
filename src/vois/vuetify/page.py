@@ -84,6 +84,8 @@ class page():
         Python function to call when the user clicks the credits button. The function will receive no parameters (default is None)
     transition : str, optional
         Transition to be used for display and hide of the page (default is 'dialog-bottom-transition'). See: https://vuetifyjs.com/en/styles/transitions/ for a list of available transitions (substitute 'v-' with 'dialog-')
+    persistent : bool, optional
+        If True the page will be persistent and not close at the hitting of the "ESC" key (default is False)
 
     Examples
     --------
@@ -216,7 +218,7 @@ class page():
     # Open the dialog
     def open(self):
         self.dlg = dialogGeneric.dialogGeneric(title='', titleheight='0px', text='', show=True, no_click_animation=True,
-                                               addclosebuttons=False, persistent=False, transition=self.transition,
+                                               addclosebuttons=False, persistent=self.persistent, transition=self.transition,
                                                fullscreen=True, content=[self.appbar,self.card,self.footer], output=self.output)
         
         
@@ -259,7 +261,8 @@ class page():
                  logocreditsurl='',
                  show_credits=True,
                  on_credits=None,
-                 transition='dialog-bottom-transition'):
+                 transition='dialog-bottom-transition',
+                 persistent=False):
 
         self.dlg = None
         
@@ -286,6 +289,7 @@ class page():
         self.on_logoapp    = on_logoapp
         
         self.transition    = transition
+        self.persistent    = persistent
         
         self.custom_buttons = []   # Each item has an icon name, a tooltip string and a callback function
         

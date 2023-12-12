@@ -73,6 +73,12 @@ class dialogGeneric():
         Output widget on which the widget has to be displayed
     titleheight : str, optional
         Height of the title toolbar. It can be: 'prominent', 'dense', 'extended' or a value in pixels (default is 'dense')
+    custom_icon : str, optional
+        Name of the optional icon to display in the top toolbar (default is '')
+    custom_tooltip : str, optional
+        Tooltip to display when hovering on the custom icon in the top toolbar (default is '')
+    custom_icon_onclick : function, optional
+        Python function to call when the user clicks on the custom icon on the topbar. The function will receive no parameters (default is None)
             
     Example
     -------
@@ -106,11 +112,14 @@ class dialogGeneric():
     def __init__(self, title='', text='', color=settings.color_first, dark=settings.dark_mode, show=False, content=[], width=500, fullscreen=False,
                  persistent=False, no_click_animation=False, 
                  addclosebuttons=True, addokcancelbuttons=False, on_ok=None, on_cancel=None, on_close=None,
-                 transition='dialog-fade-transition', output=None, titleheight="dense", customclass=""):
+                 transition='dialog-fade-transition', output=None, titleheight="dense", customclass="",
+                 custom_icon='', custom_tooltip='', custom_icon_onclick=None):
         
         self.on_ok     = on_ok
         self.on_cancel = on_cancel
         self.on_close  = on_close
+        
+        self.custom_icon_onclick = custom_icon_onclick
         
         text = text.replace('<br>','\n')
         vvv = text.split('\n')
@@ -138,6 +147,16 @@ class dialogGeneric():
         else:
             bx = ''
 
+        # Custom icon on the top toolbar
+        if len(custom_icon) > 0:
+            bi = v.Btn(icon=True, children=[v.Icon(children=[custom_icon])], color=buttontext)
+            bi.on_event('click', self.oncustomicon)
+            if len(custom_tooltip) > 0:
+                bi = tooltip.tooltip(custom_tooltip,bi)
+        else:
+            bi = ''
+            
+            
         # OK and Cancel buttons
         if addokcancelbuttons:
             self.bok = v.Btn(text=True, children=['OK'])
@@ -155,7 +174,7 @@ class dialogGeneric():
         # Toolbar
         ttitle  = v.ToolbarTitle(children=[title], style_=styletext)
         spacer  = v.Spacer()
-        titems  = v.ToolbarItems(children=[bclose])
+        titems  = v.ToolbarItems(children=[bi,bclose])
         toolbar = v.Toolbar(height=titleheight, dark=dark, color=color, children=[bx,ttitle,spacer,titems])
         
         # Dialog
@@ -187,11 +206,17 @@ class dialogGeneric():
         self.dialog.v_model = True
 
     # Close the dialog
-    def close(self,*args):
+    def close(self, *args):
         """Close the dialog."""
         self.dialog.v_model = False
         if not self.on_close is None:
             self.on_close()
+
+    # Click on the custom icon
+    def oncustomicon(self, *args):
+        if not self.custom_icon_onclick is None:
+            self.custom_icon_onclick()
+        
 
     # Cliked ok
     def __internal_on_ok(self,*args):
