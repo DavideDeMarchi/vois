@@ -97,7 +97,7 @@ class palettePickerEx():
     """
     
     # Initialization
-    def __init__(self, family='sequential', value='Viridis', interpolate=True, show_interpolate_switch=True, onchange=None, width=400):
+    def __init__(self, family='sequential', value='Viridis', interpolate=True, show_interpolate_switch=True, onchange=None, width=400, clearable=True):
         self.family      = family
         self.interpolate = interpolate
         self.onchange    = onchange
@@ -109,7 +109,7 @@ class palettePickerEx():
         self.sel = selectSingle.selectSingle('Family:', families, selection=family, width=200, onchange=self.onchangeFamily, marginy=1, clearable=False)
         self.sw  = switch.switch(self.interpolate, "Interpolate", onchange=self.onchangeInterpolate)
 
-        self.p = palettePicker.palettePicker(family=self.family, custompalettes=custompalettes, label='Palette:', width=self.width, height=26, onchange=self.onchangePalette)
+        self.p = palettePicker.palettePicker(family=self.family, custompalettes=custompalettes, label='Palette:', clearable=clearable, width=self.width, height=26, onchange=self.onchangePalette)
         self.p.value = value
 
         self.spacer = v.Html(tag='div',children=[' '], style_='width: 10px;')
