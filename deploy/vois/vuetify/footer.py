@@ -85,6 +85,7 @@ class footer():
         from vois.vuetify import footer
         from ipywidgets import widgets
         from IPython.display import display
+        from datetime import datetime
 
         output = widgets.Output()
         display(output)
@@ -101,7 +102,7 @@ class footer():
             with output:
                 print('CREDITS')
 
-        f = footer.footer(text='2022 - Joint Research Centre', color='lightgrey',
+        f = footer.footer(text='%d - Joint Research Centre'%(datetime.now().year), color='lightgrey',
                           minipanelicons=['fa-truck', 'mdi-heart', 'mdi-magnify'],
                           minipaneltooltips=['Function 1', 'Function 2', 'Function 3'], 
                           minipanellarge=True, minipanelopen=True,

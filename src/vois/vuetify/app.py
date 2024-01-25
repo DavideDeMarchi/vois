@@ -25,6 +25,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
 from random import randrange
+from datetime import datetime
 import ipyvuetify as v
 
 try:
@@ -140,7 +141,7 @@ class app():
     titletabsdark : bool, optional
         If True the text color of unselected tabs is settings.textcolor_dark, if False it is settings.textcolor_nodark (default is False)
     footertext : str, optional
-        Text to display in the footer tab (default is '2022 - Joint Research Centre')
+        Text to display in the footer tab (default is '<current year> - Joint Research Centre')
     footerbuttons : list of strings, optional
         List of strings containing the caption of the buttons to display in the footer tab (default is ['Home', 'About Us', 'Team', 'Services', 'Blog', 'Contact Us'])
     footerheight : int or float or str optional
@@ -309,7 +310,7 @@ class app():
                  titletabscolor=settings.color_first,     # Color of the active tab in the title tabs
                  
 
-                 footertext='2022 - Joint Research Centre',
+                 footertext='%d - Joint Research Centre'%(datetime.now().year),
                  footerbuttons=['Home', 'About Us', 'Team', 'Services', 'Blog', 'Contact Us'],
                  footerheight=68,
                  footercopyright=True,
