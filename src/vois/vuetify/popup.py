@@ -20,6 +20,8 @@
 from IPython.display import display
 import ipyvuetify as v
 
+from random import randint
+
 try:
     from . import settings
     from . import fontsettings
@@ -173,14 +175,16 @@ class popup:
         else:
             class_ = "pa-0 ma-%s" % (str(margins))
             
-        self.btn = v.Btn(v_on='menuData.on', color=color, fab=False, dark=True, depressed=True, icon=flagicon, text=text, class_=class_,
-                         disabled=False, width=buttonwidth, max_width=buttonwidth, height=buttonheight, rounded=rounded, outlined=outlined,
-                         style_='font-family: %s; font-weight: %d; text-transform: none' % (fontsettings.font_name, 450),
-                         children=children)
+        variable = 'menuData%d' % randint(1,999999)
         
-        self.menu = v.Menu(v_model=False, offset_y=True, open_on_hover=open_on_hover, dense=True, 
+        btn = v.Btn(v_on='%s.on'%variable, color=color, fab=False, dark=True, depressed=True, icon=flagicon, text=text, class_=class_,
+                    disabled=False, width=buttonwidth, max_width=buttonwidth, height=buttonheight, rounded=rounded, outlined=outlined,
+                    style_='font-family: %s; font-weight: %d; text-transform: none' % (fontsettings.font_name, 450),
+                    children=children)
+        
+        self.menu = v.Menu(v_model=False, offset_y=True, open_on_hover=open_on_hover, dense=True, internal_activator=True,
                            close_on_click=close_on_click, close_on_content_click=close_on_content_click,
-                           v_slots=[{'name': 'activator', 'variable': 'menuData', 'children': self.btn }],
+                           v_slots=[{'name': 'activator', 'variable': variable, 'children': btn }],
                            children=[card], style_='overflow: hidden;')
     
     # Returns the vuetify object to display
