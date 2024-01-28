@@ -155,9 +155,7 @@ class popup:
             children = [r, widget]
             popupheight += 30
             
-        html = v.Html(tag='div', width='%dpx'%popupwidth, height='%dpx'%popupheight, children=[widget], style_='overflow: auto;')
-        card = v.Card(width='%dpx'%popupwidth, height='%dpx'%popupheight, elevation=1,
-                      children=children, style_='overflow: auto;')
+        card = v.Card(width='%dpx'%popupwidth, height='%dpx'%popupheight, elevation=1, children=children, style_='overflow: auto;')
         
         children = []
         leftspace = 0
