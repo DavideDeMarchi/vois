@@ -84,6 +84,26 @@ def popupDisplay(output=None):
 # Execute all settings by displaying all the <style> instructions
 ###########################################################################################################################################################################
 def allSettings(output=None):
-    
     dialogBoxesLeftMargin(output)
     popupDisplay(output)
+    
+    
+    
+###########################################################################################################################################################################
+# Copy text to clipboard
+###########################################################################################################################################################################
+def copyToClipboard(txt, output=None):
+    command = '''
+<script>
+    navigator.clipboard.writeText('%s').then(function() {
+    console.log('Copying to clipboard was successful!');
+  }, function(err) {
+    console.error('Could not copy text: ', err);
+  });    
+</script>'''%(txt)
+    
+    if output is None:
+        display(HTML(command))
+    else:
+        with output:
+            display(HTML(command))

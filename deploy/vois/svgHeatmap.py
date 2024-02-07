@@ -318,7 +318,7 @@ def heatmapChart(df,
     
     
     # Pixels to add to the output Widget in order to not see the scrollbars
-    added_pixels_width  = 10
+    added_pixels_width  = 20
     added_pixels_height = 20
     
     
@@ -326,7 +326,7 @@ def heatmapChart(df,
     def handle_event_heatmap(event):
         nonlocal df, highlitecolumn, highliterow
         
-        x = event['relativeX']
+        x = event['relativeX'] - added_pixels_width/2 - 2
         y = event['relativeY']
         w = event['boundingRectWidth']  - added_pixels_width
         h = event['boundingRectHeight'] - added_pixels_height

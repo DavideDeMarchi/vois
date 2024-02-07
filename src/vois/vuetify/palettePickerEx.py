@@ -23,7 +23,7 @@
 # https://get-map.org/mapnik-lost-manual/book.pdf
 # https://github.com/mapnik/mapnik-reference/blob/gh-pages/3.0.20/reference.json#L1517
 
-from vois.vuetify import palettePicker, selectSingle, switch
+from vois.vuetify import palettePicker, selectSingle, switch, sliderFloat
 
 import ipyvuetify as v
 from ipywidgets import widgets
@@ -67,8 +67,14 @@ class palettePickerEx():
         If True an interpolate switch is shown to enable or disable the interpolated display of the selected palette (default is True)
     width : int, optional
         Width of the widget in pixels (default is 400)
+    clearable : bool, optional
+        If True the dwopdown list of palettes will allow for no selection (default is True)
     onchange : function, optional
-        Python function to call when the user selects one of the palettes. The function will as parameters the list of colors and the interpolate flag (default is None)
+        Python function to call when the user selects one of the palettes. The function will pass as parameters the list of colors and the interpolate flag (default is None)
+    show_opacity_slider : bool, optional
+        If True an slider to select opacity is shown (default is False)
+    onchangeOpacity : function, optional
+        Python function to call when the user changes the opacity. The function will as parameter the selected opacity in [0.0,1.0] (default is None)
 
     Examples
     --------
@@ -97,18 +103,34 @@ class palettePickerEx():
     """
     
     # Initialization
-    def __init__(self, family='sequential', value='Viridis', interpolate=True, show_interpolate_switch=True, onchange=None, width=400, clearable=True):
+    def __init__(self,
+                 family='sequential',
+                 value='Viridis',
+                 interpolate=True,
+                 show_interpolate_switch=True,
+                 onchange=None,
+                 width=400,
+                 clearable=True,
+                 show_opacity_slider=True,
+                 onchangeOpacity=None):
+        
         self.family      = family
         self.interpolate = interpolate
         self.onchange    = onchange
         self.width       = width
         
         self.show_interpolate_switch = show_interpolate_switch
+        
+        self.show_opacity_slider = show_opacity_slider
+        self.onchangeOpacity     = onchangeOpacity
 
         self.p = None
-        self.sel = selectSingle.selectSingle('Family:', families, selection=family, width=200, onchange=self.onchangeFamily, marginy=1, clearable=False)
+        self.sel = selectSingle.selectSingle('Family:', families, selection=family, width=150, onchange=self.onchangeFamily, marginy=1, clearable=False)
         self.sw  = switch.switch(self.interpolate, "Interpolate", onchange=self.onchangeInterpolate)
-
+        
+        if not self.show_interpolate_switch and self.show_opacity_slider:
+            self.op = sliderFloat.sliderFloat(1.0, text='Opacity:', minvalue=0.0, maxvalue=1.0, sliderwidth=self.width-128, onchange=self.onchangeOpacity)
+            
         self.p = palettePicker.palettePicker(family=self.family, custompalettes=custompalettes, label='Palette:', clearable=clearable, width=self.width, height=26, onchange=self.onchangePalette)
         self.p.value = value
 
@@ -120,7 +142,10 @@ class palettePickerEx():
         if self.show_interpolate_switch:
             r = widgets.HBox([self.sel.draw(), self.spacer, self.sw.draw()])
         else:
-            r = self.sel.draw()
+            if self.show_opacity_slider:
+                r = widgets.HBox([self.sel.draw(), self.spacer, self.op.draw()])
+            else:
+                r = self.sel.draw()
         return widgets.VBox([r, self.p.draw()])
 
 
@@ -233,4 +258,35 @@ class palettePickerEx():
         
         """
         return self.p.colors
+    
+    
+    # opacity property
+    @property
+    def opacity(self):
+        """
+        Get/Set the opacity value.
+        
+        Returns
+        --------
+        opacity : float
+            Current value of opacity in thenrange [0.0,1.0]
+
+        Example
+        -------
+        Set and then get the opacity::
+            
+            picker.opacity = 0.5
+            print(picker.opacity)
+        
+        """
+        if self.show_opacity_slider:
+            return self.op.value
+        return 1.0
+        
+    
+    # Set the opacity
+    @opacity.setter
+    def opacity(self, value):
+        self.op.value = value
+    
             
