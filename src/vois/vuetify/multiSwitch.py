@@ -65,6 +65,8 @@ class multiSwitch():
         Color used for the buttons when they are selected (default is settings.color_first)
     colorunselected : str, optional
         Color used for the buttons when they are not selected (default is settings.color_second)
+    managedblclick : bool, optional
+        If True the dblclick event is managed to select a single button of the multi-switch (default is False)
 
     Example
     -------
@@ -99,7 +101,8 @@ class multiSwitch():
     # Initialization
     def __init__(self, values, labels, tooltips=None, color=settings.color_first, onchange=None, dark=settings.dark_mode,
                  row=True, width=150, justify='space-between', rounded=settings.button_rounded, outlined=False,
-                 colorselected=settings.color_first, colorunselected=settings.color_second):
+                 colorselected=settings.color_first, colorunselected=settings.color_second,
+                 managedblclick=False):
         
         self.values   = [bool(x) for x in values]    # list of boolean values
         self.labels   = labels
@@ -114,6 +117,7 @@ class multiSwitch():
         self.outlined = outlined
         self.colorselected   = colorselected
         self.colorunselected = colorunselected
+        self.managedblclick  = managedblclick
         
         self.__createButtons()
         
@@ -135,7 +139,7 @@ class multiSwitch():
                 else:
                     c = "pa-0 ma-0 mb-2"
                     
-            b = button.button(label, class_=c, onclick=self.__internal_onchange, argument=i, width=self.width, tooltip=tooltip, selected=self.values[i],
+            b = button.button(label, class_=c, onclick=self.__internal_onchange, ondblclick=self.__internal_dblclick, argument=i, width=self.width, tooltip=tooltip, selected=self.values[i],
                               rounded=self.rounded, outlined=self.outlined, dark=self.dark, colorselected=self.colorselected, colorunselected=self.colorunselected)
             self.buttons.append(b)
             i += 1
@@ -183,6 +187,26 @@ class multiSwitch():
         self.buttons[index].selected = self.values[index]
         if self.onchange:
             self.onchange(self.values)
+            
+        
+    # Manage dblclick event
+    def __internal_dblclick(self, index):
+        if self.managedblclick:
+
+            i = 0
+            for b in self.buttons:
+                if i == index: 
+                    self.values[i] = True
+                    b.selected = True
+                else:
+                    self.values[i] = False
+                    b.selected = False
+                    
+                i += 1
+                
+            if self.onchange:
+                self.onchange(self.values)
+            
     
     # Returns the vuetify object to display
     def draw(self):
