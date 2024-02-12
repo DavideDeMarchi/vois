@@ -42,6 +42,8 @@ class button():
         Test string to be displayed on the button widget
     onclick : function, optional
         Python function to call when the user clicks on the button. The function will receive as parameter the value of the argument (default is None)
+    ondblclick : function, optional
+        Python function to call when the user double-clicks on the button. The function will receive as parameter the value of the argument (default is None)
     argument : any, optional
         Argument to be passed to the onclick function when user click on the label (default is None)
     width : int, optional
@@ -149,13 +151,15 @@ class button():
 
    
     # Initialization
-    def __init__(self, text, onclick=None, argument=None, width=100, height=36, selected=False, disabled=False, tooltip='', large=False, xlarge=False, small=False, xsmall=False, outlined=False, textweight=500,
+    def __init__(self, text, onclick=None, argument=None, width=100, height=36, selected=False, disabled=False, tooltip='', 
+                 large=False, xlarge=False, small=False, xsmall=False, outlined=False, textweight=500,
                  href=None, target=None, onlytext=False, textcolor=None,  class_="pa-0 ma-0",
                  icon=None, iconlarge=False, iconsmall=False, iconleft=False, iconcolor='black',
                  autoselect=False, dark=settings.dark_mode, rounded=settings.button_rounded, tile=False,
-                 colorselected=settings.color_first, colorunselected=settings.color_second
+                 colorselected=settings.color_first, colorunselected=settings.color_second, ondblclick=None
                 ):
         self.onclick    = onclick
+        self.ondblclick = ondblclick
         self.argument   = argument
         self._selected  = selected
         self._disabled  = disabled
@@ -192,7 +196,8 @@ class button():
                        disabled=disabled, width=width, min_width=width, height=height, min_height=height, href=href, target=target, tile=tile, 
                        children=childs, style_='font-family: %s; font-size: 17; font-weight: %d; text-transform: none' % (fontsettings.font_name, textweight), rounded=rounded)
                 
-        self.b.on_event('click', self.__internal_onclick)
+        self.b.on_event('click',    self.__internal_onclick)
+        self.b.on_event('dblclick', self.__internal_ondblclick)
         
         if len(tooltip) > 0: self.b.v_on = 'tooltip.on'
         self.container = v.Container(class_=class_, children=[ v.Tooltip(color=settings.tooltip_backcolor, transition="scale-transition", bottom=True, 
@@ -215,7 +220,15 @@ class button():
         if self.autoselect:
             self.selected = True
             
+    # Manage dblclick event
+    def __internal_ondblclick(self, widget=None, event=None, data=None):
+        if self.ondblclick:
+            if not self.argument is None:
+                self.ondblclick(self.argument)
+            else:
+                self.ondblclick()
 
+            
     @property
     def selected(self):
         """
