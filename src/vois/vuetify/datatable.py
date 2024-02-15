@@ -134,7 +134,7 @@ class datatable(v.VuetifyTemplate):
               %s
               %s
               <v-spacer></v-spacer>
-              <v-text-field class="pa-0 ma-0 mb-1" v-model="search" :color="color" append-icon="mdi-magnify" label="Search" single-line hide-details></v-text-field>
+              <v-text-field class="pa-0 ma-0 mb-3" v-model="search" :color="color" append-icon="mdi-magnify" label="Search" single-line hide-details></v-text-field>
             </v-card-title>
             ''' % (self.font_size_title, self.title, stricon)
         else:
