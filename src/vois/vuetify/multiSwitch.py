@@ -54,7 +54,9 @@ class multiSwitch():
     row : bool, optional
         Flag to display the buttons horizontally or vertically (default is True)
     width : int, optional
-        Width in pixels of the buttons
+        Width in pixels of the buttons (default is 150)
+    height : int, optional
+        Height in pixels of the buttons (default is 36)
     justify : str, optional
         In case of horizontal placement, applies the justify-content css property. Available options are: start, center, end, space-between and space-around.
     rounded : bool, optional
@@ -67,6 +69,20 @@ class multiSwitch():
         Color used for the buttons when they are not selected (default is settings.color_second)
     managedblclick : bool, optional
         If True the dblclick event is managed to select a single button of the multi-switch (default is False)
+    paddingrow : int, optional
+        Horizontal padding among toggle buttons (1 unit means 4 pixels). Default is 1
+    paddingcol : int, optional
+        Vertical padding among toggle buttons (1 unit means 4 pixels). Default is 2
+    tile : bool, optional
+        Flag to remove the buttons small border (default is False)
+    large : bool, optional
+        Flag that sets the large version of the button (default is False)
+    xlarge : bool, optional
+        Flag that sets the xlarge version of the button (default is False)
+    small : bool, optional
+        Flag that sets the small version of the button (default is False)
+    xsmall : bool, optional
+        Flag that sets the xsmall version of the button (default is False)
 
     Example
     -------
@@ -100,9 +116,10 @@ class multiSwitch():
 
     # Initialization
     def __init__(self, values, labels, tooltips=None, color=settings.color_first, onchange=None, dark=settings.dark_mode,
-                 row=True, width=150, justify='space-between', rounded=settings.button_rounded, outlined=False,
+                 row=True, width=150, height=36, justify='space-between', rounded=settings.button_rounded, outlined=False,
                  colorselected=settings.color_first, colorunselected=settings.color_second,
-                 managedblclick=False):
+                 managedblclick=False, paddingrow=1, paddingcol=2, tile=False,
+                 small=False, xsmall=False, large=False, xlarge=False):
         
         self.values   = [bool(x) for x in values]    # list of boolean values
         self.labels   = labels
@@ -112,12 +129,20 @@ class multiSwitch():
         self.onchange = onchange
         self.row      = row
         self.width    = width
+        self.height   = height
         self.justify  = justify
         self.rounded  = rounded
         self.outlined = outlined
         self.colorselected   = colorselected
         self.colorunselected = colorunselected
         self.managedblclick  = managedblclick
+        self.paddingrow = paddingrow
+        self.paddingcol = paddingcol
+        self.tile   = tile
+        self.small  = small
+        self.xsmall = xsmall
+        self.large  = large
+        self.xlarge = xlarge
         
         self.__createButtons()
         
@@ -132,15 +157,16 @@ class multiSwitch():
             if i < len(self.tooltips):
                 tooltip = self.tooltips[i]
             
-            if self.row: c = "pa-0 ma-0 mr-1"
+            if self.row: c = "pa-0 ma-0 mr-%d"%self.paddingrow
             else:
                 if i == len(self.labels)-1:
                     c = "pa-0 ma-0 mb-7"
                 else:
-                    c = "pa-0 ma-0 mb-2"
+                    c = "pa-0 ma-0 mb-%d"%self.paddingcol
                     
-            b = button.button(label, class_=c, onclick=self.__internal_onchange, ondblclick=self.__internal_dblclick, argument=i, width=self.width, tooltip=tooltip, selected=self.values[i],
-                              rounded=self.rounded, outlined=self.outlined, dark=self.dark, colorselected=self.colorselected, colorunselected=self.colorunselected)
+            b = button.button(label, class_=c, onclick=self.__internal_onchange, ondblclick=self.__internal_dblclick, argument=i, tooltip=tooltip, selected=self.values[i],
+                              small=self.small, xsmall=self.xsmall, large=self.large, xlarge=self.xlarge, width=self.width, height=self.height,
+                              rounded=self.rounded, tile=self.tile, outlined=self.outlined, dark=self.dark, colorselected=self.colorselected, colorunselected=self.colorunselected)
             self.buttons.append(b)
             i += 1
 
