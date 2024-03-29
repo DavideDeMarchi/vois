@@ -428,7 +428,7 @@ def preprocessBasemap(bm):
 
 
 # Retuns the list of all the basemap names
-def basemapList(addBDAPbasemaps=True):
+def basemapList(addBDAPbasemaps=True, removeBasemaps=[]):
     c = inter.ImageCollection("BASEMAP")
     names = list(c.listBasemaps())
     
@@ -444,6 +444,11 @@ def basemapList(addBDAPbasemaps=True):
     names.remove('Stadia.AlidadeSmoothDark')
     names.remove('Stadia.OSMBright')
     names.remove('Stadia.Outdoors')
+    
+    # Remove basemaps not wanted by the caller
+    for bm in removeBasemaps:
+        if bm in names:
+            names.remove(bm)
     
     # Add BDAP basemaps
     if addBDAPbasemaps:
@@ -535,8 +540,10 @@ class basemaps():
         Width of the widget in pixels (default is 320)
     height : int, optional
         Height of the widget in pixels (default is 650)
-    addBDAPbasemaps: bool, optional
+    addBDAPbasemaps : bool, optional
         If True the treeview will contain also some BDAP layers selectable as basemaps (default is True)
+    removeBasemaps : list of str, optional
+        List of basemaps names to be removed from the widget (default is [])
     rootName: str, optional
         Name to use as the root node of the basemaps treeview (default is 'Basemaps')
     onchange : function, optional
@@ -566,7 +573,17 @@ class basemaps():
        Example of a basemaps selection widget
     """
     
-    def __init__(self, m, color=settings.color_first, dark=settings.dark_mode, width=320, height=650, addBDAPbasemaps=True, rootName='Basemaps', onchange=None):
+    def __init__(self,
+                 m,
+                 color=settings.color_first,
+                 dark=settings.dark_mode,
+                 width=320,
+                 height=650,
+                 addBDAPbasemaps=True,
+                 removeBasemaps=[],
+                 rootName='Basemaps',
+                 onchange=None):
+        
         self.m        = m
         self.color    = color
         self.dark     = dark
@@ -577,7 +594,7 @@ class basemaps():
         self.name = 'OpenStreetMap.EC'
         self.basemap_layer = basemapTileLayer(self.name)
     
-        self.treecard = treeview.createTreeviewFromList(basemapList(addBDAPbasemaps=addBDAPbasemaps),
+        self.treecard = treeview.createTreeviewFromList(basemapList(addBDAPbasemaps=addBDAPbasemaps,removeBasemaps=removeBasemaps),
                                                         rootName=rootName, separator='.', 
                                                         expand_selection_to_parents=False,  substitutionDict={},
                                                         color=self.color, dark=self.dark, width=self.width, height=self.height, 
