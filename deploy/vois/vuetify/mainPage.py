@@ -96,6 +96,8 @@ class mainPage():
         Elevation in pixels to apply to the buttons (default is 6)
     button_opacity: float, optional
         Opacity to apply to the buttons (default is 0.5)
+    disclaimer: str, optional
+        Text to display at the bottom of the creditbox (default is the empty string)
 
     Examples
     --------
@@ -167,7 +169,7 @@ class mainPage():
                  button_heightpercent=10.0,
                  button_elevation=6,
                  button_opacity=0.5,
-                ):
+                 disclaimer=''):
 
         self.output = widgets.Output(layout=Layout(width='0px', height='0px'))
         
@@ -202,6 +204,8 @@ class mainPage():
         self.button_heightpercent    = button_heightpercent
         self.button_elevation        = button_elevation
         self.button_opacity          = button_opacity
+        
+        self.disclaimer              = disclaimer
         
         self.buttons = []
 
@@ -319,7 +323,7 @@ class mainPage():
         ######################################################################################################################################################
         # Logo and credits
         ######################################################################################################################################################
-        html_unit = '''
+        html_credits = '''
         <head>
             <meta charset="utf-8" />
             <link href='http://fonts.googleapis.com/css?family=PT+Sans' rel='stylesheet' type='text/css'>
@@ -328,6 +332,15 @@ class mainPage():
                     font-family: 'PT Sans', sans-serif;
                     font-size: min(2.0vh, 1.4vw);
                     font-weight: 700;
+                    text-align: center;
+                    line-height: 1.0;
+                    color: %s;
+                    overflow: hidden;
+                }
+                .normal4 {
+                    font-family: 'PT Sans', sans-serif;
+                    font-size: min(1.3vh, 0.9vw);
+                    font-weight: 400;
                     text-align: center;
                     line-height: 1.0;
                     color: %s;
@@ -348,10 +361,14 @@ class mainPage():
                 <br/>
                 %s
             </div>
+            <div class="normal4">
+                <br/>
+                %s
+            </div>
         </body>
-        '''%(self.text_color, self.creditslogo_url, self.credits)
+        '''%(self.text_color, self.text_color, self.creditslogo_url, self.credits, self.disclaimer)
 
-        cardunit = v.Card(flat=True, children=[HTML(html_unit)], style_="background-color: #ffffff00;", class_="pa-0 ma-0 mt-2")
+        cardunit = v.Card(flat=True, children=[HTML(html_credits)], style_="background-color: #ffffff00;", class_="pa-0 ma-0 mt-2")
         bcol = '#ffffff%0.2X'%(int(self.creditbox_opacity*255))
         self.hunit = v.Html(tag='div', children=[cardunit], class_="pa-0 ma-0",
                             style_='width: %fvw; height: %fvh; border: 0px solid #000000; border-radius: 12px; position: absolute; top: %fvh; left: %fvw; background-color: %s; overflow: hidden;'%(self.creditbox_widthpercent, self.creditbox_heightpercent,
