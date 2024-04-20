@@ -60,6 +60,8 @@ class iconButton():
         Python function to call when the user clicks on the button. The function will receive no parameters
     argument : any, optional
         Argument to be passed to the onclick funtion (default is None)
+    disabled : bool, optional
+        If True the button will be disabled (default is False)
 
     Example
     -------
@@ -84,21 +86,23 @@ class iconButton():
     def __init__(self, icon='mdi-alert-outline', tooltip='', color=settings.color_first,
                  outlined=False, rounded=True, width=None,
                  large=False, small=False, x_large=False, x_small=False, margins='pa-0 ma-0',
-                 onclick=None, argument=None):
+                 onclick=None, argument=None,
+                 disabled=False):
         
-        self.icon     = icon
-        self._tooltip = tooltip
-        self._color   = color
-        self.outlined = outlined
-        self.rounded  = rounded
-        self.width    = width
-        self.large    = large
-        self.small    = small
-        self.x_large  = x_large
-        self.x_small  = x_small
-        self.margins  = margins
-        self.onclick  = onclick
-        self.argument = argument
+        self.icon      = icon
+        self._tooltip  = tooltip
+        self._color    = color
+        self.outlined  = outlined
+        self.rounded   = rounded
+        self.width     = width
+        self.large     = large
+        self.small     = small
+        self.x_large   = x_large
+        self.x_small   = x_small
+        self.margins   = margins
+        self.onclick   = onclick
+        self.argument  = argument
+        self._disabled = disabled
         
         self.h = v.Html(tag='div',children=[])
         
@@ -112,7 +116,7 @@ class iconButton():
         if self.outlined: flagicon = False
         self.btn = v.Btn(icon=flagicon, class_=self.margins, outlined=self.outlined, rounded=self.rounded,
                          large=self.large, small=self.small, x_large=self.x_large, x_small=self.x_small,
-                         dark=settings.dark_mode, color=self._color,
+                         dark=settings.dark_mode, color=self._color, disabled=self._disabled,
                          width=self.width, min_width=self.width, max_width=self.width,
                          children=[v.Icon(children=[self.icon],
                                           large=self.large, small=self.small,
@@ -164,6 +168,19 @@ class iconButton():
     def tooltip(self, tooltip):
         self._tooltip = tooltip
         self.__createButton()
+
+
+    @property
+    def disabled(self):
+        """
+        Get/Set the disabled state of the button.
+        """
+        return self._disabled
+
+    @disabled.setter
+    def disabled(self, flag):
+        self._disabled = flag
+        self.btn.disabled = self._disabled
 
         
     # Returns the vuetify object to display
