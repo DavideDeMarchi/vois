@@ -66,6 +66,10 @@ class rangeSliderFloat():
         If True the up and down buttons will have a tooltip (default is False)
     onchange : function, optional
         Python function to call when the changes the range value of the slider. The function will receive a single parameter, containing the new value of the opacity in the range from 0.0 to 1.0 (default is None)
+    editable : bool, optional
+        If True the min and max label can be edited by clicking on them (default is False)
+    editableWidth : int, optional
+        If the slider is editable, set the width of the v.TextField widgets to enter the min and max value (default is 90)
             
     Example
     -------
@@ -96,9 +100,13 @@ class rangeSliderFloat():
 
     # Initialization
     def __init__(self, selectedminvalue, selectedmaxvalue, minvalue=0.0, maxvalue=1.0, text='Select', showpercentage=True, decimals=2, maxint=None, 
-                 labelwidth=0, sliderwidth=200, resetbutton=False, showtooltip=False, onchange=None):
+                 labelwidth=0, sliderwidth=200, resetbutton=False, showtooltip=False, onchange=None,
+                 editable=False, editableWidth=90):
         
         self.onchange = onchange
+        
+        self.editable = editable
+        self.editableWidth = editableWidth
         
         self.minvalue = minvalue
         self.maxvalue = maxvalue
@@ -146,14 +154,31 @@ class rangeSliderFloat():
                                     min=0, max=self.maxint, vertical=False, height=32)
         self.slider.on_event('input',  self.oninput)
         self.slider.on_event('change', self.onsliderchange)
+
+        self.fieldmin = v.TextField(autofocus=True, hide_details=True, single_line=True, hide_spin_buttons=False, dense=True, outlined=True, color=settings.color_first, type="number", class_='pa-0 ma-0 mt-2')
+        self.cfieldmin = v.Card(flat=True, children=[self.fieldmin], width=self.editableWidth, max_width=self.editableWidth)
+        self.fieldmin.on_event('change', self.onchangefieldmin)
+        self.fieldmin.on_event('blur',   self.onchangefieldmin)
+        self.fieldmax = v.TextField(autofocus=True, hide_details=True, single_line=True, hide_spin_buttons=False, dense=True, outlined=True, color=settings.color_first, type="number",class_='pa-0 ma-0 mt-2')
+        self.cfieldmax = v.Card(flat=True, children=[self.fieldmax], width=self.editableWidth, max_width=self.editableWidth)
+        self.fieldmax.on_event('change', self.onchangefieldmax)
+        self.fieldmax.on_event('blur',   self.onchangefieldmax)
         
         if self.showpercentage:
             self.labelvaluemin = v.Html(tag='div', children=[str(self.intvaluemin) + self.postchar], class_='pa-0 ma-0 mt-4 ml-4')
             self.labelvaluemax = v.Html(tag='div', children=[str(self.intvaluemax) + self.postchar], class_='pa-0 ma-0 mt-4')
+            self.fieldmin.v_model = self.intvaluemin
+            self.fieldmax.v_model = self.intvaluemax
         else:
             self.labelvaluemin = v.Html(tag='div', children=['{:.{prec}f}'.format(selectedminvalue, prec=self.decimals) + self.postchar], class_='pa-0 ma-0 mt-4 ml-4')
             self.labelvaluemax = v.Html(tag='div', children=['{:.{prec}f}'.format(selectedmaxvalue, prec=self.decimals) + self.postchar], class_='pa-0 ma-0 mt-4')
+            self.fieldmin.v_model = selectedminvalue
+            self.fieldmax.v_model = selectedmaxvalue
 
+        self.labelvaluemin.on_event('click', self.onvaluemin)
+        self.labelvaluemax.on_event('click', self.onvaluemax)
+       
+        
         if self.resetbutton:
             self.bupmin = v.Btn(icon=True, small=True, rounded=False, elevation=0, width=15, height=20, class_='pa-0 ma-0', children=[v.Icon(color='grey', children=['mdi-menu-right'])])
             self.bupmin.on_event('click', self.onupmin)
@@ -212,6 +237,34 @@ class rangeSliderFloat():
             if showtooltip: self.cdnmax = tooltip.tooltip("Decrease max",self.cdnmax)
 
             self.buttonsmax = widgets.VBox([self.cupmax,self.cdnmax])
+        
+        self.row = v.Row(justify='start', class_='pa-0 ma-0', no_gutters=True, children=[self.label, self.labelvaluemin, self.buttonsmin, self.slider, self.buttonsmax, self.labelvaluemax], style_="overflow: hidden;")
+        
+        
+    # When carriage return on the self.fieldmin or an external click
+    def onchangefieldmin(self, *args):
+        self.row.children = [self.label, self.labelvaluemin, self.buttonsmin, self.slider, self.buttonsmax, self.labelvaluemax]
+        v = self.value
+        self.value = float(self.fieldmin.v_model), v[1]
+        self.fieldmin.v_model = self.value[0]
+        
+    # When carriage return on the self.fieldmax or an external click
+    def onchangefieldmax(self, *args):
+        self.row.children = [self.label, self.labelvaluemin, self.buttonsmin, self.slider, self.buttonsmax, self.labelvaluemax]
+        v = self.value
+        self.value = v[0], float(self.fieldmax.v_model)
+        self.fieldmax.v_model = self.value[1]
+        
+    # On click on the self.labelvaluemin: display the self.fieldmin
+    def onvaluemin(self, *args):
+        if self.editable:
+            self.row.children = [self.label, self.cfieldmin, self.buttonsmin, self.slider, self.buttonsmax, self.labelvaluemax]
+        
+    # On click on the self.labelvaluemax: display the self.fieldmax
+    def onvaluemax(self, *args):
+        if self.editable:
+            self.row.children = [self.label, self.labelvaluemin, self.buttonsmin, self.slider, self.buttonsmax, self.cfieldmax]
+        
         
     # Input event on the slider
     def oninput(self, *args):
@@ -302,7 +355,7 @@ class rangeSliderFloat():
     # Draw the widget
     def draw(self):
         """Returns the ipyvuetify object to display (a v.Row widget)"""
-        return v.Row(justify='start', class_='pa-0 ma-0', no_gutters=True, children=[self.label, self.labelvaluemin, self.buttonsmin, self.slider, self.buttonsmax, self.labelvaluemax], style_="overflow: hidden;")
+        return self.row
 
         
     # Get the slider value
