@@ -258,11 +258,13 @@ class rangeSliderFloat():
     # On click on the self.labelvaluemin: display the self.fieldmin
     def onvaluemin(self, *args):
         if self.editable:
+            self.fieldmin.v_model = self.value[0]
             self.row.children = [self.label, self.cfieldmin, self.buttonsmin, self.slider, self.buttonsmax, self.labelvaluemax]
         
     # On click on the self.labelvaluemax: display the self.fieldmax
     def onvaluemax(self, *args):
         if self.editable:
+            self.fieldmax.v_model = self.value[1]
             self.row.children = [self.label, self.labelvaluemin, self.buttonsmin, self.slider, self.buttonsmax, self.cfieldmax]
         
         
