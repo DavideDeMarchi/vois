@@ -126,7 +126,7 @@ class iconButton():
             self.btn.max_width = self.width
             self.btn.width     = self.width
             
-        self.btn.on_event('click', self.__internal_onclick)
+        self.btn.on_event('click.stop', self.__internal_onclick)
         
         if len(self._tooltip) > 0:
             obj = tooltip.tooltip(self._tooltip,self.btn)

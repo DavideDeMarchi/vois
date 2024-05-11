@@ -79,6 +79,8 @@ class popup:
         Text to add at the top of the popup (default is '')
     show_close_button : bool, optional
         If True a close icon button is displayed on the top-right side of the popup to ease the closing of the popup (default is False). It can be useful mainly when close_on_click is set to False.
+    on_input : function, optional
+        Python function to call when the popup opens or closes by click or by hover (default is None). When the popup opens the function will be called with True as parameter, while when the popup menu closes it will be called with False as parameter
 
     Note
     ----
@@ -131,7 +133,10 @@ class popup:
                  close_on_click=True,
                  close_on_content_click=True,
                  title='',
-                 show_close_button=False):
+                 show_close_button=False,
+                 on_input=None):
+        
+        self.on_input = on_input
 
         # The popup cannot have a width smaller than the width of the button
         if popupwidth < buttonwidth: popupwidth = buttonwidth
@@ -184,6 +189,14 @@ class popup:
                            close_on_click=close_on_click, close_on_content_click=close_on_content_click,
                            v_slots=[{'name': 'activator', 'variable': variable, 'children': btn }],
                            children=[card], style_='overflow: hidden;')
+        
+        self.menu.on_event('input', self.__internal_input)
+    
+
+    def __internal_input(self, widget=None, event=None, data=None):
+        if not self.on_input is None:
+            if data is True: self.on_input(True)
+            else:            self.on_input(False)
     
     # Returns the vuetify object to display
     def draw(self):
