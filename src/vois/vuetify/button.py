@@ -1,4 +1,6 @@
 """Button widget to call a python function when clicked."""
+from abc import ABC
+
 # Author(s): Davide.De-Marchi@ec.europa.eu
 # Copyright © European Union 2022-2023
 # 
@@ -19,20 +21,25 @@
 # limitations under the Licence.
 from IPython.display import display
 import ipyvuetify as v
+import warnings
 
-try:
-    from . import settings
-    from . import fontsettings
-except:
-    import settings
-    import fontsettings
+# try:
+#     from . import settings
+#     from . import fontsettings
+# except:
+#     import settings
+#     import fontsettings
+
+from vois.vuetify import settings, fontsettings
+from vois.vuetify.utils.util import deprecated_init_alias
+from typing import Callable, Any, Union, Optional
 
 
-#####################################################################################################################################################
+#######################################################################################################################
 # Button class. On click python function called when clicked
 # Uses settings font to display the button text and interactivity when hover
-#####################################################################################################################################################
-class button():
+#######################################################################################################################
+class Button(v.Html):
     """
     Button widget to call a python function when clicked.
         
@@ -110,36 +117,36 @@ class button():
     -------
     Creation and display of a some button widgets playing with the parameters::
         
-        from vois.vuetify import settings, button
+        from vois.vuetify import settings, Button
 
         def onclick(arg=None):
             if arg==1: b1.selected = not b1.selected
             if arg==2: b2.selected = not b2.selected
             else:      b3.selected = not b3.selected
 
-        b1 = button.button('Test button 1', textweight=300, onclick=onclick, argument=1,
+        b1 = Button('Test button 1', textweight=300, onclick=onclick, argument=1,
                            width=150, height=36, 
                            tooltip='Tooltip for button 1', selected=False, rounded=True,
                            icon='mdi-car-light-high', iconcolor='black')
 
-        b2 = button.button('Test button 2', textweight=450, onclick=onclick, argument=2,
+        b2 = Button('Test button 2', textweight=450, onclick=onclick, argument=2,
                            width=150, height=48,
                            tooltip='Tooltip for button 2', selected=True, rounded=False)
 
-        b3 = button.button('Test button 3', textweight=450, onclick=onclick, argument=3,
+        b3 = Button('Test button 3', textweight=450, onclick=onclick, argument=3,
                            width=150, height=38,
                            textcolor=settings.color_first, 
                            tooltip='Tooltip for button 3', outlined=True, rounded=True)
 
-        b4 = button.button('Contacts', onlytext=True, textcolor=settings.color_first,
+        b4 = Button('Contacts', onlytext=True, textcolor=settings.color_first,
                            width=150, height=28,
                            href='https://ec.europa.eu/info/contact_en', target="_blank",
                            tooltip='Open a URL')
 
-        display(b1.draw())
-        display(b2.draw())
-        display(b3.draw())
-        display(b4.draw())
+        display(b1)
+        display(b2)
+        display(b3)
+        display(b4)
 
 
     .. figure:: figures/button.png
@@ -149,86 +156,131 @@ class button():
        Example of a 4 button widgets with different display modes.
    """
 
-   
     # Initialization
-    def __init__(self, text, onclick=None, argument=None, width=100, height=36, selected=False, disabled=False, tooltip='', 
-                 large=False, xlarge=False, small=False, xsmall=False, outlined=False, textweight=500,
-                 href=None, target=None, onlytext=False, textcolor=None,  class_="pa-0 ma-0",
-                 icon=None, iconlarge=False, iconsmall=False, iconleft=False, iconcolor='black',
-                 autoselect=False, dark=settings.dark_mode, rounded=settings.button_rounded, tile=False,
-                 colorselected=settings.color_first, colorunselected=settings.color_second, ondblclick=None
-                ):
-        self.onclick    = onclick
-        self.ondblclick = ondblclick
-        self.argument   = argument
-        self._selected  = selected
-        self._disabled  = disabled
-        self.autoselect = autoselect
-        self.text       = text
-        self.iconlarge  = iconlarge
-        self.iconsmall  = iconsmall
-        self.iconcolor  = iconcolor
-        self.colorselected   = colorselected
-        self.colorunselected = colorunselected
+    @deprecated_init_alias(onclick='on_click', xlarge='xLarge', xsmall='xSmall', textweight='textWeight',
+                           onlytext='onlyText', textcolor='textColor', iconlarge='iconLarge', iconsmall='iconSmall',
+                           iconleft='iconLeft', iconcolor='iconColor', autoselect='autoSelect',
+                           colorselected='colorSelected', colorunselected='colorUnselected', ondblclick='on_dblclick')
+    def __init__(self, text: str,
+                 on_click: Optional[Union[Callable[[], None], Callable[[dict[str, Any]], None]]] = None,
+                 argument: Optional[Any] = None,  # TODO forzare a dict per **kwargs
+                 width: int = 100,
+                 height: int = 36,
+                 selected: bool = False,
+                 disabled: bool = False,
+                 tooltip: str = '',
+                 large: bool = False,
+                 xLarge: bool = False,
+                 small: bool = False,
+                 xSmall: bool = False,
+                 outlined: bool = False,
+                 textWeight: int = 500,
+                 href: Optional[str] = None,
+                 target: Optional[str] = None,
+                 onlyText: bool = False,
+                 textColor: Optional[str] = None,
+                 class_: str = "pa-0 ma-0",
+                 icon: Optional[str] = None,
+                 iconLarge: bool = False,
+                 iconSmall: bool = False,
+                 iconLeft: bool = False,
+                 iconColor='black',
+                 autoSelect: bool = False,
+                 dark: bool = settings.dark_mode,
+                 rounded: bool = settings.button_rounded,
+                 tile: bool = False,
+                 colorSelected: str = settings.color_first,
+                 colorUnselected: str = settings.color_second,
+                 on_dblclick: Optional[Union[Callable[[], None], Callable[[dict[str, Any]], None]]] = None,
+                 **kwargs) -> None:
 
-        self.icondistance = " ml-2"
-    
-        if not textcolor is None: color = textcolor
+        super().__init__(**kwargs)
+
+        self.on_click = on_click
+        self.on_dblclick = on_dblclick
+        self.argument = argument
+        self._selected = selected
+        self._disabled = disabled
+        self.autoSelect = autoSelect
+        self._text = text
+        self.iconLarge = iconLarge
+        self.iconSmall = iconSmall
+        self.iconColor = iconColor
+        self.colorSelected = colorSelected
+        self.colorUnselected = colorUnselected
+
+        self.iconDistance = " ml-2"
+
+        if textColor:
+            color = textColor
         else:
-            if self._selected: color = self.colorselected
-            else:              color = self.colorunselected
-            
+            color = self.colorSelected if self._selected else self.colorUnselected
+
         if icon is None:
-            childs = [self.text]
+            childs = [self._text]
         else:
-            if len(self.text) == 0: self.icondistance = ""
-            elif iconleft:          self.icondistance = " mr-2"
-            
-            icn = v.Icon(class_="pa-0 ma-0 %s" % self.icondistance, large=self.iconlarge, small=self.iconsmall, color=self.iconcolor, children=[icon])
-            if iconleft:
-                if len(self.text) == 0: childs = [icn]
-                else:                   childs = [icn, self.text]
-            else:
-                if len(self.text) == 0: childs = [icn]
-                else:                   childs = [self.text, icn]
-            
-        self.b = v.Btn(color=color, dark=dark, icon=onlytext, depressed=True, outlined=outlined, large=large, xlarge=xlarge, small=small, x_small=xsmall, 
-                       disabled=disabled, width=width, min_width=width, height=height, min_height=height, href=href, target=target, tile=tile, 
-                       children=childs, style_='font-family: %s; font-size: 17; font-weight: %d; text-transform: none' % (fontsettings.font_name, textweight), rounded=rounded)
-                
-        self.b.on_event('click',    self.__internal_onclick)
-        self.b.on_event('dblclick', self.__internal_ondblclick)
-        
-        if len(tooltip) > 0: self.b.v_on = 'tooltip.on'
-        self.container = v.Container(class_=class_, children=[ v.Tooltip(color=settings.tooltip_backcolor, transition="scale-transition", bottom=True, 
-                                                                         v_slots=[{'name': 'activator', 'variable': 'tooltip', 'children': self.b }],
-                                                                         children=[tooltip]) ])
-    
-    # Returns the vuetify object to display (the v.Container)
-    def draw(self):
-        """Returns the ipyvuetify object to display (the internal v.Html containing a v.Btn widget as its only child)"""
-        return v.Html(tag='div',children=[self.container])
+            if not self._text:
+                self.iconDistance = ""
+            elif iconLeft:
+                self.iconDistance = " mr-2"
 
-    
+            icn = v.Icon(class_="pa-0 ma-0 %s" % self.iconDistance, large=self.iconLarge, small=self.iconSmall,
+                         color=self.iconColor, children=[icon])
+            if iconLeft:
+                if not self._text:
+                    childs = [icn]
+                else:
+                    childs = [icn, self._text]
+            else:
+                if not self._text:
+                    childs = [icn]
+                else:
+                    childs = [self._text, icn]
+
+        self.b = v.Btn(textcolor=color, dark=dark, icon=onlyText, depressed=True, outlined=outlined, large=large,
+                       xlarge=xLarge, small=small, x_small=xSmall,
+                       disabled=disabled, width=width, min_width=width, height=height, min_height=height, href=href,
+                       target=target, tile=tile,
+                       children=childs,
+                       style_='font-family: %s; font-size: 17; font-weight: %d; text-transform: none' % (
+                           fontsettings.font_name, textWeight), rounded=rounded)
+
+        self.b.on_event('click', self.__internal_onclick)
+        self.b.on_event('dblclick', self.__internal_ondblclick)
+
+        if len(tooltip) > 0:
+            self.b.v_on = 'tooltip.on'
+        self.container = v.Container(class_=class_, children=[
+            v.Tooltip(color=settings.tooltip_backcolor, transition="scale-transition", bottom=True,
+                      v_slots=[{'name': 'activator', 'variable': 'tooltip', 'children': self.b}],
+                      children=[tooltip])])
+
+        self.tag = 'div'
+        self.children = [self.container]
+
+    def draw(self):
+        warnings.warn('DeprecationWarning: The "draw" method is deprecated, please just use the object widget itself.',
+                      stacklevel=2)
+        return self
+
     # Manage click event
     def __internal_onclick(self, widget=None, event=None, data=None):
-        if self.onclick:
-            if not self.argument is None:
-                self.onclick(self.argument)
+        if self.on_click:
+            if self.argument:
+                self.on_click(self.argument)  # TODO switch to kwargs
             else:
-                self.onclick()
-        if self.autoselect:
+                self.on_click()
+        if self.autoSelect:
             self.selected = True
-            
+
     # Manage dblclick event
     def __internal_ondblclick(self, widget=None, event=None, data=None):
-        if self.ondblclick:
-            if not self.argument is None:
-                self.ondblclick(self.argument)
+        if self.on_dblclick:
+            if self.argument:  # TODO usare argument diversi da onclick
+                self.on_dblclick(self.argument)
             else:
-                self.ondblclick()
+                self.on_dblclick()
 
-            
     @property
     def selected(self):
         """
@@ -251,10 +303,11 @@ class button():
     @selected.setter
     def selected(self, flag):
         self._selected = bool(flag)
-        if self._selected: color = self.colorselected
-        else:              color = self.colorunselected
+        if self._selected:
+            color = self.colorSelected
+        else:
+            color = self.colorUnselected
         self.b.color = color
-    
 
     @property
     def disabled(self):
@@ -272,10 +325,9 @@ class button():
     def disabled(self, flag):
         self._disabled = bool(flag)
         self.b.disabled = self._disabled
-        
-        
+
     # Change the icon for the button
-    def setIcon(self, iconname):
+    def setIcon(self, iconname):  # TODO da fare come text
         """
         Change the icon for the button
 
@@ -294,12 +346,13 @@ class button():
         """
         for item in self.b.children:
             if type(item).__name__ == 'Icon':
-                newicon = v.Icon(class_="pa-0 ma-0 %s" % self.icondistance, large=self.iconlarge, small=self.iconsmall, color=self.iconcolor, children=[iconname])
-                self.b.children = [newicon if x==item else x for x in self.b.children]
+                newicon = v.Icon(class_="pa-0 ma-0 %s" % self.iconDistance, large=self.iconLarge, small=self.iconSmall,
+                                 color=self.iconColor, children=[iconname])
+                self.b.children = [newicon if x == item else x for x in self.b.children]
                 break
-                
+
     # Change the text for the button
-    def setText(self, newtext):
+    def setText(self, newtext: str):
         """
         Change the text for the button
 
@@ -315,7 +368,31 @@ class button():
                 b.setText('New button text')
 
         """
+        warnings.warn("This method is deprecate used instead button_obj.text = 'your_new_text'", DeprecationWarning,
+                      stacklevel=2)
         for item in self.b.children:
             if isinstance(item, str):
-                self.b.children = [newtext if x==item else x for x in self.b.children]
-                break                    
+                self.b.children = [newtext if x == item else x for x in self.b.children]
+                break
+
+    @property
+    def text(self):
+        return self._text
+
+    @text.setter
+    def text(self, value):
+        tmp = self.b.children
+        tmp[tmp.index(self._text)] = value
+        self.b.children = []
+        self.b.children = tmp
+        self._text = value
+
+
+# Proposta aggiornamento componente. Liste delle cose fatte
+# 1. Rimozione import relativi
+# 2. Rimozione doppio import + retrocompatibile
+# 3. Usare property con setting
+# 4. Inserimento type checking
+# 5. Cambiamento nome classe + retrocompatibile
+# 6. Cambiamento nome parameteri + retrocompatibile
+# 7. Risoluzione problema draw + retrocompatibile

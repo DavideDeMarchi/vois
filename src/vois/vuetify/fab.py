@@ -31,7 +31,7 @@ try:
 except:
     import settings
     import fontsettings
-    import button
+    import Button
     import label
     import tooltip
 

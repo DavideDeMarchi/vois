@@ -45,7 +45,7 @@ except:
     import settings
     import fontsettings
     import sidePanel
-    import button
+    import Button
     import footer
     import snackbar
     import dialogMessage
