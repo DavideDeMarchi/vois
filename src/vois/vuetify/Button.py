@@ -47,9 +47,9 @@ class Button(v.Html):
     ----------
     text : str
         Test string to be displayed on the button widget
-    onclick : function, optional
+    on_click : function, optional
         Python function to call when the user clicks on the button. The function will receive as parameter the value of the argument (default is None)
-    ondblclick : function, optional
+    on_dblclick : function, optional
         Python function to call when the user double-clicks on the button. The function will receive as parameter the value of the argument (default is None)
     argument : any, optional
         Argument to be passed to the onclick function when user click on the label (default is None)
@@ -65,35 +65,35 @@ class Button(v.Html):
         Tooltip text to show when the user hovers on the button (default is '')
     large : bool, optional
         Flag that sets the large version of the button (default is False)
-    xlarge : bool, optional
+    xLarge : bool, optional
         Flag that sets the xlarge version of the button (default is False)
     small : bool, optional
         Flag that sets the small version of the button (default is False)
-    xsmall : bool, optional
+    xSmall : bool, optional
         Flag that sets the xsmall version of the button (default is False)
     outlined : bool, optional
         Flag to show the button as outlined (default is False)
-    textweight : int, optional
+    textWeight : int, optional
         Weight of the text to be shown in the label (default is 500, Bold is any value greater or equal to 500)
     href : str, optional
         URL to open when the button is clicked (default is None)
     target : str, optional
         Designates the target attribute (where the URL page is opened, for instance: '_blank' to open it in a new browser tab). This should only be applied when using the href parameter (default is None)
-    onlytext : bool, optional
+    onlyText : bool, optional
          If True, the button will contain only the text (default is False)
-    textcolor : str, optional
+    textColor : str, optional
         Color used for the button text (default is None)
     icon: str, optional
         Name of the icon to display aside the text of the label (default is None)
-    iconlarge : bool, optional
+    iconLarge : bool, optional
         Flag that sets the large version of the icon (default is False)
-    iconsmall : bool, optional
+    iconSmall : bool, optional
         Flag that sets the small version of the icon (default is False)
-    iconleft : bool, optional
+    iconLeft : bool, optional
         Flag that sets the position of the icon  to the left of the text of the label (default is False)
-    iconcolor : str, optional
+    iconColor : str, optional
         Color of the icon (default is 'black')
-    autoselect : bool, optional
+    autoSelect : bool, optional
         If True, the button becomes selected when clicked (default is False)
     dark : bool, optional
         Flag to invert the text and backcolor (default is the value of settings.dark_mode)
@@ -101,9 +101,9 @@ class Button(v.Html):
         Flag to display the button with rounded corners (default is the value of settings.button_rounded)
     tile : bool, optional
         Flag to remove the button small border (default is False)
-    colorselected : str, optional
+    colorSelected : str, optional
         Color used for the button when it is selected (default is settings.color_first)
-    colorunselected : str, optional
+    colorUnselected : str, optional
         Color used for the button when it is not selected (default is settings.color_second)
             
     Note
@@ -124,21 +124,21 @@ class Button(v.Html):
             if arg==2: b2.selected = not b2.selected
             else:      b3.selected = not b3.selected
 
-        b1 = Button('Test button 1', textweight=300, onclick=onclick, argument=1,
+        b1 = Button('Test button 1', textWeight=300, on_click=onclick, argument=1,
                            width=150, height=36, 
                            tooltip='Tooltip for button 1', selected=False, rounded=True,
-                           icon='mdi-car-light-high', iconcolor='black')
+                           icon='mdi-car-light-high', iconColor='black')
 
-        b2 = Button('Test button 2', textweight=450, onclick=onclick, argument=2,
+        b2 = Button('Test button 2', textWeight=450, on_click=onclick, argument=2,
                            width=150, height=48,
                            tooltip='Tooltip for button 2', selected=True, rounded=False)
 
-        b3 = Button('Test button 3', textweight=450, onclick=onclick, argument=3,
+        b3 = Button('Test button 3', textWeight=450, on_click=onclick, argument=3,
                            width=150, height=38,
-                           textcolor=settings.color_first, 
+                           textColor=settings.color_first,
                            tooltip='Tooltip for button 3', outlined=True, rounded=True)
 
-        b4 = Button('Contacts', onlytext=True, textcolor=settings.color_first,
+        b4 = Button('Contacts', onlyText=True, textColor=settings.color_first,
                            width=150, height=28,
                            href='https://ec.europa.eu/info/contact_en', target="_blank",
                            tooltip='Open a URL')
