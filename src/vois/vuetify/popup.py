@@ -136,7 +136,11 @@ class popup:
                  show_close_button=False,
                  on_input=None):
         
-        self.on_input = on_input
+        self.buttontext = buttontext
+        self.icon       = icon
+        self.icon_small = icon_small
+        self.icon_large = icon_large
+        self.on_input   = on_input
 
         # The popup cannot have a width smaller than the width of the button
         if popupwidth < buttonwidth: popupwidth = buttonwidth
@@ -162,17 +166,8 @@ class popup:
             
         card = v.Card(width='%dpx'%popupwidth, height='%dpx'%popupheight, elevation=1, children=children, style_='overflow: auto;')
         
-        children = []
-        leftspace = 0
-        flagicon = not icon is None
-        if len(buttontext) > 0:
-            children.append(buttontext)
-            leftspace = 2
-            flagicon = False
-            
-        if not icon is None:
-            children.append(v.Icon(small=icon_small, large=icon_large, children=[icon], class_='pa-0 ma-0 ml-%d'%leftspace))
-            
+        children, flagicon = self.__setup_btn_children()
+        
         if not margintop is None:
             class_ = "pa-0 ma-%s mt-%s" % (str(margins), str(margintop))
         else:
@@ -180,26 +175,72 @@ class popup:
             
         variable = 'menuData%d' % randint(1,999999)
         
-        btn = v.Btn(v_on='%s.on'%variable, color=color, fab=False, dark=True, depressed=True, icon=flagicon, text=text, class_=class_,
-                    disabled=False, width=buttonwidth, max_width=buttonwidth, height=buttonheight, rounded=rounded, outlined=outlined,
-                    style_='font-family: %s; font-weight: %d; text-transform: none' % (fontsettings.font_name, 450),
-                    children=children)
+        self.btn = v.Btn(v_on='%s.on'%variable, color=color, fab=False, dark=True, depressed=True, icon=flagicon, text=text, class_=class_,
+                         disabled=False, width=buttonwidth, max_width=buttonwidth, height=buttonheight, rounded=rounded, outlined=outlined,
+                         style_='font-family: %s; font-weight: %d; text-transform: none' % (fontsettings.font_name, 450),
+                         children=children)
         
         self.menu = v.Menu(v_model=False, offset_y=True, open_on_hover=open_on_hover, dense=True, internal_activator=True,
                            close_on_click=close_on_click, close_on_content_click=close_on_content_click,
-                           v_slots=[{'name': 'activator', 'variable': variable, 'children': btn }],
+                           v_slots=[{'name': 'activator', 'variable': variable, 'children': self.btn }],
                            children=[card], style_='overflow: hidden;')
         
         self.menu.on_event('input', self.__internal_input)
-    
 
+
+    # Utility function to setup the button properties. Returns children and the icon flag
+    def __setup_btn_children(self):
+        children = []
+        leftspace = 0
+        flagicon = not self.icon is None
+        if len(self.buttontext) > 0:
+            children.append(self.buttontext)
+            leftspace = 2
+            flagicon = False
+            
+        if not self.icon is None:
+            children.append(v.Icon(small=self.icon_small, large=self.icon_large, children=[self.icon], class_='pa-0 ma-0 ml-%d'%leftspace))
+            
+        return children, flagicon
+        
+
+    # Manage event
     def __internal_input(self, widget=None, event=None, data=None):
         if not self.on_input is None:
             if data is True: self.on_input(True)
             else:            self.on_input(False)
+    
     
     # Returns the vuetify object to display
     def draw(self):
         """Returns the ipyvuetify object to display"""
         return self.menu
 
+    
+    @property
+    def text(self):
+        """
+        Get/Set the text of the popup button.
+        
+        Returns
+        --------
+        text : str
+               current text displayed on the popup button
+
+        Example
+        -------
+        Change the text of the popup button::
+            
+            p.text = "New text"
+            print(p.text)
+        
+        """
+        return self.buttontext
+
+    
+    @text.setter
+    def text(self, t):
+        if isinstance(t, str):
+            self.buttontext = t
+            self.btn.children, self.btn.icon = self.__setup_btn_children()
+            
