@@ -25,7 +25,7 @@ from IPython.display import display
 try:
     from . import settings
     from . import fontsettings
-    from . import button
+    from . import Button
     from . import label
     from . import tooltip
 except:

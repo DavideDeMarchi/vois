@@ -23,7 +23,7 @@ import ipyvuetify as v
 try:
     from . import settings
     from . import tooltip
-    from . import button
+    from . import Button
 except:
     import settings
     import tooltip

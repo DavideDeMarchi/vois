@@ -32,7 +32,7 @@ try:
     from . import settings
     from . import fontsettings
     from . import sidePanel
-    from . import button
+    from . import Button
     from . import footer
     from . import snackbar
     from . import dialogMessage
