@@ -53,14 +53,6 @@ def runner(pytestconfig, request):
     return request.param
 
 
-@pytest.fixture(scope="session", params=[1, 2, 3])
-def pippo(pytestconfig, request):
-    par = pytestconfig.getoption("--runners")
-    # print(par, type(par))
-    print(request)
-    # return pytestconfig.getoption("--runners")
-    return request.param
-
 
 # @pytest.fixture(scope="session")
 # def runners_list(pytestconfig: Any, request) -> List[str]:
@@ -145,8 +137,6 @@ def assert_vois_compare_image(pytestconfig: Any, request: Any, browser_name: str
     path_snapshots_directory = vois_snapshots_directory / test_file_name
     vois_test_results_directory = vois_snapshots_directory / '..' / 'test_results'
     path_test_results_directory = vois_test_results_directory / test_file_name
-
-    print('caioooooo')
 
     if not path_snapshots_directory.exists():
         path_snapshots_directory.mkdir(exist_ok=True, parents=True)
