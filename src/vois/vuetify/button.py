@@ -192,7 +192,7 @@ class button():
                 if len(self.text) == 0: childs = [icn]
                 else:                   childs = [self.text, icn]
             
-        self.b = v.Btn(color=color, dark=dark, icon=onlytext, depressed=True, outlined=outlined, large=large, xlarge=xlarge, small=small, x_small=xsmall, 
+        self.b = v.Btn(color=color, dark=dark, icon=onlytext, depressed=True, outlined=outlined, large=large, x_large=xlarge, small=small, x_small=xsmall,
                        disabled=disabled, width=width, min_width=width, height=height, min_height=height, href=href, target=target, tile=tile, 
                        children=childs, style_='font-family: %s; font-size: 17; font-weight: %d; text-transform: none' % (fontsettings.font_name, textweight), rounded=rounded)
                 
