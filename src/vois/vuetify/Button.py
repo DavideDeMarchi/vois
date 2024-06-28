@@ -23,13 +23,6 @@ from IPython.display import display
 import ipyvuetify as v
 import warnings
 
-# try:
-#     from . import settings
-#     from . import fontsettings
-# except:
-#     import settings
-#     import fontsettings
-
 from vois.vuetify import settings, fontsettings
 from vois.vuetify.utils.util import *
 from typing import Callable, Any, Union, Optional
@@ -65,35 +58,35 @@ class Button(v.Html):
         Tooltip text to show when the user hovers on the button (default is '')
     large : bool, optional
         Flag that sets the large version of the button (default is False)
-    xLarge : bool, optional
+    x_large : bool, optional
         Flag that sets the xlarge version of the button (default is False)
     small : bool, optional
         Flag that sets the small version of the button (default is False)
-    xSmall : bool, optional
+    x_small : bool, optional
         Flag that sets the xsmall version of the button (default is False)
     outlined : bool, optional
         Flag to show the button as outlined (default is False)
-    textWeight : int, optional
+    text_weight : int, optional
         Weight of the text to be shown in the label (default is 500, Bold is any value greater or equal to 500)
     href : str, optional
         URL to open when the button is clicked (default is None)
     target : str, optional
         Designates the target attribute (where the URL page is opened, for instance: '_blank' to open it in a new browser tab). This should only be applied when using the href parameter (default is None)
-    onlyText : bool, optional
+    only_text : bool, optional
          If True, the button will contain only the text (default is False)
-    textColor : str, optional
+    text_color : str, optional
         Color used for the button text (default is None)
     icon: str, optional
         Name of the icon to display aside the text of the label (default is None)
-    iconLarge : bool, optional
+    icon_large : bool, optional
         Flag that sets the large version of the icon (default is False)
-    iconSmall : bool, optional
+    icon_small : bool, optional
         Flag that sets the small version of the icon (default is False)
-    iconLeft : bool, optional
+    icon_left : bool, optional
         Flag that sets the position of the icon  to the left of the text of the label (default is False)
-    iconColor : str, optional
+    icon_color : str, optional
         Color of the icon (default is 'black')
-    autoSelect : bool, optional
+    auto_select : bool, optional
         If True, the button becomes selected when clicked (default is False)
     dark : bool, optional
         Flag to invert the text and backcolor (default is the value of settings.dark_mode)
@@ -101,9 +94,9 @@ class Button(v.Html):
         Flag to display the button with rounded corners (default is the value of settings.button_rounded)
     tile : bool, optional
         Flag to remove the button small border (default is False)
-    colorSelected : str, optional
+    color_selected : str, optional
         Color used for the button when it is selected (default is settings.color_first)
-    colorUnselected : str, optional
+    color_unselected : str, optional
         Color used for the button when it is not selected (default is settings.color_second)
             
     Note
@@ -124,21 +117,21 @@ class Button(v.Html):
             if arg==2: b2.selected = not b2.selected
             else:      b3.selected = not b3.selected
 
-        b1 = Button('Test button 1', textWeight=300, on_click=onclick, argument=1,
+        b1 = Button('Test button 1', text_weight=300, on_click=onclick, argument=1,
                            width=150, height=36, 
                            tooltip='Tooltip for button 1', selected=False, rounded=True,
                            icon='mdi-car-light-high', iconColor='black')
 
-        b2 = Button('Test button 2', textWeight=450, on_click=onclick, argument=2,
+        b2 = Button('Test button 2', text_weight=450, on_click=onclick, argument=2,
                            width=150, height=48,
                            tooltip='Tooltip for button 2', selected=True, rounded=False)
 
-        b3 = Button('Test button 3', textWeight=450, on_click=onclick, argument=3,
+        b3 = Button('Test button 3', text_weight=450, on_click=onclick, argument=3,
                            width=150, height=38,
-                           textColor=settings.color_first,
+                           text_color=settings.color_first,
                            tooltip='Tooltip for button 3', outlined=True, rounded=True)
 
-        b4 = Button('Contacts', onlyText=True, textColor=settings.color_first,
+        b4 = Button('Contacts', only_text=True, text_color=settings.color_first,
                            width=150, height=28,
                            href='https://ec.europa.eu/info/contact_en', target="_blank",
                            tooltip='Open a URL')
@@ -221,7 +214,6 @@ class Button(v.Html):
             color = text_color
         else:
             color = self.color_selected if self._selected else self.color_unselected
-
 
         if self._icon is None:
             childs = [self._text]
@@ -347,9 +339,9 @@ class Button(v.Html):
                 
                 from vois.vuetify import settings, button
                 
-                b = button.button('Test button', textweight=450, width=150, height=46,
+                b = Button('Test button', text_weight=450, width=150, height=46,
                                   selected=True, rounded=True,
-                                  icon='mdi-menu-open', iconcolor='black', iconlarge=True)
+                                  icon='mdi-menu-open', icon_color='black', icon_large=True)
                 display(b.draw())
                 b.setIcon('mdi-menu')
 
@@ -364,6 +356,22 @@ class Button(v.Html):
 
     @icon.setter
     def icon(self, icon_name: str):
+        """
+        Change the icon for the button
+
+        Example
+        -------
+        Creation of a button and programmatically change of its icon::
+
+                from vois.vuetify import settings, Button
+
+                b = Button('Test button', text_weight=450, width=150, height=46,
+                                  selected=True, rounded=True,
+                                  icon='mdi-menu-open', icon_color='black', icon_large=True)
+                display(b)
+                b.icon = 'mdi-menu'
+
+        """
         self._icon = icon_name
         for item in self.b.children:
             if type(item).__name__ == 'Icon':
@@ -373,7 +381,6 @@ class Button(v.Html):
                 self.b.children = [newicon if x == item else x for x in self.b.children]
                 break
 
-
     # Change the text for the button
     def setText(self, newtext: str):
         """
@@ -382,10 +389,10 @@ class Button(v.Html):
         Example
         -------
         Creation of a button and programmatically change of its icon::
-                
-                from vois.vuetify import settings, button
-                
-                b = button.button('Test button', textweight=450, width=250, height=46,
+
+                from vois.vuetify import settings, Button
+
+                b = Button('Test button', text_weight=450, width=250, height=46,
                                   selected=True, rounded=True)
                 display(b.draw())
                 b.setText('New button text')
@@ -401,17 +408,23 @@ class Button(v.Html):
 
     @text.setter
     def text(self, value):
+        """
+        Change the text for the button
+
+        Example
+        -------
+        Creation of a button and programmatically change of its icon::
+
+                from vois.vuetify import settings, Button
+
+                b = Button('Test button', text_weight=450, width=250, height=46,
+                                  selected=True, rounded=True)
+                display(b)
+                b.text = 'New button text'
+
+        """
         tmp = self.b.children
         tmp[tmp.index(self._text)] = value
         self.b.children = []
         self.b.children = tmp
         self._text = value
-
-# Proposta aggiornamento componente. Liste delle cose fatte
-# 1. Rimozione import relativi
-# 2. Rimozione doppio import + retrocompatibile
-# 3. Usare property con setting
-# 4. Inserimento type checking
-# 5. Cambiamento nome classe + retrocompatibile
-# 6. Cambiamento nome parameteri + retrocompatibile
-# 7. Risoluzione problema draw + retrocompatibile
