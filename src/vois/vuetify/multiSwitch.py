@@ -164,7 +164,7 @@ class multiSwitch():
                 else:
                     c = "pa-0 ma-0 mb-%d"%self.paddingcol
                     
-            b = button.button(label, class_=c, onclick=self.__internal_onchange, ondblclick=self.__internal_dblclick, argument=i, tooltip=tooltip, selected=self.values[i],
+            b = Button(label, class_=c, onclick=self.__internal_onchange, ondblclick=self.__internal_dblclick, argument=i, tooltip=tooltip, selected=self.values[i],
                               small=self.small, xsmall=self.xsmall, large=self.large, xlarge=self.xlarge, width=self.width, height=self.height,
                               rounded=self.rounded, tile=self.tile, outlined=self.outlined, dark=self.dark, colorselected=self.colorselected, colorunselected=self.colorunselected)
             self.buttons.append(b)

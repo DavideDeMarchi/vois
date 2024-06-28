@@ -32,7 +32,7 @@ try:
     from . import settings
     from . import fontsettings
     from . import sidePanel
-    from . import Button
+    # from . import Button
     from . import footer
     from . import snackbar
     from . import dialogMessage
@@ -45,7 +45,7 @@ except:
     import settings
     import fontsettings
     import sidePanel
-    import Button
+    # import Button
     import footer
     import snackbar
     import dialogMessage
@@ -55,7 +55,7 @@ except:
     import fab
     import queryStrings
 
-
+from vois.vuetify import Button
     
 # Convert a measure in string (if int or float --> pixels units)
 def measure2str(value):
@@ -623,7 +623,7 @@ class app():
             children = [title]
             b = None
             if len(icon) > 0:
-                b = button.button('', textcolor='#ffffff00', onclick=icononclick, argument=name, width=36, small=False, disabled=False, height=titleheight, outlined=False, 
+                b = Button('', textcolor='#ffffff00', onclick=icononclick, argument=name, width=36, small=False, disabled=False, height=titleheight, outlined=False,
                                   tooltip=icontooltip, selected=False, icon=icon, iconleft=True, iconcolor=iconcolor, rounded=False)
                 children = [v.Row(no_gutters=True, justify="space-between", children=[title,b.draw()])]
             
@@ -693,7 +693,7 @@ class app():
                 
             if not titlecard is None:
                 if len(icon) > 0:
-                    b = button.button('', textcolor='#ffffff00', onclick=icononclick, argument=name, width=36, small=False, disabled=False, height=titleheight, outlined=False, 
+                    b = Button('', textcolor='#ffffff00', onclick=icononclick, argument=name, width=36, small=False, disabled=False, height=titleheight, outlined=False,
                                       tooltip=icontooltip, selected=False, icon=icon, iconleft=True, iconcolor=iconcolor, rounded=False)
                     titlecard.children = [v.Row(no_gutters=True, justify="space-between", children=[title,b.draw()])]
                 else:
