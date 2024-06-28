@@ -161,7 +161,7 @@ def assert_vois_compare_image(pytestconfig: Any, request: Any, browser_name: str
         part_reference_for_comparison = path_test_results_directory / custom_format.format(**format_kwargs,
                                                                                            type="reference").format(
             **format_kwargs)
-        path_previous = path_test_results_directory / custom_format.format(**format_kwargs, type="previous").format(
+        path_previous = path_test_results_directory / custom_format.format(**format_kwargs, type="failed").format(
             **format_kwargs)
         path_diff = path_test_results_directory / custom_format.format(**format_kwargs, type="diff").format(
             **format_kwargs)

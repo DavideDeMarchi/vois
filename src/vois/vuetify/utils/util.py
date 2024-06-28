@@ -1,6 +1,7 @@
 import warnings
 from typing import Callable, Dict, Any
 import functools
+from functools import partial
 
 
 def deprecation_class_warning(old_class_name: str):
@@ -49,24 +50,57 @@ def rename_kwargs(func_name: str, kwargs: Dict[str, Any], aliases: Dict[str, str
                 stacklevel=2,
             )
 
-            deprecation_message = "Do not use it anymore! '{}' is deprecated as property; use '{}' instead".format(alias, new)
-
-            def generic_getter(_obj):
-                warnings.warn(
-                    message=deprecation_message,
-                    category=DeprecationWarning,
-                    stacklevel=2,
-                )
-                return getattr(_obj, new)
-
-            def generic_setter(_obj, val):
-                warnings.warn(
-                    message=deprecation_message,
-                    category=DeprecationWarning,
-                    stacklevel=2,
-                )
-                setattr(_obj, new, val)
-
             kwargs[new] = kwargs.pop(alias)
-            if obj:
-                setattr(obj.__class__, alias, property(fget=generic_getter, fset=generic_setter))
+
+
+def create_deprecated_alias(c_obj, alias, new):
+    deprecation_message = "Do not use it anymore! '{}' is deprecated as property; use '{}' instead".format(alias, new)
+
+    def generic_old_getter(c_obj):
+        warnings.warn(
+            message=deprecation_message,
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
+        return getattr(c_obj, new)
+
+    def generic_old_setter(c_obj, c_value):
+        warnings.warn(
+            message=deprecation_message,
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
+        setattr(c_obj, new, c_value)
+
+    setattr(c_obj.__class__, alias, property(fget=generic_old_getter, fset=generic_old_setter))
+
+
+def create_deprecated_alias_2(c_obj, aliases):
+    for alias, new in aliases.items():
+        print(id(c_obj), alias, new)
+
+        # c_value = getattr(c_obj, new)
+
+        # print(c_value, alias, new, id(c_obj))
+
+        deprecation_message = "Do not use it anymore! '{}' is deprecated as property; use '{}' instead".format(alias,
+                                                                                                               new)
+
+        def generic_old_getter(c_obj):
+            warnings.warn(
+                message=deprecation_message,
+                category=DeprecationWarning,
+                stacklevel=2,
+            )
+            return getattr(c_obj, new)
+
+        def generic_old_setter(c_obj, c_value):
+            warnings.warn(
+                message=deprecation_message,
+                category=DeprecationWarning,
+                stacklevel=2,
+            )
+            setattr(c_obj, new, c_value)
+
+        setattr(c_obj.__class__, alias,
+                property(fget=generic_old_getter, fset=partial(generic_old_setter, c_value=getattr(c_obj, new))))

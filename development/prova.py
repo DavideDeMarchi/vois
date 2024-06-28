@@ -1,44 +1,58 @@
-from vois.vuetify.utils.util import deprecated_init_alias
+from vois.vuetify.utils.util import deprecated_init_alias, create_deprecated_alias, create_deprecated_alias_2
 
-from ipyvuetify import VuetifyTemplate
 
-from .VuetifyWidget import VuetifyWidget
-
+#
+# from ipyvuetify import VuetifyTemplate
+#
+#
 class Edo:
 
-    @deprecated_init_alias(mio='MIO')
-    def __init__(self, MIO):
-        self.MIO = MIO
+    deprecation_alias = dict(textcolor='text_color', iconcolor='icon_color')
 
-    @property
-    def mio(self):
-        return self.MIO
+    @deprecated_init_alias(**deprecation_alias)
+    def __init__(self, text_color, icon_color, ciao):
 
-    @mio.setter
-    def mio(self, val):
-        self.MIO = val
+        self.text_color = text_color
+        self.icon_color = icon_color
 
-edo = Edo(mio=123)
+        create_deprecated_alias_2(self, self.deprecation_alias)
+        for alias, new in self.deprecation_alias.items():
+            create_deprecated_alias(self, alias, new)
+        # create_deprecated_alias(self, 'iconcolor', 'icon_color')
+        print(self.text_color, self.textcolor)
+        # print(dir(self))
 
-print('Old {} - New {}'.format(edo.mio, edo.MIO))
-# print(edo.mio)
+        # print(dir(self))
 
-edo.mio = 12
+    # @property
+    # def mio(self):
+    #     return self.MIO
+    #
+    # @mio.setter
+    # def mio(self, val):
+    #     self.MIO = val
+#
+#
+# edo = Edo(textcolor=123, ciao=100, iconcolor='pink')
+#
+# print('Old {} - New {}'.format(edo.textcolor, edo.text_color))
+# print('Old {} - New {}'.format(edo.iconcolor, edo.icon_color))
+#
+# edo.textcolor = 12
+# edo.iconcolor = 'green'
+#
+# print('Old {} - New {}'.format(edo.textcolor, edo.text_color))
+# print('Old {} - New {}'.format(edo.iconcolor, edo.icon_color))
+#
+# edo.text_color = 99
+# edo.icon_color = 'red'
+#
+# print('Old {} - New {}'.format(edo.textcolor, edo.text_color))
+# print('Old {} - New {}'.format(edo.iconcolor, edo.icon_color))
 
-edo.mio = 24
+from vois.vuetify import button
 
-print(edo.mio)
+btn = button.button(text='edoardo', iconcolor='red')
 
-print('Old {} - New {}'.format(edo.mio, edo.MIO))
-
-ele = Edo(mio=111)
-print('Old {} - New {}'.format(ele.mio, ele.MIO))
-ele.MIO = 990
-
-
-
-print('Old {} - New {}'.format(ele.mio, ele.MIO))
-print('Old {} - New {}'.format(edo.mio, edo.MIO))
-
-# edo.edo = 90
-# print(edo.ele)
+print('fuori', btn.iconcolor, btn.icon_color)
+# print('id', id(btn))

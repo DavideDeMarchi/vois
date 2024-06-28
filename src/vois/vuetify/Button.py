@@ -31,7 +31,7 @@ import warnings
 #     import fontsettings
 
 from vois.vuetify import settings, fontsettings
-from vois.vuetify.utils.util import deprecated_init_alias
+from vois.vuetify.utils.util import *
 from typing import Callable, Any, Union, Optional
 
 
@@ -156,11 +156,15 @@ class Button(v.Html):
        Example of a 4 button widgets with different display modes.
    """
 
+    deprecation_alias = dict(onclick='on_click', xlarge='x_large', xsmall='x_small', textweight='text_weight',
+                             onlytext='only_text', textcolor='text_color', iconlarge='icon_large',
+                             iconsmall='icon_small',
+                             iconleft='icon_left', iconcolor='icon_color', autoselect='auto_select',
+                             colorselected='color_selected', colorunselected='color_unselected',
+                             ondblclick='on_dblclick')
+
     # Initialization
-    @deprecated_init_alias(onclick='on_click', xlarge='xLarge', xsmall='xSmall', textweight='textWeight',
-                           onlytext='onlyText', textcolor='textColor', iconlarge='iconLarge', iconsmall='iconSmall',
-                           iconleft='iconLeft', iconcolor='iconColor', autoselect='autoSelect',
-                           colorselected='colorSelected', colorunselected='colorUnselected', ondblclick='on_dblclick')
+    @deprecated_init_alias(**deprecation_alias)
     def __init__(self, text: str,
                  on_click: Optional[Union[Callable[[], None], Callable[[dict[str, Any]], None]]] = None,
                  argument: Optional[Any] = None,  # TODO forzare a dict per **kwargs
@@ -170,27 +174,27 @@ class Button(v.Html):
                  disabled: bool = False,
                  tooltip: str = '',
                  large: bool = False,
-                 xLarge: bool = False,
+                 x_large: bool = False,
                  small: bool = False,
-                 xSmall: bool = False,
+                 x_small: bool = False,
                  outlined: bool = False,
-                 textWeight: int = 500,
+                 text_weight: int = 500,
                  href: Optional[str] = None,
                  target: Optional[str] = None,
-                 onlyText: bool = False,
-                 textColor: Optional[str] = None,
+                 only_text: bool = False,
+                 text_color: Optional[str] = None,
                  class_: str = "pa-0 ma-0",
                  icon: Optional[str] = None,
-                 iconLarge: bool = False,
-                 iconSmall: bool = False,
-                 iconLeft: bool = False,
-                 iconColor='black',
-                 autoSelect: bool = False,
+                 icon_large: bool = False,
+                 icon_small: bool = False,
+                 icon_left: bool = False,
+                 icon_color='black',
+                 auto_select: bool = False,
                  dark: bool = settings.dark_mode,
                  rounded: bool = settings.button_rounded,
                  tile: bool = False,
-                 colorSelected: str = settings.color_first,
-                 colorUnselected: str = settings.color_second,
+                 color_selected: str = settings.color_first,
+                 color_unselected: str = settings.color_second,
                  on_dblclick: Optional[Union[Callable[[], None], Callable[[dict[str, Any]], None]]] = None,
                  **kwargs) -> None:
 
@@ -201,32 +205,35 @@ class Button(v.Html):
         self.argument = argument
         self._selected = selected
         self._disabled = disabled
-        self.autoSelect = autoSelect
+        self.auto_select = auto_select
         self._text = text
-        self.iconLarge = iconLarge
-        self.iconSmall = iconSmall
-        self.iconColor = iconColor
-        self.colorSelected = colorSelected
-        self.colorUnselected = colorUnselected
+        self.icon_large = icon_large
+        self.icon_small = icon_small
+        self.icon_color = icon_color
+        self.color_selected = color_selected
+        self.color_unselected = color_unselected
 
-        self.iconDistance = " ml-2"
+        self._icon = icon
 
-        if textColor:
-            color = textColor
+        self.icon_distance = " ml-2"
+
+        if text_color:
+            color = text_color
         else:
-            color = self.colorSelected if self._selected else self.colorUnselected
+            color = self.color_selected if self._selected else self.color_unselected
 
-        if icon is None:
+
+        if self._icon is None:
             childs = [self._text]
         else:
             if not self._text:
-                self.iconDistance = ""
-            elif iconLeft:
-                self.iconDistance = " mr-2"
+                self.icon_distance = ""
+            elif icon_left:
+                self.icon_distance = " mr-2"
 
-            icn = v.Icon(class_="pa-0 ma-0 %s" % self.iconDistance, large=self.iconLarge, small=self.iconSmall,
-                         color=self.iconColor, children=[icon])
-            if iconLeft:
+            icn = v.Icon(class_="pa-0 ma-0 %s" % self.icon_distance, large=self.icon_large, small=self.icon_small,
+                         color=self.icon_color, children=[self._icon])
+            if icon_left:
                 if not self._text:
                     childs = [icn]
                 else:
@@ -237,13 +244,13 @@ class Button(v.Html):
                 else:
                     childs = [self._text, icn]
 
-        self.b = v.Btn(textcolor=color, dark=dark, icon=onlyText, depressed=True, outlined=outlined, large=large,
-                       xlarge=xLarge, small=small, x_small=xSmall,
+        self.b = v.Btn(color=color, dark=dark, icon=only_text, depressed=True, outlined=outlined, large=large,
+                       x_large=x_large, small=small, x_small=x_small,
                        disabled=disabled, width=width, min_width=width, height=height, min_height=height, href=href,
                        target=target, tile=tile,
                        children=childs,
                        style_='font-family: %s; font-size: 17; font-weight: %d; text-transform: none' % (
-                           fontsettings.font_name, textWeight), rounded=rounded)
+                           fontsettings.font_name, text_weight), rounded=rounded)
 
         self.b.on_event('click', self.__internal_onclick)
         self.b.on_event('dblclick', self.__internal_ondblclick)
@@ -258,6 +265,9 @@ class Button(v.Html):
         self.tag = 'div'
         self.children = [self.container]
 
+        for alias, new in self.deprecation_alias.items():
+            create_deprecated_alias(self, alias, new)
+
     def draw(self):
         warnings.warn('DeprecationWarning: The "draw" method is deprecated, please just use the object widget itself.',
                       stacklevel=2)
@@ -270,7 +280,7 @@ class Button(v.Html):
                 self.on_click(self.argument)  # TODO switch to kwargs
             else:
                 self.on_click()
-        if self.autoSelect:
+        if self.auto_select:
             self.selected = True
 
     # Manage dblclick event
@@ -304,9 +314,9 @@ class Button(v.Html):
     def selected(self, flag):
         self._selected = bool(flag)
         if self._selected:
-            color = self.colorSelected
+            color = self.color_selected
         else:
-            color = self.colorUnselected
+            color = self.color_unselected
         self.b.color = color
 
     @property
@@ -344,12 +354,25 @@ class Button(v.Html):
                 b.setIcon('mdi-menu')
 
         """
+        warnings.warn("This method is deprecate used instead button_obj.icon = 'your_icon_name'", DeprecationWarning,
+                      stacklevel=2)
+        self.icon = iconname
+
+    @property
+    def icon(self):
+        return self._icon
+
+    @icon.setter
+    def icon(self, icon_name: str):
+        self._icon = icon_name
         for item in self.b.children:
             if type(item).__name__ == 'Icon':
-                newicon = v.Icon(class_="pa-0 ma-0 %s" % self.iconDistance, large=self.iconLarge, small=self.iconSmall,
-                                 color=self.iconColor, children=[iconname])
+                newicon = v.Icon(class_="pa-0 ma-0 %s" % self.icon_distance, large=self.icon_large,
+                                 small=self.icon_small,
+                                 color=self.icon_color, children=[self._icon])
                 self.b.children = [newicon if x == item else x for x in self.b.children]
                 break
+
 
     # Change the text for the button
     def setText(self, newtext: str):
@@ -370,10 +393,7 @@ class Button(v.Html):
         """
         warnings.warn("This method is deprecate used instead button_obj.text = 'your_new_text'", DeprecationWarning,
                       stacklevel=2)
-        for item in self.b.children:
-            if isinstance(item, str):
-                self.b.children = [newtext if x == item else x for x in self.b.children]
-                break
+        self.text = newtext
 
     @property
     def text(self):
@@ -386,7 +406,6 @@ class Button(v.Html):
         self.b.children = []
         self.b.children = tmp
         self._text = value
-
 
 # Proposta aggiornamento componente. Liste delle cose fatte
 # 1. Rimozione import relativi
