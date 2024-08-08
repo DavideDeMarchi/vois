@@ -2,3 +2,4 @@
 __pycache__/
 .idea/
 development/.ipynb_checkpoints
+/tests/ui/test_results/

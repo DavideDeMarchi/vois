@@ -1,6 +1,4 @@
 """Button widget to call a python function when clicked."""
-from abc import ABC
-
 # Author(s): Davide.De-Marchi@ec.europa.eu
 # Copyright © European Union 2022-2023
 # 
@@ -19,9 +17,8 @@ from abc import ABC
 # 
 # See the Licence for the specific language governing permissions and
 # limitations under the Licence.
-from IPython.display import display
+
 import ipyvuetify as v
-import warnings
 
 from vois.vuetify import settings, fontsettings
 from vois.vuetify.utils.util import *
@@ -189,6 +186,7 @@ class Button(v.Html):
                  color_selected: str = settings.color_first,
                  color_unselected: str = settings.color_second,
                  on_dblclick: Optional[Union[Callable[[], None], Callable[[dict[str, Any]], None]]] = None,
+                 style_: str = '',
                  **kwargs) -> None:
 
         super().__init__(**kwargs)
@@ -241,8 +239,8 @@ class Button(v.Html):
                        disabled=disabled, width=width, min_width=width, height=height, min_height=height, href=href,
                        target=target, tile=tile,
                        children=childs,
-                       style_='font-family: %s; font-size: 17; font-weight: %d; text-transform: none' % (
-                           fontsettings.font_name, text_weight), rounded=rounded)
+                       style_='font-family: %s; font-size: 17; font-weight: %d; text-transform: none; ' % (
+                           fontsettings.font_name, text_weight) + style_, rounded=rounded)
 
         self.b.on_event('click', self.__internal_onclick)
         self.b.on_event('dblclick', self.__internal_ondblclick)

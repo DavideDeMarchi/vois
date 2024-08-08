@@ -50,9 +50,17 @@ class Edo:
 # print('Old {} - New {}'.format(edo.textcolor, edo.text_color))
 # print('Old {} - New {}'.format(edo.iconcolor, edo.icon_color))
 
-from vois.vuetify import button
+# from vois.vuetify import button
+#
+# btn = button.button(text='edoardo', iconcolor='red')
+#
+# print('fuori', btn.iconcolor, btn.icon_color)
+# # print('id', id(btn))
 
-btn = button.button(text='edoardo', iconcolor='red')
 
-print('fuori', btn.iconcolor, btn.icon_color)
-# print('id', id(btn))
+def edo():
+    print('ciao')
+
+diz = {'edo': 1}
+
+edo(**diz)
