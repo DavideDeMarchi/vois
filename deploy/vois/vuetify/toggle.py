@@ -154,7 +154,7 @@ class toggle():
             if self.row: c = "pa-0 ma-0 mr-%d"%self.paddingrow
             else:        c = "pa-0 ma-0 mb-%d"%self.paddingcol
                     
-            b = button.button(label, dark=self.dark, class_=c, small=self.small, xsmall=self.xsmall, large=self.large, xlarge=self.xlarge,
+            b = Button(label, dark=self.dark, class_=c, small=self.small, xsmall=self.xsmall, large=self.large, xlarge=self.xlarge,
                               onclick=self.__internal_onchange, argument=i, width=self.width, height=self.height, tooltip=tooltip, selected=(i==self.index),
                               rounded=self.rounded, tile=self.tile, outlined=self.outlined, colorselected=self.colorselected, colorunselected=self.colorunselected)
             self.buttons.append(b)
