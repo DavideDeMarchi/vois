@@ -25,17 +25,16 @@ class Test_slider:
                                         step=1.0
                                         )
 
-            my_slider_2 = slider.slider(selectedvalue=99.5,  #Tested
+            my_slider_2 = slider.slider(selectedvalue=99.5,  # Tested
                                         minvalue=0,
                                         maxvalue=100,
-                                        vertical=True, #Tested
+                                        vertical=True,  # Tested
                                         color=settings.color_first,
                                         onchange=None,
-                                        height=350, #Tested
+                                        height=350,  # Tested
                                         width=None,
-                                        step=0.5 # Tested
+                                        step=0.5  # Tested
                                         )
-
 
             display(my_slider_1.draw())
             display(my_slider_2.draw())
@@ -50,10 +49,8 @@ class Test_slider:
         assert_vois_compare_image(image=my_slider_1_sel.screenshot(animations='disabled'), postfix='1')
         assert_vois_compare_image(image=my_slider_2_sel.screenshot(animations='disabled'), postfix='2')
 
-
     def test_clicks(self, ipywidgets_vois_runner, page_session, assert_vois_compare_image):
         def kernel_code():
-
             import sys
             sys.path.append('/Users/edoardo/JRC_Projects/vois/src/')
 
@@ -69,7 +66,7 @@ class Test_slider:
                                         minvalue=-50,
                                         maxvalue=50,
                                         vertical=False,
-                                        color=settings.color_first, # Tested
+                                        color=settings.color_first,  # Tested
                                         onchange=on_change,
                                         height=150,
                                         width=None,
@@ -97,3 +94,96 @@ class Test_slider:
 
         assert_vois_compare_image(image=my_slider_1_sel.screenshot(animations='disabled'), postfix='1')
 
+
+class Test_Slider:
+
+    def test_simple_init(self, ipywidgets_vois_runner, page_session, assert_vois_compare_image,
+                         assert_vois_bytes_image):
+        def kernel_code():
+            import sys
+            sys.path.append('/Users/edoardo/JRC_Projects/vois/src/')
+
+            import warnings
+            warnings.filterwarnings("ignore")
+
+            from vois.vuetify import Slider, settings
+
+            my_slider_1 = Slider(selected_value=51,
+                                 min_value=0,
+                                 max_value=100,
+                                 vertical=False,
+                                 color=settings.color_first,
+                                 on_change=None,
+                                 height=150,
+                                 width=None,
+                                 step=1.0
+                                 )
+
+            my_slider_2 = Slider(selected_value=99.5,  # Tested
+                                 min_value=0,
+                                 max_value=100,
+                                 vertical=True,  # Tested
+                                 color=settings.color_first,
+                                 on_change=None,
+                                 height=350,  # Tested
+                                 width=None,
+                                 step=0.5  # Tested
+                                 )
+
+            display(my_slider_1)
+            display(my_slider_2)
+
+        ipywidgets_vois_runner(kernel_code)
+
+        sliders = page_session.locator(".v-application--wrap").all()
+
+        my_slider_1_sel = sliders[1]
+        my_slider_2_sel = sliders[2]
+
+        assert_vois_compare_image(image=my_slider_1_sel.screenshot(animations='disabled'), postfix='1')
+        assert_vois_compare_image(image=my_slider_2_sel.screenshot(animations='disabled'), postfix='2')
+
+    def test_clicks(self, ipywidgets_vois_runner, page_session, assert_vois_compare_image):
+        def kernel_code():
+            import sys
+            sys.path.append('/Users/edoardo/JRC_Projects/vois/src/')
+
+            import warnings
+            warnings.filterwarnings("ignore")
+
+            from vois.vuetify import Slider, settings
+
+            def on_change(value):
+                my_slider_1.slider.color = 'red'
+
+            my_slider_1 = Slider(selected_value=0,
+                                 min_value=-50,
+                                 max_value=50,
+                                 vertical=False,
+                                 color=settings.color_first,  # Tested
+                                 on_change=on_change,
+                                 height=150,
+                                 width=None,
+                                 step=1.5
+                                 )
+
+            display(my_slider_1)
+
+        ipywidgets_vois_runner(kernel_code)
+
+        sliders = page_session.locator(".v-application--wrap").all()
+        my_slider_1_sel = sliders[1]
+
+        my_slider_1 = page_session.locator(".v-slider__thumb-label")
+        my_slider_1.wait_for()
+        box = my_slider_1.bounding_box()
+
+        x_real = box['x'] + box['width'] / 2
+        y_real = box['y'] + box['height'] / 2
+
+        page_session.mouse.move(x_real, y_real)
+        page_session.mouse.down()
+        page_session.mouse.move(x_real - 100, y_real)
+        page_session.mouse.up()
+
+        assert_vois_compare_image(image=my_slider_1_sel.screenshot(animations='disabled'), postfix='1')
