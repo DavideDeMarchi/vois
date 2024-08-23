@@ -5,8 +5,9 @@ from functools import partial
 
 
 def deprecation_class_warning(old_class_name: str):
-    warnings.warn('DeprecationWarning: The {} class is deprecated, please use {}.'.format(old_class_name,
+    warnings.warn('The {} class is deprecated, please use {}.'.format(old_class_name,
                                                                                           old_class_name.capitalize()),
+                  category=DeprecationWarning,
                   stacklevel=2)
 
 

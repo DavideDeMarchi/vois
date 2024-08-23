@@ -259,7 +259,8 @@ class Button(v.Html):
             create_deprecated_alias(self, alias, new)
 
     def draw(self):
-        warnings.warn('DeprecationWarning: The "draw" method is deprecated, please just use the object widget itself.',
+        warnings.warn('The "draw" method is deprecated, please just use the object widget itself.',
+                      category=DeprecationWarning,
                       stacklevel=2)
         return self
 

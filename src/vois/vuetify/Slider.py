@@ -17,29 +17,27 @@
 # 
 # See the Licence for the specific language governing permissions and
 # limitations under the Licence.
-from IPython.display import display
-import ipyvuetify as v
 
-try:
-    from . import settings
-except:
-    import settings
+import ipyvuetify as v
+from vois.vuetify.utils.util import *
+from vois.vuetify import settings
+from typing import Callable, Any, Union, Optional
 
 
 #####################################################################################################################################################
 # Integer slider class
 #####################################################################################################################################################
-class slider:
+class Slider(v.Html):
     """
     Slider widget is a better visualization of the number input. It is used for gathering numerical user data.
         
     Parameters
     ----------
-    selectedvalue : numeric
+    selected_value : numeric
         Initial value of the slider
-    minvalue : numeric
+    min_value : numeric
         Minimal value selectable by the user
-    maxvalue : numeric
+    max_value : numeric
         Maximum value selectable by the user
     step : numeric, optional
         Step interval for ticks (default is 1.0)
@@ -47,7 +45,7 @@ class slider:
         Flag that controls the direction of the slider: horizontal or vertical (default is False)
     color : str, optional
         Color used for the widget (default is the color_first defined in the settings.py module)
-    onchange : function, optional
+    on_change : function, optional
         Python function to call when the user selects a value. The function will receive a parameter of numeric type containing the current value of the slider widget
     height : int, optional
         Height of the slider widget in pixel (default is 120 pixels)
@@ -58,7 +56,7 @@ class slider:
     -------
     Creation and display of a slider widget::
         
-        from vois.vuetify import slider
+        from vois.vuetify import Slider
         from ipywidgets import widgets
         from IPython.display import display
 
@@ -69,8 +67,8 @@ class slider:
             with output:
                 print(value)
 
-        s = slider.slider(2015, 2010,2021, onchange=onchange)
-        display(s.draw())
+        s = Slider(2015, 2010, 2021, onchange=onchange)
+        display(s)
 
     .. figure:: figures/slider.png
        :scale: 100 %
@@ -78,29 +76,56 @@ class slider:
 
        Slider widget example
    """
+    deprecation_alias = dict(selectedvalue='selected_value', minvalue='min_value', maxvalue='max_value',
+                             onchange='on_change')
 
-   
     # Initialization
-    def __init__(self, selectedvalue, minvalue, maxvalue, vertical=False, color=settings.color_first, onchange=None, height=120, width=None, step=1.0):
-        
-        self.minvalue = minvalue
-        self.maxvalue = maxvalue
-        self.step     = step
+    @deprecated_init_alias(**deprecation_alias)
+    def __init__(self,
+                 selected_value: Union[int, float],
+                 min_value: Union[int, float],
+                 max_value: Union[int, float],
+                 vertical=False,
+                 color: str = settings.color_first,
+                 on_change: Optional[Callable[[], None]] = None,
+                 height: int = 120,
+                 width: int = None,
+                 step: Union[int, float] = 1.0,
+                 **kwargs):
+
+        super().__init__(**kwargs)
+
+        self.min_value = min_value
+        self.max_value = max_value
+        self.step = step
         self.vertical = vertical
-        self.width    = width
-        self.onchange = onchange
-        
-        if vertical: c = "pa-0 ma-0 ml-n12 mr-n12 mt-n9 mb-n10"
-        else:        c = "pa-0 ma-0 ml-5 mr-5 mt-n2 mb-n12"
-        self.slider = v.Slider(v_model=selectedvalue, dense=True, small=True, thumb_color=color, 
-                               thumb_label="always", thumb_size=32, ticks=True, ticks_size=10, 
+        self.width = width
+        self.on_change = on_change
+
+        if vertical:
+            c = "pa-0 ma-0 ml-n12 mr-n12 mt-n9 mb-n10"
+        else:
+            c = "pa-0 ma-0 ml-5 mr-5 mt-n2 mb-n12"
+        self.slider = v.Slider(v_model=selected_value, dense=True, small=True, thumb_color=color,
+                               thumb_label="always", thumb_size=32, ticks=True, ticks_size=10,
                                color=color, track_color="grey", class_=c,
-                               min=self.minvalue, max=self.maxvalue, step=self.step,
+                               min=self.min_value, max=self.max_value, step=self.step,
                                vertical=self.vertical, height=height)
-        
+
         # If requested onchange management
-        if not self.onchange is None:
+        if not self.on_change is None:
             self.slider.on_event('end', self.__internal_onchange)
+
+        self.tag = 'div'
+        self.children = [self.slider]
+
+        if self.vertical and not self.width is None:
+            self.style_ = 'width: %dpx; overflow: hidden;' % self.width
+        else:
+            self.style_ = 'overflow: hidden;'
+
+        for alias, new in self.deprecation_alias.items():
+            create_deprecated_alias(self, alias, new)
 
     # Get the value
     @property
@@ -122,27 +147,23 @@ class slider:
         
         """
         return self.slider.v_model
-        
+
     # Set the value
     @value.setter
     def value(self, v):
-        if v >= self.minvalue and v <= self.maxvalue:
+        if self.min_value <= v <= self.max_value:
             self.slider.v_model = v
-            if self.onchange:
-                self.onchange(self.slider.v_model)
-    
-    
+            if self.on_change:
+                self.on_change(self.slider.v_model)
+
     # Manage onchange event
     def __internal_onchange(self, widget=None, event=None, data=None):
-        if self.onchange:
-            self.onchange(data)
-    
-    
+        if self.on_change:
+            self.on_change(data)
+
     # Returns the vuetify object to display (the v.Container)
     def draw(self):
-        """Returns the ipyvuetify object to display (the internal v.Html that contains a v.Slider widget as its only child)"""
-        if self.vertical and not self.width is None:
-            return v.Html(tag='div',children=[self.slider], style_='width: %dpx; overflow: hidden;' % self.width)
-        else:
-            return v.Html(tag='div',children=[self.slider], style_='overflow: hidden;')
-            
+        warnings.warn('The "draw" method is deprecated, please just use the object widget itself.',
+                      category=DeprecationWarning,
+                      stacklevel=2)
+        return self
