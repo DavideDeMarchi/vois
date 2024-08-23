@@ -29,7 +29,7 @@ except:
 #####################################################################################################################################################
 # Integer slider class
 #####################################################################################################################################################
-class slider:
+class Slider:
     """
     Slider widget is a better visualization of the number input. It is used for gathering numerical user data.
         
@@ -78,7 +78,6 @@ class slider:
 
        Slider widget example
    """
-
    
     # Initialization
     def __init__(self, selectedvalue, minvalue, maxvalue, vertical=False, color=settings.color_first, onchange=None, height=120, width=None, step=1.0):
