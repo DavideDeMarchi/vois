@@ -79,27 +79,27 @@ class progress():
 
        Example of progress widget displayed inside an Output.
    """
-        
+
     def __init__(self,
-                 output,                             # Output widget where the progress must be displayed
-                 text='',                            # Small text inside the circle
-                 show=False,                         # If True, display the progress upon creation
-                 size=120,                           # Diameter of the circle in pixels
-                 width=15,                           # Width of the moving line
-                 outputheight=400,                   # Height in pixels of the output widget
-                 color=settings.color_first):        # Color
-        
+                 output,  # Output widget where the progress must be displayed
+                 text='',  # Small text inside the circle
+                 show=False,  # If True, display the progress upon creation
+                 size=120,  # Diameter of the circle in pixels
+                 width=15,  # Width of the moving line
+                 outputheight=400,  # Height in pixels of the output widget
+                 color=settings.color_first):  # Color
+
         self.output = output
-        self.size   = size
+        self.size = size
         self.outputheight = outputheight
-        
-        self.prog = v.ProgressCircular(style_='overflow: hidden;', class_='pa-0 ma-0', indeterminate=True, size=size, width=width, children=[text], color=color)
+
+        self.prog = v.ProgressCircular(style_='overflow: hidden;', class_='pa-0 ma-0', indeterminate=True, size=size,
+                                       width=width, children=[text], color=color)
 
         self.nav = None
-        
+
         if show:
             self.show()
-        
 
     # Display the progress
     def show(self):
@@ -108,7 +108,8 @@ class progress():
             self.output.clear_output(wait=True)
             with self.output:
                 # Centered vertically and horizontally!
-                h = v.Html(tag='div', style_="height: %dpx; display: flex; justify-content: center; align-content: center; align-items:center; flex-direction: column; " % self.outputheight, 
+                h = v.Html(tag='div',
+                           style_="height: %dpx; display: flex; justify-content: center; align-content: center; align-items:center; flex-direction: column; " % self.outputheight,
                            class_="text-center", children=[self.prog])
 
                 display(h)
@@ -128,13 +129,15 @@ class progress():
         zindex : int, optional
             Z-index of the progress on the page (default is 9999)
         """
-        self.nav = v.NavigationDrawer(stateless=True, permanent=True, floating=True, fixed=True, left=True, color="transparent", 
-                                      width="%dpx"%self.size, height="%dpx"%self.size,
-                                      style_="left: %s; top: %s; z-index: %d;" % (left, top, zindex), class_="pa-0 ma-0", children=[self.prog])
+        self.nav = v.NavigationDrawer(stateless=True, permanent=True, floating=True, fixed=True, left=True,
+                                      color="transparent",
+                                      width="%dpx" % self.size,
+                                      height="%dpx" % self.size,
+                                      style_="left: %s; top: %s; z-index: %d;" % (left, top, zindex),
+                                      class_="pa-0 ma-0", children=[self.prog])
         with output:
             display(self.nav)
 
-            
     # Hide the progress
     def close(self):
         """Hides the progress by clearing the output widget content"""
@@ -143,4 +146,3 @@ class progress():
 
         if not self.nav is None:
             self.nav.close()
-            
