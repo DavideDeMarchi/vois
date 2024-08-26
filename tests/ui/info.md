@@ -2,6 +2,9 @@
 
 --headed to show up the runner
 
+--tracing on
+
+playwright codegen "http://localhost:8888/lab"    
 
 See stdout
 pytest -s 
