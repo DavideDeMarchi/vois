@@ -20,7 +20,7 @@
 import ipyvuetify as v
 from vois.vuetify import settings
 from vois.vuetify.utils.util import *
-
+from typing import Callable, Any, Union, Optional
 import warnings
 
 
@@ -114,11 +114,25 @@ class ColorPicker(v.Menu):
 
     # Initialization
     @deprecated_init_alias(**deprecation_alias)
-    def __init__(self, color="#FF0000", dark=settings.dark_mode, width=40, height=30, rounded=False, canvas_height=100,
-                 show_canvas=True, show_mode_switch=True, show_inputs=True, show_swatches=True,
-                 swatches_max_height=164, text='', text_weight=400, on_change=None, argument=None,
-                 offset_x=False, offset_y=True,
-                 disabled=False):
+    def __init__(self,
+                 color: str = "#FF0000",
+                 dark: bool = settings.dark_mode,
+                 width: int = 40,
+                 height: int = 30,
+                 rounded: bool = False,
+                 canvas_height: int = 100,
+                 show_canvas: bool = True,
+                 show_mode_switch: bool = True,
+                 show_inputs: bool = True,
+                 show_swatches: bool = True,
+                 swatches_max_height: int = 164,
+                 text: str = '',
+                 text_weight: int = 400,
+                 on_change: Optional[Callable[[], None]] = None,
+                 argument: Optional[Any] = None,
+                 offset_x: bool = False,
+                 offset_y: bool = True,
+                 disabled: bool = False):
 
         self._color = str(color).upper()
         self.dark = dark

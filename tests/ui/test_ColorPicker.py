@@ -64,8 +64,7 @@ class Test_colorPicker:
 
         my_color_1_locator.click()
 
-        canvas_1_locator = page_session.locator('canvas').locator('..').locator(
-            '..')  # get_by_role("menu").locator("canvas")
+        canvas_1_locator = page_session.locator('canvas').locator('..').locator('..')
 
         assert_vois_compare_image(image=canvas_1_locator.screenshot(animations='disabled'), postfix='1_canvas')
 
@@ -79,8 +78,7 @@ class Test_colorPicker:
 
         my_color_2_locator.click()
 
-        canvas_2_locator = page_session.locator("canvas").nth(1).locator('..').locator(
-            '..')  # get_by_role("menu").locator("canvas")
+        canvas_2_locator = page_session.locator("canvas").nth(1).locator('..').locator('..')
 
         assert_vois_compare_image(image=canvas_2_locator.screenshot(animations='disabled'), postfix='2_canvas')
 
@@ -203,8 +201,7 @@ class Test_ColorPicker:
 
         my_color_1_locator.click()
 
-        canvas_1_locator = page_session.locator('canvas').locator('..').locator(
-            '..')  # get_by_role("menu").locator("canvas")
+        canvas_1_locator = page_session.locator('canvas').locator('..').locator('..')
 
         assert_vois_compare_image(image=canvas_1_locator.screenshot(animations='disabled'), postfix='1_canvas')
 
@@ -257,8 +254,7 @@ class Test_ColorPicker:
 
         my_color_1_locator.click()
 
-        canvas_1_locator = page_session.locator('canvas').locator('..').locator(
-            '..')  # get_by_role("menu").locator("canvas")
+        canvas_1_locator = page_session.locator('canvas').locator('..').locator('..')
 
         path_before = assert_vois_compare_image(image=canvas_1_locator.screenshot(animations='disabled'),
                                                 postfix='1_before')
