@@ -18,14 +18,13 @@
 # See the Licence for the specific language governing permissions and
 # limitations under the Licence.
 import ipyvuetify as v
+from vois.vuetify import settings
+from vois.vuetify.utils.util import *
 
-try:
-    from . import settings
-except:
-    import settings
+import warnings
 
 
-class colorPicker():
+class ColorPicker(v.Menu):
     """
     Input widget to select a color.
 
@@ -55,9 +54,9 @@ class colorPicker():
         Height in pixels of the swatches area in the popup window (default is 164)
     text : str, optional
         Text to display in the color button (default is '')
-    textweight : int, optional
+    text_weight : int, optional
         Weight of the text to be shown in the button (default is 400, Bold is any value greater or equal to 500)
-    onchange : function, optional
+    on_change : function, optional
         Python function to call when the user selects a different color. The function will receive the argument parameter. If the argument is None, the function will receive no parameters. (default is None)
     argument : any, optional
         Argument to be passed to the onchange function (default is None)
@@ -72,24 +71,24 @@ class colorPicker():
     -------
     Creation of a color picker widget to select a color::
         
-        from vois.vuetify import colorPicker
+        from vois.vuetify import ColorPicker
         from ipywidgets import widgets
         from IPython.display import display
 
         output = widgets.Output()
 
-        def onchange():
+        def on_change():
             with output:
                 print('Changed to', c.color)
 
-        c = colorPicker.colorPicker(color='#00AAFF',
-                                    width=30, height=30,
-                                    rounded=False, 
-                                    onchange=onchange,
-                                    offset_x=True,
-                                    offset_y=False)
+        c = ColorPicker(color='#00AAFF',
+                        width=30, height=30,
+                        rounded=False,
+                        on_change=on_change,
+                        offset_x=True,
+                        offset_y=False)
 
-        display(c.draw())
+        display(c)
         display(output)
 
     .. figure:: figures/colorPicker.png
@@ -98,49 +97,56 @@ class colorPicker():
 
        Example of a colorPicker to select a color
     """
-    
+
     def hex2rgb(self, color):
         if color[0] == '#':
             color = color[1:]
-        rgb = (int(color[0:2],16), int(color[2:4],16), int(color[4:6],16))
+        rgb = (int(color[0:2], 16), int(color[2:4], 16), int(color[4:6], 16))
         return rgb
 
     def textDark(self, color):
-        r,g,b = self.hex2rgb(color)
-        if r+g+b <= 255+128: return True
+        r, g, b = self.hex2rgb(color)
+        if r + g + b <= 255 + 128:
+            return True
         return False
-    
-    
+
+    deprecation_alias = dict(textweight='text_weight', onchange='on_change')
+
+    # Initialization
+    @deprecated_init_alias(**deprecation_alias)
     def __init__(self, color="#FF0000", dark=settings.dark_mode, width=40, height=30, rounded=False, canvas_height=100,
-                       show_canvas=True, show_mode_switch=True, show_inputs=True, show_swatches=True,
-                       swatches_max_height=164, text='', textweight=400, onchange=None, argument=None,
-                       offset_x=False, offset_y=True,
-                       disabled=False):
-        
+                 show_canvas=True, show_mode_switch=True, show_inputs=True, show_swatches=True,
+                 swatches_max_height=164, text='', text_weight=400, on_change=None, argument=None,
+                 offset_x=False, offset_y=True,
+                 disabled=False):
+
         self._color = str(color).upper()
         self.dark = dark
-        self.width   = width
-        self.height  = height
+        self.width = width
+        self.height = height
         self.rounded = rounded
-        self.canvas_height       = canvas_height
-        self.show_canvas         = show_canvas
-        self.show_mode_switch    = show_mode_switch
-        self.show_inputs         = show_inputs
-        self.show_swatches       = show_swatches
+        self.canvas_height = canvas_height
+        self.show_canvas = show_canvas
+        self.show_mode_switch = show_mode_switch
+        self.show_inputs = show_inputs
+        self.show_swatches = show_swatches
         self.swatches_max_height = swatches_max_height
-        self.text       = text
-        self.textweight = textweight
-        self.onchange   = onchange
-        self.argument   = argument
-        self.offset_x   = offset_x
-        self.offset_y   = offset_y
-        self._disabled  = disabled
+        self.text = text
+        self.text_weight = text_weight
+        self.on_change = on_change
+        self.argument = argument
+        self.offset_x = offset_x
+        self.offset_y = offset_y
+        self._disabled = disabled
 
-        if self._disabled: von = ''
-        else:              von = 'menuData.on'
+        if self._disabled:
+            von = ''
+        else:
+            von = 'menuData.on'
         self.button = v.Btn(v_on=von, depressed=True, large=False, dense=True, class_='pa-0 ma-0', color=self._color,
-                            rounded=self.rounded, height=self.height, width=self.width, min_width=self.width, dark=self.textDark(self._color),
-                            style_='font-weight: %d; text-transform: none' % self.textweight, children=[self.text])
+                            rounded=self.rounded, height=self.height, width=self.width, min_width=self.width,
+                            dark=self.textDark(self._color),
+                            style_='font-weight: %d; text-transform: none' % self.text_weight, children=[self.text])
 
         self.p = v.ColorPicker(value=self._color, flat=True, class_="pa-0 ma-0", style_="min-width: 300px;",
                                canvas_height=self.canvas_height, show_swatches=self.show_swatches, dark=self.dark,
@@ -148,31 +154,35 @@ class colorPicker():
                                hide_mode_switch=not self.show_mode_switch, hide_inputs=not self.show_inputs)
         self.p.on_event('input', self.__internal_onchange)
 
+        super().__init__(offset_x=self.offset_x, offset_y=self.offset_y, open_on_hover=False, dense=True,
+                         close_on_click=True, close_on_content_click=False,
+                         v_slots=[{'name': 'activator', 'variable': 'menuData', 'children': self.button}],
+                         children=[self.p])
 
-        self.m = v.Menu(offset_x=self.offset_x, offset_y=self.offset_y, open_on_hover=False, dense=True, close_on_click=True, close_on_content_click=False,
-                        v_slots=[{'name': 'activator', 'variable': 'menuData', 'children': self.button}],
-                        children=[self.p])
+        self.children = [self.p]
 
-        
+        for alias, new in self.deprecation_alias.items():
+            create_deprecated_alias(self, alias, new)
+
     # Manage 'input' event
     def __internal_onchange(self, widget, event, data):
         if data.upper() != self._color.upper():
             self._color = data.upper()
             self.button.color = self._color
-            self.button.dark  = self.textDark(self._color)
-            if self.onchange:
+            self.button.dark = self.textDark(self._color)
+            if self.on_change:
                 if self.argument is None:
-                    self.onchange()
+                    self.on_change()
                 else:
-                    self.onchange(self.argument)
-        
-        
+                    self.on_change(self.argument)
+
     # Returns the vuetify object to display (the v.Menu)
     def draw(self):
-        """Returns the ipyvuetify object to display (the internal v.Menu)"""
-        return self.m
+        warnings.warn('The "draw" method is deprecated, please just use the object widget itself.',
+                      category=DeprecationWarning,
+                      stacklevel=2)
+        return self
 
-    
     # color property
     @property
     def color(self):
@@ -194,21 +204,19 @@ class colorPicker():
         """
         return self._color
 
-    
     @color.setter
     def color(self, c):
         if isinstance(c, str):
             self._color = c
             self.p.value = self._color
             self.button.color = self._color
-            self.button.dark  = self.textDark(self._color)
-            if self.onchange:
+            self.button.dark = self.textDark(self._color)
+            if self.on_change:
                 if self.argument is None:
-                    self.onchange()
+                    self.on_change()
                 else:
-                    self.onchange(self.argument)
+                    self.on_change(self.argument)
 
-                
     # disabled property
     @property
     def disabled(self):
@@ -230,11 +238,11 @@ class colorPicker():
         """
         return self._disabled
 
-    
     @disabled.setter
     def disabled(self, flag):
         self._disabled = bool(flag)
-        if self._disabled: von = ''
-        else:              von = 'menuData.on'
+        if self._disabled:
+            von = ''
+        else:
+            von = 'menuData.on'
         self.button.v_on = von
-                
