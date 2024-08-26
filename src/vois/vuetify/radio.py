@@ -81,40 +81,40 @@ class radio:
    """
 
     # Initialization
-    def __init__(self, index, labels, tooltips=None, color=settings.color_first, onchange=None, row=True):
-        
-        self.value    = index
-        self.labels   = labels
+    def __init__(self, index, labels, tooltips=[], color=settings.color_first, onchange=None, row=True):
+
+        self.value = index
+        self.labels = labels
         self.tooltips = tooltips
-        self.color    = color
+        self.color = color
         self.onchange = onchange
-        self.row      = row
-        
+        self.row = row
+
         self.r = []
         i = 0
         for label in self.labels:
-            if self.row: self.r.append(v.Radio(label=label, class_="pa-0 ma-0 ml-2 mt-2 mr-6 mb-n3", color=settings.color_first))
-            else:        self.r.append(v.Radio(label=label, class_="pa-0 ma-0 ml-2 mt-3 mr-6 mb-n2", color=settings.color_first))
+            if self.row:
+                self.r.append(v.Radio(label=label, class_="pa-0 ma-0 ml-2 mt-2 mr-6 mb-n3", color=self.color))
+            else:
+                self.r.append(v.Radio(label=label, class_="pa-0 ma-0 ml-2 mt-3 mr-6 mb-n2", color=self.color))
             if i < len(self.tooltips):
                 self.r[i] = tooltip.tooltip(self.tooltips[i], self.r[i])
             i += 1
 
-        self.rg = v.RadioGroup(v_model=self.value, row=self.row, class_="pa-0 ma-0", large=True, 
-                               color=settings.color_first, children=self.r, style_="overflow: hidden;")
-        
+        self.rg = v.RadioGroup(v_model=self.value, row=self.row, class_="pa-0 ma-0", large=True,
+                               color=self.color, children=self.r, style_="overflow: hidden;")
+
         # If requested onchange management
         if not self.onchange is None:
             self.rg.on_event('change', self.__internal_onchange)
-        
-    
+
     # Manage onchange event
     def __internal_onchange(self, widget=None, event=None, data=None):
-        self.value = data
+        self.value = widget.v_model
         if self.onchange:
-            self.onchange(data)
-    
+            self.onchange(self.value)
+
     # Returns the vuetify object to display (the v.RadioGroup itself)
     def draw(self):
         """Returns the ipyvuetify object to display (the internal v.RadioGroup widget)"""
         return self.rg
-
