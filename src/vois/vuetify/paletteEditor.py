@@ -28,7 +28,7 @@ try:
     from . import settings
     from . import sortableList
     from . import palettePicker
-    from . import colorPicker
+    from . import ColorPicker
     from . import switch
     from . import tooltip
     from . import dialogGeneric
@@ -40,7 +40,7 @@ except:
     import settings
     import sortableList
     import palettePicker
-    import colorPicker
+    import ColorPicker
     import switch
     import tooltip
     import dialogGeneric

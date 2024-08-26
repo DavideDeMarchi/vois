@@ -98,6 +98,23 @@ def compare_default(reference, result, threshold=0.1):
     diff = pixelmatch(reference, result, difference, threshold=threshold)
     return diff, difference
 
+@pytest.fixture
+def assert_vois_path_images(update_snapshot):
+    def compare_image(image1, image2, compare: Callable = compare_default, differ: bool = False):
+        if not update_snapshot:
+            pil_image1 = Image.open(image1)
+            pil_image2 = Image.open(image2)
+
+            diff, difference = compare(pil_image1, pil_image2)
+
+            if diff > 0 and differ is False:
+                raise AssertionError('The two images are different!')
+            elif diff == 0 and differ is True:
+                raise AssertionError('The two images are equal!')
+            else:
+                return
+
+    return compare_image
 
 @pytest.fixture
 def assert_vois_bytes_image(update_snapshot):
@@ -175,6 +192,7 @@ def assert_vois_compare_image(pytestconfig: Any, request: Any, browser_name: str
         if not path_reference.exists() or update_snapshot:
             if update_snapshot:
                 write_bytes(c_image=image, c_path=path_reference)
+                return path_reference
             else:
                 raise AssertionError(
                     f'Snapshot {path_reference} did not exist. Please use "--vois-update-snapshots".'
@@ -199,6 +217,8 @@ def assert_vois_compare_image(pytestconfig: Any, request: Any, browser_name: str
                 raise AssertionError(
                     f'Snapshot {path_reference} does not match.'
                 )
+            else:
+                return path_reference
 
     return compare_snapshots
 
