@@ -19,14 +19,14 @@
 # limitations under the Licence.
 import ipyvuetify as v
 from datetime import datetime
+from vois.vuetify import settings
+from vois.vuetify.utils.util import *
+from typing import Callable, Optional
 
-try:
-    from . import settings
-except:
-    import settings
+import warnings
 
 
-class datePicker():
+class DatePicker(v.Menu):
     """
     Input widget to select a date.
 
@@ -44,7 +44,7 @@ class datePicker():
         Color to use for the widget and the header of the popup window (default is settings.color_first)
     show_week : bool, optional
         If True the popup window will also show number of the week (default is False)
-    onchange : function, optional
+    on_change : function, optional
         Python function to call when the user selects a date. The function will receive no parameters. (default is None)
     offset_x : bool, optional
         If True the popup window will be opened on the right of the input field (default is False)
@@ -52,16 +52,16 @@ class datePicker():
         If True the popup window will be opened on the bottom of the input field (default is True)
     disabled : bool, optional
         True if the selection of the date is disabled, False otherwise (default is False)
-    mindate : str, optional
+    min_date : str, optional
         Minimum selectable date in format 'YYYY-MM-DD' (default is None)
-    maxdate : str, optional
+    max_date : str, optional
         Maximum selectable date in format 'YYYY-MM-DD' (default is None)
 
     Example
     -------
     Creation of a date picker widget::
         
-        from vois.vuetify import datePicker
+        from vois.vuetify import DatePicker
         from ipywidgets import widgets
         from IPython.display import display
 
@@ -71,11 +71,14 @@ class datePicker():
             with output:
                 print('Changed to', d.date)
 
-        d = datePicker.datePicker(date=None, label='Start date', 
-                                  offset_x=True, offset_y=False,
-                                  onchange=onchange)
+        d = DatePicker(
+            date=None,
+            label='Start date',
+            offset_x=True,
+            offset_y=False,
+            onchange=onchange)
 
-        display(d.draw())
+        display(d)
         display(output)
 
     .. figure:: figures/datePicker.png
@@ -84,20 +87,23 @@ class datePicker():
 
        Example of a datePicker
     """
+    deprecation_alias = dict(mindate='min_date', maxdate='max_date', onchange='on_change')
 
+    # Initialization
+    @deprecated_init_alias(**deprecation_alias)
     def __init__(self,
-                 date=None,
-                 label='',
-                 dark=settings.dark_mode,
-                 width=88,
-                 color=settings.color_first,
-                 show_week=False,
-                 onchange=None,
-                 offset_x=False,
-                 offset_y=True,
-                 disabled=False,
-                 mindate=None,
-                 maxdate=None):
+                 date: Optional[str] = None,
+                 label: str = '',
+                 dark: bool = settings.dark_mode,
+                 width: int = 88,
+                 color: str = settings.color_first,
+                 show_week: bool = False,
+                 on_change: Optional[Callable[[], None]] = None,
+                 offset_x: bool = False,
+                 offset_y: bool = True,
+                 disabled: bool = False,
+                 min_date: Optional[str] = None,
+                 max_date: Optional[str] = None):
 
         if date is None:
             self._date = datetime.today().strftime('%Y-%m-%d')
@@ -109,12 +115,12 @@ class datePicker():
         self.width = width
         self.color = color
         self.show_week = show_week
-        self.onchange = onchange
+        self.on_change = on_change
         self.offset_x = offset_x
         self.offset_y = offset_y
         self._disabled = disabled
-        self.mindate = mindate
-        self.maxdate = maxdate
+        self.min_date = min_date
+        self.max_date = max_date
 
         margins = "mb-n5"
         if len(self.label) == 0: margins = "mb-n5 mt-n2"
@@ -132,27 +138,35 @@ class datePicker():
         self.p = v.DatePicker(v_model=self._date, flat=True, elevation=0, color=self.color, header_color=self.color,
                               style_="max-width: 290px;", show_week=self.show_week, dark=self.dark)
 
-        if not self.mindate is None: self.p.min = self.mindate
-        if not self.maxdate is None: self.p.max = self.maxdate
+        if self.min_date:
+            self.p.min = self.min_date
+        if self.max_date:
+            self.p.max = self.max_date
 
         self.p.on_event('input', self.__internal_onchange)
 
-        self.m = v.Menu(offset_x=self.offset_x, offset_y=self.offset_y, open_on_hover=False, dense=True,
-                        close_on_click=True, close_on_content_click=False,
-                        v_slots=[{'name': 'activator', 'variable': 'menuData', 'children': [self.ctf]}],
-                        children=[self.p])
+        super().__init__(offset_x=self.offset_x, offset_y=self.offset_y, open_on_hover=False, dense=True,
+                         close_on_click=True, close_on_content_click=False,
+                         v_slots=[{'name': 'activator', 'variable': 'menuData', 'children': [self.ctf]}])
+
+        self.children = [self.p]
+
+        for alias, new in self.deprecation_alias.items():
+            create_deprecated_alias(self, alias, new)
 
     # Manage 'input' event
     def __internal_onchange(self, widget, event, data):
         self._date = data
         self.tf.v_model = data
-        if self.onchange:
-            self.onchange()
+        if self.on_change:
+            self.on_change()
 
     # Returns the vuetify object to display (the v.Menu)
     def draw(self):
-        """Returns the ipyvuetify object to display (the internal v.Menu)"""
-        return self.m
+        warnings.warn('The "draw" method is deprecated, please just use the object widget itself.',
+                      category=DeprecationWarning,
+                      stacklevel=2)
+        return self
 
     # date property
     @property
@@ -181,8 +195,8 @@ class datePicker():
             self._date = d
             self.tf.v_model = self._date
             self.p.v_model = self._date
-            if self.onchange:
-                self.onchange()
+            if self.on_change:
+                self.on_change()
         else:
             self._date = None
             self.tf.v_model = self._date
