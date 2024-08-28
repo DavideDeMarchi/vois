@@ -240,7 +240,8 @@ class Button(v.Html):
                        target=target, tile=tile,
                        children=childs,
                        style_='font-family: %s; font-size: 17; font-weight: %d; text-transform: none; ' % (
-                           fontsettings.font_name, text_weight) + style_, rounded=rounded)
+                           fontsettings.font_name, text_weight) + style_,
+                       rounded=rounded)  # TODO if we want them to change at run time we need to set the properties and reload style_
 
         self.b.on_event('click', self.__internal_onclick)
         self.b.on_event('dblclick', self.__internal_ondblclick)
