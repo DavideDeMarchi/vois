@@ -200,7 +200,7 @@ class page():
             btn_credits.on_event('click', self.click_on_credits)
             children.append(tooltip.tooltip("Open credits info", btn_credits))
             
-        self.appbar = v.AppBar(height=self.titleheight, min_height=self.titleheight, max_height=self.titleheight, color=self.titlecolor, children=children)
+        self.appbar = v.AppBar(height=self.titleheight, min_height=self.titleheight, max_height=self.titleheight, color=self._titlecolor, children=children)
 
 
         # Content of the footer bar
@@ -244,6 +244,34 @@ class page():
     def customButtonClear(self):
         self.custom_buttons = []
         
+    @property
+    def titlecolor(self):
+        return self._titlecolor
+        
+    @titlecolor.setter
+    def titlecolor(self, titlecolor):
+        self._titlecolor = titlecolor
+        self.appbar.color = self._titlecolor
+        
+        
+    @property
+    def footercolor(self):
+        return self._footercolor
+        
+    @footercolor.setter
+    def footercolor(self, footercolor):
+        self._footercolor = footercolor
+        textcolor = 'black'
+        if self.footerdark:
+            textcolor = 'white'
+
+        copyicon = v.Icon(class_="pa-0 ma-0 mr-2", small=True, color=textcolor, children=['mdi-copyright'])
+        ctext = v.Card(flat=True, color=self._footercolor, style_='color: %s;'%textcolor, children=[self.copyrighttext])
+        frow = v.Row(class_='pa-0 ma-0 mt-n2 mb-n3', justify="center", no_gutters=True, children=[copyicon,ctext])
+        self.footer.color     = self._footercolor
+        self.footer.children = [frow]
+            
+            
     
     # Initialization
     def __init__(self,
@@ -278,11 +306,11 @@ class page():
         self.output  = output
         self.onclose = onclose
         
-        self.titlecolor  = titlecolor
+        self._titlecolor = titlecolor
         self.titledark   = titledark
         self.titleheight = titleheight
         
-        self.footercolor  = footercolor
+        self._footercolor = footercolor
         self.footerdark   = footerdark
         self.footerheight = footerheight
         self.logowidth    = logowidth
