@@ -23,11 +23,13 @@ import ipyvuetify as v
 try:
     from . import settings
     from . import tooltip
-    from . import button
+    # from . import button
 except:
     import settings
     import tooltip
-    import button
+    # import button
+
+from vois.vuetify import Button
 
 
 #####################################################################################################################################################
@@ -115,38 +117,39 @@ class multiSwitch():
    """
 
     # Initialization
-    def __init__(self, values, labels, tooltips=None, color=settings.color_first, onchange=None, dark=settings.dark_mode,
-                 row=True, width=150, height=36, justify='space-between', rounded=settings.button_rounded, outlined=False,
+    def __init__(self, values, labels, tooltips=None, color=settings.color_first, onchange=None,
+                 dark=settings.dark_mode,
+                 row=True, width=150, height=36, justify='space-between', rounded=settings.button_rounded,
+                 outlined=False,
                  colorselected=settings.color_first, colorunselected=settings.color_second,
                  managedblclick=False, paddingrow=1, paddingcol=2, tile=False,
                  small=False, xsmall=False, large=False, xlarge=False):
-        
-        self.values   = [bool(x) for x in values]    # list of boolean values
-        self.labels   = labels
+
+        self.values = [bool(x) for x in values]  # list of boolean values
+        self.labels = labels
         self.tooltips = tooltips
-        self.color    = color
-        self.dark     = dark
+        self.color = color
+        self.dark = dark
         self.onchange = onchange
-        self.row      = row
-        self.width    = width
-        self.height   = height
-        self.justify  = justify
-        self.rounded  = rounded
+        self.row = row
+        self.width = width
+        self.height = height
+        self.justify = justify
+        self.rounded = rounded
         self.outlined = outlined
-        self.colorselected   = colorselected
+        self.colorselected = colorselected
         self.colorunselected = colorunselected
-        self.managedblclick  = managedblclick
+        self.managedblclick = managedblclick
         self.paddingrow = paddingrow
         self.paddingcol = paddingcol
-        self.tile   = tile
-        self.small  = small
+        self.tile = tile
+        self.small = small
         self.xsmall = xsmall
-        self.large  = large
+        self.large = large
         self.xlarge = xlarge
-        
+
         self.__createButtons()
-        
-        
+
     # Create the toggle buttons
     def __createButtons(self):
 
@@ -156,23 +159,30 @@ class multiSwitch():
             tooltip = ''
             if i < len(self.tooltips):
                 tooltip = self.tooltips[i]
-            
-            if self.row: c = "pa-0 ma-0 mr-%d"%self.paddingrow
+
+            if self.row:
+                c = "pa-0 ma-0 mr-%d" % self.paddingrow
             else:
-                if i == len(self.labels)-1:
+                if i == len(self.labels) - 1:
                     c = "pa-0 ma-0 mb-7"
                 else:
-                    c = "pa-0 ma-0 mb-%d"%self.paddingcol
-                    
-            b = button.button(label, class_=c, onclick=self.__internal_onchange, ondblclick=self.__internal_dblclick, argument=i, tooltip=tooltip, selected=self.values[i],
-                              small=self.small, xsmall=self.xsmall, large=self.large, xlarge=self.xlarge, width=self.width, height=self.height,
-                              rounded=self.rounded, tile=self.tile, outlined=self.outlined, dark=self.dark, colorselected=self.colorselected, colorunselected=self.colorunselected)
+                    c = "pa-0 ma-0 mb-%d" % self.paddingcol
+
+            b = Button(label, class_=c, onclick=self.__internal_onchange, ondblclick=self.__internal_dblclick,
+                       argument=i, tooltip=tooltip, selected=self.values[i],
+                       small=self.small, xsmall=self.xsmall, large=self.large, xlarge=self.xlarge, width=self.width,
+                       height=self.height,
+                       rounded=self.rounded, tile=self.tile, outlined=self.outlined, dark=self.dark,
+                       colorselected=self.colorselected, colorunselected=self.colorunselected)
             self.buttons.append(b)
             i += 1
 
-        if self.row: self.group = v.Row(class_="pa-0 ma-0", justify=self.justify, children=[x.draw() for x in self.buttons], style_="overflow: hidden;")
-        else:        self.group = v.Col(cols=12, class_="pa-0 ma-0", children=[x.draw() for x in self.buttons], style_="overflow: hidden;")
-
+        if self.row:
+            self.group = v.Row(class_="pa-0 ma-0", justify=self.justify, children=[x.draw() for x in self.buttons],
+                               style_="overflow: hidden;")
+        else:
+            self.group = v.Col(cols=12, class_="pa-0 ma-0", children=[x.draw() for x in self.buttons],
+                               style_="overflow: hidden;")
 
     # Get the active button
     @property
@@ -194,8 +204,7 @@ class multiSwitch():
         
         """
         return self.values
-   
-    
+
     # Set the status of the buttons
     @value.setter
     def value(self, values):
@@ -206,36 +215,32 @@ class multiSwitch():
             if self.onchange:
                 self.onchange(self.values)
 
-
     # Manage onchange event
     def __internal_onchange(self, index):
         self.values[index] = not self.values[index]
         self.buttons[index].selected = self.values[index]
         if self.onchange:
             self.onchange(self.values)
-            
-        
+
     # Manage dblclick event
     def __internal_dblclick(self, index):
         if self.managedblclick:
 
             i = 0
             for b in self.buttons:
-                if i == index: 
+                if i == index:
                     self.values[i] = True
                     b.selected = True
                 else:
                     self.values[i] = False
                     b.selected = False
-                    
+
                 i += 1
-                
+
             if self.onchange:
                 self.onchange(self.values)
-            
-    
+
     # Returns the vuetify object to display
     def draw(self):
         """Returns the ipyvuetify object to display (the internal v.Row or v.Col widget)"""
         return self.group
-

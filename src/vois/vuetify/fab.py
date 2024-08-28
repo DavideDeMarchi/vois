@@ -25,13 +25,13 @@ from IPython.display import display
 try:
     from . import settings
     from . import fontsettings
-    from . import button
+    from . import Button
     from . import label
     from . import tooltip
 except:
     import settings
     import fontsettings
-    import button
+    import Button
     import label
     import tooltip
 
