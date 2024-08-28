@@ -9,7 +9,7 @@ import warnings
 import os
 from argparse import ArgumentParser
 
-absolute_path_to_vois = '/Users/edoardo/JRC_Projects/vois/src/vois/__init__.py'
+absolute_path_to_vois = '/absolute/path/to/vois/init/file/__init__.py'
 
 
 def main(warning_set: bool, path_vois: str):
