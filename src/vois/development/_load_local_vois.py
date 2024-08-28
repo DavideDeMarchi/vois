@@ -1,15 +1,21 @@
+# Instructions:
+# 1. Copy this file in this folder renaming it 'load_local_vois.py'
+# 2. In the created 'load_local_vois.py' change the 'absolute_path_to_vois' accordingly
+# Changes in the 'load_local_vois.py' will not be detected (thanks .gitignore) a.k.a. sensitive info in path are secured
+
 import importlib.util
 import sys
 import warnings
 import os
-
 from argparse import ArgumentParser
 
-absolute_path_to_vois = '/absolute/path/to/vois/init/file/__init__.py'
+absolute_path_to_vois = '/Users/edoardo/JRC_Projects/vois/src/vois/__init__.py'
 
 
 def main(warning_set: bool, path_vois: str):
     # Check if __init__ file exists
+    if os.path.basename(path_vois) != '__init__.py':
+        raise FileNotFoundError(f'You are not pointing to a __init__.py file {path_vois}')
     if not os.path.exists(path_vois):
         raise FileNotFoundError(f'Could not find {path_vois}')
 
