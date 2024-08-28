@@ -72,6 +72,8 @@ class page():
         Text to display as copyright message on the footer bar (default is '')
     show_back : bool, optional
         If True a "back" button is displayed on the right side of the title bar (default is True)
+    left_back : bool, optional
+        If True the "back" button is displayed on the left side of the title bar (default is False)
     show_help : bool, optional
         If True a "help" button is displayed on the right side of the title bar (default is True)
     on_help : function, optional
@@ -182,7 +184,11 @@ class page():
         if self.show_back:
             btn_back = v.Btn(icon=True, class_="pa-0 ma-0 mt-1", dark=self.titledark, children=[v.Icon(children=['mdi-arrow-left'])])
             btn_back.on_event('click', self.click_on_back)
-            children.append(tooltip.tooltip("Close current page", btn_back))
+            elem = tooltip.tooltip("Close current page", btn_back)
+            if self.left_back:
+                children.insert(0, elem)
+            else:
+                children.append(elem)
             
         if self.show_help:
             btn_help = v.Btn(icon=True, class_="pa-0 ma-0 mt-1 mr-3", dark=self.titledark, children=[v.Icon(children=['mdi-help'])])
@@ -256,6 +262,7 @@ class page():
                  on_logoapp=None,
                  copyrighttext='',
                  show_back=True,
+                 left_back=False,
                  show_help=True,
                  on_help=None,
                  logocreditsurl='',
@@ -282,6 +289,7 @@ class page():
         
         self.copyrighttext = copyrighttext
         self.show_back     = show_back
+        self.left_back     = left_back
         self.show_help     = show_help
         self.on_help       = on_help
         self.show_credits  = show_credits

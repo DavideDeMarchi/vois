@@ -59,13 +59,13 @@ class template1panel(page.page):
         super().create()
         
         # Initialize some member variables
-        self.leftWidth    = LEFT_WIDTH
+        self.leftWidth = LEFT_WIDTH
         
         # Cards for the panels
         st = 'border-radius: 0px; border-color: %s; border-width: 1px;'%settings.color_first
         self.map_width  = 'calc(100vw - %dpx)'%self.leftWidth
         self.map_height = self.height
-        self.cardLeft   = v.Card(flat=True, style_=st, outlined=True, width=self.leftWidth, min_width=self.leftWidth, max_width=self.leftWidth, height=self.height)
+        self.cardLeft   = v.Card(flat=True, style_=st + 'border-right-width: 0px;', outlined=True, width=self.leftWidth, min_width=self.leftWidth, max_width=self.leftWidth, height=self.height)
         self.cardMap    = v.Card(flat=True, style_=st, outlined=True, width=self.map_width, height=self.map_height)
         
         # DynamicButtons to open/close the left and bottom panels
