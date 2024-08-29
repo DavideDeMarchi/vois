@@ -45,13 +45,7 @@ class PageConfigurator(v.Html):
         #self.spacerY = v.Html(tag='div', style_='width:  0px; height: 10px;')
         #self.spacer  = v.Html(tag='div', style_='width: 10px; height: 10px;')
 
-        self.card = v.Card(flat=True,
-                           #color='#ccffcc',
-                           width=LEFT_WIDTH,
-                           min_width=LEFT_WIDTH,
-                           max_width=LEFT_WIDTH,
-                           height='100px',
-                           class_='pa-2 pt-4 ma-0')
+        self.card = v.Card(flat=True, width=LEFT_WIDTH, min_width=LEFT_WIDTH, max_width=LEFT_WIDTH, height='200px', class_='pa-2 pt-4 ma-0')
 
         # Widgets
         self.panelsLabel  = v.Html(tag='div', children=['Page format: '], class_='pa-0 ma-0 mt-1 mr-3', style_='font-size: 17px; font-weight: 500; color: %s;'%settings.color_first)
@@ -60,7 +54,15 @@ class PageConfigurator(v.Html):
                                           tooltips=['Page with 1 left panel', 'Page with 2 panels: left and bottom', 'Page with 3 panels: left, bottom and right'],
                                           dark=True, onchange=self.onSelectedTemplate, row=True, width=42, justify='start', paddingrow=1, tile=True)
 
-        self.card.children = [widgets.HBox([self.panelsLabel, self.togglePanels.draw()])]
+        self.titlecolor  = ColorPicker(color=settings.color_first,  width=30, height=30, rounded=False, on_change=self.titlecolorChange,  offset_x=True, offset_y=False)        
+        self.footercolor = ColorPicker(color=settings.color_second, width=30, height=30, rounded=False, on_change=self.footercolorChange, offset_x=True, offset_y=False)        
+        
+        self.card.children = [widgets.VBox([
+                                widgets.HBox([self.panelsLabel, self.togglePanels.draw()]),
+                                self.titlecolor,
+                                self.footercolor,
+                                ])
+                             ]
         
         # Set v.Html members
         self.tag = 'div'
@@ -70,7 +72,7 @@ class PageConfigurator(v.Html):
         self.page = None
         self.onSelectedTemplate(0)
 
-        
+    
     # Forced close
     def on_force_close(self, *args):
         self.output.clear_output()
@@ -114,3 +116,35 @@ class PageConfigurator(v.Html):
             self.page.transition = statusdict['transition']
         else:
             self.page.transition = 'dialog-bottom-transition'
+
+    
+    # Change of the titlecolor property
+    def titlecolorChange(self):
+        color = self.titlecolor.color
+
+        # page color
+        self.page.titlecolor = color
+        
+        # widgets color
+        for b in self.togglePanels.buttons:
+            b.color_selected = color
+            if b._selected:
+                b.b.color = color
+                
+        # labels color
+        self.panelsLabel.style_ = 'font-size: 17px; font-weight: 500; color: %s;'%color
+        
+        
+    # Change of the footercolor property
+    def footercolorChange(self):
+        color = self.footercolor.color
+        
+        # page color
+        self.page.footercolor = color
+
+        # widgets color
+        for b in self.togglePanels.buttons:
+            b.color_unselected = color
+            if not b._selected:
+                b.b.color = color
+        

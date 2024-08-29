@@ -84,3 +84,13 @@ class dynamicButton():
             self.ib.btn.children = [v.Icon(children=[self.icon2], large=self.ib.large, small=self.ib.small, x_large=self.ib.x_large, x_small=self.ib.x_small)]
             self.ib.btn.color    = self.color2
             if not self.onclick1 is None: self.onclick1()
+
+    @property
+    def color(self):
+        return self.color1
+        
+    @color.setter
+    def color(self, c):
+        self.color1 = c
+        self.color2 = c
+        self.ib.btn.color = c

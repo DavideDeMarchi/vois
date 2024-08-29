@@ -75,7 +75,11 @@ def CartoLabels():
 
 
 def EsriWorldImagery():
-    return basemaps.Esri.WorldImagery
+    return buildBasemap({'attribution': '',
+                         'max_zoom': 21,
+                         'max_native_zoom': 21,
+                         'name': 'Esri.WorldImagery',
+                         'url': 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.jpg'})
 
 
 def GoogleRoadmap():

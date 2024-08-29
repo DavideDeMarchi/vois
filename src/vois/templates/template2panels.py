@@ -94,7 +94,78 @@ class template2panels(page.page):
         
         return self.card
     
+
+    @property
+    def titlecolor(self):
+        """
+        Get/Set the color of the title bar
+        
+        Returns
+        --------
+        color : str
+            Color of the title bar
+
+        Example
+        -------
+        Programmatically change the color::
             
+            p.titlecolor = 'red'
+            print(p.titlecolor)
+        
+        """
+        return self._titlecolor
+        
+    @titlecolor.setter
+    def titlecolor(self, color):
+        page.page.titlecolor.fset(self, color)   # call super() property setter
+
+        # Set the color of the panels outline!
+        st = 'border-radius: 0px; border-color: %s; border-width: 1px; overflow: hidden;'%color
+        self.cardLeft.style_   = st
+        self.cardBottom.style_ = st + ' border-left-width: 0px; border-top-width: 0px;'
+        self.cardMap.style_    = st + ' border-left-width: 0px;'
+
+        # Set the color of the dynamicButton
+        self.dynbLeft.color   = color
+        self.dynbBottom.color = color
+        
+        # Set the color of basemaps toggle
+        for b in self.toggleBasemap.buttons:
+            b.color_selected = color
+            if b._selected:
+                b.b.color = color
+                
+    @property
+    def footercolor(self):
+        """
+        Get/Set the color of the footer bar
+        
+        Returns
+        --------
+        color : str
+            Color of the footer bar
+
+        Example
+        -------
+        Programmatically change the color::
+            
+            p.footercolor = 'red'
+            print(p.footercolor)
+        
+        """
+        return self._footercolor
+        
+    @footercolor.setter
+    def footercolor(self, color):
+        page.page.footercolor.fset(self, color)   # call super() property setter
+
+        # Set the color of basemaps toggle
+        for b in self.toggleBasemap.buttons:
+            b.color_unselected = color
+            if not b._selected:
+                b.b.color = color
+                
+        
     # Create the content of the left panel
     def createLeft(self):
         pass
