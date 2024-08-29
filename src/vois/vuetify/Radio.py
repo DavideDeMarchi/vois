@@ -20,18 +20,15 @@
 from IPython.display import display
 import ipyvuetify as v
 
-try:
-    from . import settings
-    from . import tooltip
-except:
-    import settings
-    import tooltip
+from vois.vuetify import settings, tooltip
+from vois.vuetify.utils.util import *
+from typing import Callable, Optional
 
 
 #####################################################################################################################################################
 # Radio control
 #####################################################################################################################################################
-class radio:
+class Radio(v.RadioGroup):
     """
     Radio buttons to allow users to select from a predefined set of options.
         
@@ -45,7 +42,7 @@ class radio:
         List of strings to use as tooltips for the corresponding radio items (default is None)
     color : str, optional
         Color used for the widget (default is the color_first defined in the settings.py module)
-    onchange : function, optional
+    on_change : function, optional
         Python function to call when the user selects one of the values in the list. The function will receive a single parameter, containing the index of the selected option in the range from 0 to len(labels)-1
     row : bool, optional
         Flag to control the position of radio buttons, either horizontal or vertical (default is True)
@@ -54,23 +51,23 @@ class radio:
     -------
     Creation and display of a radio widget to select among three options::
         
-        from vois.vuetify import radio
+        from vois.vuetify import Radio
         from ipywidgets import widgets
         from IPython.display import display
 
         output = widgets.Output()
 
-        def onchange(value):
+        def on_change(value):
             with output:
                 print(value)
 
-        r = radio.radio(0,
-                        ['Option 0', 'Option 1', 'Option 2'],
-                        tooltips=['Tooltip for Option 1'],
-                        onchange=onchange,
-                        row=True)
+        r = Radio(0,
+                ['Option 0', 'Option 1', 'Option 2'],
+                tooltips=['Tooltip for Option 1'],
+                on_change=on_change,
+                row=True)
 
-        display(r.draw())
+        display(r)
         display(output)
 
     .. figure:: figures/radio.png
@@ -80,41 +77,55 @@ class radio:
        Example of a radio widget to select from three options.
    """
 
+    deprecation_alias = dict(onchange='on_change')
+
     # Initialization
-    def __init__(self, index, labels, tooltips=None, color=settings.color_first, onchange=None, row=True):
-        
-        self.value    = index
-        self.labels   = labels
+    @deprecated_init_alias(**deprecation_alias)
+    def __init__(self,
+                 index: int,
+                 labels: list[str],
+                 tooltips: list[str] = [],
+                 color: str = settings.color_first,
+                 on_change: Optional[Callable[[int], None]] = None,
+                 row: bool = True):
+
+        self.value = index
+        self.labels = labels
         self.tooltips = tooltips
-        self.color    = color
-        self.onchange = onchange
-        self.row      = row
-        
+        self.color = color
+        self.on_change = on_change
+        self.row = row
+
         self.r = []
         i = 0
         for label in self.labels:
-            if self.row: self.r.append(v.Radio(label=label, class_="pa-0 ma-0 ml-2 mt-2 mr-6 mb-n3", color=settings.color_first))
-            else:        self.r.append(v.Radio(label=label, class_="pa-0 ma-0 ml-2 mt-3 mr-6 mb-n2", color=settings.color_first))
+            if self.row:
+                self.r.append(v.Radio(label=label, class_="pa-0 ma-0 ml-2 mt-2 mr-6 mb-n3", color=self.color))
+            else:
+                self.r.append(v.Radio(label=label, class_="pa-0 ma-0 ml-2 mt-3 mr-6 mb-n2", color=self.color))
             if i < len(self.tooltips):
                 self.r[i] = tooltip.tooltip(self.tooltips[i], self.r[i])
             i += 1
 
-        self.rg = v.RadioGroup(v_model=self.value, row=self.row, class_="pa-0 ma-0", large=True, 
-                               color=settings.color_first, children=self.r, style_="overflow: hidden;")
-        
+        super().__init__(v_model=self.value, row=self.row, class_="pa-0 ma-0", large=True,
+                         color=self.color, children=self.r, style_="overflow: hidden;")
+
         # If requested onchange management
-        if not self.onchange is None:
-            self.rg.on_event('change', self.__internal_onchange)
-        
-    
+        if self.on_change:
+            self.on_event('change', self.__internal_onchange)
+
+        for alias, new in self.deprecation_alias.items():
+            create_deprecated_alias(self, alias, new)
+
     # Manage onchange event
     def __internal_onchange(self, widget=None, event=None, data=None):
-        self.value = data
-        if self.onchange:
-            self.onchange(data)
-    
+        self.value = widget.v_model
+        if self.on_change:
+            self.on_change(self.value)
+
     # Returns the vuetify object to display (the v.RadioGroup itself)
     def draw(self):
-        """Returns the ipyvuetify object to display (the internal v.RadioGroup widget)"""
-        return self.rg
-
+        warnings.warn('The "draw" method is deprecated, please just use the object widget itself.',
+                      category=DeprecationWarning,
+                      stacklevel=2)
+        return self
