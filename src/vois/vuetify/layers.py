@@ -37,7 +37,6 @@ try:
     from . import dialogGeneric
     from . import selectSingle
     from . import tabs
-    from . import radio
     from . import palettePicker
     from . import paletteEditor
     from . import upload
@@ -51,7 +50,6 @@ except:
     import dialogGeneric
     import selectSingle
     import tabs
-    import radio
     import palettePicker
     import paletteEditor
     import upload
