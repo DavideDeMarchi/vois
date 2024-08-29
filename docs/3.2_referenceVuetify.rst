@@ -28,10 +28,10 @@ basemaps widget
 
 .. image:: figures/line.png
 
-button widget
+Button widget
 -------------
 
-.. automodule:: button
+.. automodule:: Button
     :members:
 
 .. image:: figures/line.png
@@ -52,10 +52,10 @@ cardsGrid widget
 
 .. image:: figures/line.png
 
-colorPicker widget
+ColorPicker widget
 ------------------
 
-.. automodule:: colorPicker
+.. automodule:: ColorPicker
     :members:
 
 .. image:: figures/line.png
@@ -68,10 +68,10 @@ datatable widget
 
 .. image:: figures/line.png
 
-datePicker widget
+DatePicker widget
 -----------------
 
-.. automodule:: datePicker
+.. automodule:: DatePicker
     :members:
 
 .. image:: figures/line.png
@@ -222,10 +222,10 @@ popup widget
 
 .. image:: figures/line.png
 
-progress widget
+Progress widget
 ---------------
 
-.. automodule:: progress
+.. automodule:: Progress
     :members:
 
 .. image:: figures/line.png
@@ -238,10 +238,10 @@ queryStrings module
 
 .. image:: figures/line.png
 
-radio widget
+Radio widget
 ------------
 
-.. automodule:: radio
+.. automodule:: Radio
     :members:
 
 .. image:: figures/line.png

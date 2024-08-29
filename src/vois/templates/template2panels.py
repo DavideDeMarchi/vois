@@ -19,10 +19,9 @@
 # limitations under the Licence.
 
 # Imports
-from IPython.display import display
 from ipywidgets import widgets, HTML, Layout, CallbackDispatcher
 import ipyleaflet
-from ipyleaflet import SearchControl, ScaleControl, FullScreenControl, WidgetControl, Popup, Marker
+from ipyleaflet import SearchControl, ScaleControl, FullScreenControl, WidgetControl
 import ipyvuetify as v
 
 # Vois imports

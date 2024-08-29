@@ -23,7 +23,7 @@ from ipywidgets import widgets
 import ipyvuetify as v
 
 # Vois imports
-from vois.vuetify import settings, toggle
+from vois.vuetify import settings, toggle, ColorPicker
 from vois.templates import template1panel, template2panels, template3panels
 
 
@@ -41,9 +41,9 @@ class PageConfigurator(v.Html):
         super().__init__(**kwargs)
 
         self.output = output
-        self.spacerX = v.Html(tag='div', style_='width: 10px; height:  0px;')
-        self.spacerY = v.Html(tag='div', style_='width:  0px; height: 10px;')
-        self.spacer  = v.Html(tag='div', style_='width: 10px; height: 10px;')
+        #self.spacerX = v.Html(tag='div', style_='width: 10px; height:  0px;')
+        #self.spacerY = v.Html(tag='div', style_='width:  0px; height: 10px;')
+        #self.spacer  = v.Html(tag='div', style_='width: 10px; height: 10px;')
 
         self.card = v.Card(flat=True,
                            #color='#ccffcc',
@@ -58,16 +58,59 @@ class PageConfigurator(v.Html):
         self.togglePanels = toggle.toggle(0,
                                           ['1', '2', '3'],
                                           tooltips=['Page with 1 left panel', 'Page with 2 panels: left and bottom', 'Page with 3 panels: left, bottom and right'],
-                                          dark=True, onchange=None, row=True, width=42, justify='start', paddingrow=1, tile=True)
+                                          dark=True, onchange=self.onSelectedTemplate, row=True, width=42, justify='start', paddingrow=1, tile=True)
 
         self.card.children = [widgets.HBox([self.panelsLabel, self.togglePanels.draw()])]
         
-        # Initial page
-        self.page = template1panel.template1panel(self.output, left_back=True)
-        self.pagecard = self.page.create()
-        
-        self.page.cardLeft.children = [self]
-
+        # Set v.Html members
         self.tag = 'div'
         self.children = [self.card]
+        
+        # Initial page
+        self.page = None
+        self.onSelectedTemplate(0)
 
+        
+    # Forced close
+    def on_force_close(self, *args):
+        self.output.clear_output()
+
+        
+    # Selection of 1, 2 or 3 panels template
+    def onSelectedTemplate(self, index):
+
+        # Default state
+        statusdict = {
+            'left_back'  : True,
+            'logoappurl' : 'https://jeodpp.jrc.ec.europa.eu/services/shared/pngs/BDAP_Logo1024transparent.png'
+        }
+        
+        # Read the state and close the current page
+        if self.page is not None:
+            statusdict = self.page.state
+            self.page.close()
+
+        # Create the instance of the page with the requested number of panels
+        if index == 0:
+            self.page = template1panel.template1panel(self.output)
+        elif index == 1:
+            self.page = template2panels.template2panels(self.output)
+        else:
+            self.page = template3panels.template3panels(self.output)
+
+        self.page.customButtonAdd('mdi-delete', 'Click here to force page closing', self.on_force_close)
+            
+        # Create the page widgets and display the PageConfigurator in the left panel
+        self.page.create()
+        self.page.cardLeft.children = [self]
+
+        # Set the state
+        self.page.state = statusdict
+
+        # Open the page with minimal transition
+        self.page.transition = 'dialog-top-transition'
+        self.page.open()
+        if 'transition' in statusdict:
+            self.page.transition = statusdict['transition']
+        else:
+            self.page.transition = 'dialog-bottom-transition'

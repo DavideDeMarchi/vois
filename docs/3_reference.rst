@@ -78,12 +78,12 @@ Vuetify package
 
  app
  basemaps
- button
+ Button
  card
  cardsGrid
- colorPicker
+ ColorPicker
  datatable
- datePicker
+ DatePicker
  dayCalendar
  dialogGeneric
  dialogMessage
@@ -103,9 +103,9 @@ Vuetify package
  palettePicker
  palettePickerEx
  popup
- progress
+ Progress
  queryStrings
- radio
+ Radio
  rangeSlider
  rangeSliderFloat
  selectImage
