@@ -268,7 +268,7 @@ class Button(v.Html):
     # Manage click event
     def __internal_onclick(self, widget=None, event=None, data=None):
         if self.on_click:
-            if self.argument:
+            if self.argument is not None:
                 self.on_click(self.argument)  # TODO switch to kwargs
             else:
                 self.on_click()

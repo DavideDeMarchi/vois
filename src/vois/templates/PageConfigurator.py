@@ -19,37 +19,55 @@
 # limitations under the Licence.
 
 # Imports
+from ipywidgets import widgets
 import ipyvuetify as v
 
 # Vois imports
-from vois.vuetify import settings, page
+from vois.vuetify import settings, toggle
 from vois.templates import template1panel, template2panels, template3panels
 
 
 LEFT_WIDTH = 400   # Width  in pixels of the left bar
 
+
 #####################################################################################################################################################
 # Interactive page configurator widget
 #####################################################################################################################################################
-class PageConfigurator(v.Container):
-    
+class PageConfigurator(v.Html):
+
     # Initialization
     def __init__(self, output, **kwargs):
-        
-        super().__init__(**kwargs)
-        
-        # Initial settings
-        settings.dark_mode      = True
-        settings.color_first    = '#0d856d'
-        settings.color_second   = '#a0dcd0'
-        settings.button_rounded = True
-        
-        self.output = output
-        
-        self.card = v.Card(flat=True, color='#ccffcc', width=LEFT_WIDTH, min_width=LEFT_WIDTH, max_width=LEFT_WIDTH,height='100px')
-        
-        self.page = template1panel.template1panel(self.output)
-        self.pagecard = self.page.create()
 
-        self.children = [self.card]
+        super().__init__(**kwargs)
+
+        self.output = output
+        self.spacerX = v.Html(tag='div', style_='width: 10px; height:  0px;')
+        self.spacerY = v.Html(tag='div', style_='width:  0px; height: 10px;')
+        self.spacer  = v.Html(tag='div', style_='width: 10px; height: 10px;')
+
+        self.card = v.Card(flat=True,
+                           #color='#ccffcc',
+                           width=LEFT_WIDTH,
+                           min_width=LEFT_WIDTH,
+                           max_width=LEFT_WIDTH,
+                           height='100px',
+                           class_='pa-2 pt-4 ma-0')
+
+        # Widgets
+        self.panelsLabel  = v.Html(tag='div', children=['Page format: '], class_='pa-0 ma-0 mt-1 mr-3', style_='font-size: 17px; font-weight: 500; color: %s;'%settings.color_first)
+        self.togglePanels = toggle.toggle(0,
+                                          ['1', '2', '3'],
+                                          tooltips=['Page with 1 left panel', 'Page with 2 panels: left and bottom', 'Page with 3 panels: left, bottom and right'],
+                                          dark=True, onchange=None, row=True, width=42, justify='start', paddingrow=1, tile=True)
+
+        self.card.children = [widgets.HBox([self.panelsLabel, self.togglePanels.draw()])]
         
+        # Initial page
+        self.page = template1panel.template1panel(self.output, left_back=True)
+        self.pagecard = self.page.create()
+        
+        self.page.cardLeft.children = [self]
+
+        self.tag = 'div'
+        self.children = [self.card]
+

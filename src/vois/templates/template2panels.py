@@ -50,7 +50,7 @@ class template2panels(page.page):
     
     # Initialization
     def __init__(self, output, onclose=None, **kwargs):
-        super().__init__('Demo', 'Geospatial page with left and bottom panel', output, onclose=onclose, copyrighttext='European Commission - Joint Research Centre')
+        super().__init__('Demo', 'Geospatial page with left and bottom panel', output, onclose=onclose, copyrighttext='European Commission - Joint Research Centre', **kwargs)
 
    
     #################################################################################################################################################

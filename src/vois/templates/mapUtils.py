@@ -20,13 +20,13 @@
 
 import ipyleaflet
 from ipyleaflet import basemaps, basemap_to_tiles, WidgetControl
-from jeodpp import inter
 from PIL import Image, ImageDraw
 from io import BytesIO
 import ipyvuetify
 import ipyvuetify as v
 
 from osgeo import ogr, osr
+from jeodpp import inter       # V.I.: importing inter after GDAL seem to solve the HDF5 C errors
 
 import requests
 import math
