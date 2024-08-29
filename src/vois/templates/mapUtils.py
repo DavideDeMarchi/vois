@@ -19,8 +19,7 @@
 # limitations under the Licence.
 
 import ipyleaflet
-from ipyleaflet import basemap_to_tiles, WidgetControl
-import traitlets
+from ipyleaflet import basemaps, basemap_to_tiles, WidgetControl
 from jeodpp import inter
 from PIL import Image, ImageDraw
 from io import BytesIO
@@ -34,9 +33,9 @@ import math
 
 
 # Symbols dimension in pixels
-SMALL_SYMBOLS_DIMENSION  = 30
+SMALL_SYMBOLS_DIMENSION = 30
 MEDIUM_SYMBOLS_DIMENSION = 80
-LARGE_SYMBOLS_DIMENSION  = 256
+LARGE_SYMBOLS_DIMENSION = 256
 
 # Base URL for generating images from symbols
 SYMBOLS_URL = 'https://jeodpp.jrc.ec.europa.eu/jiplib-view?x=0&y=0&z=1&procid=%s'
@@ -48,11 +47,7 @@ SYMBOLS_URL = 'https://jeodpp.jrc.ec.europa.eu/jiplib-view?x=0&y=0&z=1&procid=%s
 
 # Build a basemap that works in old and new versions of ipyleaflet
 def buildBasemap(oldstyledictionary):
-    return basemap_to_tiles(traitlets.Bunch({'max_zoom':        oldstyledictionary['max_zoom'],
-                                             'max_native_zoom': oldstyledictionary['max_native_zoom'],
-                                             'name':            oldstyledictionary['name'],
-                                             'attribution':     oldstyledictionary['attribution'],
-                                             'build_url':       lambda *args, **kwargs: oldstyledictionary['url']}))
+    return basemap_to_tiles(oldstyledictionary)
 
 
 def EmptyBasemap():  # gray background
@@ -61,13 +56,16 @@ def EmptyBasemap():  # gray background
                          'max_native_zoom': 21,
                          'name': 'Empty basemap',
                          'url': 'https://jeodpp.jrc.ec.europa.eu/services/shared/pngs/gray.png'})
+
+
 def OSM_EC():
     return buildBasemap({'attribution': '',
                          'max_zoom': 21,
                          'max_native_zoom': 21,
                          'name': 'Gisco.OSMCartoV4Composite',
                          'url': 'https://gisco-services.ec.europa.eu/maps/tiles/OSMCartoV4Composite/EPSG3857/{z}/{x}/{y}.png'})
-        
+
+
 def CartoLabels():
     return buildBasemap({'attribution': '',
                          'max_zoom': 21,
@@ -75,12 +73,10 @@ def CartoLabels():
                          'name': 'Gisco.OSMCartoV4Labels',
                          'url': 'https://gisco-services.ec.europa.eu/maps/tiles/OSMCartoV4Labels/EPSG3857/{z}/{x}/{y}.png'})
 
+
 def EsriWorldImagery():
-    return buildBasemap({'attribution': '',
-                         'max_zoom': 21,
-                         'max_native_zoom': 21,
-                         'name': 'Esri.WorldImagery',
-                         'url': 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.jpg'})
+    return basemaps.Esri.WorldImagery
+
 
 def GoogleRoadmap():
     return buildBasemap({'attribution': '',
@@ -89,12 +85,14 @@ def GoogleRoadmap():
                          'name': 'Google.Roadmap',
                          'url': 'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}'})
 
+
 def GoogleSatellite():
     return buildBasemap({'attribution': '',
                          'max_zoom': 21,
                          'max_native_zoom': 21,
                          'name': 'Google.Satellite',
                          'url': 'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}'})
+
 
 def GoogleHybrid():
     return buildBasemap({'attribution': '',
@@ -117,9 +115,9 @@ def addLayer(m, tLayer, name, opacity=1.0):
     alreadyPresent = False
     tLayer.name = name
     tLayer.opacity = opacity
-    for l in m.layers:
-        if name == l.name:
-            m.substitute_layer(l,tLayer)
+    for layer in m.layers:
+        if name == layer.name:
+            m.substitute_layer(layer, tLayer)
             alreadyPresent = True
             break
 
@@ -150,53 +148,58 @@ def removeAllPopups(m):
         if isinstance(layer, ipyleaflet.leaflet.Popup):
             m.remove_layer(layer)
 
-            
+
 # Remove all layer except current basemap
 def clear(m):
     baselayer = ipyleaflet.basemap_to_tiles(m.basemap)
     baselayer.base = True
     m.clear_layers()
-    m.add_layer(baselayer)    
+    m.add_layer(baselayer)
 
-    
-    
+
 # Zoom a map to a rectangle
 def zoomToExtents(m, xmin, ymin, xmax, ymax, epsg=4326):
-    
-    def transformPoint(x,y,coordtrans):
+
+    m.fit_bounds([[ymin, xmin], [ymax, xmax]])
+    return
+
+
+def zoomToExtents_OLD(m, xmin, ymin, xmax, ymax, epsg=4326):
+    def transformPoint(x, y, coordtrans):
         point = ogr.CreateGeometryFromWkt("POINT (%f %f)"%(x,y))
         point.Transform(coordtrans)
         pt = point.GetPoint(0)
-        return pt[0],pt[1]
+        return pt[0], pt[1]
 
-    def transformExtent(xmin,ymin,xmax,ymax, epsgsource, epsgtarget):
+    def transformExtent(xmin, ymin, xmax, ymax, epsgsource, epsgtarget):
         if epsgsource == epsgtarget:
-            return xmin,ymin,xmax,ymax
-        
+            return xmin, ymin, xmax, ymax
+
         source = osr.SpatialReference()
         source.ImportFromEPSG(epsgsource)
+        source.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
 
         target = osr.SpatialReference()
         target.ImportFromEPSG(epsgtarget)
+        target.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
 
         ct = osr.CoordinateTransformation(source, target)
 
-        x1,y1 = transformPoint(xmin,ymin,ct)
-        x2,y2 = transformPoint(xmin,ymax,ct)
-        x3,y3 = transformPoint(xmax,ymin,ct)
-        x4,y4 = transformPoint(xmax,ymax,ct)
+        x1, y1 = transformPoint(xmin, ymin, ct)
+        x2, y2 = transformPoint(xmin, ymax, ct)
+        x3, y3 = transformPoint(xmax, ymin, ct)
+        x4, y4 = transformPoint(xmax, ymax, ct)
 
-        targetxmin = min(x1,x2,x3,x4)
-        targetxmax = max(x1,x2,x3,x4)
-        targetymin = min(y1,y2,y3,y4)
-        targetymax = max(y1,y2,y3,y4)
-        
-        return targetxmin,targetymin,targetxmax,targetymax
-    
-    
-    geoxmin, geoymin, geoxmax, geoymax  = transformExtent(xmin,ymin,xmax,ymax, epsg, 4326)
-    mercxmin,mercymin,mercxmax,mercymax = transformExtent(geoxmin,geoymin,geoxmax,geoymax, 4326, 3857)
-        
+        targetxmin = min(x1, x2, x3, x4)
+        targetxmax = max(x1, x2, x3, x4)
+        targetymin = min(y1, y2, y3, y4)
+        targetymax = max(y1, y2, y3, y4)
+
+        return targetxmin, targetymin, targetxmax, targetymax
+
+    geoxmin, geoymin, geoxmax, geoymax = transformExtent(xmin, ymin, xmax, ymax, epsg, 4326)
+    mercxmin, mercymin, mercxmax, mercymax = transformExtent(geoxmin, geoymin, geoxmax, geoymax, 4326, 3857)
+
     distance = mercxmax - mercxmin
 
     # Given a distance on a parallel, returns the number of pixels at a certain zoom level
@@ -205,13 +208,12 @@ def zoomToExtents(m, xmin, ymin, xmax, ymax, epsg=4326):
 
     # See https://gis.stackexchange.com/questions/19632/how-to-calculate-the-optimal-zoom-level-to-display-two-or-more-points-on-a-map
     zoom = 0
-    while pixels(distance,zoom) < 500:
+    while pixels(distance, zoom) < 500:
         zoom = zoom + 1
 
     m.center = [(geoymin+geoymax)*0.5, (geoxmin+geoxmax)*0.5]
     m.zoom = zoom
 
-    
 
 #####################################################################################################################################################
 # Display of coordinated at mousemove on a map
@@ -223,13 +225,13 @@ def getCardByName(m, name, position='topright', class_='pa-0 ma-0'):
             if isinstance(control.widget, ipyvuetify.generated.Card):
                 if control.widget.active_class == name:
                     return control.widget
-                    
+
     # If not found: add it to the map!
     card = v.Card(flat=True, class_=class_, active_class=name)
     wc = WidgetControl(widget=card, position=position)
     m.add_control(wc)
     return card
-    
+
     
 # Remove a WidgetControl from the map given its name, if present
 def removeCardByName(m, name):
@@ -239,7 +241,7 @@ def removeCardByName(m, name):
                 if control.widget.active_class == name:
                     m.remove_control(control)
 
-                    
+
 #####################################################################################################################################################
 # Display of coordinated at mousemove on a map
 #####################################################################################################################################################
@@ -247,12 +249,12 @@ def removeCardByName(m, name):
 # N.B.: the Coordinates control is a v.Card having active_class == 'Coordinates' (so that it can be retrieved from the list of m.controls)
 def getCoordinatesCard(m):
     return getCardByName(m, 'Coordinates', 'topright')
-    
+
     
 # Remove the Coordinates WidgetControl from the map, if present
 def removeCoordinates(m):
     removeCardByName(m, 'Coordinates')
-                    
+
 
 #####################################################################################################################################################
 # Functions for vector layers management and display
@@ -263,10 +265,10 @@ def applySymbol(vectorlayer, rule='all', symbol=[]):
     for layer in symbol:
         style = "default"
         for member in layer:
-            symbolizer,attribute,value = member
-            vectorlayer.set(style,rule,symbolizer,attribute,str(value))
+            symbolizer, attribute, value = member
+            vectorlayer.set(style, rule, symbolizer, attribute, str(value))
 
-            
+
 # Generate an image from a symbol
 def symbol2Image(symbol=[], size=1, layer_type='Point', clipdimension=MEDIUM_SYMBOLS_DIMENSION, showborder=False):
     doclip = False
@@ -295,8 +297,8 @@ def symbol2Image(symbol=[], size=1, layer_type='Point', clipdimension=MEDIUM_SYM
 
     v = inter.Collection(inter.collections.Vector)
     v.geomAdd(wkt)
-    v.remove('default','all')
-    applySymbol(v,'all',symbol)
+    v.remove('default', 'all')
+    applySymbol(v, 'all', symbol)
     ip = v.process()
     ip.toLayer()
     url = SYMBOLS_URL % ip.getProcessID()
@@ -314,7 +316,7 @@ def symbol2Image(symbol=[], size=1, layer_type='Point', clipdimension=MEDIUM_SYM
             cy = s[1]/2
             img = img.crop((cx-clipdimension/2, cy-clipdimension/2, cx+clipdimension/2, cy+clipdimension/2))
     else:
-        #print('URL with errors:',url)
+        # print('URL with errors:',url)
         if size >= 3:    img = Image.new("RGB", (LARGE_SYMBOLS_DIMENSION,  LARGE_SYMBOLS_DIMENSION),  (255, 255, 255))
         elif size == 2:  img = Image.new("RGB", (MEDIUM_SYMBOLS_DIMENSION, MEDIUM_SYMBOLS_DIMENSION), (255, 255, 255))
         else:            img = Image.new("RGB", (SMALL_SYMBOLS_DIMENSION,  SMALL_SYMBOLS_DIMENSION),  (255, 255, 255))
@@ -336,48 +338,48 @@ def setColor(symbol, color='#ff0000', fillColor='#ff0000', fillOpacity=1.0, stro
         newlayer = []
         for member in layer:
             symbolizer,attribute,value = member
-            
+
             if value == 'COLOR':
                 value = color
-                
+
             if value == 'FILL-COLOR':
                 value = fillColor
-                
+
             if value == 'FILL-OPACITY':
                 value = fillOpacity
-                
+
             if value == 'STROKE-COLOR':
                 value = strokeColor
-                
+
             if value == 'STROKE-WIDTH':
                 value = strokeWidth
-                
+
             if value == 'SCALE-MIN':
                 value = scalemin
 
             if value == 'SCALE-MAX':
                 value = scalemax
-                
-            if not value is None:
+
+            if value is not None:
                 newlayer.append((symbolizer,attribute,value))
 
         newsymbol.append(newlayer)
 
     return newsymbol
-    
+
 
 #####################################################################################################################################################
 # Save a map view in a PIL image
 #####################################################################################################################################################
 def toImage(m):
-    
+
     # Bounds and zoom of the current view
-    (latmin,lonmin),(latmax,lonmax) = m.bounds
+    (latmin, lonmin), (latmax, lonmax) = m.bounds
     zoom = m.zoom
 
     # URLs of all the Tilelayer on the map
     baseUrls = [x.url for x in m.layers if type(x) == ipyleaflet.leaflet.TileLayer]
-    
+
     # Opacities
     opacities = [x.opacity for x in m.layers if type(x) == ipyleaflet.leaflet.TileLayer]
 
@@ -390,8 +392,8 @@ def toImage(m):
         ytile = n * (1 - (math.log(math.tan(lat_rad) + 1.0/math.cos(lat_rad)) / math.pi)) / 2
         return xtile, ytile
 
-    xtile1f,ytile2f = latlon2tile(latmin,lonmin, zoom)
-    xtile2f,ytile1f = latlon2tile(latmax,lonmax, zoom)
+    xtile1f, ytile2f = latlon2tile(latmin, lonmin, zoom)
+    xtile2f, ytile1f = latlon2tile(latmax, lonmax, zoom)
 
     xtile1 = int(xtile1f)
     xtile2 = int(xtile2f)
@@ -419,8 +421,8 @@ def toImage(m):
     imageTotal = Image.new(mode="RGBA", size=(w,h))
 
     # Substitute x,y,z into a TileService URL
-    def url(baseurl, x,y,zoom):
-        return baseurl.replace('{x}',str(int(x))).replace('{y}',str(int(y))).replace('{z}',str(int(zoom)))
+    def url(baseurl, x, y, zoom):
+        return baseurl.replace('{x}', str(int(x))).replace('{y}', str(int(y))).replace('{z}', str(int(zoom)))
 
     # Cycle on all tiles and compose the overall image
     for x in range(nx):
@@ -429,24 +431,24 @@ def toImage(m):
         for y in range(ny):
             yt = ytile1 + y
             ypos = y*256
-            for baseurl,opacity in zip(baseUrls,opacities):
-                image = Image.open(requests.get(url(baseurl,xt,yt,zoom), stream=True).raw)
+            for baseurl, opacity in zip(baseUrls, opacities):
+                image = Image.open(requests.get(url(baseurl, xt, yt, zoom), stream=True).raw)
                 image = image.convert('RGBA')
-                
+
                 if opacity < 1.0:
                     # Split image in 4 channels
-                    (r,g,b,a) = image.split()
-                    
+                    (r, g, b, a) = image.split()
+
                     # Change the alpha channel
                     # See https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.eval
                     a = Image.eval(a, lambda px: opacity*px)
-                    
+
                     # Merge 4 channels
-                    image = Image.merge('RGBA',(r,g,b,a))
-                    
+                    image = Image.merge('RGBA', (r, g, b, a))
+
                 # Transparent paste!!!
                 # See https://stackoverflow.com/questions/5324647/how-to-merge-a-transparent-png-image-with-another-image-using-pil
-                imageTotal.paste(image, (xpos,ypos), mask=image)
+                imageTotal.paste(image, (xpos, ypos), mask=image)
 
     # Crop the image
     area_crop = (dx1, dy1, w-dx2, h-dy2)

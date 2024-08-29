@@ -51,7 +51,7 @@ class template3panels(page.page):
     
     # Initialization
     def __init__(self, output, onclose=None, **kwargs):
-        super().__init__('Demo', 'Geospatial browse page with left, bottom and right panels', output, onclose=onclose, copyrighttext='European Commission - Joint Research Centre')
+        super().__init__('Demo', 'Geospatial page with left, bottom and right panels', output, onclose=onclose, copyrighttext='European Commission - Joint Research Centre')
 
    
     #################################################################################################################################################
@@ -66,12 +66,12 @@ class template3panels(page.page):
         self.rightWidth   = RIGHT_WIDTH
         
         # Cards for the panels
-        st = 'border-radius: 0px; border-color: %s; border-width: 1px;'%settings.color_first
+        st = 'border-radius: 0px; border-color: %s; border-width: 1px; overflow: hidden;'%settings.color_first
         self.map_width  = 'calc(100vw - %dpx)'%(self.leftWidth + self.rightWidth)
         self.map_height = 'calc(%s - %dpx)'%(self.height,self.bottomHeight)
         self.cardLeft   = v.Card(flat=True, style_=st, outlined=True, width=self.leftWidth, min_width=self.leftWidth, max_width=self.leftWidth, height=self.height)
-        self.cardBottom = v.Card(flat=True, style_=st + ' border-left-width: 0px; border-right-width: 0px;', outlined=True, width=self.map_width, height=self.bottomHeight, min_height=self.bottomHeight)
-        self.cardRight  = v.Card(flat=True, style_=st, outlined=True, width=self.rightWidth, min_width=self.rightWidth, max_width=self.rightWidth, height=self.height)
+        self.cardBottom = v.Card(flat=True, style_=st + ' border-left-width: 0px; border-top-width: 0px;', outlined=True, width=self.map_width, height=self.bottomHeight, min_height=self.bottomHeight)
+        self.cardRight  = v.Card(flat=True, style_=st + ' border-left-width: 0px;', outlined=True, width=self.rightWidth, min_width=self.rightWidth, max_width=self.rightWidth, height=self.height)
         self.cardMap    = v.Card(flat=True, style_=st + ' border-left-width: 0px;', outlined=True, width=self.map_width, min_width=self.map_width, max_width=self.map_width, height=self.map_height)
         
         # DynamicButtons to open/close the left and bottom panels
@@ -132,7 +132,7 @@ class template3panels(page.page):
         map_width  = 'calc(100vw - %dpx)'%(self.leftWidth+self.rightWidth)
         map_height = 'calc(%s - %fpx)'%(self.height,self.bottomHeight+1.5)
         self.map = ipyleaflet.Map(max_zoom=21, center=self.center, zoom=self.zoom, scroll_wheel_zoom=True, 
-                                  basemap=mapUtils.EmptyBasemap(), attribution_control=False, layout=Layout(width=map_width, height=map_height))
+                                  basemap=mapUtils.EmptyBasemap(), attribution_control=False, layout=Layout(width=map_width, height=map_height, margin='0px 0px 0px 0px'))
         
         mapUtils.addLayer(self.map, mapUtils.OSM_EC(),      LAYERNAME_BACKGROUND)
         mapUtils.addLayer(self.map, mapUtils.CartoLabels(), LAYERNAME_LABELS)

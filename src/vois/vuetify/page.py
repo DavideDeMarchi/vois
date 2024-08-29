@@ -248,10 +248,13 @@ class page():
         
     # Close the dialog
     def close(self):
-        if not self.dlg is None:
-            self.dlg.close()
-            if not self.onclose is None:
-                self.onclose()
+        try:
+            if not self.dlg is None:
+                self.dlg.close()
+                if not self.onclose is None:
+                    self.onclose()
+        except:
+            pass
         
     
     # Quick open and close of the page (to be called when the titleheight or the footerheight is changed)
