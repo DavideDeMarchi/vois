@@ -291,13 +291,8 @@ class toggle():
     def dark(self, flag):
         self._dark = flag
         
-        iconcolor = 'black'
-        if self._dark:
-            iconcolor = 'white'
-
         for b in self.buttons:
-            b.b.dark = self._dark
-            b.b.icon_color = iconcolor
+            b.dark = self._dark
                 
                 
     # Manage onchange event
