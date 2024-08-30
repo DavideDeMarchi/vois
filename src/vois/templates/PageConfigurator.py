@@ -23,7 +23,8 @@ from ipywidgets import widgets
 import ipyvuetify as v
 
 # Vois imports
-from vois.vuetify import settings, tooltip, toggle, ColorPicker
+from vois import colors
+from vois.vuetify import settings, toggle, ColorPicker
 from vois.templates import template1panel, template2panels, template3panels
 
 
@@ -62,33 +63,34 @@ class PageConfigurator(v.Html):
         self.card = v.Card(flat=True, width=LEFT_WIDTH, min_width=LEFT_WIDTH, max_width=LEFT_WIDTH, height='200px', class_='pa-2 pt-4 ma-0')
 
         # Widgets
-        labelwidth  = 110
-        togglewidth = 50
-        paddingrow  = 1
+        self.labelwidth   = 110
+        self.togglewidth  = 50
+        self.paddingrow   = 1
+        self.biglabelsize = 17
         
-        self.panelsLabel  = label('Page format: ', size=17, weight=500, width=labelwidth)
+        self.panelsLabel  = label('Page format: ', size=self.biglabelsize, weight=500, width=self.labelwidth)
         self.togglePanels = toggle.toggle(0,
                                           ['1', '2', '3'],
                                           tooltips=['Page with 1 left panel', 'Page with 2 panels: left and bottom', 'Page with 3 panels: left, bottom and right'],
-                                          dark=True, onchange=self.onSelectedTemplate, row=True, width=togglewidth, justify='start', paddingrow=paddingrow, tile=True)
+                                          dark=True, onchange=self.onSelectedTemplate, row=True, width=self.togglewidth, justify='start', paddingrow=self.paddingrow, tile=True)
 
         
         self.titlecolor  = ColorPicker(color=settings.color_first,  width=80, height=30, rounded=False, on_change=self.titlecolorChange,  offset_x=True, offset_y=False)        
         self.footercolor = ColorPicker(color=settings.color_second, width=80, height=30, rounded=False, on_change=self.footercolorChange, offset_x=True, offset_y=False)        
         
-        self.titledark = toggle.toggle(0, ['', '', ''], icons=['mdi-file-word-box-outline', 'mdi-file-word-box', 'mdi-auto-fix'], iconscolor='white',
+        self.titledark = toggle.toggle(0, ['', '', ''], icons=['mdi-file-word-box-outline', 'mdi-file-word-box', 'mdi-auto-fix'], dark=True,
                                        tooltips=['Display text in white color on the title bar', 'Display text in black color on the title bar', 'Automatically select text color for the title bar'],
-                                       onchange=self.titledarkChange, row=True, width=togglewidth, justify='start', paddingrow=paddingrow, tile=True)
+                                       onchange=self.titledarkChange, row=True, width=self.togglewidth, justify='start', paddingrow=self.paddingrow, tile=True)
         
         self.card.children = [widgets.VBox([
                                 widgets.HBox([self.panelsLabel, self.togglePanels.draw()]),
                                 self.spacerY,
                                 self.spacerY,
-                                widgets.HBox([label('Title bar color:',  color='black', width=labelwidth), self.titlecolor]),
+                                widgets.HBox([label('Title bar color:',  color='black', width=self.labelwidth), self.titlecolor]),
                                 self.spacerY,
-                                widgets.HBox([label('Footer bar color:', color='black', width=labelwidth), self.footercolor]),
+                                widgets.HBox([label('Footer bar color:', color='black', width=self.labelwidth), self.footercolor]),
                                 self.spacerY,
-                                widgets.HBox([label('Title bar text:',   color='black', width=labelwidth), self.titledark.draw()]),
+                                widgets.HBox([label('Title bar text:',   color='black', width=self.labelwidth), self.titledark.draw()]),
                                 ])
                              ]
         
@@ -154,10 +156,13 @@ class PageConfigurator(v.Html):
         self.page.titlecolor = color
         
         # widgets color
-        self.togglePanels.colorselected = color
+        self.page.toggleBasemap.colorselected = color
+        self.togglePanels.colorselected       = color
+        self.titledark.colorselected          = color
+        self.titledarkChange(self.titledark.value)
                 
         # labels color
-        labelchange(self.panelsLabel, size=17, weight=500, color=color)
+        labelchange(self.panelsLabel, size=self.biglabelsize, weight=500, color=color, width=self.labelwidth)
         
         
     # Change of the footercolor property
@@ -168,19 +173,40 @@ class PageConfigurator(v.Html):
         self.page.footercolor = color
 
         # widgets color
-        self.togglePanels.colorunselected = color
+        self.page.toggleBasemap.colorunselected = color
+        self.togglePanels.colorunselected       = color
+        self.titledark.colorunselected          = color
         
         
     # Change of the titledark property
     def titledarkChange(self, index):
+
         # White text color
         if index == 0:
-            self.page.titledark = True
+            self.page.titledark          = True
+            self.togglePanels.dark       = True
+            self.titledark.dark          = True
+            self.page.toggleBasemap.dark = True
+        
         # Black text color
         elif index == 1:
-            self.page.titledark = False
+            self.page.titledark          = False
+            self.togglePanels.dark       = False
+            self.titledark.dark          = False
+            self.page.toggleBasemap.dark = False
+        
         # Auto color depending on title bar color
         else:
-            self.page.titledark = True
-        
+            color = self.titlecolor.color
+            colortuple = colors.string2rgb(color)
+            if colors.isColorDark(colortuple):
+                self.page.titledark          = True
+                self.togglePanels.dark       = True
+                self.titledark.dark          = True
+                self.page.toggleBasemap.dark = True
+            else:
+                self.page.titledark          = False
+                self.togglePanels.dark       = False
+                self.titledark.dark          = False
+                self.page.toggleBasemap.dark = False
         
