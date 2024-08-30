@@ -18,12 +18,27 @@
 # See the Licence for the specific language governing permissions and
 # limitations under the Licence.
 import base64
-import PIL
 from PIL import Image, ImageDraw
 from io import BytesIO
 import math
 import random
 import numpy as np
+import colorsys
+
+
+# Return the complementary color of an (r,g,b) tuple
+def complementary(rgb):
+    [r,g,b] = rgb
+    return (255-r,255-b,255-g)
+
+
+# Return a lighter color of an (r,g,b) tuple
+def lighter(rgb, factor=0.25):
+    [r,g,b] = rgb
+    hlsval = list(colorsys.rgb_to_hls(r/255.0,g/255.0,b/255.0))
+    hlsval[1] *= (1.0 + factor)
+    res = colorsys.hls_to_rgb(hlsval[0], hlsval[1], hlsval[2])
+    return (int(res[0]*255), int(res[1]*255), int(res[2]*255))
 
 
 # Returns True if the (r,g,b) color id dark

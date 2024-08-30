@@ -78,19 +78,29 @@ class PageConfigurator(v.Html):
         self.titlecolor  = ColorPicker(color=settings.color_first,  width=80, height=30, rounded=False, on_change=self.titlecolorChange,  offset_x=True, offset_y=False)        
         self.footercolor = ColorPicker(color=settings.color_second, width=80, height=30, rounded=False, on_change=self.footercolorChange, offset_x=True, offset_y=False)        
         
-        self.titledark = toggle.toggle(0, ['', '', ''], icons=['mdi-file-word-box-outline', 'mdi-file-word-box', 'mdi-auto-fix'], dark=True,
+        self.titledark = toggle.toggle(0, ['', '', ''], dark=True, icons=['mdi-alpha-w-box-outline', 'mdi-alpha-b-box-outline', 'mdi-auto-fix'],
                                        tooltips=['Display text in white color on the title bar', 'Display text in black color on the title bar', 'Automatically select text color for the title bar'],
                                        onchange=self.titledarkChange, row=True, width=self.togglewidth, justify='start', paddingrow=self.paddingrow, tile=True)
+
+        self.footerlinked = toggle.toggle(0, ['', '', ''], dark=True, icons=['mdi-link-off', 'mdi-link-variant', 'mdi-link-variant-minus'],
+                                          tooltips=['Free selection of footer color', 'Footer color is the complementary of the title color', 'Footer color is the monochrome complementary of the title color'],
+                                          onchange=self.footerlinkedChange, row=True, width=self.togglewidth-16, height=30, justify='start', paddingrow=self.paddingrow, tile=True)
+        
+        self.footerdark = toggle.toggle(1, ['', '', ''], dark=True, icons=['mdi-alpha-w-box-outline', 'mdi-alpha-b-box-outline', 'mdi-auto-fix'],
+                                        tooltips=['Display text in white color on the footer bar', 'Display text in black color on the footer bar', 'Automatically select text color for the footer bar'],
+                                        onchange=self.footerdarkChange, row=True, width=self.togglewidth, justify='start', paddingrow=self.paddingrow, tile=True)
         
         self.card.children = [widgets.VBox([
                                 widgets.HBox([self.panelsLabel, self.togglePanels.draw()]),
                                 self.spacerY,
                                 self.spacerY,
-                                widgets.HBox([label('Title bar color:',  color='black', width=self.labelwidth), self.titlecolor]),
+                                widgets.HBox([label('Title bar color:',  color='black', width=self.labelwidth), self.titlecolor, self.spacerX, label('Link:', color='black', width=30), self.footerlinked.draw()]),
                                 self.spacerY,
                                 widgets.HBox([label('Footer bar color:', color='black', width=self.labelwidth), self.footercolor]),
                                 self.spacerY,
                                 widgets.HBox([label('Title bar text:',   color='black', width=self.labelwidth), self.titledark.draw()]),
+                                self.spacerY,
+                                widgets.HBox([label('Footer bar text:',  color='black', width=self.labelwidth), self.footerdark.draw()]),
                                 ])
                              ]
         
@@ -159,10 +169,25 @@ class PageConfigurator(v.Html):
         self.page.toggleBasemap.colorselected = color
         self.togglePanels.colorselected       = color
         self.titledark.colorselected          = color
+        self.footerdark.colorselected         = color
+        self.footerlinked.colorselected       = color
         self.titledarkChange(self.titledark.value)
                 
         # labels color
         labelchange(self.panelsLabel, size=self.biglabelsize, weight=500, color=color, width=self.labelwidth)
+        
+        # Auto calculate footer color
+        if self.footerlinked.index == 1:     # complementary
+            color = self.titlecolor.color
+            colortuple = colors.string2rgb(color)
+            complementary = colors.complementary(colortuple)
+            self.footercolor.color = colors.rgb2hex(complementary)
+
+        elif self.footerlinked.index == 2:   # monochrome lighter
+            color = self.titlecolor.color
+            colortuple = colors.string2rgb(color)
+            monochrome = colors.lighter(colortuple, 0.6)
+            self.footercolor.color = colors.rgb2hex(monochrome)
         
         
     # Change of the footercolor property
@@ -176,7 +201,10 @@ class PageConfigurator(v.Html):
         self.page.toggleBasemap.colorunselected = color
         self.togglePanels.colorunselected       = color
         self.titledark.colorunselected          = color
-        
+        self.footerdark.colorunselected         = color
+        self.footerlinked.colorunselected       = color
+        self.footerdarkChange(self.footerdark.value)
+                
         
     # Change of the titledark property
     def titledarkChange(self, index):
@@ -186,6 +214,8 @@ class PageConfigurator(v.Html):
             self.page.titledark          = True
             self.togglePanels.dark       = True
             self.titledark.dark          = True
+            self.footerdark.dark         = True
+            self.footerlinked.dark       = True
             self.page.toggleBasemap.dark = True
         
         # Black text color
@@ -193,6 +223,8 @@ class PageConfigurator(v.Html):
             self.page.titledark          = False
             self.togglePanels.dark       = False
             self.titledark.dark          = False
+            self.footerdark.dark         = False
+            self.footerlinked.dark       = False
             self.page.toggleBasemap.dark = False
         
         # Auto color depending on title bar color
@@ -203,10 +235,40 @@ class PageConfigurator(v.Html):
                 self.page.titledark          = True
                 self.togglePanels.dark       = True
                 self.titledark.dark          = True
+                self.footerdark.dark         = True
+                self.footerlinked.dark       = True
                 self.page.toggleBasemap.dark = True
             else:
                 self.page.titledark          = False
                 self.togglePanels.dark       = False
                 self.titledark.dark          = False
+                self.footerdark.dark         = False
+                self.footerlinked.dark       = False
                 self.page.toggleBasemap.dark = False
+
+                
+    # Change of the footerdark property
+    def footerdarkChange(self, index):
+
+        # White text color
+        if index == 0:
+            self.page.footerdark = True
         
+        # Black text color
+        elif index == 1:
+            self.page.footerdark = False
+        
+        # Auto color depending on title bar color
+        else:
+            color = self.footercolor.color
+            colortuple = colors.string2rgb(color)
+            if colors.isColorDark(colortuple):
+                self.page.footerdark = True
+            else:
+                self.page.footerdark = False
+                
+                
+    # Change of the footerlinked toggle
+    def footerlinkedChange(self, index):
+        self.footercolor.disabled = index > 0
+        self.titlecolorChange()
