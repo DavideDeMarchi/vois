@@ -25,7 +25,7 @@ from ipyleaflet import SearchControl, ScaleControl, FullScreenControl, WidgetCon
 import ipyvuetify as v
 
 # Vois imports
-from vois.vuetify import settings, toggle, page, iconButton, card
+from vois.vuetify import settings, toggle, page
 
 # Local imports
 import mapUtils

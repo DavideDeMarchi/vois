@@ -23,13 +23,27 @@ from ipywidgets import widgets
 import ipyvuetify as v
 
 # Vois imports
-from vois.vuetify import settings, toggle, ColorPicker
+from vois.vuetify import settings, tooltip, toggle, ColorPicker
 from vois.templates import template1panel, template2panels, template3panels
 
 
 LEFT_WIDTH = 400   # Width  in pixels of the left bar
 
 
+# Change style of a label
+def labelchange(lab, size=14, weight=400, color=settings.color_first, width=None):
+    if width is None:
+        lab.style_ = 'font-size: %dpx; font-weight: %d; color: %s;'%(size,weight,color)
+    else:
+        lab.style_ = 'font-size: %dpx; font-weight: %d; color: %s; width: %dpx'%(size,weight,color,int(width))
+    
+# Creation of a label
+def label(text, class_='pa-0 ma-0 mt-1 mr-3', size=14, weight=400, color=settings.color_first, width=None):
+    lab = v.Html(tag='div', children=[text], class_=class_)
+    labelchange(lab, size, weight, color, width)
+    return lab
+
+    
 #####################################################################################################################################################
 # Interactive page configurator widget
 #####################################################################################################################################################
@@ -41,26 +55,32 @@ class PageConfigurator(v.Html):
         super().__init__(**kwargs)
 
         self.output = output
-        #self.spacerX = v.Html(tag='div', style_='width: 10px; height:  0px;')
-        #self.spacerY = v.Html(tag='div', style_='width:  0px; height: 10px;')
-        #self.spacer  = v.Html(tag='div', style_='width: 10px; height: 10px;')
+        self.spacerX = v.Html(tag='div', style_='width: 10px; height:  0px;')
+        self.spacerY = v.Html(tag='div', style_='width:  0px; height: 10px;')
+        self.spacer  = v.Html(tag='div', style_='width: 10px; height: 10px;')
 
         self.card = v.Card(flat=True, width=LEFT_WIDTH, min_width=LEFT_WIDTH, max_width=LEFT_WIDTH, height='200px', class_='pa-2 pt-4 ma-0')
 
         # Widgets
-        self.panelsLabel  = v.Html(tag='div', children=['Page format: '], class_='pa-0 ma-0 mt-1 mr-3', style_='font-size: 17px; font-weight: 500; color: %s;'%settings.color_first)
+        labelwidth = 110
+        self.panelsLabel  = label('Page format: ', size=17, weight=500, width=labelwidth)
         self.togglePanels = toggle.toggle(0,
                                           ['1', '2', '3'],
                                           tooltips=['Page with 1 left panel', 'Page with 2 panels: left and bottom', 'Page with 3 panels: left, bottom and right'],
                                           dark=True, onchange=self.onSelectedTemplate, row=True, width=42, justify='start', paddingrow=1, tile=True)
 
-        self.titlecolor  = ColorPicker(color=settings.color_first,  width=30, height=30, rounded=False, on_change=self.titlecolorChange,  offset_x=True, offset_y=False)        
-        self.footercolor = ColorPicker(color=settings.color_second, width=30, height=30, rounded=False, on_change=self.footercolorChange, offset_x=True, offset_y=False)        
+        
+        self.titlecolor  = ColorPicker(color=settings.color_first,  width=80, height=30, rounded=False, on_change=self.titlecolorChange,  offset_x=True, offset_y=False)        
+        self.footercolor = ColorPicker(color=settings.color_second, width=80, height=30, rounded=False, on_change=self.footercolorChange, offset_x=True, offset_y=False)        
         
         self.card.children = [widgets.VBox([
                                 widgets.HBox([self.panelsLabel, self.togglePanels.draw()]),
-                                self.titlecolor,
-                                self.footercolor,
+                                self.spacerY,
+                                self.spacerY,
+                                widgets.HBox([label('Title bar color:',  color='black', width=labelwidth), self.titlecolor]),
+                                self.spacerY,
+                                widgets.HBox([label('Footer bar color:', color='black', width=labelwidth), self.footercolor]),
+                                self.spacerY,
                                 ])
                              ]
         
@@ -129,7 +149,7 @@ class PageConfigurator(v.Html):
         self.togglePanels.colorselected = color
                 
         # labels color
-        self.panelsLabel.style_ = 'font-size: 17px; font-weight: 500; color: %s;'%color
+        labelchange(self.panelsLabel, size=17, weight=500, color=color)
         
         
     # Change of the footercolor property
