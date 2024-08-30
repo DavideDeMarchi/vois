@@ -300,7 +300,7 @@ class page():
         
     @appname.setter
     def appname(self, name):
-        self._appname = name
+        self._appname = str(name)
         self.appbar.children = self._create_appbar_children()
         
         
@@ -326,7 +326,7 @@ class page():
         
     @title.setter
     def title(self, title):
-        self._title = title
+        self._title = str(title)
         self.appbar.children = self._create_appbar_children()
         
         

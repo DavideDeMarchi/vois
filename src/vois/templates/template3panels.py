@@ -137,7 +137,10 @@ class template3panels(page.page):
         st = 'border-radius: 0px; border-color: %s; border-width: 1px; overflow: hidden;'%color
         self.cardLeft.style_   = st
         self.cardBottom.style_ = st + ' border-left-width: 0px; border-top-width: 0px;'
-        self.cardRight.style_  = st + ' border-left-width: 0px;'
+        if self.leftWidth == 0:
+            self.cardRight.style_  = st + ' border-left-width: 1px;'
+        else:
+            self.cardRight.style_  = st + ' border-left-width: 0px;'
         self.cardMap.style_    = st + ' border-left-width: 0px;'
         
         # Set the color of the dynamicButton
@@ -342,6 +345,8 @@ class template3panels(page.page):
         self.cardMap.max_width = self.map_width
         self.map.layout.width  = self.map_width
         
+        self.titlecolor = self._titlecolor  # Set left border to right panel
+        
 
     # Open the left panel
     def leftOpen(self):
@@ -356,6 +361,8 @@ class template3panels(page.page):
         self.cardMap.min_width = self.map_width
         self.cardMap.max_width = self.map_width
         self.map.layout.width  = self.map_width
+        
+        self.titlecolor = self._titlecolor  # Remove left border to right panel
         
 
     # Close the bottom panel

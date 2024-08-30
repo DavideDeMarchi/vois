@@ -52,6 +52,8 @@ class PageConfigurator(v.Html):
 
         super().__init__(**kwargs)
 
+        self.debug = widgets.Output()
+        
         self.output = output
         self.spacerX = v.Html(tag='div', style_='width: 10px; height:  0px;')
         self.spacerY = v.Html(tag='div', style_='width:  0px; height: 10px;')
@@ -65,6 +67,15 @@ class PageConfigurator(v.Html):
         self.paddingrow   = 1
         self.biglabelsize = 17
         
+        self.appname     = v.TextField(label='Application name:', autofocus=True,  v_model=None, dense=False, color=settings.color_first, clearable=True, class_="pa-0 ma-0 mt-3")
+        self.pagetitle   = v.TextField(label='Page title:',       autofocus=False, v_model=None, dense=False, color=settings.color_first, clearable=True, class_="pa-0 ma-0 mt-3")
+        self.cardappname = v.Card(flat=True, width=template1panel.LEFT_WIDTH-80, max_width=template1panel.LEFT_WIDTH-80, children=[self.appname])
+        self.appname.on_event(  'change',      self.appnameChange)
+        self.appname.on_event(  'click:clear', self.appnameClear)
+        self.pagetitle.on_event('change',      self.pagetitleChange)
+        self.pagetitle.on_event('click:clear', self.pagetitleClear)
+        
+        
         self.panelsLabel  = label('Page format: ', size=self.biglabelsize, weight=500, width=self.labelwidth)
         self.togglePanels = toggle.toggle(0,
                                           ['1', '2', '3'],
@@ -75,7 +86,7 @@ class PageConfigurator(v.Html):
         self.titlecolor  = ColorPicker(color=settings.color_first,  width=80, height=30, rounded=False, on_change=self.titlecolorChange,  offset_x=True, offset_y=False)        
         self.footercolor = ColorPicker(color=settings.color_second, width=80, height=30, rounded=False, on_change=self.footercolorChange, offset_x=True, offset_y=False)        
         
-        self.footerlinked = toggle.toggle(0, ['', '', ''], dark=True, icons=['mdi-link-off', 'mdi-link-variant', 'mdi-link-variant-minus'],
+        self.footerlinked = toggle.toggle(0, ['', '', ''], dark=True, icons=['mdi-link-off', 'mdi-link-variant', 'mdi-link-variant-minus'], outlined=False,
                                           tooltips=['Free selection of footer color', 'Footer color is the complementary of the title color', 'Footer color is the monochrome complementary of the title color'],
                                           onchange=self.footerlinkedChange, row=True, width=self.togglewidth-16, height=30, justify='start', paddingrow=self.paddingrow, tile=True)
         
@@ -87,13 +98,16 @@ class PageConfigurator(v.Html):
                                         tooltips=['Display text in white color on the footer bar', 'Display text in black color on the footer bar', 'Automatically select text color for the footer bar'],
                                         onchange=self.footerdarkChange, row=True, width=self.togglewidth, justify='start', paddingrow=self.paddingrow, tile=True)
         
-        self.titleheight = sliderFloat.sliderFloat(54.0, text='Title bar height:', minvalue=20.0, maxvalue=80.0, maxint=60, showpercentage=False, decimals=0,
+        self.titleheight = sliderFloat.sliderFloat(54.0, text='Title bar height:', minvalue=20.0, maxvalue=180.0, maxint=160, showpercentage=False, decimals=0,
                                                    labelwidth=self.labelwidth-10, sliderwidth=150, resetbutton=True, showtooltip=True, onchange=self.titleheightChange)
         
-        self.footerheight = sliderFloat.sliderFloat(30.0, text='Footer bar height:', minvalue=10.0, maxvalue=60.0, maxint=50, showpercentage=False, decimals=0,
+        self.footerheight = sliderFloat.sliderFloat(30.0, text='Footer bar height:', minvalue=16.0, maxvalue=80.0, maxint=64, showpercentage=False, decimals=0,
                                                     labelwidth=self.labelwidth-10, sliderwidth=150, resetbutton=True, showtooltip=True, onchange=self.footerheightChange)
         
         self.card.children = [widgets.VBox([
+                                self.cardappname,
+                                self.pagetitle,
+                                self.spacerY,
                                 widgets.HBox([self.panelsLabel, self.togglePanels.draw()]),
                                 self.spacerY,
                                 self.spacerY,
@@ -118,6 +132,13 @@ class PageConfigurator(v.Html):
         # Initial page
         self.page = None
         self.onSelectedTemplate(0)
+        
+        self.page.appname = 'My app'
+        self.page.title   = 'My page'
+        
+        # Initialise widgets
+        self.appname.v_model   = self.page.appname
+        self.pagetitle.v_model = self.page.title
 
     
     # Forced close
@@ -173,6 +194,8 @@ class PageConfigurator(v.Html):
         self.page.titlecolor = color
         
         # widgets color
+        self.appname.color                    = color
+        self.pagetitle.color                  = color
         self.page.toggleBasemap.colorselected = color
         self.togglePanels.colorselected       = color
         self.titledark.colorselected          = color
@@ -195,7 +218,7 @@ class PageConfigurator(v.Html):
         elif self.footerlinked.index == 2:   # monochrome lighter
             color = self.titlecolor.color
             colortuple = colors.string2rgb(color)
-            monochrome = colors.lighter(colortuple, 0.6)
+            monochrome = colors.lighter(colortuple, 0.3333)
             self.footercolor.color = colors.rgb2hex(monochrome)
         
         
@@ -286,10 +309,28 @@ class PageConfigurator(v.Html):
     # Change of the title bar height
     def titleheightChange(self, height):
         self.page.titleheight = int(height)
-        self.page.refresh()
     
     
     # Change of the footer bar height
     def footerheightChange(self, height):
         self.page.footerheight = int(height)
-        self.page.refresh()
+        
+        
+    # Change application name
+    def appnameChange(self, *args):
+        if self.appname.v_model is None: name = ''
+        else:                            name = self.appname.v_model
+        self.page.appname = name
+
+    def appnameClear(self, *args):
+        self.page.appname = ''
+            
+    # Change page title
+    def pagetitleChange(self, *args):
+        if self.pagetitle.v_model is None: name = ''
+        else:                              name = self.pagetitle.v_model
+        self.page.title = name
+
+    def pagetitleClear(self, *args):
+        self.page.title = ''
+            

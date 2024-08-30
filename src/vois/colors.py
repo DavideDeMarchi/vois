@@ -37,6 +37,7 @@ def lighter(rgb, factor=0.25):
     [r,g,b] = rgb
     hlsval = list(colorsys.rgb_to_hls(r/255.0,g/255.0,b/255.0))
     hlsval[1] *= (1.0 + factor)
+    hlsval[1] = min(1.0, max(0.0, hlsval[1]))
     res = colorsys.hls_to_rgb(hlsval[0], hlsval[1], hlsval[2])
     return (int(res[0]*255), int(res[1]*255), int(res[2]*255))
 
