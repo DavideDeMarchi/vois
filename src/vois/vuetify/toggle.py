@@ -45,8 +45,6 @@ class toggle():
         Tooltip text for the options (default is the empty list)
     icons : list of strings, optional
         Icons for the options (default is the empty list)
-    iconscolor : str, optional
-        Color used for the icons (default is 'black')
     onchange : function, optional
         Python function to call when the user clicks on one of the buttons. The function will receive a parameter of type int containing the index of the clicked button, from 0 to len(labels)-1
     row : bool, optional
@@ -66,7 +64,7 @@ class toggle():
     colorunselected : str, optional
         Color used for the buttons when they are not selected (default is settings.color_second)
     dark : bool, optional
-        Flag that controls the color of the text in foreground (if True, the text will be displayed in white, elsewhere in black)
+        Flag that controls the color of the text and icons in foreground (if True, the text and icons will be displayed in white, otherwise in black)
     paddingrow : int, optional
         Horizontal padding among toggle buttons (1 unit means 4 pixels). Default is 1
     paddingcol : int, optional
@@ -111,7 +109,7 @@ class toggle():
    """
 
     # Initialization
-    def __init__(self, index, labels, tooltips=[], icons=[], iconscolor='black', onchange=None,
+    def __init__(self, index, labels, tooltips=[], icons=[], onchange=None,
                  row=True, width=150, height=36, justify='space-between', rounded=settings.button_rounded, outlined=False,
                  colorselected=settings.color_first, colorunselected=settings.color_second, dark=settings.dark_mode,
                  paddingrow=1, paddingcol=2, tile=False, small=False, xsmall=False, large=False, xlarge=False):
@@ -120,7 +118,6 @@ class toggle():
         self.labels     = labels
         self.tooltips   = tooltips
         self.icons      = icons
-        self.iconscolor = iconscolor
         self.onchange   = onchange
         self.row        = row
         self.width      = width
@@ -130,7 +127,7 @@ class toggle():
         self.outlined   = outlined
         self._colorselected   = colorselected
         self._colorunselected = colorunselected
-        self.dark             = dark
+        self._dark            = dark
         self.paddingrow       = paddingrow
         self.paddingcol       = paddingcol
         self.tile   = tile
@@ -145,6 +142,10 @@ class toggle():
     # Create the toggle buttons
     def __createButtons(self):
 
+        iconcolor = 'black'
+        if self._dark:
+            iconcolor = 'white'
+                
         self.buttons = []
         i = 0
         for label in self.labels:
@@ -156,11 +157,12 @@ class toggle():
             if i < len(self.icons):
                 icon = self.icons[i]
                 
+                
             if self.row: c = "pa-0 ma-0 mr-%d"%self.paddingrow
             else:        c = "pa-0 ma-0 mb-%d"%self.paddingcol
                     
-            b = Button(label, dark=self.dark, class_=c, small=self.small, xsmall=self.xsmall, large=self.large, xlarge=self.xlarge,
-                       icon=icon, iconColor=self.iconscolor,
+            b = Button(label, dark=self._dark, class_=c, small=self.small, xsmall=self.xsmall, large=self.large, xlarge=self.xlarge,
+                       icon=icon, icon_color=iconcolor,
                        onclick=self.__internal_onchange, argument=i, width=self.width, height=self.height, tooltip=tooltip, selected=(i==self.index),
                        rounded=self.rounded, tile=self.tile, outlined=self.outlined, colorselected=self._colorselected, colorunselected=self._colorunselected)
             self.buttons.append(b)
@@ -261,6 +263,41 @@ class toggle():
             b.color_unselected = color
             if not b._selected:
                 b.b.color = color
+                
+                
+    # Get/Set the dark mode
+    @property
+    def dark(self):
+        """
+        Get/Set the dark mode of the buttons.
+        
+        Returns
+        --------
+        flag : bool
+            If True the text and the icons are displayed in white color, otherwise in black color
+
+        Example
+        -------
+        Programmatically change the dark mode::
+            
+            t.dark = Fals
+            print(t.dark)
+        
+        """
+        return self._dark
+   
+    
+    @dark.setter
+    def dark(self, flag):
+        self._dark = flag
+        
+        iconcolor = 'black'
+        if self._dark:
+            iconcolor = 'white'
+
+        for b in self.buttons:
+            b.b.dark = self._dark
+            b.b.icon_color = iconcolor
                 
                 
     # Manage onchange event

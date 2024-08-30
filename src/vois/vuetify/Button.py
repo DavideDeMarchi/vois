@@ -203,6 +203,7 @@ class Button(v.Html):
         self.icon_color = icon_color
         self.color_selected = color_selected
         self.color_unselected = color_unselected
+        self._dark = dark
 
         self._icon = icon
 
@@ -234,7 +235,7 @@ class Button(v.Html):
                 else:
                     childs = [self._text, icn]
 
-        self.b = v.Btn(color=color, dark=dark, icon=only_text, depressed=True, outlined=outlined, large=large,
+        self.b = v.Btn(color=color, dark=self._dark, icon=only_text, depressed=True, outlined=outlined, large=large,
                        x_large=x_large, small=small, x_small=x_small,
                        disabled=disabled, width=width, min_width=width, height=height, min_height=height, href=href,
                        target=target, tile=tile,
@@ -335,15 +336,15 @@ class Button(v.Html):
 
         Example
         -------
-        Creation of a button and programmatically change of its icon::
+        Creation of a button and programmatically change its icon::
                 
-                from vois.vuetify import settings, button
-                
-                b = Button('Test button', text_weight=450, width=150, height=46,
-                                  selected=True, rounded=True,
-                                  icon='mdi-menu-open', icon_color='black', icon_large=True)
-                display(b.draw())
-                b.setIcon('mdi-menu')
+            from vois.vuetify import settings, button
+            
+            b = Button('Test button', text_weight=450, width=150, height=46,
+                       selected=True, rounded=True,
+                       icon='mdi-menu-open', icon_color='black', icon_large=True)
+            display(b.draw())
+            b.setIcon('mdi-menu')
 
         """
         warnings.warn("This method is deprecate used instead button_obj.icon = 'your_icon_name'", DeprecationWarning,
@@ -361,15 +362,15 @@ class Button(v.Html):
 
         Example
         -------
-        Creation of a button and programmatically change of its icon::
+        Creation of a button and programmatically change its icon::
 
-                from vois.vuetify import settings, Button
+            from vois.vuetify import settings, Button
 
-                b = Button('Test button', text_weight=450, width=150, height=46,
-                                  selected=True, rounded=True,
-                                  icon='mdi-menu-open', icon_color='black', icon_large=True)
-                display(b)
-                b.icon = 'mdi-menu'
+            b = Button('Test button', text_weight=450, width=150, height=46,
+                       selected=True, rounded=True,
+                       icon='mdi-menu-open', icon_color='black', icon_large=True)
+            display(b)
+            b.icon = 'mdi-menu'
 
         """
         self._icon = icon_name
@@ -388,14 +389,14 @@ class Button(v.Html):
 
         Example
         -------
-        Creation of a button and programmatically change of its icon::
+        Creation of a button and programmatically change its text::
 
-                from vois.vuetify import settings, Button
+            from vois.vuetify import settings, Button
 
-                b = Button('Test button', text_weight=450, width=250, height=46,
-                                  selected=True, rounded=True)
-                display(b.draw())
-                b.setText('New button text')
+            b = Button('Test button', text_weight=450, width=250, height=46,
+                       selected=True, rounded=True)
+            display(b.draw())
+            b.setText('New button text')
 
         """
         warnings.warn("This method is deprecate used instead button_obj.text = 'your_new_text'", DeprecationWarning,
@@ -413,14 +414,14 @@ class Button(v.Html):
 
         Example
         -------
-        Creation of a button and programmatically change of its icon::
+        Creation of a button and programmatically change its text::
 
-                from vois.vuetify import settings, Button
+            from vois.vuetify import settings, Button
 
-                b = Button('Test button', text_weight=450, width=250, height=46,
-                                  selected=True, rounded=True)
-                display(b)
-                b.text = 'New button text'
+            b = Button('Test button', text_weight=450, width=250, height=46,
+                       selected=True, rounded=True)
+            display(b)
+            b.text = 'New button text'
 
         """
         tmp = self.b.children
@@ -428,3 +429,41 @@ class Button(v.Html):
         self.b.children = []
         self.b.children = tmp
         self._text = value
+
+    @property
+    def dark(self):
+        return self._dark
+
+    @dark.setter
+    def dark(self, flag):
+        """
+        Change the dark mode for the button
+
+        Example
+        -------
+        Creation of a button and programmatically change its dark mode::
+
+            from vois.vuetify import settings, Button
+
+            b = Button('Test button', text_weight=450, width=250, height=46,
+                       selected=True, rounded=True)
+            display(b)
+            b.dark = True
+
+        """
+        self._dark = flag
+        
+        self.icon_color = 'black'
+        if self._dark:
+            self.icon_color = 'white'
+        
+        self.b.dark = self._dark
+        
+        for item in self.b.children:
+            if type(item).__name__ == 'Icon':
+                newicon = v.Icon(class_="pa-0 ma-0 %s" % self.icon_distance, large=self.icon_large,
+                                 small=self.icon_small,
+                                 color=self.icon_color, children=[self._icon])
+                self.b.children = [newicon if x == item else x for x in self.b.children]
+                break
+        
