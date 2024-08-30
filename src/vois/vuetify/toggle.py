@@ -17,16 +17,13 @@
 # 
 # See the Licence for the specific language governing permissions and
 # limitations under the Licence.
-from IPython.display import display
 import ipyvuetify as v
 
 try:
     from . import settings
-    from . import tooltip
     # from . import Button
 except:
     import settings
-    import tooltip
     # import Button
 
 from vois.vuetify import Button
@@ -128,11 +125,11 @@ class toggle():
         self.justify  = justify
         self.rounded  = rounded
         self.outlined = outlined
-        self.colorselected   = colorselected
-        self.colorunselected = colorunselected
-        self.dark            = dark
-        self.paddingrow      = paddingrow
-        self.paddingcol      = paddingcol
+        self._colorselected   = colorselected
+        self._colorunselected = colorunselected
+        self.dark             = dark
+        self.paddingrow       = paddingrow
+        self.paddingcol       = paddingcol
         self.tile   = tile
         self.small  = small
         self.xsmall = xsmall
@@ -156,8 +153,8 @@ class toggle():
             else:        c = "pa-0 ma-0 mb-%d"%self.paddingcol
                     
             b = Button(label, dark=self.dark, class_=c, small=self.small, xsmall=self.xsmall, large=self.large, xlarge=self.xlarge,
-                              onclick=self.__internal_onchange, argument=i, width=self.width, height=self.height, tooltip=tooltip, selected=(i==self.index),
-                              rounded=self.rounded, tile=self.tile, outlined=self.outlined, colorselected=self.colorselected, colorunselected=self.colorunselected)
+                       onclick=self.__internal_onchange, argument=i, width=self.width, height=self.height, tooltip=tooltip, selected=(i==self.index),
+                       rounded=self.rounded, tile=self.tile, outlined=self.outlined, colorselected=self._colorselected, colorunselected=self._colorunselected)
             self.buttons.append(b)
             i += 1
 
@@ -198,6 +195,66 @@ class toggle():
                 self.onchange(self.index)
             
 
+    # Get/Set the color of the selected button
+    @property
+    def colorselected(self):
+        """
+        Get/Set the color of the selected button.
+        
+        Returns
+        --------
+        color : str
+            Color of the selected button
+
+        Example
+        -------
+        Programmatically change the color of the selected button::
+            
+            t.colorselected = '#ff0000'
+            print(t.colorselected)
+        
+        """
+        return self._colorselected
+   
+    
+    @colorselected.setter
+    def colorselected(self, color):
+        for b in self.buttons:
+            b.color_selected = color
+            if b._selected:
+                b.b.color = color
+                
+                
+    # Get/Set the color of the unselected button
+    @property
+    def colorunselected(self):
+        """
+        Get/Set the color of the unselected buttons.
+        
+        Returns
+        --------
+        color : str
+            Color of the unselected buttons
+
+        Example
+        -------
+        Programmatically change the color of the unselected buttons::
+            
+            t.colorunselected = '#ff0000'
+            print(t.colorunselected)
+        
+        """
+        return self._colorunselected
+   
+    
+    @colorunselected.setter
+    def colorunselected(self, color):
+        for b in self.buttons:
+            b.color_unselected = color
+            if not b._selected:
+                b.b.color = color
+                
+                
     # Manage onchange event
     def __internal_onchange(self, index):
         self.buttons[self.index].selected = False

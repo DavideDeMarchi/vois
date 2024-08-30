@@ -81,7 +81,7 @@ class PageConfigurator(v.Html):
     # Selection of 1, 2 or 3 panels template
     def onSelectedTemplate(self, index):
 
-        # Default state
+        # Default state (back button on the left and JEODPP logo as application logo
         statusdict = {
             'left_back'  : True,
             'logoappurl' : 'https://jeodpp.jrc.ec.europa.eu/services/shared/pngs/BDAP_Logo1024transparent.png'
@@ -126,10 +126,7 @@ class PageConfigurator(v.Html):
         self.page.titlecolor = color
         
         # widgets color
-        for b in self.togglePanels.buttons:
-            b.color_selected = color
-            if b._selected:
-                b.b.color = color
+        self.togglePanels.colorselected = color
                 
         # labels color
         self.panelsLabel.style_ = 'font-size: 17px; font-weight: 500; color: %s;'%color
@@ -143,8 +140,5 @@ class PageConfigurator(v.Html):
         self.page.footercolor = color
 
         # widgets color
-        for b in self.togglePanels.buttons:
-            b.color_unselected = color
-            if not b._selected:
-                b.b.color = color
+        self.togglePanels.colorunselected = color
         
