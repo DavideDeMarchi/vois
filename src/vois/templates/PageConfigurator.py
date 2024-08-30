@@ -65,7 +65,7 @@ class PageConfigurator(v.Html):
         self.labelwidth   = 110
         self.togglewidth  = 50
         self.paddingrow   = 1
-        self.biglabelsize = 17
+        self.biglabelsize = 15
         
         self.appname     = v.TextField(label='Application name:', autofocus=True,  v_model=None, dense=False, color=settings.color_first, clearable=True, class_="pa-0 ma-0 mt-3")
         self.pagetitle   = v.TextField(label='Page title:',       autofocus=False, v_model=None, dense=False, color=settings.color_first, clearable=True, class_="pa-0 ma-0 mt-3")
@@ -167,7 +167,7 @@ class PageConfigurator(v.Html):
             self.page = template2panels.template2panels(self.output)
         else:
             self.page = template3panels.template3panels(self.output)
-
+            
         self.page.customButtonAdd('mdi-delete', 'Click here to force page closing', self.on_force_close)
             
         # Create the page widgets and display the PageConfigurator in the left panel
@@ -176,6 +176,11 @@ class PageConfigurator(v.Html):
 
         # Set the state
         self.page.state = statusdict
+
+        self.page.toggleBasemap.dark            = self.page.titledark
+        self.page.toggleBasemap.colorselected   = self.page.titlecolor
+        self.page.toggleBasemap.colorunselected = self.page.footercolor
+        
 
         # Open the page with minimal transition
         self.page.transition = 'dialog-top-transition'

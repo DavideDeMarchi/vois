@@ -125,6 +125,7 @@ Vuetify package
  toggle
  tooltip
  treeview
+ UploadImage
  upload
  
  

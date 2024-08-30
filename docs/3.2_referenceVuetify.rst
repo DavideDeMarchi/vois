@@ -398,6 +398,14 @@ treeview widget
 
 .. image:: figures/line.png
 
+UploadImage widget
+------------------
+
+.. automodule:: UploadImage
+    :members: 
+
+.. image:: figures/line.png
+
 upload widget
 -------------
 
