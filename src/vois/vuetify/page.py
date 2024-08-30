@@ -421,6 +421,8 @@ class page():
     @titleheight.setter
     def titleheight(self, height):
         self._titleheight = height
+        if self._titleheight < 20:  self._titleheight = 20
+        if self._titleheight > 200: self._titleheight = 200
         self.appbar.height = self.appbar.min_height = self.appbar.max_height = self._titleheight
         
         if not self.btn_credits is None:
@@ -542,6 +544,8 @@ class page():
     @footerheight.setter
     def footerheight(self, height):
         self._footerheight = height
+        if self._footerheight < 20:  self._footerheight = 16
+        if self._footerheight > 200: self._footerheight = 200
         self.footer.height = self.footer.min_height = self.footer.max_height = self._footerheight
         self.footer.style_ = 'height: %dpx; overflow: hidden; border-bottom-left-radius: 0; border-bottom-right-radius: 0;'%self._footerheight
         

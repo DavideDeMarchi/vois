@@ -81,22 +81,6 @@ class template1panel(page.page):
     
     @property
     def titlecolor(self):
-        """
-        Get/Set the color of the title bar
-        
-        Returns
-        --------
-        color : str
-            Color of the title bar
-
-        Example
-        -------
-        Programmatically change the color::
-            
-            p.titlecolor = 'red'
-            print(p.titlecolor)
-        
-        """
         return self._titlecolor
         
     @titlecolor.setter
@@ -120,22 +104,6 @@ class template1panel(page.page):
             
     @property
     def footercolor(self):
-        """
-        Get/Set the color of the footer bar
-        
-        Returns
-        --------
-        color : str
-            Color of the footer bar
-
-        Example
-        -------
-        Programmatically change the color::
-            
-            p.footercolor = 'red'
-            print(p.footercolor)
-        
-        """
         return self._footercolor
         
     @footercolor.setter
@@ -149,6 +117,46 @@ class template1panel(page.page):
                 b.b.color = color
         
         
+    @property
+    def titleheight(self):
+        return self._titleheight
+        
+    @titleheight.setter
+    def titleheight(self, height):
+        page.page.titleheight.fset(self, height)   # call super() property setter
+
+        self.map_height      = self.height
+        self.cardLeft.height = self.height
+        self.cardMap.height  = self.map_height
+        
+        self.map.layout.height = 'calc(%s - 1.5px)'%self.height
+        
+        d = self._titleheight - 54
+        newy = '%dpx'%(64+d)
+        self.dynbLeft.y1 = self.dynbLeft.y2 = newy
+        self.dynbLeft.setpos()
+        
+
+    @property
+    def footerheight(self):
+        return self._footerheight
+        
+    @footerheight.setter
+    def footerheight(self, height):
+        page.page.footerheight.fset(self, height)   # call super() property setter
+
+        self.map_height      = self.height
+        self.cardLeft.height = self.height
+        self.cardMap.height  = self.map_height
+        
+        self.map.layout.height = 'calc(%s - 1.5px)'%self.height
+        
+        d = self._titleheight - 54
+        newy = '%dpx'%(64+d)
+        self.dynbLeft.y1 = self.dynbLeft.y2 = newy
+        self.dynbLeft.setpos()
+        
+                
     # Create the content of the left panel
     def createLeft(self):
         pass

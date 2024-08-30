@@ -24,11 +24,8 @@ import ipyvuetify as v
 
 # Vois imports
 from vois import colors
-from vois.vuetify import settings, toggle, ColorPicker
+from vois.vuetify import settings, toggle, ColorPicker, sliderFloat
 from vois.templates import template1panel, template2panels, template3panels
-
-
-LEFT_WIDTH = 400   # Width  in pixels of the left bar
 
 
 # Change style of a label
@@ -60,7 +57,7 @@ class PageConfigurator(v.Html):
         self.spacerY = v.Html(tag='div', style_='width:  0px; height: 10px;')
         self.spacer  = v.Html(tag='div', style_='width: 10px; height: 10px;')
 
-        self.card = v.Card(flat=True, width=LEFT_WIDTH, min_width=LEFT_WIDTH, max_width=LEFT_WIDTH, height='200px', class_='pa-2 pt-4 ma-0')
+        self.card = v.Card(flat=True, width=template1panel.LEFT_WIDTH, min_width=template1panel.LEFT_WIDTH, max_width=template1panel.LEFT_WIDTH, height='400px', class_='pa-2 pt-4 ma-0')
 
         # Widgets
         self.labelwidth   = 110
@@ -78,17 +75,23 @@ class PageConfigurator(v.Html):
         self.titlecolor  = ColorPicker(color=settings.color_first,  width=80, height=30, rounded=False, on_change=self.titlecolorChange,  offset_x=True, offset_y=False)        
         self.footercolor = ColorPicker(color=settings.color_second, width=80, height=30, rounded=False, on_change=self.footercolorChange, offset_x=True, offset_y=False)        
         
-        self.titledark = toggle.toggle(0, ['', '', ''], dark=True, icons=['mdi-alpha-w-box-outline', 'mdi-alpha-b-box-outline', 'mdi-auto-fix'],
-                                       tooltips=['Display text in white color on the title bar', 'Display text in black color on the title bar', 'Automatically select text color for the title bar'],
-                                       onchange=self.titledarkChange, row=True, width=self.togglewidth, justify='start', paddingrow=self.paddingrow, tile=True)
-
         self.footerlinked = toggle.toggle(0, ['', '', ''], dark=True, icons=['mdi-link-off', 'mdi-link-variant', 'mdi-link-variant-minus'],
                                           tooltips=['Free selection of footer color', 'Footer color is the complementary of the title color', 'Footer color is the monochrome complementary of the title color'],
                                           onchange=self.footerlinkedChange, row=True, width=self.togglewidth-16, height=30, justify='start', paddingrow=self.paddingrow, tile=True)
         
-        self.footerdark = toggle.toggle(1, ['', '', ''], dark=True, icons=['mdi-alpha-w-box-outline', 'mdi-alpha-b-box-outline', 'mdi-auto-fix'],
+        self.titledark = toggle.toggle(2, ['', '', ''], dark=True, icons=['mdi-alpha-w-box-outline', 'mdi-alpha-b-box-outline', 'mdi-auto-fix'],
+                                       tooltips=['Display text in white color on the title bar', 'Display text in black color on the title bar', 'Automatically select text color for the title bar'],
+                                       onchange=self.titledarkChange, row=True, width=self.togglewidth, justify='start', paddingrow=self.paddingrow, tile=True)
+
+        self.footerdark = toggle.toggle(2, ['', '', ''], dark=True, icons=['mdi-alpha-w-box-outline', 'mdi-alpha-b-box-outline', 'mdi-auto-fix'],
                                         tooltips=['Display text in white color on the footer bar', 'Display text in black color on the footer bar', 'Automatically select text color for the footer bar'],
                                         onchange=self.footerdarkChange, row=True, width=self.togglewidth, justify='start', paddingrow=self.paddingrow, tile=True)
+        
+        self.titleheight = sliderFloat.sliderFloat(54.0, text='Title bar height:', minvalue=20.0, maxvalue=80.0, maxint=60, showpercentage=False, decimals=0,
+                                                   labelwidth=self.labelwidth-10, sliderwidth=150, resetbutton=True, showtooltip=True, onchange=self.titleheightChange)
+        
+        self.footerheight = sliderFloat.sliderFloat(30.0, text='Footer bar height:', minvalue=10.0, maxvalue=60.0, maxint=50, showpercentage=False, decimals=0,
+                                                    labelwidth=self.labelwidth-10, sliderwidth=150, resetbutton=True, showtooltip=True, onchange=self.footerheightChange)
         
         self.card.children = [widgets.VBox([
                                 widgets.HBox([self.panelsLabel, self.togglePanels.draw()]),
@@ -101,6 +104,10 @@ class PageConfigurator(v.Html):
                                 widgets.HBox([label('Title bar text:',   color='black', width=self.labelwidth), self.titledark.draw()]),
                                 self.spacerY,
                                 widgets.HBox([label('Footer bar text:',  color='black', width=self.labelwidth), self.footerdark.draw()]),
+                                self.spacerY,
+                                self.titleheight.draw(),
+                                self.spacerY,
+                                self.footerheight.draw(),
                                 ])
                              ]
         
@@ -171,6 +178,8 @@ class PageConfigurator(v.Html):
         self.titledark.colorselected          = color
         self.footerdark.colorselected         = color
         self.footerlinked.colorselected       = color
+        self.titleheight.slider.color         = color
+        self.footerheight.slider.color        = color
         self.titledarkChange(self.titledark.value)
                 
         # labels color
@@ -272,3 +281,15 @@ class PageConfigurator(v.Html):
     def footerlinkedChange(self, index):
         self.footercolor.disabled = index > 0
         self.titlecolorChange()
+        
+        
+    # Change of the title bar height
+    def titleheightChange(self, height):
+        self.page.titleheight = int(height)
+        self.page.refresh()
+    
+    
+    # Change of the footer bar height
+    def footerheightChange(self, height):
+        self.page.footerheight = int(height)
+        self.page.refresh()

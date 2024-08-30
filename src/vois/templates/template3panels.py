@@ -74,14 +74,14 @@ class template3panels(page.page):
         self.cardMap    = v.Card(flat=True, style_=st + ' border-left-width: 0px;', outlined=True, width=self.map_width, min_width=self.map_width, max_width=self.map_width, height=self.map_height)
         
         # DynamicButtons to open/close the left and bottom panels
-        self.dynbLeft = dynamicButton.dynamicButton(x1='%dpx'%(self.leftWidth-45), y1='60px', x2='48px', y2='60px', onclick1=self.leftClose, onclick2=self.leftOpen)
+        self.dynbLeft = dynamicButton.dynamicButton(x1='%dpx'%(self.leftWidth-45), y1='64px', x2='48px', y2='64px', onclick1=self.leftClose, onclick2=self.leftOpen)
 
         x = 45 + self.rightWidth
         self.dynbBottom = dynamicButton.dynamicButton(x1='calc(100vw - %dpx)'%x, y1='calc(100vh - %dpx)'%(BOTTOM_HEIGHT+35), x2='calc(100vw - %dpx)'%x, y2='calc(100vh - 40px)',
                                                       icon1='mdi-menu-down', icon2='mdi-menu-up', onclick1=self.bottomClose, onclick2=self.bottomOpen)
         
         x = self.rightWidth - 5
-        self.dynbRight  = dynamicButton.dynamicButton(x1='calc(100vw - %dpx)'%x, y1='60px', x2='calc(100vw - 100px)', y2='60px', 
+        self.dynbRight  = dynamicButton.dynamicButton(x1='calc(100vw - %dpx)'%x, y1='64px', x2='calc(100vw - 100px)', y2='64px', 
                                                       icon1='mdi-menu-right', icon2='mdi-menu-left', onclick1=self.rightClose, onclick2=self.rightOpen)
         
         # Creation of the contents for the panels
@@ -171,6 +171,7 @@ class template3panels(page.page):
         """
         return self._footercolor
         
+        
     @footercolor.setter
     def footercolor(self, color):
         page.page.footercolor.fset(self, color)   # call super() property setter
@@ -182,6 +183,57 @@ class template3panels(page.page):
                 b.b.color = color
 
                 
+    @property
+    def titleheight(self):
+        return self._titleheight
+        
+    @titleheight.setter
+    def titleheight(self, height):
+        page.page.titleheight.fset(self, height)   # call super() property setter
+
+        self.map_height = 'calc(%s - %dpx)'%(self.height,self.bottomHeight)
+        self.cardLeft.height  = self.height
+        self.cardRight.height = self.height
+        self.cardMap.height   = self.map_height
+        
+        self.map.layout.height = 'calc(%s - %fpx)'%(self.height,self.bottomHeight+1.5)
+        
+        d = self._titleheight - 54
+        newy = '%dpx'%(64+d)
+        self.dynbLeft.y1 = self.dynbLeft.y2 = newy
+        self.dynbLeft.setpos()
+        self.dynbRight.y1 = self.dynbRight.y2 = newy
+        self.dynbRight.setpos()
+        
+
+    @property
+    def footerheight(self):
+        return self._footerheight
+        
+    @footerheight.setter
+    def footerheight(self, height):
+        page.page.footerheight.fset(self, height)   # call super() property setter
+
+        self.map_height = 'calc(%s - %dpx)'%(self.height,self.bottomHeight)
+        self.cardLeft.height  = self.height
+        self.cardRight.height = self.height
+        self.cardMap.height   = self.map_height
+        
+        self.map.layout.height = 'calc(%s - %fpx)'%(self.height,self.bottomHeight+1.5)
+        
+        d = self._titleheight - 54
+        newy = '%dpx'%(64+d)
+        self.dynbLeft.y1 = self.dynbLeft.y2 = newy
+        self.dynbLeft.setpos()
+        self.dynbRight.y1 = self.dynbRight.y2 = newy
+        self.dynbRight.setpos()
+        
+        d = self._footerheight - 30
+        self.dynbBottom.y1 = 'calc(100vh - %dpx)'%(BOTTOM_HEIGHT+35+d)
+        self.dynbBottom.y2 = 'calc(100vh - %dpx)'%(40+d)
+        self.dynbBottom.setpos()
+        
+        
     # Create the content of the left panel
     def createLeft(self):
         pass
