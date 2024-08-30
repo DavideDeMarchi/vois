@@ -24,7 +24,7 @@ import ipyvuetify as v
 
 # Vois imports
 from vois import colors
-from vois.vuetify import settings, toggle, ColorPicker, sliderFloat
+from vois.vuetify import settings, toggle, ColorPicker, sliderFloat, UploadImage, Button, switch
 from vois.templates import template1panel, template2panels, template3panels
 
 
@@ -75,7 +75,6 @@ class PageConfigurator(v.Html):
         self.pagetitle.on_event('change',      self.pagetitleChange)
         self.pagetitle.on_event('click:clear', self.pagetitleClear)
         
-        
         self.panelsLabel  = label('Page format: ', size=self.biglabelsize, weight=500, width=self.labelwidth)
         self.togglePanels = toggle.toggle(0,
                                           ['1', '2', '3'],
@@ -104,24 +103,64 @@ class PageConfigurator(v.Html):
         self.footerheight = sliderFloat.sliderFloat(30.0, text='Footer bar height:', minvalue=16.0, maxvalue=80.0, maxint=64, showpercentage=False, decimals=0,
                                                     labelwidth=self.labelwidth-10, sliderwidth=150, resetbutton=True, showtooltip=True, onchange=self.footerheightChange)
         
+        self.upload = UploadImage.UploadImage(self.output)
+        
+        self.titleimageurl  = Button('Select background image for the title bar', color_selected=settings.color_first, dark=settings.dark_mode, 
+                                     text_weight=450, on_click=self.titleimageurlClick, width=template1panel.LEFT_WIDTH-10, height=40,
+                                     tooltip='Click to select an image to use as background on the title bar', selected=True, rounded=False)
+
+        self.logoappurl     = Button('Select image for the application logo', color_selected=settings.color_first, dark=settings.dark_mode, 
+                                     text_weight=450, on_click=self.logoappurlClick, width=template1panel.LEFT_WIDTH-10, height=40,
+                                     tooltip='Click to select an image to use as application logo on the left side of the title bar', selected=True, rounded=False)
+        
+        self.logowidth = sliderFloat.sliderFloat(40.0, text='Application logo width:', minvalue=20.0, maxvalue=200.0, maxint=180, showpercentage=False, decimals=0,
+                                                 labelwidth=self.labelwidth-10, sliderwidth=150, resetbutton=True, showtooltip=True, onchange=self.logowidthChange)
+        
+        self.logocreditsurl = Button('Select image for the credits logo', color_selected=settings.color_first, dark=settings.dark_mode, 
+                                     text_weight=450, on_click=self.logocreditsurlClick, width=template1panel.LEFT_WIDTH-10, height=40,
+                                     tooltip='Click to select an image to use as credits logo on the right side of the title bar', selected=True, rounded=False)
+        
+        self.creditswidth = sliderFloat.sliderFloat(120.0, text='Credits logo width:', minvalue=20.0, maxvalue=300.0, maxint=280, showpercentage=False, decimals=0,
+                                                 labelwidth=self.labelwidth-10, sliderwidth=150, resetbutton=True, showtooltip=True, onchange=self.creditswidthChange)
+
+        self.show_back = switch.switch(True, 'Back button',  inset=True, dense=True, onchange=self.onshow_backChange)
+        self.left_back = switch.switch(True, 'Back on left', inset=True, dense=True, onchange=self.onleft_backChange)
+        self.show_help = switch.switch(True, 'Help button',  inset=True, dense=True, onchange=self.onshow_helpChange)
+        
+        self.copyrighttext = v.TextField(label='Copyright text:', autofocus=True,  v_model=None, dense=False, color=settings.color_first, clearable=True, class_="pa-0 ma-0 mt-3")
+        self.copyrighttext.on_event('change',      self.copyrighttextChange)
+        self.copyrighttext.on_event('click:clear', self.copyrighttextClear)
+        
         self.card.children = [widgets.VBox([
-                                self.cardappname,
-                                self.pagetitle,
-                                self.spacerY,
-                                widgets.HBox([self.panelsLabel, self.togglePanels.draw()]),
-                                self.spacerY,
-                                self.spacerY,
-                                widgets.HBox([label('Title bar color:',  color='black', width=self.labelwidth), self.titlecolor, self.spacerX, label('Link:', color='black', width=30), self.footerlinked.draw()]),
-                                self.spacerY,
-                                widgets.HBox([label('Footer bar color:', color='black', width=self.labelwidth), self.footercolor]),
-                                self.spacerY,
-                                widgets.HBox([label('Title bar text:',   color='black', width=self.labelwidth), self.titledark.draw()]),
-                                self.spacerY,
-                                widgets.HBox([label('Footer bar text:',  color='black', width=self.labelwidth), self.footerdark.draw()]),
-                                self.spacerY,
-                                self.titleheight.draw(),
-                                self.spacerY,
-                                self.footerheight.draw(),
+                                 self.cardappname,
+                                 self.pagetitle,
+                                 self.spacerY,
+                                 widgets.HBox([self.panelsLabel, self.togglePanels.draw()]),
+                                 self.spacerY,
+                                 self.spacerY,
+                                 widgets.HBox([label('Title bar color:',  color='black', width=self.labelwidth), self.titlecolor, self.spacerX, label('Link:', color='black', width=30), self.footerlinked.draw()]),
+                                 self.spacerY,
+                                 widgets.HBox([label('Footer bar color:', color='black', width=self.labelwidth), self.footercolor]),
+                                 self.spacerY,
+                                 widgets.HBox([label('Title bar text:',   color='black', width=self.labelwidth), self.titledark.draw()]),
+                                 self.spacerY,
+                                 widgets.HBox([label('Footer bar text:',  color='black', width=self.labelwidth), self.footerdark.draw()]),
+                                 self.spacerY,
+                                 self.titleheight.draw(),
+                                 self.spacerY,
+                                 self.footerheight.draw(),
+                                 self.spacerY,
+                                 self.titleimageurl,
+                                 self.spacerY,
+                                 self.logoappurl,
+                                 self.logowidth.draw(),
+                                 self.spacerY,
+                                 self.logocreditsurl,
+                                 self.creditswidth.draw(),
+                                 self.spacerY,
+                                 widgets.HBox([self.show_back.draw(), self.left_back.draw(), self.show_help.draw()]),
+                                 self.spacerY,
+                                 self.copyrighttext,
                                 ])
                              ]
         
@@ -133,12 +172,15 @@ class PageConfigurator(v.Html):
         self.page = None
         self.onSelectedTemplate(0)
         
-        self.page.appname = 'My app'
-        self.page.title   = 'My page'
+        # Change page properties from default
+        self.page.appname   = 'My app'
+        self.page.title     = 'My page'
+        self.page.left_back = True
         
         # Initialise widgets
-        self.appname.v_model   = self.page.appname
-        self.pagetitle.v_model = self.page.title
+        self.appname.v_model       = self.page.appname
+        self.pagetitle.v_model     = self.page.title
+        self.copyrighttext.v_model = self.page.copyrighttext
 
     
     # Forced close
@@ -181,7 +223,15 @@ class PageConfigurator(v.Html):
         self.page.toggleBasemap.colorselected   = self.page.titlecolor
         self.page.toggleBasemap.colorunselected = self.page.footercolor
         
+        self.titleimageurl.color_selected  = self.page.titlecolor
+        self.titleimageurl.dark            = self.page.titledark
+        
+        self.logoappurl.color_selected     = self.page.titlecolor
+        self.logoappurl.dark               = self.page.titledark
 
+        self.logocreditsurl.color_selected = self.page.titlecolor
+        self.logocreditsurl.dark           = self.page.titledark
+        
         # Open the page with minimal transition
         self.page.transition = 'dialog-top-transition'
         self.page.open()
@@ -208,6 +258,15 @@ class PageConfigurator(v.Html):
         self.footerlinked.colorselected       = color
         self.titleheight.slider.color         = color
         self.footerheight.slider.color        = color
+        self.titleimageurl.b.color            = color
+        self.logoappurl.b.color               = color
+        self.logocreditsurl.b.color           = color
+        self.logowidth.slider.color           = color
+        self.creditswidth.slider.color        = color
+        self.copyrighttext.color              = color
+        self.show_back.switch.color           = color
+        self.left_back.switch.color           = color
+        self.show_help.switch.color           = color
         self.titledarkChange(self.titledark.value)
                 
         # labels color
@@ -248,42 +307,32 @@ class PageConfigurator(v.Html):
 
         # White text color
         if index == 0:
-            self.page.titledark          = True
-            self.togglePanels.dark       = True
-            self.titledark.dark          = True
-            self.footerdark.dark         = True
-            self.footerlinked.dark       = True
-            self.page.toggleBasemap.dark = True
-        
+            flag = True
+
         # Black text color
         elif index == 1:
-            self.page.titledark          = False
-            self.togglePanels.dark       = False
-            self.titledark.dark          = False
-            self.footerdark.dark         = False
-            self.footerlinked.dark       = False
-            self.page.toggleBasemap.dark = False
+            flag = False
         
         # Auto color depending on title bar color
         else:
             color = self.titlecolor.color
             colortuple = colors.string2rgb(color)
             if colors.isColorDark(colortuple):
-                self.page.titledark          = True
-                self.togglePanels.dark       = True
-                self.titledark.dark          = True
-                self.footerdark.dark         = True
-                self.footerlinked.dark       = True
-                self.page.toggleBasemap.dark = True
+                flag = True
             else:
-                self.page.titledark          = False
-                self.togglePanels.dark       = False
-                self.titledark.dark          = False
-                self.footerdark.dark         = False
-                self.footerlinked.dark       = False
-                self.page.toggleBasemap.dark = False
+                flag = False
 
+        self.page.titledark          = flag
+        self.togglePanels.dark       = flag
+        self.titledark.dark          = flag
+        self.footerdark.dark         = flag
+        self.footerlinked.dark       = flag
+        self.titleimageurl.dark      = flag
+        self.logoappurl.dark         = flag
+        self.logocreditsurl.dark     = flag
+        self.page.toggleBasemap.dark = flag
                 
+            
     # Change of the footerdark property
     def footerdarkChange(self, index):
 
@@ -339,3 +388,75 @@ class PageConfigurator(v.Html):
     def pagetitleClear(self, *args):
         self.page.title = ''
             
+            
+    # Click on the button to open the dialog to select the title bar image
+    def titleimageurlClick(self, *args):
+        self.upload.title   = 'Select background image for the title bar'
+        self.upload.onOK    = self.titleimageurlSelected
+        self.upload.color   = self.titlecolor.color
+        self.upload.u.color = self.titlecolor.color
+        self.upload.dark    = self.page.titledark
+        self.upload.show()
+        
+    # Selection of the title bar image
+    def titleimageurlSelected(self, imageurl):
+        self.page.titleimageurl = imageurl
+        
+        
+    # Click on the button to open the dialog to select the logoappurl
+    def logoappurlClick(self, *args):
+        self.upload.title   = 'Select image for the application logo'
+        self.upload.onOK    = self.logoappurlSelected
+        self.upload.color   = self.titlecolor.color
+        self.upload.u.color = self.titlecolor.color
+        self.upload.dark    = self.page.titledark
+        self.upload.show()
+        
+    # Selection of the logoappurl
+    def logoappurlSelected(self, imageurl):
+        self.page.logoappurl = imageurl
+        
+        
+    # Click on the button to open the dialog to select the logocreditsurl
+    def logocreditsurlClick(self, *args):
+        self.upload.title   = 'Select image for the credits logo'
+        self.upload.onOK    = self.logocreditsurlSelected
+        self.upload.color   = self.titlecolor.color
+        self.upload.u.color = self.titlecolor.color
+        self.upload.dark    = self.page.titledark
+        self.upload.show()
+        
+    # Selection of the logocreditsurl
+    def logocreditsurlSelected(self, imageurl):
+        self.page.logocreditsurl = imageurl
+        
+    # Change logo width
+    def logowidthChange(self, width):
+        self.page.logowidth = int(width)
+    
+    # Change credits width
+    def creditswidthChange(self, width):
+        self.page.creditswidth = int(width)
+        
+
+    # Change copyright text
+    def copyrighttextChange(self, *args):
+        if self.copyrighttext.v_model is None: name = ''
+        else:                                  name = self.copyrighttext.v_model
+        self.page.copyrighttext = name
+
+    def copyrighttextClear(self, *args):
+        self.page.copyrighttext = ''
+        
+    
+    # show_back change
+    def onshow_backChange(self, flag):
+        self.page.show_back = flag
+
+    # left_back change
+    def onleft_backChange(self, flag):
+        self.page.left_back = flag
+
+    # show_help change
+    def onshow_helpChange(self, flag):
+        self.page.show_help = flag

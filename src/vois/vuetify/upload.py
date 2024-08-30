@@ -82,11 +82,12 @@ class upload():
                  width="100%", margins="pa-0 ma-0",
                  multiple=False, show_progress=True, onchange=None):
 
+        self._color   = color
         self.width    = width
         self.margins  = margins
         self.onchange = onchange
         
-        self.file_input = FileInput(accept=accept, color=color, multiple=multiple, show_progress=show_progress, 
+        self.file_input = FileInput(accept=accept, color=self._color, multiple=multiple, show_progress=show_progress, 
                                     label=label, placeholder=placeholder)
         
         self.container = v.Card(flat=True, style_="min-width: %s; width: %s;"%(self.width,self.width), class_=self.margins, children=[self.file_input])
@@ -125,3 +126,29 @@ class upload():
         """
         return v.Html(tag='div',children=[self.container], style_='overflow: hidden;')
 
+
+    @property
+    def color(self):
+        """
+        Get/Set the color of the upload widget
+        
+        Returns
+        --------
+        col : str
+            Color of the upload widget
+
+        Example
+        -------
+        Programmatically change the color::
+            
+            p.color = 'red'
+            print(p.color)
+        
+        """
+        return self._color
+        
+    @color.setter
+    def color(self, col):
+        self._color = col
+        self.file_input.color = self._color
+    
