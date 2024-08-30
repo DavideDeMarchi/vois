@@ -42,9 +42,11 @@ class toggle():
     labels : list of strings
         Strings to be displayed as text of the options
     tooltips : list of strings, optional
-        Tooltip text for the options
-    color : str, optional
-        Color used for the widget (default is the color_first defined in the settings.py module)
+        Tooltip text for the options (default is the empty list)
+    icons : list of strings, optional
+        Icons for the options (default is the empty list)
+    iconscolor : str, optional
+        Color used for the icons (default is 'black')
     onchange : function, optional
         Python function to call when the user clicks on one of the buttons. The function will receive a parameter of type int containing the index of the clicked button, from 0 to len(labels)-1
     row : bool, optional
@@ -109,22 +111,23 @@ class toggle():
    """
 
     # Initialization
-    def __init__(self, index, labels, tooltips=None, color=settings.color_first, onchange=None,
+    def __init__(self, index, labels, tooltips=[], icons=[], iconscolor='black', onchange=None,
                  row=True, width=150, height=36, justify='space-between', rounded=settings.button_rounded, outlined=False,
                  colorselected=settings.color_first, colorunselected=settings.color_second, dark=settings.dark_mode,
                  paddingrow=1, paddingcol=2, tile=False, small=False, xsmall=False, large=False, xlarge=False):
         
-        self.index    = index    # Index of the selected button
-        self.labels   = labels
-        self.tooltips = tooltips
-        self.color    = color
-        self.onchange = onchange
-        self.row      = row
-        self.width    = width
-        self.height   = height
-        self.justify  = justify
-        self.rounded  = rounded
-        self.outlined = outlined
+        self.index      = index    # Index of the selected button
+        self.labels     = labels
+        self.tooltips   = tooltips
+        self.icons      = icons
+        self.iconscolor = iconscolor
+        self.onchange   = onchange
+        self.row        = row
+        self.width      = width
+        self.height     = height
+        self.justify    = justify
+        self.rounded    = rounded
+        self.outlined   = outlined
         self._colorselected   = colorselected
         self._colorunselected = colorunselected
         self.dark             = dark
@@ -148,11 +151,16 @@ class toggle():
             tooltip = ''
             if i < len(self.tooltips):
                 tooltip = self.tooltips[i]
-            
+
+            icon = None
+            if i < len(self.icons):
+                icon = self.icons[i]
+                
             if self.row: c = "pa-0 ma-0 mr-%d"%self.paddingrow
             else:        c = "pa-0 ma-0 mb-%d"%self.paddingcol
                     
             b = Button(label, dark=self.dark, class_=c, small=self.small, xsmall=self.xsmall, large=self.large, xlarge=self.xlarge,
+                       icon=icon, iconColor=self.iconscolor,
                        onclick=self.__internal_onchange, argument=i, width=self.width, height=self.height, tooltip=tooltip, selected=(i==self.index),
                        rounded=self.rounded, tile=self.tile, outlined=self.outlined, colorselected=self._colorselected, colorunselected=self._colorunselected)
             self.buttons.append(b)

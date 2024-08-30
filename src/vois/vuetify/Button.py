@@ -115,23 +115,23 @@ class Button(v.Html):
             else:      b3.selected = not b3.selected
 
         b1 = Button('Test button 1', text_weight=300, on_click=onclick, argument=1,
-                           width=150, height=36, 
-                           tooltip='Tooltip for button 1', selected=False, rounded=True,
-                           icon='mdi-car-light-high', iconColor='black')
+                    width=150, height=36, 
+                    tooltip='Tooltip for button 1', selected=False, rounded=True,
+                    icon='mdi-car-light-high', iconColor='black')
 
         b2 = Button('Test button 2', text_weight=450, on_click=onclick, argument=2,
-                           width=150, height=48,
-                           tooltip='Tooltip for button 2', selected=True, rounded=False)
+                    width=150, height=48,
+                    tooltip='Tooltip for button 2', selected=True, rounded=False)
 
         b3 = Button('Test button 3', text_weight=450, on_click=onclick, argument=3,
-                           width=150, height=38,
-                           text_color=settings.color_first,
-                           tooltip='Tooltip for button 3', outlined=True, rounded=True)
+                    width=150, height=38,
+                    text_color=settings.color_first,
+                    tooltip='Tooltip for button 3', outlined=True, rounded=True)
 
         b4 = Button('Contacts', only_text=True, text_color=settings.color_first,
-                           width=150, height=28,
-                           href='https://ec.europa.eu/info/contact_en', target="_blank",
-                           tooltip='Open a URL')
+                    width=150, height=28,
+                    href='https://ec.europa.eu/info/contact_en', target="_blank",
+                    tooltip='Open a URL')
 
         display(b1)
         display(b2)
