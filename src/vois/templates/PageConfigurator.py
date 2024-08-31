@@ -24,8 +24,8 @@ import ipyvuetify as v
 import json
 
 # Vois imports
-from vois import colors
-from vois.vuetify import settings, toggle, ColorPicker, sliderFloat, UploadImage, Button, switch, tooltip, iconButton
+from vois import colors, download
+from vois.vuetify import settings, toggle, ColorPicker, sliderFloat, UploadImage, UploadJson, Button, switch, tooltip, iconButton, dialogGeneric
 from vois.templates import template1panel, template2panels, template3panels
 
 
@@ -55,6 +55,37 @@ class PageConfigurator(v.Html):
 
         self.debug = widgets.Output()
         
+        # Default state
+        self.reset_state = {
+            'appname': 'My app',
+            'title': 'My page',
+            'titlecolor': '#0d856d',
+            'titledark': True,
+            'titleheight': 54,
+            'titleimageurl': '',
+            'footercolor': '#a0dcd0',
+            'footerdark': False,
+            'footerheight': 30,
+            'copyrighttext': 'European Commission - Joint Research Centre',
+            'show_back': True,
+            'left_back': True,
+            'show_help': True,
+            'show_credits': True,
+            'logoappurl': 'https://jeodpp.jrc.ec.europa.eu/services/shared/pngs/BDAP_Logo1024transparent.png',
+            'logocreditsurl': 'https://jeodpp.jrc.ec.europa.eu/services/shared/pngs/EC-JRC-logo_horizontal_EN_neg_transparent-background.png',
+            'logowidth': 40,
+            'creditswidth': 120,
+            'transition': 'dialog-bottom-transition',
+        
+            # Custom properties
+            'panelsvalue': 0,
+            'titledarkvalue': 2,
+            'footerlinkedvalue': 0,
+            'footerdarkvalue': 2
+        }
+        
+        
+        
         self.output = output
         self.spacerX = v.Html(tag='div', style_='width: 10px; height:  0px;')
         self.spacerY = v.Html(tag='div', style_='width:  0px; height: 10px;')
@@ -71,11 +102,12 @@ class PageConfigurator(v.Html):
         
         self.appname   = v.TextField(label='Application name:', autofocus=False, v_model=None, dense=False, color=settings.color_first, clearable=True, class_="pa-0 ma-0 mt-3 mr-3")
         self.pagetitle = v.TextField(label='Page title:',       autofocus=False, v_model=None, dense=False, color=settings.color_first, clearable=True, class_="pa-0 ma-0 mt-3")
-        self.buttOpen  = iconButton.iconButton(icon='mdi-folder-open',  onclick=self.onOpen, tooltip='Load state from file', large=True)
-        self.buttSave  = iconButton.iconButton(icon='mdi-content-save', onclick=self.onSave, tooltip='Save current state to file', large=True)
+        self.buttOpen  = iconButton.iconButton(icon='mdi-folder-open',  onclick=self.onOpen,  tooltip='Load state from file', large=True)
+        self.buttSave  = iconButton.iconButton(icon='mdi-content-save', onclick=self.onSave,  tooltip='Save current state to file', large=True)
+        self.buttReset = iconButton.iconButton(icon='mdi-backspace',    onclick=self.onReset, tooltip='Reset page to default state', large=True)
         
         self.cardappname = v.Card(flat=True, width=template1panel.LEFT_WIDTH, max_width=template1panel.LEFT_WIDTH-80,
-                                  children=[widgets.HBox([self.appname, self.buttOpen.draw(), self.buttSave.draw()])])
+                                  children=[widgets.HBox([self.appname, self.buttOpen.draw(), self.buttSave.draw(), self.buttReset.draw()])])
         
         self.appname.on_event(  'change',      self.appnameChange)
         self.appname.on_event(  'click:clear', self.appnameClear)
@@ -84,7 +116,7 @@ class PageConfigurator(v.Html):
         
         
         self.panelsLabel  = label('Page format: ', size=self.biglabelsize, weight=500, width=self.labelwidth)
-        self.togglePanels = toggle.toggle(0,
+        self.togglePanels = toggle.toggle(self.reset_state['panelsvalue'],
                                           ['1', '2', '3'],
                                           tooltips=['Page with 1 left panel', 'Page with 2 panels: left and bottom', 'Page with 3 panels: left, bottom and right'],
                                           dark=True, onchange=self.onSelectedTemplate, row=True, width=self.togglewidth, justify='start', paddingrow=self.paddingrow, tile=True)
@@ -93,23 +125,23 @@ class PageConfigurator(v.Html):
         self.titlecolor  = ColorPicker(color=settings.color_first,  width=50, height=30, rounded=False, on_change=self.titlecolorChange,  offset_x=True, offset_y=False)        
         self.footercolor = ColorPicker(color=settings.color_second, width=50, height=30, rounded=False, on_change=self.footercolorChange, offset_x=True, offset_y=False)        
         
-        self.footerlinked = toggle.toggle(0, ['', '', '', ''], dark=True, icons=['mdi-link-off', 'mdi-link-variant', 'mdi-link-variant-minus', 'mdi-link-variant-plus'], outlined=False,
+        self.footerlinked = toggle.toggle(self.reset_state['footerlinkedvalue'], ['', '', '', ''], dark=True, icons=['mdi-link-off', 'mdi-link-variant', 'mdi-link-variant-minus', 'mdi-link-variant-plus'], outlined=False,
                                           tooltips=['Free selection of footer color', 'Footer color is the complementary of the title color',
                                                     'Footer color is a darker version of the title color', 'Footer color is a lighter version of the title color'],
                                           onchange=self.footerlinkedChange, row=True, width=self.togglewidth-20, height=30, justify='start', paddingrow=self.paddingrow, tile=True)
         
-        self.titledark = toggle.toggle(2, ['', '', ''], dark=True, icons=['mdi-alpha-w-box-outline', 'mdi-alpha-b-box-outline', 'mdi-auto-fix'],
+        self.titledark = toggle.toggle(self.reset_state['titledarkvalue'], ['', '', ''], dark=True, icons=['mdi-alpha-w-box-outline', 'mdi-alpha-b-box-outline', 'mdi-auto-fix'],
                                        tooltips=['Display text in white color on the title bar', 'Display text in black color on the title bar', 'Automatically select text color for the title bar'],
                                        onchange=self.titledarkChange, row=True, width=self.togglewidth, justify='start', paddingrow=self.paddingrow, tile=True)
 
-        self.footerdark = toggle.toggle(2, ['', '', ''], dark=True, icons=['mdi-alpha-w-box-outline', 'mdi-alpha-b-box-outline', 'mdi-auto-fix'],
+        self.footerdark = toggle.toggle(self.reset_state['footerdarkvalue'], ['', '', ''], dark=True, icons=['mdi-alpha-w-box-outline', 'mdi-alpha-b-box-outline', 'mdi-auto-fix'],
                                         tooltips=['Display text in white color on the footer bar', 'Display text in black color on the footer bar', 'Automatically select text color for the footer bar'],
                                         onchange=self.footerdarkChange, row=True, width=self.togglewidth, justify='start', paddingrow=self.paddingrow, tile=True)
         
-        self.titleheight = sliderFloat.sliderFloat(54.0, text='Title bar height:', minvalue=20.0, maxvalue=180.0, maxint=160, showpercentage=False, decimals=0,
+        self.titleheight = sliderFloat.sliderFloat(self.reset_state['titleheight'], text='Title bar height:', minvalue=20.0, maxvalue=180.0, maxint=160, showpercentage=False, decimals=0,
                                                    labelwidth=self.labelwidth-10, sliderwidth=150, resetbutton=True, showtooltip=True, onchange=self.titleheightChange)
         
-        self.footerheight = sliderFloat.sliderFloat(30.0, text='Footer bar height:', minvalue=16.0, maxvalue=80.0, maxint=64, showpercentage=False, decimals=0,
+        self.footerheight = sliderFloat.sliderFloat(self.reset_state['footerheight'], text='Footer bar height:', minvalue=16.0, maxvalue=80.0, maxint=64, showpercentage=False, decimals=0,
                                                     labelwidth=self.labelwidth-10, sliderwidth=150, resetbutton=True, showtooltip=True, onchange=self.footerheightChange)
         
         self.upload = UploadImage.UploadImage(self.output)
@@ -122,20 +154,20 @@ class PageConfigurator(v.Html):
                                      text_weight=450, on_click=self.logoappurlClick, width=template1panel.LEFT_WIDTH-10, height=40,
                                      tooltip='Click to select an image to use as application logo on the left side of the title bar', selected=True, rounded=False)
         
-        self.logowidth = sliderFloat.sliderFloat(40.0, text='Application logo width:', minvalue=20.0, maxvalue=200.0, maxint=180, showpercentage=False, decimals=0,
+        self.logowidth = sliderFloat.sliderFloat(self.reset_state['logowidth'], text='Application logo width:', minvalue=20.0, maxvalue=200.0, maxint=180, showpercentage=False, decimals=0,
                                                  labelwidth=self.labelwidth-10, sliderwidth=150, resetbutton=True, showtooltip=True, onchange=self.logowidthChange)
         
         self.logocreditsurl = Button('Select image for the credits logo', color_selected=settings.color_first, dark=settings.dark_mode, 
                                      text_weight=450, on_click=self.logocreditsurlClick, width=template1panel.LEFT_WIDTH-10, height=40,
                                      tooltip='Click to select an image to use as credits logo on the right side of the title bar', selected=True, rounded=False)
         
-        self.creditswidth = sliderFloat.sliderFloat(120.0, text='Credits logo width:', minvalue=20.0, maxvalue=300.0, maxint=280, showpercentage=False, decimals=0,
+        self.creditswidth = sliderFloat.sliderFloat(self.reset_state['creditswidth'], text='Credits logo width:', minvalue=20.0, maxvalue=300.0, maxint=280, showpercentage=False, decimals=0,
                                                  labelwidth=self.labelwidth-10, sliderwidth=150, resetbutton=True, showtooltip=True, onchange=self.creditswidthChange)
 
-        self.show_back    = switch.switch(True, 'Show Back button',    inset=True, dense=True, onchange=self.onshow_backChange)
-        self.left_back    = switch.switch(True, 'Back button on the Left',    inset=True, dense=True, onchange=self.onleft_backChange)
-        self.show_help    = switch.switch(True, 'Show Help button',    inset=True, dense=True, onchange=self.onshow_helpChange)
-        self.show_credits = switch.switch(True, 'Show Credits logo', inset=True, dense=True, onchange=self.onshow_creditsChange)
+        self.show_back    = switch.switch(self.reset_state['show_back'],    'Show Back button',        inset=True, dense=True, onchange=self.onshow_backChange)
+        self.left_back    = switch.switch(self.reset_state['left_back'],    'Back button on the Left', inset=True, dense=True, onchange=self.onleft_backChange)
+        self.show_help    = switch.switch(self.reset_state['show_help'],    'Show Help button',        inset=True, dense=True, onchange=self.onshow_helpChange)
+        self.show_credits = switch.switch(self.reset_state['show_credits'], 'Show Credits logo',       inset=True, dense=True, onchange=self.onshow_creditsChange)
         
         self.copyrighttext = v.TextField(label='Copyright text:', autofocus=False, v_model=None, dense=False, color=settings.color_first, clearable=True, class_="pa-0 ma-0 mt-3")
         self.copyrighttext.on_event('change',      self.copyrighttextChange)
@@ -182,27 +214,31 @@ class PageConfigurator(v.Html):
         self.children = [self.card]
         
         # Initial page
+        self.saveFilename = None
         self.page = None
-        self.onSelectedTemplate(0)
+        self.onSelectedTemplate(self.reset_state['panelsvalue'])
         
-        # Change page properties from default
-        self.page.appname   = 'My app'
-        self.page.title     = 'My page'
-        self.page.left_back = True
+        # Set the initial state
+        self.page.state = self.reset_state
         
         # Initialise widgets
         self.appname.v_model       = self.page.appname
         self.pagetitle.v_model     = self.page.title
         self.copyrighttext.v_model = self.page.copyrighttext
         
-        # Set the initial focus on the appname widget
-        #self.appname.focus()
+        
         
 
     # Load state from file
     def onOpen(self):
-        with open('sample.json') as file:
-            state = json.load(file)
+        uj = UploadJson.UploadJson(self.output, onOK=self.onSelectedState, required_attributes=['appname', 'title'], attributes_width=80,
+                                  color=self.page.titlecolor, dark=self.page.titledark)
+        uj.show()
+        
+    # Called when the UploadJson dialo-box is closed with the OK button
+    def onSelectedState(self, state):
+
+        with self.debug:
             
             # Set the page state (does a refresh if the page is open)
             self.page.state = state
@@ -225,11 +261,26 @@ class PageConfigurator(v.Html):
             self.logowidth.value       = self.page.logowidth
             self.creditswidth.value    = self.page.creditswidth
             self.copyrighttext.v_model = self.page.copyrighttext
-            
         
         
     # Save current state to file
     def onSave(self):
+        
+        self.saveFilename = v.TextField(label='File name:', autofocus=True, v_model=self.page.appname + '_' + self.page.title, dense=False, color=settings.color_first, clearable=True, class_="pa-0 ma-0 ml-3 mt-3 mr-3")
+
+        dlg = dialogGeneric.dialogGeneric(title='Save and download current state...' , on_ok=self.onDoSave, 
+                                          text='   ', color=self.page.titlecolor, dark=self.page.titledark,
+                                          titleheight=40, width=600,
+                                          show=True, addclosebuttons=True, addokcancelbuttons=True,
+                                          fullscreen=False, content=[self.saveFilename], output=self.output)
+        
+    
+    # Effective save and download of the current state
+    def onDoSave(self):
+        
+        filename = self.saveFilename.v_model
+        if filename[-5:] != '.json':
+            filename += '.json'
         
         # Read the state from the page
         state = self.page.state
@@ -240,8 +291,14 @@ class PageConfigurator(v.Html):
         state['footerlinkedvalue'] = self.footerlinked.value
         state['footerdarkvalue']   = self.footerdark.value
     
-        with open("sample.json", "w") as file:
-            json.dump(state, file, indent=4)
+        # Convert to string and download
+        txt = json.dumps(state)
+        download.downloadText(txt, fileName=filename)
+            
+            
+    # Reset page to initial state
+    def onReset(self):
+        self.onSelectedState(self.reset_state)
             
             
     # Forced close
@@ -317,6 +374,7 @@ class PageConfigurator(v.Html):
         self.pagetitle.color                  = color
         self.buttOpen.color                   = color
         self.buttSave.color                   = color
+        self.buttReset.color                  = color
         self.page.toggleBasemap.colorselected = color
         self.togglePanels.colorselected       = color
         self.titledark.colorselected          = color

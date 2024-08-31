@@ -92,18 +92,20 @@ class dialogWait(v.VuetifyTemplate):
     height        = traitlets.Int(5).tag(sync=True)
     showtext      = traitlets.Bool(False).tag(sync=True)
     textcolor     = traitlets.Unicode('#cccccc').tag(sync=True)
+    color         = traitlets.Unicode(settings.color_first).tag(sync=True)
+    dark          = traitlets.Bool(settings.dark_mode).tag(sync=True)
     
     @traitlets.default('template')
     def _template(self):
         darkmode  = ''
-        if settings.dark_mode:
+        if self.dark:
             darkmode  = 'dark'
             
         if not self.linecolor is None:
             linecolor = self.linecolor
         else:
             linecolor = settings.textcolor_notdark
-            if settings.dark_mode:
+            if self.dark:
                 linecolor = settings.textcolor_dark
 
         sss = ''
@@ -142,10 +144,11 @@ class dialogWait(v.VuetifyTemplate):
       </v-card>
     </v-dialog>
   </div>
-</template>''' % (settings.color_first, darkmode, linecolor, sss)
+</template>''' % (self.color, darkmode, linecolor, sss)
     
     
-    def __init__(self, output=None, text='Please wait...', indeterminate=True, height=4, linecolor=None, showtext=False, textcolor='#cccccc', *args, **kwargs):
+    def __init__(self, output=None, text='Please wait...', indeterminate=True, height=4, linecolor=None, showtext=False, textcolor='#cccccc',
+                 color=settings.color_first, dark=settings.dark_mode, *args, **kwargs):
         
         self.text          = text
         self.indeterminate = indeterminate
@@ -153,7 +156,11 @@ class dialogWait(v.VuetifyTemplate):
         self.linecolor     = linecolor
         self.showtext      = showtext
         self.textcolor     = textcolor
+        self.color         = color
+        self.dark          = dark
+        
         self.value         = 0
+        
         super().__init__(*args, **kwargs)
         
         if not output is None:
