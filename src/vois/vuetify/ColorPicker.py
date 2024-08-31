@@ -159,7 +159,7 @@ class ColorPicker(v.Menu):
             von = 'menuData.on'
         self.button = v.Btn(v_on=von, depressed=True, large=False, dense=True, class_='pa-0 ma-0', color=self._color,
                             rounded=self.rounded, height=self.height, width=self.width, min_width=self.width,
-                            dark=self.textDark(self._color),
+                            dark=self.textDark(self._color), 
                             style_='font-weight: %d; text-transform: none' % self.text_weight, children=[self.text])
 
         self.p = v.ColorPicker(value=self._color, flat=True, class_="pa-0 ma-0", style_="min-width: 300px;",
@@ -257,6 +257,8 @@ class ColorPicker(v.Menu):
         self._disabled = bool(flag)
         if self._disabled:
             von = ''
+            self.button.children = ['⊗']   # Visual change to let the user know that the widget is disabled
         else:
             von = 'menuData.on'
+            self.button.children = [self.text]
         self.button.v_on = von
