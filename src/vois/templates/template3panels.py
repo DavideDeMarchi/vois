@@ -66,12 +66,12 @@ class template3panels(page.page):
         
         # Cards for the panels
         st = 'border-radius: 0px; border-color: %s; border-width: 1px; overflow: hidden;'%settings.color_first
-        self.map_width  = 'calc(100vw - %dpx)'%(self.leftWidth + self.rightWidth)
-        self.map_height = 'calc(%s - %dpx)'%(self.height,self.bottomHeight)
+        self.main_width  = 'calc(100vw - %dpx)'%(self.leftWidth + self.rightWidth)
+        self.main_height = 'calc(%s - %dpx)'%(self.height,self.bottomHeight)
         self.cardLeft   = v.Card(flat=True, style_=st, outlined=True, width=self.leftWidth, min_width=self.leftWidth, max_width=self.leftWidth, height=self.height)
-        self.cardBottom = v.Card(flat=True, style_=st + ' border-left-width: 0px; border-top-width: 0px;', outlined=True, width=self.map_width, height=self.bottomHeight, min_height=self.bottomHeight)
+        self.cardBottom = v.Card(flat=True, style_=st + ' border-left-width: 0px; border-top-width: 0px;', outlined=True, width=self.main_width, height=self.bottomHeight, min_height=self.bottomHeight)
         self.cardRight  = v.Card(flat=True, style_=st + ' border-left-width: 0px;', outlined=True, width=self.rightWidth, min_width=self.rightWidth, max_width=self.rightWidth, height=self.height)
-        self.cardMap    = v.Card(flat=True, style_=st + ' border-left-width: 0px;', outlined=True, width=self.map_width, min_width=self.map_width, max_width=self.map_width, height=self.map_height)
+        self.cardMain   = v.Card(flat=True, style_=st + ' border-left-width: 0px;', outlined=True, width=self.main_width, min_width=self.main_width, max_width=self.main_width, height=self.main_height)
         
         # DynamicButtons to open/close the left and bottom panels
         self.dynbLeft = dynamicButton.dynamicButton(x1='%dpx'%(self.leftWidth-45), y1='64px', x2='48px', y2='64px', onclick1=self.leftClose, onclick2=self.leftOpen)
@@ -85,7 +85,7 @@ class template3panels(page.page):
                                                       icon1='mdi-menu-right', icon2='mdi-menu-left', onclick1=self.rightClose, onclick2=self.rightOpen)
         
         # Creation of the contents for the panels
-        self.createMap()
+        self.createMain()
         self.createLeft()
         self.createBottom()
         self.createRight()
@@ -97,7 +97,7 @@ class template3panels(page.page):
                               widgets.HBox([
                                   self.cardLeft,
                                   widgets.VBox([
-                                      self.cardMap,
+                                      self.cardMain,
                                       self.cardBottom
                                   ]),
                                   self.cardRight
@@ -141,7 +141,7 @@ class template3panels(page.page):
             self.cardRight.style_  = st + ' border-left-width: 1px;'
         else:
             self.cardRight.style_  = st + ' border-left-width: 0px;'
-        self.cardMap.style_    = st + ' border-left-width: 0px;'
+        self.cardMain.style_ = st + ' border-left-width: 0px;'
         
         # Set the color of the dynamicButton
         self.dynbLeft.color   = color
@@ -194,10 +194,10 @@ class template3panels(page.page):
     def titleheight(self, height):
         page.page.titleheight.fset(self, height)   # call super() property setter
 
-        self.map_height = 'calc(%s - %dpx)'%(self.height,self.bottomHeight)
+        self.main_height = 'calc(%s - %dpx)'%(self.height,self.bottomHeight)
         self.cardLeft.height  = self.height
         self.cardRight.height = self.height
-        self.cardMap.height   = self.map_height
+        self.cardMain.height  = self.main_height
         
         self.map.layout.height = 'calc(%s - %fpx)'%(self.height,self.bottomHeight+1.5)
         
@@ -217,10 +217,10 @@ class template3panels(page.page):
     def footerheight(self, height):
         page.page.footerheight.fset(self, height)   # call super() property setter
 
-        self.map_height = 'calc(%s - %dpx)'%(self.height,self.bottomHeight)
+        self.main_height = 'calc(%s - %dpx)'%(self.height,self.bottomHeight)
         self.cardLeft.height  = self.height
         self.cardRight.height = self.height
-        self.cardMap.height   = self.map_height
+        self.cardMain.height  = self.main_height
         
         self.map.layout.height = 'calc(%s - %fpx)'%(self.height,self.bottomHeight+1.5)
         
@@ -249,17 +249,17 @@ class template3panels(page.page):
     def createRight(self):
         pass
     
-    # Create the content of the Map panel
-    def createMap(self):
+    # Create the content of the Main panel
+    def createMain(self):
         # Initial center and zoom of the map
         self.center = [50, 12]
         self.zoom   = 5
 
         # Map widget
-        map_width  = 'calc(100vw - %dpx)'%(self.leftWidth+self.rightWidth)
-        map_height = 'calc(%s - %fpx)'%(self.height,self.bottomHeight+1.5)
+        main_width  = 'calc(100vw - %dpx)'%(self.leftWidth+self.rightWidth)
+        main_height = 'calc(%s - %fpx)'%(self.height,self.bottomHeight+1.5)
         self.map = ipyleaflet.Map(max_zoom=21, center=self.center, zoom=self.zoom, scroll_wheel_zoom=True, 
-                                  basemap=mapUtils.EmptyBasemap(), attribution_control=False, layout=Layout(width=map_width, height=map_height, margin='0px 0px 0px 0px'))
+                                  basemap=mapUtils.EmptyBasemap(), attribution_control=False, layout=Layout(width=main_width, height=main_height, margin='0px 0px 0px 0px'))
         
         mapUtils.addLayer(self.map, mapUtils.OSM_EC(),      LAYERNAME_BACKGROUND)
         mapUtils.addLayer(self.map, mapUtils.CartoLabels(), LAYERNAME_LABELS)
@@ -295,8 +295,8 @@ class template3panels(page.page):
         self.map._interaction_callbacks = CallbackDispatcher()
         self.map.on_interaction(self.handleMapInteraction)
         
-        # Display the map inside its card
-        self.cardMap.children = [self.map]
+        # Display the map inside the Main card
+        self.cardMain.children = [self.map]
         
 
     # Manage all user interaction on the map
@@ -334,16 +334,16 @@ class template3panels(page.page):
     # Close the left panel
     def leftClose(self):
         self.leftWidth = 0
-        self.map_width = 'calc(100vw - %dpx)'%(self.leftWidth+self.rightWidth)
+        self.main_width = 'calc(100vw - %dpx)'%(self.leftWidth+self.rightWidth)
         self.cardLeft.width     = self.leftWidth
         self.cardLeft.min_width = self.leftWidth
         self.cardLeft.max_width = self.leftWidth
         
-        self.cardBottom.width  = self.map_width
-        self.cardMap.width     = self.map_width
-        self.cardMap.min_width = self.map_width
-        self.cardMap.max_width = self.map_width
-        self.map.layout.width  = self.map_width
+        self.cardBottom.width   = self.main_width
+        self.cardMain.width     = self.main_width
+        self.cardMain.min_width = self.main_width
+        self.cardMain.max_width = self.main_width
+        self.map.layout.width   = self.main_width
         
         self.titlecolor = self._titlecolor  # Set left border to right panel
         
@@ -351,16 +351,16 @@ class template3panels(page.page):
     # Open the left panel
     def leftOpen(self):
         self.leftWidth = LEFT_WIDTH
-        self.map_width = 'calc(100vw - %dpx)'%(self.leftWidth+self.rightWidth)
+        self.main_width = 'calc(100vw - %dpx)'%(self.leftWidth+self.rightWidth)
         self.cardLeft.width     = self.leftWidth
         self.cardLeft.min_width = self.leftWidth
         self.cardLeft.max_width = self.leftWidth
         
-        self.cardBottom.width  = self.map_width
-        self.cardMap.width     = self.map_width
-        self.cardMap.min_width = self.map_width
-        self.cardMap.max_width = self.map_width
-        self.map.layout.width  = self.map_width
+        self.cardBottom.width   = self.main_width
+        self.cardMain.width     = self.main_width
+        self.cardMain.min_width = self.main_width
+        self.cardMain.max_width = self.main_width
+        self.map.layout.width   = self.main_width
         
         self.titlecolor = self._titlecolor  # Remove left border to right panel
         
@@ -371,7 +371,7 @@ class template3panels(page.page):
         self.cardBottom.height     = self.bottomHeight
         self.cardBottom.min_height = self.bottomHeight
         
-        self.cardMap.height = self.height
+        self.cardMain.height   = self.height
         self.map.layout.height = 'calc(%s - 1.5px)'%self.height
         
 
@@ -381,23 +381,23 @@ class template3panels(page.page):
         self.cardBottom.height     = self.bottomHeight
         self.cardBottom.min_height = self.bottomHeight
         
-        self.cardMap.height    = 'calc(%s - %dpx)'%(self.height,self.bottomHeight)
+        self.cardMain.height   = 'calc(%s - %dpx)'%(self.height,self.bottomHeight)
         self.map.layout.height = 'calc(%s - %fpx)'%(self.height,self.bottomHeight+1.5)
         
 
     # Close the right panel
     def rightClose(self):
         self.rightWidth = 0
-        self.map_width = 'calc(100vw - %dpx)'%(self.leftWidth+self.rightWidth)
+        self.main_width = 'calc(100vw - %dpx)'%(self.leftWidth+self.rightWidth)
         self.cardRight.width     = self.rightWidth
         self.cardRight.min_width = self.rightWidth
         self.cardRight.max_width = self.rightWidth
         
-        self.cardBottom.width  = self.map_width
-        self.cardMap.width     = self.map_width
-        self.cardMap.min_width = self.map_width
-        self.cardMap.max_width = self.map_width
-        self.map.layout.width  = self.map_width
+        self.cardBottom.width   = self.main_width
+        self.cardMain.width     = self.main_width
+        self.cardMain.min_width = self.main_width
+        self.cardMain.max_width = self.main_width
+        self.map.layout.width   = self.main_width
         
         x = 'calc(100vw - %dpx)'%(45 + self.rightWidth)
         self.dynbBottom.x1 = x
@@ -408,17 +408,17 @@ class template3panels(page.page):
     # Open the right panel
     def rightOpen(self):
         self.rightWidth = RIGHT_WIDTH
-        self.map_width = 'calc(100vw - %dpx)'%(self.leftWidth+self.rightWidth)
+        self.main_width = 'calc(100vw - %dpx)'%(self.leftWidth+self.rightWidth)
         self.cardRight.width     = self.rightWidth
         self.cardRight.min_width = self.rightWidth
         self.cardRight.max_width = self.rightWidth
         
-        self.cardBottom.width  = self.map_width
-        self.cardMap.width     = self.map_width
-        self.cardMap.width     = self.map_width
-        self.cardMap.min_width = self.map_width
-        self.cardMap.max_width = self.map_width
-        self.map.layout.width  = self.map_width
+        self.cardBottom.width   = self.main_width
+        self.cardMain.width     = self.main_width
+        self.cardMain.width     = self.main_width
+        self.cardMain.min_width = self.main_width
+        self.cardMain.max_width = self.main_width
+        self.map.layout.width   = self.main_width
         
         x = 'calc(100vw - %dpx)'%(45 + self.rightWidth)
         self.dynbBottom.x1 = x
