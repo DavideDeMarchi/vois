@@ -38,14 +38,14 @@ class UploadImage():
     # Initialization
     def __init__(self,
                  output,
-                 message='Click to select images to upload',
-                 label='Images',
+                 message='Click to select image to upload',
+                 label='Image:',
                  accept='image/png, image/jpeg, image/bmp',
                  title='Select an image',
                  color=settings.color_first,
                  dark=settings.dark_mode,
                  titleheight=40,
-                 width=1200,
+                 width=620,
                  onOK=None,                                       # Called passing the url string of the selected image or the empty string if no image is selected
                  onCancel=None):                                  # Called with no argument
         
@@ -83,7 +83,7 @@ class UploadImage():
         
     # Just after the file is selected
     def onFileSelected(self):
-        self.wait = dialogWait.dialogWait(text='Uploading file...', output=self.output)
+        self.wait = dialogWait.dialogWait(text='Uploading file...', output=self.output, color=self.color, dark=self.dark)
         
 
     # Selection of an image to upload
@@ -93,10 +93,9 @@ class UploadImage():
             self.preview.clear_output()
             for f in files:
                 self.image = Image.open(f['file_obj'])
-                with self.preview:
-                    display(self.image)
-                    
                 self.imageurl = colors.image2Base64(self.image)
+                with self.preview:
+                    display(v.Img(src=self.imageurl))
 
         # No files selected
         else:

@@ -49,7 +49,7 @@ class UploadJson():
     def __init__(self,
                  output,
                  message='Click to select the file to upload',
-                 label='File',
+                 label='File json:',
                  accept='application/json',
                  title='Select a file',
                  required_attributes=[],         # List of attribute names to check in selected json file and to display in the preview
@@ -79,7 +79,7 @@ class UploadJson():
         self.wait = None
         
         self.preview = widgets.Output(layout=Layout(height='200px'))
-        self.u = upload.upload(accept=accept, label=label, onchanging=self.onFileSelected, onchange=self.onFileUpload, placeholder=message, multiple=False)
+        self.u = upload.upload(accept=accept, label=label, onchanging=self.onFileSelected, onchange=self.onFileUpload, placeholder=message, multiple=False, color=self.color)
 
         spacerY = v.Html(tag='div', style_='width: 0px; height: 20px;')
         self.content = v.Card(flat=True, class_='pa-0, ma-0 mt-n4 ml-4 mr-4', children=[widgets.VBox([self.u.draw(), spacerY, self.preview])])
@@ -98,7 +98,7 @@ class UploadJson():
         
     # Just after the file is selected
     def onFileSelected(self):
-        self.wait = dialogWait.dialogWait(text='Uploading file...', output=self.output)
+        self.wait = dialogWait.dialogWait(text='Uploading file...', output=self.output, color=self.color, dark=self.dark)
 
         
     # Selection of an image to upload

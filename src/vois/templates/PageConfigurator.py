@@ -57,31 +57,31 @@ class PageConfigurator(v.Html):
         
         # Default state
         self.reset_state = {
-            'appname': 'My app',
-            'title': 'My page',
-            'titlecolor': '#0d856d',
-            'titledark': True,
-            'titleheight': 54,
-            'titleimageurl': '',
-            'footercolor': '#a0dcd0',
-            'footerdark': False,
-            'footerheight': 30,
-            'copyrighttext': 'European Commission - Joint Research Centre',
-            'show_back': True,
-            'left_back': True,
-            'show_help': True,
-            'show_credits': True,
-            'logoappurl': 'https://jeodpp.jrc.ec.europa.eu/services/shared/pngs/BDAP_Logo1024transparent.png',
-            'logocreditsurl': 'https://jeodpp.jrc.ec.europa.eu/services/shared/pngs/EC-JRC-logo_horizontal_EN_neg_transparent-background.png',
-            'logowidth': 40,
-            'creditswidth': 120,
-            'transition': 'dialog-bottom-transition',
+            'appname':           'My app',
+            'title':             'My page',
+            'titlecolor':        '#0d856d',
+            'titledark':         True,
+            'titleheight':       54,
+            'titleimageurl':     '',
+            'footercolor':       '#a0dcd0',
+            'footerdark':        False,
+            'footerheight':      30,
+            'copyrighttext':     'European Commission - Joint Research Centre',
+            'show_back':         True,
+            'left_back':         True,
+            'show_help':         True,
+            'show_credits':      True,
+            'logoappurl':        'https://jeodpp.jrc.ec.europa.eu/services/shared/pngs/BDAP_Logo1024transparent.png',
+            'logocreditsurl':    'https://jeodpp.jrc.ec.europa.eu/services/shared/pngs/EC-JRC-logo_horizontal_EN_neg_transparent-background.png',
+            'logowidth':         40,
+            'creditswidth':      120,
+            'transition':        'dialog-bottom-transition',
         
             # Custom properties
-            'panelsvalue': 0,
-            'titledarkvalue': 2,
+            'panelsvalue':       0,
+            'titledarkvalue':    2,
             'footerlinkedvalue': 0,
-            'footerdarkvalue': 2
+            'footerdarkvalue':   2
         }
         
         
@@ -144,7 +144,7 @@ class PageConfigurator(v.Html):
         self.footerheight = sliderFloat.sliderFloat(self.reset_state['footerheight'], text='Footer bar height:', minvalue=16.0, maxvalue=80.0, maxint=64, showpercentage=False, decimals=0,
                                                     labelwidth=self.labelwidth-10, sliderwidth=150, resetbutton=True, showtooltip=True, onchange=self.footerheightChange)
         
-        self.upload = UploadImage.UploadImage(self.output)
+        self.upload = UploadImage.UploadImage(self.output, width=620)
         
         self.titleimageurl  = Button('Select background image for the title bar', color_selected=settings.color_first, dark=settings.dark_mode, 
                                      text_weight=450, on_click=self.titleimageurlClick, width=template1panel.LEFT_WIDTH-10, height=40,
@@ -232,7 +232,7 @@ class PageConfigurator(v.Html):
     # Load state from file
     def onOpen(self):
         uj = UploadJson.UploadJson(self.output, onOK=self.onSelectedState, required_attributes=['appname', 'title'], attributes_width=80,
-                                  color=self.page.titlecolor, dark=self.page.titledark)
+                                   color=self.page.titlecolor, dark=self.page.titledark)
         uj.show()
         
     # Called when the UploadJson dialo-box is closed with the OK button
