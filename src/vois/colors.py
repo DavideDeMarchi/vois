@@ -26,20 +26,262 @@ import numpy as np
 import colorsys
 
 
-# Return the complementary color of an (r,g,b) tuple
-def complementary(rgb):
-    [r,g,b] = rgb
-    return (255-r,255-b,255-g)
+# Force a value into [valuemin, valuemax]
+def Normalize(value,valuemin,valuemax):
+    if value > valuemax:
+        return valuemax
+    elif value < valuemin:
+        return valuemin
+    return value
 
 
-# Return a lighter color of an (r,g,b) tuple
-def lighter(rgb, factor=0.25):
-    [r,g,b] = rgb
-    hlsval = list(colorsys.rgb_to_hls(r/255.0,g/255.0,b/255.0))
-    hlsval[1] *= (1.0 + factor)
-    hlsval[1] = min(1.0, max(0.0, hlsval[1]))
-    res = colorsys.hls_to_rgb(hlsval[0], hlsval[1], hlsval[2])
-    return (int(res[0]*255), int(res[1]*255), int(res[2]*255))
+# Returns a tuple of the complementary color (opposite color in the color wheel)
+def complementaryColor(rgb):
+    """
+    Given a tuple color (r,g,b) returns the complementary version of the input color (see: `Complementary color meaning <https://www.color-meanings.com/complementary-colors/>`_)
+
+    Parameters
+    ----------
+    rgb : tuple
+        Tuple of 3 integers representing the RGB components in the range [0,255]
+
+    Returns
+    -------
+        Tuple of 3 integers representing the output RGB components in the range [0,255]
+        
+    Example
+    -------
+    Display a palette of a random color followed by its complementary color::
+    
+        from vois import colors
+        from IPython.display import display
+        
+        col = colors.randomColor()
+        colcomp  = colors.rgb2hex(colors.complementaryColor(colors.string2rgb(col)))
+        display(colors.paletteImage([col, colcomp], interpolate=False))
+    
+    """
+    # Convert RGB (base 256) to HLS (between 0 and 1 )
+    HLS = list(colorsys.rgb_to_hls(rgb[0]/255, rgb[1]/255, rgb[2]/255))
+
+    # Change the Hue value to the Hue opposite
+    HueValue = HLS[0] * 360
+    HLS[0] = ((HueValue + 180) % 360)/360
+
+    # Convert HLS (between 0 and 1) to RGB (base 256)
+    return tuple(map(lambda x: round(x * 255), colorsys.hls_to_rgb(HLS[0], HLS[1], HLS[2])))
+
+
+# Returs a list of two colors as rgb tuples
+def triadicColor(rgb):
+    """
+    Given a tuple color (r,g,b) returns a list of two split triadic colors (see: `Triadic colors meaning <https://www.color-meanings.com/triadic-colors/>`_)
+
+    Parameters
+    ----------
+    rgb : tuple
+        Tuple of 3 integers representing the RGB components in the range [0,255]
+
+    Returns
+    -------
+        List of two tuples of 3 integers representing the output RGB components in the range [0,255]
+        
+    Example
+    -------
+    Display a palette showing an input random color and the two triadic colors::
+    
+        from vois import colors
+        from IPython.display import display
+        
+        col = colors.randomColor()
+        display(colors.paletteImage([col] + [colors.rgb2hex(x) for x in colors.triadicColor(colors.string2rgb(col))], interpolate=False))
+    
+    """
+    # Convert RGB (base 256) to HLS (between 0 and 1 )
+    HLS = list(colorsys.rgb_to_hls(rgb[0]/255, rgb[1]/255, rgb[2]/255))
+
+    # Find the first triadic Hue
+    FirstTriadicHue = ((HLS[0] * 360 + 120) % 360) / 360
+
+    # Find the second triadic Hue
+    SecondTriadicHue = ((HLS[0] * 360 + 240) % 360) / 360
+
+    ColorOutput1 = [FirstTriadicHue,  HLS[1], HLS[2]]
+    ColorOutput2 = [SecondTriadicHue, HLS[1], HLS[2]]
+
+    rgb1 = tuple(map(lambda x: round(x * 255), colorsys.hls_to_rgb(ColorOutput1[0],ColorOutput1[1],ColorOutput1[2])))
+    rgb2 = tuple(map(lambda x: round(x * 255), colorsys.hls_to_rgb(ColorOutput2[0],ColorOutput2[1],ColorOutput2[2])))
+
+    return [rgb1, rgb2]
+
+
+# Returs a list of two colors as rgb tuples
+def splitComplementaryColor(rgb):
+    """
+    Given a tuple color (r,g,b) returns a list of two split complementary colors (see: `Split complementary colors meaning <https://www.color-meanings.com/split-complementary-colors/>`_)
+
+    Parameters
+    ----------
+    rgb : tuple
+        Tuple of 3 integers representing the RGB components in the range [0,255]
+
+    Returns
+    -------
+        List of two tuples of 3 integers representing the output RGB components in the range [0,255]
+        
+    Example
+    -------
+    Display a palette showing an input random color and the two split complementary colors::
+    
+        from vois import colors
+        from IPython.display import display
+        
+        col = colors.randomColor()
+        display(colors.paletteImage([col] + [colors.rgb2hex(x) for x in colors.splitComplementaryColor(colors.string2rgb(col))], interpolate=False))
+    
+    """
+    # Convert RGB (base 256) to HLS (between 0 and 1 )
+    HLS = list(colorsys.rgb_to_hls(rgb[0]/255, rgb[1]/255, rgb[2]/255))
+
+    # Find the first triadic Hue
+    FirstSplitComplementaryHue = ((HLS[0] * 360 + 150) % 360) / 360
+
+    # Find the second triadic Hue
+    SecondSplitComplementaryHue = ((HLS[0] * 360 + 210) % 360) / 360
+
+    ColorOutput1 = [FirstSplitComplementaryHue,  HLS[1], HLS[2]]
+    ColorOutput2 = [SecondSplitComplementaryHue, HLS[1], HLS[2]]
+
+    rgb1 = tuple(map(lambda x: round(x * 255), colorsys.hls_to_rgb(ColorOutput1[0],ColorOutput1[1],ColorOutput1[2])))
+    rgb2 = tuple(map(lambda x: round(x * 255), colorsys.hls_to_rgb(ColorOutput2[0],ColorOutput2[1],ColorOutput2[2])))
+
+    return [rgb1, rgb2]
+
+
+# Returs a list of three colors as rgb tuples
+def tetradicColor(rgb):
+    """
+    Given a tuple color (r,g,b) returns a list of three tetradic colors (see: `Tetradic colors meaning <https://www.color-meanings.com/rectangular-tetradic-color-schemes/>`_)
+
+    Parameters
+    ----------
+    rgb : tuple
+        Tuple of 3 integers representing the RGB components in the range [0,255]
+
+    Returns
+    -------
+        List of three tuples of 3 integers representing the output RGB components in the range [0,255]
+        
+    Example
+    -------
+    Display a palette showing an input random color and the three tetradic colors::
+    
+        from vois import colors
+        from IPython.display import display
+        
+        col = colors.randomColor()
+        display(colors.paletteImage([col] + [colors.rgb2hex(x) for x in colors.tetradicColor(colors.string2rgb(col))], interpolate=False))
+    
+    """
+    # Convert RGB (base 256) to HLS (between 0 and 1 )
+    HLS = list(colorsys.rgb_to_hls(rgb[0]/255, rgb[1]/255, rgb[2]/255))
+
+    # Find the first tetradic Hue
+    FirstTetradicHue = ((HLS[0] * 360 + 60) % 360) / 360
+
+    # Find the second tetradic Hue
+    SecondTetradicHue = ((HLS[0] * 360 + 180) % 360) / 360
+
+    # Find the third tetradic Hue
+    ThirdTetradicHue = ((HLS[0] * 360 + 240) % 360) / 360
+
+    ColorOutput1 = [FirstTetradicHue,  HLS[1], HLS[2]]
+    ColorOutput2 = [SecondTetradicHue, HLS[1], HLS[2]]
+    ColorOutput3 = [ThirdTetradicHue,  HLS[1], HLS[2]]
+
+    rgb1 = tuple(map(lambda x: round(x * 255), colorsys.hls_to_rgb(ColorOutput1[0],ColorOutput1[1],ColorOutput1[2])))
+    rgb2 = tuple(map(lambda x: round(x * 255), colorsys.hls_to_rgb(ColorOutput2[0],ColorOutput2[1],ColorOutput2[2])))
+    rgb3 = tuple(map(lambda x: round(x * 255), colorsys.hls_to_rgb(ColorOutput3[0],ColorOutput3[1],ColorOutput3[2])))
+
+    return [rgb1, rgb2, rgb3]
+
+
+# Returs a list of two colors as rgb tuples
+def analogousColor(rgb):
+    """
+    Given a tuple color (r,g,b) returns a list of two analogous colors (see: `Analogous colors meaning <https://www.color-meanings.com/analogous-colors/>`_)
+
+    Parameters
+    ----------
+    rgb : tuple
+        Tuple of 3 integers representing the RGB components in the range [0,255]
+
+    Returns
+    -------
+        List of two tuples of 3 integers representing the output RGB components in the range [0,255]
+        
+    Example
+    -------
+    Display a palette showing an input random color and the two analogous colors::
+    
+        from vois import colors
+        from IPython.display import display
+        
+        col = colors.randomColor()
+        display(colors.paletteImage([col] + [colors.rgb2hex(x) for x in colors.analogousColor(colors.string2rgb(col))], interpolate=False))
+    
+    """
+	# Convert RGB (base 256) to HLS (between 0 and 1 )
+    HLS = list(colorsys.rgb_to_hls(rgb[0]/255, rgb[1]/255, rgb[2]/255))
+
+	# Find the first analogous Hue
+    FirstAnalogousHue = ((HLS[0] * 360 + 30) % 360) / 360
+
+    # Find the second analogous Hue
+    SecondAnalogousHue = ((HLS[0] * 360 - 30) % 360) / 360
+
+    ColorOutput1 = [FirstAnalogousHue,  HLS[1], HLS[2]]
+    ColorOutput2 = [SecondAnalogousHue, HLS[1], HLS[2]]
+
+    rgb1 = tuple(map(lambda x: round(x * 255), colorsys.hls_to_rgb(ColorOutput1[0],ColorOutput1[1],ColorOutput1[2])))
+    rgb2 = tuple(map(lambda x: round(x * 255), colorsys.hls_to_rgb(ColorOutput2[0],ColorOutput2[1],ColorOutput2[2])))
+
+    return [rgb1, rgb2]
+
+
+# Returs a tuple of darker (negative increment) or lighter color (positive increment)
+def monochromaticColor(rgb, increment=0.20):
+    """
+    Given a tuple color (r,g,b) returns a darker (if increment is negative) or lighter (if increment is positive) version of the input color (see: `Monochromatic colors meaning <https://www.color-meanings.com/monochromatic-color-schemes/>`_)
+
+    Parameters
+    ----------
+    rgb : tuple
+        Tuple of 3 integers representing the RGB components in the range [0,255]
+
+    increment : float, optional
+        Increment/decrement in lightness in [-1.0, 1.0] (default is 0.2)
+
+    Returns
+    -------
+        Tuple of 3 integers representing the output RGB components in the range [0,255]
+        
+    Example
+    -------
+    Display a palette of a random color followed by its darker and lighter version::
+    
+        from vois import colors
+        from IPython.display import display
+        
+        col = colors.randomColor()
+        coldarker  = colors.rgb2hex(colors.monochromaticColor(colors.string2rgb(col), increment=-0.25))
+        collighter = colors.rgb2hex(colors.monochromaticColor(colors.string2rgb(col), increment=0.25))
+        display(colors.paletteImage([col, coldarker, collighter], interpolate=False))
+    
+    """
+	# Convert RGB (base 256) to HSV (between 0 and 1)
+    HSV = list(colorsys.rgb_to_hsv(rgb[0]/255, rgb[1]/255, rgb[2]/255))
+    return tuple(map(lambda x: Normalize(round(x * 255),0,255), colorsys.hsv_to_rgb(HSV[0], HSV[1]-increment, HSV[2]+increment)))
 
 
 # Returns True if the (r,g,b) color id dark

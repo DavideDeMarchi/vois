@@ -82,12 +82,13 @@ class PageConfigurator(v.Html):
                                           dark=True, onchange=self.onSelectedTemplate, row=True, width=self.togglewidth, justify='start', paddingrow=self.paddingrow, tile=True)
 
         
-        self.titlecolor  = ColorPicker(color=settings.color_first,  width=80, height=30, rounded=False, on_change=self.titlecolorChange,  offset_x=True, offset_y=False)        
-        self.footercolor = ColorPicker(color=settings.color_second, width=80, height=30, rounded=False, on_change=self.footercolorChange, offset_x=True, offset_y=False)        
+        self.titlecolor  = ColorPicker(color=settings.color_first,  width=50, height=30, rounded=False, on_change=self.titlecolorChange,  offset_x=True, offset_y=False)        
+        self.footercolor = ColorPicker(color=settings.color_second, width=50, height=30, rounded=False, on_change=self.footercolorChange, offset_x=True, offset_y=False)        
         
-        self.footerlinked = toggle.toggle(0, ['', '', ''], dark=True, icons=['mdi-link-off', 'mdi-link-variant', 'mdi-link-variant-minus'], outlined=False,
-                                          tooltips=['Free selection of footer color', 'Footer color is the complementary of the title color', 'Footer color is the monochrome complementary of the title color'],
-                                          onchange=self.footerlinkedChange, row=True, width=self.togglewidth-16, height=30, justify='start', paddingrow=self.paddingrow, tile=True)
+        self.footerlinked = toggle.toggle(0, ['', '', '', ''], dark=True, icons=['mdi-link-off', 'mdi-link-variant', 'mdi-link-variant-minus', 'mdi-link-variant-plus'], outlined=False,
+                                          tooltips=['Free selection of footer color', 'Footer color is the complementary of the title color',
+                                                    'Footer color is a darker version of the title color', 'Footer color is a lighter version of the title color'],
+                                          onchange=self.footerlinkedChange, row=True, width=self.togglewidth-20, height=30, justify='start', paddingrow=self.paddingrow, tile=True)
         
         self.titledark = toggle.toggle(2, ['', '', ''], dark=True, icons=['mdi-alpha-w-box-outline', 'mdi-alpha-b-box-outline', 'mdi-auto-fix'],
                                        tooltips=['Display text in white color on the title bar', 'Display text in black color on the title bar', 'Automatically select text color for the title bar'],
@@ -276,15 +277,21 @@ class PageConfigurator(v.Html):
         if self.footerlinked.index == 1:     # complementary
             color = self.titlecolor.color
             colortuple = colors.string2rgb(color)
-            complementary = colors.complementary(colortuple)
+            complementary = colors.complementaryColor(colortuple)
             self.footercolor.color = colors.rgb2hex(complementary)
 
-        elif self.footerlinked.index == 2:   # monochrome lighter
+        elif self.footerlinked.index == 2:   # monochrome darker
             color = self.titlecolor.color
             colortuple = colors.string2rgb(color)
-            monochrome = colors.lighter(colortuple, 0.3333)
+            monochrome = colors.monochromaticColor(colortuple, -0.3)
             self.footercolor.color = colors.rgb2hex(monochrome)
-        
+
+        elif self.footerlinked.index == 3:   # monochrome lighter
+            color = self.titlecolor.color
+            colortuple = colors.string2rgb(color)
+            monochrome = colors.monochromaticColor(colortuple, 0.3)
+            self.footercolor.color = colors.rgb2hex(monochrome)
+            
         
     # Change of the footercolor property
     def footercolorChange(self):
