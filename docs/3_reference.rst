@@ -125,8 +125,9 @@ Vuetify package
  toggle
  tooltip
  treeview
- UploadImage
  upload
+ UploadImage
+ UploadJson
  
  
 To use the modules of the **Vuetify** package they have to be imported using code like::

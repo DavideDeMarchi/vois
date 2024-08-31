@@ -24,7 +24,7 @@ import ipyvuetify as v
 
 # Vois imports
 from vois import cssUtils, colors
-from vois.vuetify import settings, upload, dialogGeneric
+from vois.vuetify import settings, upload, dialogGeneric, dialogWait
 
 # Python imports
 from PIL import Image
@@ -63,8 +63,10 @@ class UploadImage():
         self.image    = None
         self.imageurl = ''
         
+        self.wait = None
+        
         self.preview = widgets.Output(layout=Layout(height='600px'))
-        self.u = upload.upload(accept=accept, label=label, onchange=self.onFileUpload, placeholder=message, multiple=False)
+        self.u = upload.upload(accept=accept, label=label, onchanging=self.onFileSelected, onchange=self.onFileUpload, placeholder=message, multiple=False)
 
         spacerY = v.Html(tag='div', style_='width: 0px; height: 20px;')
         self.content = v.Card(flat=True, class_='pa-0, ma-0 mt-n4 ml-4 mr-4', children=[widgets.VBox([self.u.draw(), spacerY, self.preview])])
@@ -78,6 +80,10 @@ class UploadImage():
                                     text='   ', color=self.color, dark=self.dark, titleheight=self.titleheight, width=self.width,
                                     show=True, addclosebuttons=True, addokcancelbuttons=True,
                                     fullscreen=False, content=[self.content], output=self.output)
+        
+    # Just after the file is selected
+    def onFileSelected(self):
+        self.wait = dialogWait.dialogWait(text='Uploading file...', output=self.output)
         
 
     # Selection of an image to upload
@@ -97,6 +103,9 @@ class UploadImage():
             self.image    = None
             self.imageurl = ''
             self.preview.clear_output()
+    
+        if self.wait is not None:
+            self.wait.close()
     
     
     # Selection done

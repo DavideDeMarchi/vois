@@ -21,10 +21,11 @@
 # Imports
 from ipywidgets import widgets
 import ipyvuetify as v
+import json
 
 # Vois imports
 from vois import colors
-from vois.vuetify import settings, toggle, ColorPicker, sliderFloat, UploadImage, Button, switch, tooltip
+from vois.vuetify import settings, toggle, ColorPicker, sliderFloat, UploadImage, Button, switch, tooltip, iconButton
 from vois.templates import template1panel, template2panels, template3panels
 
 
@@ -59,7 +60,8 @@ class PageConfigurator(v.Html):
         self.spacerY = v.Html(tag='div', style_='width:  0px; height: 10px;')
         self.spacer  = v.Html(tag='div', style_='width: 10px; height: 10px;')
 
-        self.card = v.Card(flat=True, width=template1panel.LEFT_WIDTH, min_width=template1panel.LEFT_WIDTH, max_width=template1panel.LEFT_WIDTH, height='400px', class_='pa-2 pt-4 ma-0')
+        self.card = v.Card(flat=True, width=template1panel.LEFT_WIDTH, min_width=template1panel.LEFT_WIDTH, max_width=template1panel.LEFT_WIDTH,
+                           height='400px', class_='pa-2 pt-4 ma-0', style_='overflow: auto;')
 
         # Widgets
         self.labelwidth   = 110
@@ -67,13 +69,19 @@ class PageConfigurator(v.Html):
         self.paddingrow   = 1
         self.biglabelsize = 15
         
-        self.appname     = v.TextField(label='Application name:', autofocus=True,  v_model=None, dense=False, color=settings.color_first, clearable=True, class_="pa-0 ma-0 mt-3")
-        self.pagetitle   = v.TextField(label='Page title:',       autofocus=False, v_model=None, dense=False, color=settings.color_first, clearable=True, class_="pa-0 ma-0 mt-3")
-        self.cardappname = v.Card(flat=True, width=template1panel.LEFT_WIDTH-80, max_width=template1panel.LEFT_WIDTH-80, children=[self.appname])
+        self.appname   = v.TextField(label='Application name:', autofocus=False, v_model=None, dense=False, color=settings.color_first, clearable=True, class_="pa-0 ma-0 mt-3 mr-3")
+        self.pagetitle = v.TextField(label='Page title:',       autofocus=False, v_model=None, dense=False, color=settings.color_first, clearable=True, class_="pa-0 ma-0 mt-3")
+        self.buttOpen  = iconButton.iconButton(icon='mdi-folder-open',  onclick=self.onOpen, tooltip='Load state from file', large=True)
+        self.buttSave  = iconButton.iconButton(icon='mdi-content-save', onclick=self.onSave, tooltip='Save current state to file', large=True)
+        
+        self.cardappname = v.Card(flat=True, width=template1panel.LEFT_WIDTH, max_width=template1panel.LEFT_WIDTH-80,
+                                  children=[widgets.HBox([self.appname, self.buttOpen.draw(), self.buttSave.draw()])])
+        
         self.appname.on_event(  'change',      self.appnameChange)
         self.appname.on_event(  'click:clear', self.appnameClear)
         self.pagetitle.on_event('change',      self.pagetitleChange)
         self.pagetitle.on_event('click:clear', self.pagetitleClear)
+        
         
         self.panelsLabel  = label('Page format: ', size=self.biglabelsize, weight=500, width=self.labelwidth)
         self.togglePanels = toggle.toggle(0,
@@ -124,11 +132,12 @@ class PageConfigurator(v.Html):
         self.creditswidth = sliderFloat.sliderFloat(120.0, text='Credits logo width:', minvalue=20.0, maxvalue=300.0, maxint=280, showpercentage=False, decimals=0,
                                                  labelwidth=self.labelwidth-10, sliderwidth=150, resetbutton=True, showtooltip=True, onchange=self.creditswidthChange)
 
-        self.show_back = switch.switch(True, 'Back button',  inset=True, dense=True, onchange=self.onshow_backChange)
-        self.left_back = switch.switch(True, 'Back on left', inset=True, dense=True, onchange=self.onleft_backChange)
-        self.show_help = switch.switch(True, 'Help button',  inset=True, dense=True, onchange=self.onshow_helpChange)
+        self.show_back    = switch.switch(True, 'Show Back button',    inset=True, dense=True, onchange=self.onshow_backChange)
+        self.left_back    = switch.switch(True, 'Back button on the Left',    inset=True, dense=True, onchange=self.onleft_backChange)
+        self.show_help    = switch.switch(True, 'Show Help button',    inset=True, dense=True, onchange=self.onshow_helpChange)
+        self.show_credits = switch.switch(True, 'Show Credits logo', inset=True, dense=True, onchange=self.onshow_creditsChange)
         
-        self.copyrighttext = v.TextField(label='Copyright text:', autofocus=True,  v_model=None, dense=False, color=settings.color_first, clearable=True, class_="pa-0 ma-0 mt-3")
+        self.copyrighttext = v.TextField(label='Copyright text:', autofocus=False, v_model=None, dense=False, color=settings.color_first, clearable=True, class_="pa-0 ma-0 mt-3")
         self.copyrighttext.on_event('change',      self.copyrighttextChange)
         self.copyrighttext.on_event('click:clear', self.copyrighttextClear)
         
@@ -160,8 +169,9 @@ class PageConfigurator(v.Html):
                                  self.creditswidth.draw(),
                                  self.spacerY,
                                  widgets.HBox([tooltip.tooltip('Add a back button in the title bar to close the page',self.show_back.draw()),
-                                               tooltip.tooltip('Position the back button on the left side of the title bar',self.left_back.draw()),
-                                               tooltip.tooltip('Add a help button in the title bar',self.show_help.draw())]),
+                                               tooltip.tooltip('Position the back button on the left side of the title bar',self.left_back.draw())]),
+                                 widgets.HBox([tooltip.tooltip('Add a help button in the title bar',self.show_help.draw()),
+                                               tooltip.tooltip('Display credits logo on the right side of the title bar',self.show_credits.draw())]),
                                  self.spacerY,
                                  self.copyrighttext,
                                 ])
@@ -184,8 +194,56 @@ class PageConfigurator(v.Html):
         self.appname.v_model       = self.page.appname
         self.pagetitle.v_model     = self.page.title
         self.copyrighttext.v_model = self.page.copyrighttext
+        
+        # Set the initial focus on the appname widget
+        #self.appname.focus()
+        
 
+    # Load state from file
+    def onOpen(self):
+        with open('sample.json') as file:
+            state = json.load(file)
+            
+            # Set the page state (does a refresh if the page is open)
+            self.page.state = state
+        
+            # Set the state of the confuguration widgets
+            self.togglePanels.value    = state['panelsvalue']
+            self.appname.v_model       = self.page.appname
+            self.pagetitle.v_model     = self.page.title
+            self.titlecolor.color      = self.page.titlecolor
+            self.titledark.value       = state['titledarkvalue']
+            self.titleheight.value     = self.page.titleheight
+            self.footercolor.color     = self.page.footercolor
+            self.footerlinked.value    = state['footerlinkedvalue']
+            self.footerdark.value      = state['footerdarkvalue']
+            self.footerheight.value    = self.page.footerheight
+            self.show_back.value       = self.page.show_back
+            self.left_back.value       = self.page.left_back
+            self.show_help.value       = self.page.show_help
+            self.show_credits.value    = self.page.show_credits
+            self.logowidth.value       = self.page.logowidth
+            self.creditswidth.value    = self.page.creditswidth
+            self.copyrighttext.v_model = self.page.copyrighttext
+            
+        
+        
+    # Save current state to file
+    def onSave(self):
+        
+        # Read the state from the page
+        state = self.page.state
     
+        # Add dditional states from the PageCOnfigurator
+        state['panelsvalue']       = self.togglePanels.value
+        state['titledarkvalue']    = self.titledark.value
+        state['footerlinkedvalue'] = self.footerlinked.value
+        state['footerdarkvalue']   = self.footerdark.value
+    
+        with open("sample.json", "w") as file:
+            json.dump(state, file, indent=4)
+            
+            
     # Forced close
     def on_force_close(self, *args):
         self.output.clear_output()
@@ -243,7 +301,10 @@ class PageConfigurator(v.Html):
         else:
             self.page.transition = 'dialog-bottom-transition'
 
-    
+        # Dimension the left card
+        self.card.height = self.card.min_height = self.card.max_height = self.page.height
+
+        
     # Change of the titlecolor property
     def titlecolorChange(self):
         color = self.titlecolor.color
@@ -254,6 +315,8 @@ class PageConfigurator(v.Html):
         # widgets color
         self.appname.color                    = color
         self.pagetitle.color                  = color
+        self.buttOpen.color                   = color
+        self.buttSave.color                   = color
         self.page.toggleBasemap.colorselected = color
         self.togglePanels.colorselected       = color
         self.titledark.colorselected          = color
@@ -270,6 +333,7 @@ class PageConfigurator(v.Html):
         self.show_back.switch.color           = color
         self.left_back.switch.color           = color
         self.show_help.switch.color           = color
+        self.show_credits.switch.color        = color
         self.titledarkChange(self.titledark.value)
                 
         # labels color
@@ -470,3 +534,8 @@ class PageConfigurator(v.Html):
     # show_help change
     def onshow_helpChange(self, flag):
         self.page.show_help = flag
+
+    # show_credits change
+    def onshow_creditsChange(self, flag):
+        self.page.show_credits = flag
+        

@@ -55,7 +55,9 @@ class upload():
     show_progress : bool, optional
         Flag to show a progress bar while uploading (default is True)
     onchange : function, optional
-        Python function to call when the user selects one or more files to upload. The function will receive a parameter of type list containing the files to upload
+        Python function to call when the user has selected  one or more files to upload. The function will receive a parameter of type list containing the files to upload
+    onchanging : function, optional
+        Python function to call just after the user selects one or more files to upload. The function will receive no parameters
             
     Example
     -------
@@ -80,12 +82,13 @@ class upload():
     # Initialization
     def __init__(self, accept='', label='', placeholder='', color=settings.color_first,
                  width="100%", margins="pa-0 ma-0",
-                 multiple=False, show_progress=True, onchange=None):
+                 multiple=False, show_progress=True, onchange=None, onchanging=None):
 
-        self._color   = color
-        self.width    = width
-        self.margins  = margins
-        self.onchange = onchange
+        self._color     = color
+        self.width      = width
+        self.margins    = margins
+        self.onchange   = onchange
+        self.onchanging = onchanging
         
         self.file_input = FileInput(accept=accept, color=self._color, multiple=multiple, show_progress=show_progress, 
                                     label=label, placeholder=placeholder)
@@ -105,7 +108,11 @@ class upload():
         
     # Manage onchange event
     def __internal_on_file_upload(self, change):
+        if self.onchanging:
+            self.onchanging()
+            
         files = self.file_input.get_files()
+        
         if self.onchange:
             self.onchange(files)
     

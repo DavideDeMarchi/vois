@@ -256,14 +256,17 @@ class page():
         except:
             pass
         
+        self.dlg = None
+        
     
     # Quick open and close of the page (to be called when the titleheight or the footerheight is changed)
     def refresh(self):
-        self.close()
-        oldtransition = self.transition
-        self.transition = 'dialog-top-transition'
-        self.open()
-        self.transition = oldtransition
+        if self.dlg is not None:
+            self.close()
+            oldtransition = self.transition
+            self.transition = 'dialog-top-transition'
+            self.open()
+            self.transition = oldtransition
         
         
     # Add a custom buttom to the page (before the call to create!)
@@ -876,6 +879,7 @@ class page():
             
         if 'titleheight' in statusdict or 'footerheight' in statusdict:
             self.refresh()
+        
         
     #####################################################################################################################################################
     # Initialization
