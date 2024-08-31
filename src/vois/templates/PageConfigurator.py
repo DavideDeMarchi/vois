@@ -102,12 +102,13 @@ class PageConfigurator(v.Html):
         
         self.appname   = v.TextField(label='Application name:', autofocus=False, v_model=None, dense=False, color=settings.color_first, clearable=True, class_="pa-0 ma-0 mt-3 mr-3")
         self.pagetitle = v.TextField(label='Page title:',       autofocus=False, v_model=None, dense=False, color=settings.color_first, clearable=True, class_="pa-0 ma-0 mt-3")
-        self.buttOpen  = iconButton.iconButton(icon='mdi-folder-open',  onclick=self.onOpen,  tooltip='Load state from file', large=True)
-        self.buttSave  = iconButton.iconButton(icon='mdi-content-save', onclick=self.onSave,  tooltip='Save current state to file', large=True)
-        self.buttReset = iconButton.iconButton(icon='mdi-backspace',    onclick=self.onReset, tooltip='Reset page to default state', large=True)
+        self.buttOpen  = iconButton.iconButton(icon='mdi-folder-open',  onclick=self.onOpen,  tooltip='Load state from file',                      margins='pa-0 ma-0 mt-3 mr-2')
+        self.buttSave  = iconButton.iconButton(icon='mdi-content-save', onclick=self.onSave,  tooltip='Save current state to file',                margins='pa-0 ma-0 mt-3 mr-2')
+        self.buttCode  = iconButton.iconButton(icon='mdi-file-code',    onclick=self.onCode,  tooltip='Generate and download page code in Python', margins='pa-0 ma-0 mt-3 mr-2')
+        self.buttReset = iconButton.iconButton(icon='mdi-backspace',    onclick=self.onReset, tooltip='Reset page to default state',               margins='pa-0 ma-0 mt-3 mr-2')
         
-        self.cardappname = v.Card(flat=True, width=template1panel.LEFT_WIDTH, max_width=template1panel.LEFT_WIDTH-80,
-                                  children=[widgets.HBox([self.appname, self.buttOpen.draw(), self.buttSave.draw(), self.buttReset.draw()])])
+        self.cardappname = v.Card(flat=True, width=template1panel.LEFT_WIDTH-60, max_width=template1panel.LEFT_WIDTH-60,
+                                  children=[widgets.HBox([self.appname, self.buttOpen.draw(), self.buttSave.draw(), self.buttCode.draw(), self.buttReset.draw()])])
         
         self.appname.on_event(  'change',      self.appnameChange)
         self.appname.on_event(  'click:clear', self.appnameClear)
@@ -295,7 +296,12 @@ class PageConfigurator(v.Html):
         txt = json.dumps(state)
         download.downloadText(txt, fileName=filename)
             
-            
+    
+    # Save Python page code    
+    def onCode(self):
+        pass
+    
+        
     # Reset page to initial state
     def onReset(self):
         self.onSelectedState(self.reset_state)
@@ -374,6 +380,7 @@ class PageConfigurator(v.Html):
         self.pagetitle.color                  = color
         self.buttOpen.color                   = color
         self.buttSave.color                   = color
+        self.buttCode.color                   = color
         self.buttReset.color                  = color
         self.page.toggleBasemap.colorselected = color
         self.togglePanels.colorselected       = color
