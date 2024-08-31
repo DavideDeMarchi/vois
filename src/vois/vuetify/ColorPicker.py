@@ -34,6 +34,8 @@ class ColorPicker(v.Menu):
         Initial color selected on the widget expressed in hexadecimal format '#RRGGBB' (default is '#FF0000')
     dark : bool, optional
         If True, the popup color selection will have a dark background (default is settings.dark_mode)
+    dark_text : bool, optional
+        If True, the text on the colored button is displayed in white, if False in black. If dark_text is None, the color of the text is automatically selected based on the currently selected color (default is None)
     width : int, optional
         Width of the widget in pixels (default is 40)
     height : int, optional
@@ -117,6 +119,7 @@ class ColorPicker(v.Menu):
     def __init__(self,
                  color: str = "#FF0000",
                  dark: bool = settings.dark_mode,
+                 dark_text: bool = None,
                  width: int = 40,
                  height: int = 30,
                  rounded: bool = False,
@@ -136,6 +139,7 @@ class ColorPicker(v.Menu):
 
         self._color = str(color).upper()
         self.dark = dark
+        self._dark_text = dark_text
         self.width = width
         self.height = height
         self.rounded = rounded
@@ -157,9 +161,14 @@ class ColorPicker(v.Menu):
             von = ''
         else:
             von = 'menuData.on'
+            
+        if self._dark_text is None:
+            darktext = self.textDark(self._color)
+        else:
+            darktext = self._dark_text
+            
         self.button = v.Btn(v_on=von, depressed=True, large=False, dense=True, class_='pa-0 ma-0', color=self._color,
-                            rounded=self.rounded, height=self.height, width=self.width, min_width=self.width,
-                            dark=self.textDark(self._color), 
+                            rounded=self.rounded, height=self.height, width=self.width, min_width=self.width, dark=darktext,
                             style_='font-weight: %d; text-transform: none' % self.text_weight, children=[self.text])
 
         self.p = v.ColorPicker(value=self._color, flat=True, class_="pa-0 ma-0", style_="min-width: 300px;",
@@ -183,7 +192,8 @@ class ColorPicker(v.Menu):
         if data.upper() != self._color.upper():
             self._color = data.upper()
             self.button.color = self._color
-            self.button.dark = self.textDark(self._color)
+            if self._dark_text is None:
+                self.button.dark = self.textDark(self._color)
             if self.on_change:
                 if self.argument is None:
                     self.on_change()
@@ -224,7 +234,8 @@ class ColorPicker(v.Menu):
             self._color = c
             self.p.value = self._color
             self.button.color = self._color
-            self.button.dark = self.textDark(self._color)
+            if self._dark_text is None:
+                self.button.dark = self.textDark(self._color)
             if self.on_change:
                 if self.argument is None:
                     self.on_change()
@@ -244,7 +255,7 @@ class ColorPicker(v.Menu):
 
         Example
         -------
-        Programmatically change the date::
+        Programmatically change the disabled state::
             
             picker.disabled = True
             print(picker.disabled)
@@ -262,3 +273,36 @@ class ColorPicker(v.Menu):
             von = 'menuData.on'
             self.button.children = [self.text]
         self.button.v_on = von
+
+        
+    # dark_text property
+    @property
+    def dark_text(self):
+        """
+        Get/Set the dark flag for the button that displayes the selected color. If True, the text on the colored button is displayed in white, if False in black. If dark_text is None, the color of the text is automatically selected based on the currently selected color
+        
+        Returns
+        --------
+        flag : bool
+            If True, the text on the colored button is displayed in white, if False in black. If dark_text is None, the color of the text is automatically selected based on the currently selected color
+
+        Example
+        -------
+        Programmatically change the dark_text property::
+            
+            picker.dark_text = True
+            print(picker.dark_text)
+        
+        """
+        return self._dark_text
+
+    @dark_text.setter
+    def dark_text(self, flag):
+        self._dark_text = bool(flag)
+        
+        if self._dark_text is None:
+            darktext = self.textDark(self._color)
+        else:
+            darktext = self._dark_text
+        self.button.dark = darktext
+        

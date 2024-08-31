@@ -24,7 +24,7 @@ import ipyvuetify as v
 
 # Vois imports
 from vois import colors
-from vois.vuetify import settings, toggle, ColorPicker, sliderFloat, UploadImage, Button, switch
+from vois.vuetify import settings, toggle, ColorPicker, sliderFloat, UploadImage, Button, switch, tooltip
 from vois.templates import template1panel, template2panels, template3panels
 
 
@@ -159,7 +159,9 @@ class PageConfigurator(v.Html):
                                  self.logocreditsurl,
                                  self.creditswidth.draw(),
                                  self.spacerY,
-                                 widgets.HBox([self.show_back.draw(), self.left_back.draw(), self.show_help.draw()]),
+                                 widgets.HBox([tooltip.tooltip('Add a back button in the title bar to close the page',self.show_back.draw()),
+                                               tooltip.tooltip('Position the back button on the left side of the title bar',self.left_back.draw()),
+                                               tooltip.tooltip('Add a help button in the title bar',self.show_help.draw())]),
                                  self.spacerY,
                                  self.copyrighttext,
                                 ])
@@ -338,6 +340,7 @@ class PageConfigurator(v.Html):
         self.logoappurl.dark         = flag
         self.logocreditsurl.dark     = flag
         self.page.toggleBasemap.dark = flag
+        self.footercolor.dark_text   = flag
                 
             
     # Change of the footerdark property
