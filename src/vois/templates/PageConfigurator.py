@@ -374,19 +374,19 @@ class %s(%s.%s):
 
     # Clicked the application logo
     def on_logoapp(self):
-        dialogMessage.dialogMessage(title=self.appname,
+        dialogMessage.dialogMessage(title='Info on ' + self.appname, titleheight=36,
                                     text='Text to customise for info on the application<br>Add text here or open a PDF file',
                                     addclosebuttons=True, show=True, width=400, output=self.output)
         
     # Clicked the "Help" button
     def on_help(self):
-        dialogMessage.dialogMessage(title='Help',
+        dialogMessage.dialogMessage(title='Help', titleheight=36,
                                     text='Text to customise for the application help<br>Add text here or open a PDF file',
                                     addclosebuttons=True, show=True, width=400, output=self.output)
     
     # Clicked the credits logo
     def on_credits(self):
-        dialogMessage.dialogMessage(title=self.appname,
+        dialogMessage.dialogMessage(title='Credits for ' + self.appname, titleheight=36,
                                     text='Text to customise for the credits info<br>Add text here or open a PDF file',
                                     addclosebuttons=True, show=True, width=400, output=self.output)
                                     
@@ -396,6 +396,7 @@ class %s(%s.%s):
 
     # Create sample widgets on the Left panel
     def createLeft(self):
+        super().createLeft()
 
         # Create sample widgets
         spacer  = v.Html(tag='div', style_='width: 10px; height: 10px;')
