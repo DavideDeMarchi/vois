@@ -35,8 +35,8 @@ class colorTheoryPopup():
         self.picker = picker
         self._color = self.picker.color
 
-        card_width  = 560
-        card_height = 300
+        card_width  = 564
+        card_height = 320
 
         self.card  = v.Card(flat=True, width=card_width, height=card_height, class_='pa-2 ma-0')
         self.popup = popup.popup(self.card, '', text=False, outlined=False, icon='mdi-palette', color='#333333', rounded=False,
@@ -46,6 +46,8 @@ class colorTheoryPopup():
     
     # Update the content of the card to be dispalyed when hover on the popup
     def updateCard(self):
+        l_title = self.label('Color theory helpers:', width=300, weight=550)
+        
         l_compl = self.label('Complementary colors:', width=160)
         c_col   = self.colorcard(self._color)
         c_compl = self.colorcard(colors.rgb2hex(colors.complementaryColor(colors.string2rgb(self._color))))
@@ -85,15 +87,21 @@ class colorTheoryPopup():
         c_mono4 = self.colorcard(colors.rgb2hex(colors.monochromaticColor(colors.string2rgb(self._color), increment= 0.2)))
         c_mono5 = self.colorcard(colors.rgb2hex(colors.monochromaticColor(colors.string2rgb(self._color), increment= 0.4)))
         c_mono6 = self.colorcard(colors.rgb2hex(colors.monochromaticColor(colors.string2rgb(self._color), increment= 0.6)))
-        self.card.children = [
-            widgets.VBox([
+        
+        w1 = widgets.VBox([
+                l_title,
                 widgets.HBox([l_compl, c_col, c_compl]),
                 widgets.HBox([l_tri,   c_col, c_tri1, c_tri2]),
                 widgets.HBox([l_split, c_col, c_split1, c_split2]),
+        ])
+            
+        self.card.children = [
+            widgets.VBox([
+                widgets.HBox([w1, v.Html(tag='div', style_='width: 84px;'), v.Img(src=colors.colorWheel, width=130, height=130)]),
                 widgets.HBox([l_tet,   c_col, c_tet1, c_tet2, c_tet3, c_tet4]),
                 widgets.HBox([l_squ,   c_col, c_squ1, c_squ2, c_squ3]),
                 widgets.HBox([l_ana,   c_col, c_ana1, c_ana2]),
-                widgets.HBox([l_mono,  c_mono1, c_mono2, c_mono3, c_col, c_mono4, c_mono5, c_mono6]),
+                widgets.HBox([l_mono,  c_mono1, c_mono2, c_mono3, c_col, c_mono4, c_mono5, c_mono6])
             ])
         ]
         
@@ -126,7 +134,7 @@ class colorTheoryPopup():
         
         
     # Creation of a label
-    def label(self, text, class_='pa-0 ma-0 mt-1 mr-3 mb-4', size=14, weight=400, color='#000000', width=None):
+    def label(self, text, class_='pa-0 ma-0 mr-3 mb-4', size=14, weight=400, color='#000000', width=None):
         lab = v.Html(tag='div', children=[text], class_=class_)
         if width is None: lab.style_ = 'font-size: %dpx; font-weight: %d; color: %s; overflow: hidden;'%(size,weight,color)
         else:             lab.style_ = 'font-size: %dpx; font-weight: %d; color: %s;  overflow: hidden; width: %dpx'%(size,weight,color,int(width))
