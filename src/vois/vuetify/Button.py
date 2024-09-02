@@ -204,6 +204,7 @@ class Button(v.Html):
         self.color_selected = color_selected
         self.color_unselected = color_unselected
         self._dark = dark
+        self._rounded = rounded
 
         self._icon = icon
 
@@ -242,7 +243,7 @@ class Button(v.Html):
                        children=childs,
                        style_='font-family: %s; font-size: 17; font-weight: %d; text-transform: none; ' % (
                            fontsettings.font_name, text_weight) + style_,
-                       rounded=rounded)  # TODO if we want them to change at run time we need to set the properties and reload style_
+                       rounded=self._rounded)
 
         self.b.on_event('click', self.__internal_onclick)
         self.b.on_event('dblclick', self.__internal_ondblclick)
@@ -466,4 +467,28 @@ class Button(v.Html):
                                  color=self.icon_color, children=[self._icon])
                 self.b.children = [newicon if x == item else x for x in self.b.children]
                 break
+        
+    @property
+    def rounded(self):
+        return self._dark
+
+    @rounded.setter
+    def rounded(self, flag):
+        """
+        Change the rounded state for the button
+
+        Example
+        -------
+        Creation of a button and programmatically change its rounded state::
+
+            from vois.vuetify import settings, Button
+
+            b = Button('Test button', text_weight=450, width=250, height=46,
+                       selected=True, rounded=True)
+            display(b)
+            b.rounded = False
+
+        """
+        self._rounded = flag
+        self.b.rounded = self._rounded
         

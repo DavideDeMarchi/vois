@@ -81,7 +81,8 @@ class PageConfigurator(v.Html):
             'panelsvalue':       0,
             'titledarkvalue':    2,
             'footerlinkedvalue': 0,
-            'footerdarkvalue':   2
+            'footerdarkvalue':   2,
+            'button_rounded':    True
         }
         
         
@@ -149,19 +150,19 @@ class PageConfigurator(v.Html):
         self.upload = UploadImage.UploadImage(self.output, width=620)
         
         self.titleimageurl  = Button('Select background image for the title bar', color_selected=settings.color_first, dark=settings.dark_mode, 
-                                     text_weight=450, on_click=self.titleimageurlClick, width=template1panel.LEFT_WIDTH-10, height=40,
-                                     tooltip='Click to select an image to use as background on the title bar', selected=True, rounded=False)
+                                     text_weight=450, on_click=self.titleimageurlClick, width=template1panel.LEFT_WIDTH-16, height=40,
+                                     tooltip='Click to select an image to use as background on the title bar', selected=True, rounded=self.reset_state['button_rounded'])
 
         self.logoappurl     = Button('Select image for the application logo', color_selected=settings.color_first, dark=settings.dark_mode, 
-                                     text_weight=450, on_click=self.logoappurlClick, width=template1panel.LEFT_WIDTH-10, height=40,
-                                     tooltip='Click to select an image to use as application logo on the left side of the title bar', selected=True, rounded=False)
+                                     text_weight=450, on_click=self.logoappurlClick, width=template1panel.LEFT_WIDTH-16, height=40,
+                                     tooltip='Click to select an image to use as application logo on the left side of the title bar', selected=True, rounded=self.reset_state['button_rounded'])
         
         self.logowidth = sliderFloat.sliderFloat(self.reset_state['logowidth'], text='Application logo width:', minvalue=20.0, maxvalue=200.0, maxint=180, showpercentage=False, decimals=0,
                                                  labelwidth=self.labelwidth-10, sliderwidth=150, resetbutton=True, showtooltip=True, onchange=self.logowidthChange)
         
         self.logocreditsurl = Button('Select image for the credits logo', color_selected=settings.color_first, dark=settings.dark_mode, 
-                                     text_weight=450, on_click=self.logocreditsurlClick, width=template1panel.LEFT_WIDTH-10, height=40,
-                                     tooltip='Click to select an image to use as credits logo on the right side of the title bar', selected=True, rounded=False)
+                                     text_weight=450, on_click=self.logocreditsurlClick, width=template1panel.LEFT_WIDTH-16, height=40,
+                                     tooltip='Click to select an image to use as credits logo on the right side of the title bar', selected=True, rounded=self.reset_state['button_rounded'])
         
         self.creditswidth = sliderFloat.sliderFloat(self.reset_state['creditswidth'], text='Credits logo width:', minvalue=20.0, maxvalue=300.0, maxint=280, showpercentage=False, decimals=0,
                                                  labelwidth=self.labelwidth-10, sliderwidth=150, resetbutton=True, showtooltip=True, onchange=self.creditswidthChange)
