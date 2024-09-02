@@ -877,7 +877,16 @@ class page():
         for key, value in statusdict.items():
             setattr(self, key, value)
             
-        if 'titleheight' in statusdict or 'footerheight' in statusdict:
+        doRefresh = False
+        if 'titleheight' in statusdict:
+            if statusdict['titleheight'] != self.titleheight:
+                doRefresh = True
+            
+        if 'footerheight' in statusdict:
+            if statusdict['footerheight'] != self.footerheight:
+                doRefresh = True
+        
+        if doRefresh:
             self.refresh()
         
         

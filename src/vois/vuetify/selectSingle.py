@@ -61,6 +61,8 @@ class selectSingle():
         Type of the new values that the user can add in case newvalues_enabled is True (default is 'text')
     colorbackground : bool, optional
         Flag that controls the filling of the widget background with color when a value of the list is selected (default is False)
+    color : str, optional
+        Foreground color of the widget (default is settings.color_first)
             
     Example
     -------
@@ -93,7 +95,7 @@ class selectSingle():
     
     # Initialization
     def __init__(self, label, values, selection='', mapping=None, reverse_mapping=None, width=300, onchange=None, clearable=True, marginy=1,
-                       newvalues_enabled=False, newvalues_type='text', colorbackground=False):
+                       newvalues_enabled=False, newvalues_type='text', colorbackground=False, color=settings.color_first):
         
         self.label           = label
         self.values          = values
@@ -106,11 +108,12 @@ class selectSingle():
         self.value = selection
         
         self.colorbackground = colorbackground
+        self._color          = color
         
         color,backcolor = self.__getColors()
         if newvalues_enabled:
             self.select = v.Combobox(v_model=self._value, label=self.label, dense=True, solo=False, outlined=True, multiple=False, chips=False, clearable=clearable, 
-                                     item_color=settings.color_first, color=color, class_='pa-0 mx-0 my-%d mb-n4' % marginy,
+                                     item_color=color, color=color, class_='pa-0 mx-0 my-%d mb-n4' % marginy,
                                      background_color=backcolor,
                                      items=self.values, style_='max-width: %dpx; font-family: %s; font-weight:400; text-transform: none' % (self.width, fontsettings.font_name),
                                      type_=newvalues_type, autofocus=False, disabled=False)
@@ -118,7 +121,7 @@ class selectSingle():
             #self.select.on_event('change', self.__internal_onchange)
         else:
             self.select = v.Select(v_model=self._value, label=self.label, dense=True, solo=False, outlined=True, multiple=False, chips=False, clearable=clearable, 
-                                   item_color=settings.color_first, color=color, class_='pa-0 mx-0 my-%d mb-n4' % marginy,
+                                   item_color=color, color=color, class_='pa-0 mx-0 my-%d mb-n4' % marginy,
                                    background_color=backcolor, # menu_props="{ auto: true, maxHeight: 600 }",  # menu_props seems not working!
                                    items=self.values, style_='max-width: %dpx; font-family: %s; font-weight:400; text-transform: none' % (self.width, fontsettings.font_name), disabled=False)
         
@@ -126,11 +129,11 @@ class selectSingle():
         
         
     def __getColors(self):
-        color     = settings.color_first
+        color     = self._color
         backcolor = 'white'
         if self.colorbackground and not self._value is None and len(str(self._value)) > 0 and self._value in self.values:
             color     = settings.select_textcolor
-            backcolor = settings.color_first
+            backcolor = self._color
         return color,backcolor
         
         
@@ -200,3 +203,34 @@ class selectSingle():
     @disabled.setter
     def disabled(self, flag):
         self.select.disabled = flag
+        
+
+    # color property
+    @property
+    def color(self):
+        """
+        Get/Set the widget color.
+        
+        Returns
+        --------
+        c : str
+            widget color
+
+        Example
+        -------
+        Programmatically change the widget color::
+            
+            s.color = '#00FF00'
+            print(s.color)
+        
+        """
+        return self._color
+
+    @color.setter
+    def color(self, c):
+        if isinstance(c, str):
+            self._color = c
+            color,backcolor = self.__getColors()
+            self.select.color     = color
+            self.background_color = backcolor
+        

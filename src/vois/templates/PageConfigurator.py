@@ -25,7 +25,7 @@ import json
 
 # Vois imports
 from vois import colors, download
-from vois.vuetify import settings, toggle, ColorPicker, sliderFloat, UploadImage, UploadJson, Button, switch, tooltip, iconButton, dialogGeneric
+from vois.vuetify import settings, toggle, ColorPicker, sliderFloat, UploadImage, UploadJson, Button, switch, tooltip, iconButton, dialogGeneric, selectSingle
 from vois.templates import template1panel, template2panels, template3panels
 
 
@@ -97,19 +97,24 @@ class PageConfigurator(v.Html):
 
         # Widgets
         self.labelwidth   = 96
-        self.togglewidth  = 50
+        self.togglewidth  = 46
         self.paddingrow   = 1
         self.biglabelsize = 15
         
         self.appname   = v.TextField(label='Application name:', autofocus=False, v_model=None, dense=False, color=settings.color_first, clearable=True, class_="pa-0 ma-0 mt-3 mr-3")
-        self.pagetitle = v.TextField(label='Page title:',       autofocus=False, v_model=None, dense=False, color=settings.color_first, clearable=True, class_="pa-0 ma-0 mt-3")
         self.buttOpen  = iconButton.iconButton(icon='mdi-folder-open',  onclick=self.onOpen,  tooltip='Load state from file',                      margins='pa-0 ma-0 mt-3 mr-2')
         self.buttSave  = iconButton.iconButton(icon='mdi-content-save', onclick=self.onSave,  tooltip='Save current state to file',                margins='pa-0 ma-0 mt-3 mr-2')
         self.buttCode  = iconButton.iconButton(icon='mdi-file-code',    onclick=self.onCode,  tooltip='Generate and download page code in Python', margins='pa-0 ma-0 mt-3 mr-2')
         self.buttReset = iconButton.iconButton(icon='mdi-backspace',    onclick=self.onReset, tooltip='Reset page to default state',               margins='pa-0 ma-0 mt-3 mr-2')
         
-        self.cardappname = v.Card(flat=True, width=template1panel.LEFT_WIDTH-60, max_width=template1panel.LEFT_WIDTH-60,
+        self.cardappname = v.Card(flat=True, width=template1panel.LEFT_WIDTH-46, max_width=template1panel.LEFT_WIDTH-46,
                                   children=[widgets.HBox([self.appname, self.buttOpen.draw(), self.buttSave.draw(), self.buttCode.draw(), self.buttReset.draw()])])
+        
+        self.pagetitle  = v.TextField(label='Page title:', autofocus=False, v_model=None, dense=False, color=settings.color_first, clearable=True, class_="pa-0 ma-0 mt-3 mr-3", style_='width: 246px; min_width: 246px;')
+        self.transition = selectSingle.selectSingle('Open animation:', ['None', 'Top', 'Bottom'], selection='Bottom', clearable =False, width=120, onchange=None)
+        
+        self.cardpagetitle = v.Card(flat=True, width=template1panel.LEFT_WIDTH, max_width=template1panel.LEFT_WIDTH,
+                                    children=[widgets.HBox([self.pagetitle, self.transition.draw()])])
         
         self.appname.on_event(  'change',      self.appnameChange)
         self.appname.on_event(  'click:clear', self.appnameClear)
@@ -179,7 +184,7 @@ class PageConfigurator(v.Html):
         
         self.card.children = [widgets.VBox([
                                  self.cardappname,
-                                 self.pagetitle,
+                                 self.cardpagetitle,
                                  self.spacerY,
                                  widgets.HBox([self.panelsLabel, self.togglePanels.draw()]),
                                  self.spacerY,
@@ -470,6 +475,7 @@ p.open()'''%(self.titlecolor.color, self.footercolor.color, str(self.rounded.val
         # widgets color
         self.appname.color                    = color
         self.pagetitle.color                  = color
+        self.transition.color
         self.buttOpen.color                   = color
         self.buttSave.color                   = color
         self.buttCode.color                   = color
