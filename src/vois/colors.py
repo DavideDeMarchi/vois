@@ -38,7 +38,7 @@ def Normalize(value,valuemin,valuemax):
 # Returns a tuple of the complementary color (opposite color in the color wheel)
 def complementaryColor(rgb):
     """
-    Given a tuple color (r,g,b) returns the complementary version of the input color (see: `Complementary color meaning <https://www.color-meanings.com/complementary-colors/>`_)
+    Given a tuple color (r,g,b) returns the complementary version of the input color (see: `Complementary color meaning <https://www.color-meanings.com/complementary-colors/>`_ and `Color wheel online <https://atmos.style/color-wheel>`_)
 
     Parameters
     ----------
@@ -75,7 +75,7 @@ def complementaryColor(rgb):
 # Returs a list of two colors as rgb tuples
 def triadicColor(rgb):
     """
-    Given a tuple color (r,g,b) returns a list of two split triadic colors (see: `Triadic colors meaning <https://www.color-meanings.com/triadic-colors/>`_)
+    Given a tuple color (r,g,b) returns a list of two split triadic colors (see: `Triadic colors meaning <https://www.color-meanings.com/triadic-colors/>`_ and `Color wheel online <https://atmos.style/color-wheel>`_)
 
     Parameters
     ----------
@@ -118,7 +118,7 @@ def triadicColor(rgb):
 # Returs a list of two colors as rgb tuples
 def splitComplementaryColor(rgb):
     """
-    Given a tuple color (r,g,b) returns a list of two split complementary colors (see: `Split complementary colors meaning <https://www.color-meanings.com/split-complementary-colors/>`_)
+    Given a tuple color (r,g,b) returns a list of two split complementary colors (see: `Split complementary colors meaning <https://www.color-meanings.com/split-complementary-colors/>`_ and `Color wheel online <https://atmos.style/color-wheel>`_)
 
     Parameters
     ----------
@@ -158,10 +158,63 @@ def splitComplementaryColor(rgb):
     return [rgb1, rgb2]
 
 
-# Returs a list of three colors as rgb tuples
+# Returs a list of four colors as rgb tuples
 def tetradicColor(rgb):
     """
-    Given a tuple color (r,g,b) returns a list of three tetradic colors (see: `Tetradic colors meaning <https://www.color-meanings.com/rectangular-tetradic-color-schemes/>`_)
+    Given a tuple color (r,g,b) returns a list of four tetradic colors (see: `Tetradic colors meaning <https://www.color-meanings.com/rectangular-tetradic-color-schemes/>`_ and `Color wheel online <https://atmos.style/color-wheel>`_)
+
+    Parameters
+    ----------
+    rgb : tuple
+        Tuple of 3 integers representing the RGB components in the range [0,255]
+
+    Returns
+    -------
+        List of four tuples of 3 integers representing the output RGB components in the range [0,255]
+        
+    Example
+    -------
+    Display a palette showing an input random color and the three tetradic colors::
+    
+        from vois import colors
+        from IPython.display import display
+        
+        col = colors.randomColor()
+        display(colors.paletteImage([col] + [colors.rgb2hex(x) for x in colors.tetradicColor(colors.string2rgb(col))], interpolate=False))
+    
+    """
+    # Convert RGB (base 256) to HLS (between 0 and 1 )
+    HLS = list(colorsys.rgb_to_hls(rgb[0]/255, rgb[1]/255, rgb[2]/255))
+
+    # Find the first tetradic Hue
+    FirstTetradicHue  = ((HLS[0] * 360 +  30) % 360) / 360
+
+    # Find the second tetradic Hue
+    SecondTetradicHue = ((HLS[0] * 360 + 150) % 360) / 360
+
+    # Find the third tetradic Hue
+    ThirdTetradicHue  = ((HLS[0] * 360 + 210) % 360) / 360
+
+    # Find the fourth tetradic Hue
+    FourthTetradicHue = ((HLS[0] * 360 + 330) % 360) / 360
+    
+    ColorOutput1 = [FirstTetradicHue,  HLS[1], HLS[2]]
+    ColorOutput2 = [SecondTetradicHue, HLS[1], HLS[2]]
+    ColorOutput3 = [ThirdTetradicHue,  HLS[1], HLS[2]]
+    ColorOutput4 = [FourthTetradicHue, HLS[1], HLS[2]]
+
+    rgb1 = tuple(map(lambda x: round(x * 255), colorsys.hls_to_rgb(ColorOutput1[0],ColorOutput1[1],ColorOutput1[2])))
+    rgb2 = tuple(map(lambda x: round(x * 255), colorsys.hls_to_rgb(ColorOutput2[0],ColorOutput2[1],ColorOutput2[2])))
+    rgb3 = tuple(map(lambda x: round(x * 255), colorsys.hls_to_rgb(ColorOutput3[0],ColorOutput3[1],ColorOutput3[2])))
+    rgb4 = tuple(map(lambda x: round(x * 255), colorsys.hls_to_rgb(ColorOutput4[0],ColorOutput4[1],ColorOutput4[2])))
+
+    return [rgb1, rgb2, rgb3, rgb4]
+
+
+# Returs a list of three colors as rgb tuples
+def squareColor(rgb):
+    """
+    Given a tuple color (r,g,b) returns a list of three square colors (see: `Color wheel online <https://atmos.style/color-wheel>`_)
 
     Parameters
     ----------
@@ -180,20 +233,20 @@ def tetradicColor(rgb):
         from IPython.display import display
         
         col = colors.randomColor()
-        display(colors.paletteImage([col] + [colors.rgb2hex(x) for x in colors.tetradicColor(colors.string2rgb(col))], interpolate=False))
+        display(colors.paletteImage([col] + [colors.rgb2hex(x) for x in colors.squareColor(colors.string2rgb(col))], interpolate=False))
     
     """
     # Convert RGB (base 256) to HLS (between 0 and 1 )
     HLS = list(colorsys.rgb_to_hls(rgb[0]/255, rgb[1]/255, rgb[2]/255))
 
     # Find the first tetradic Hue
-    FirstTetradicHue = ((HLS[0] * 360 + 60) % 360) / 360
+    FirstTetradicHue  = ((HLS[0] * 360 +  90) % 360) / 360
 
     # Find the second tetradic Hue
     SecondTetradicHue = ((HLS[0] * 360 + 180) % 360) / 360
 
     # Find the third tetradic Hue
-    ThirdTetradicHue = ((HLS[0] * 360 + 240) % 360) / 360
+    ThirdTetradicHue  = ((HLS[0] * 360 + 270) % 360) / 360
 
     ColorOutput1 = [FirstTetradicHue,  HLS[1], HLS[2]]
     ColorOutput2 = [SecondTetradicHue, HLS[1], HLS[2]]

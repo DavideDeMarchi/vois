@@ -36,7 +36,7 @@ class colorTheoryPopup():
         self._color = self.picker.color
 
         card_width  = 560
-        card_height = 260
+        card_height = 300
 
         self.card  = v.Card(flat=True, width=card_width, height=card_height, class_='pa-2 ma-0')
         self.popup = popup.popup(self.card, '', text=False, outlined=False, icon='mdi-palette', color='#333333', rounded=False,
@@ -65,7 +65,14 @@ class colorTheoryPopup():
         c_tet1 = self.colorcard(tet[0])
         c_tet2 = self.colorcard(tet[1])
         c_tet3 = self.colorcard(tet[2])
+        c_tet4 = self.colorcard(tet[3])
 
+        l_squ = self.label('Square colors:', width=160)
+        squ = [colors.rgb2hex(x) for x in colors.squareColor(colors.string2rgb(self._color))]
+        c_squ1 = self.colorcard(squ[0])
+        c_squ2 = self.colorcard(squ[1])
+        c_squ3 = self.colorcard(squ[2])
+        
         l_ana = self.label('Analogous colors:', width=160)
         ana = [colors.rgb2hex(x) for x in colors.analogousColor(colors.string2rgb(self._color))]
         c_ana1 = self.colorcard(ana[0])
@@ -83,7 +90,8 @@ class colorTheoryPopup():
                 widgets.HBox([l_compl, c_col, c_compl]),
                 widgets.HBox([l_tri,   c_col, c_tri1, c_tri2]),
                 widgets.HBox([l_split, c_col, c_split1, c_split2]),
-                widgets.HBox([l_tet,   c_col, c_tet1, c_tet2, c_tet3]),
+                widgets.HBox([l_tet,   c_col, c_tet1, c_tet2, c_tet3, c_tet4]),
+                widgets.HBox([l_squ,   c_col, c_squ1, c_squ2, c_squ3]),
                 widgets.HBox([l_ana,   c_col, c_ana1, c_ana2]),
                 widgets.HBox([l_mono,  c_mono1, c_mono2, c_mono3, c_col, c_mono4, c_mono5, c_mono6]),
             ])
