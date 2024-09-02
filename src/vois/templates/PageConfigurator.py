@@ -269,18 +269,16 @@ class PageConfigurator(v.Html):
         
     # Save current state to file
     def onSave(self):
-        
         self.saveFilename = v.TextField(label='File name:', autofocus=True, v_model=self.page.appname + '_' + self.page.title, dense=False, color=self.page.titlecolor, clearable=False, class_="pa-0 ma-0 ml-3 mt-3 mr-3")
-
-        dlg = dialogGeneric.dialogGeneric(title='Save and download current state...' , on_ok=self.onDoSave, 
-                                          text='   ', color=self.page.titlecolor, dark=self.page.titledark,
-                                          titleheight=40, width=600,
-                                          show=True, addclosebuttons=True, addokcancelbuttons=True,
-                                          fullscreen=False, content=[self.saveFilename], output=self.output)
+        dialogGeneric.dialogGeneric(title='Save and download current state...' , on_ok=self.onDoSaveState, 
+                                    text='   ', color=self.page.titlecolor, dark=self.page.titledark,
+                                    titleheight=40, width=600,
+                                    show=True, addclosebuttons=True, addokcancelbuttons=True,
+                                    fullscreen=False, content=[self.saveFilename], output=self.output)
         
     
     # Effective save and download of the current state
-    def onDoSave(self):
+    def onDoSaveState(self):
         
         filename = self.saveFilename.v_model
         if filename[-5:] != '.json':
@@ -301,10 +299,100 @@ class PageConfigurator(v.Html):
         download.downloadText(txt, fileName=filename)
             
     
-    # Save Python page code    
+    # Save Python page code
     def onCode(self):
-        pass
+        self.saveFilename = v.TextField(label='Class name:', autofocus=True, v_model=self.page.appname + '_' + self.page.title, dense=False, color=self.page.titlecolor, clearable=False, class_="pa-0 ma-0 ml-3 mt-3 mr-3")
+        dialogGeneric.dialogGeneric(title='Save and download Python code...' , on_ok=self.onDoSaveCode, 
+                                    text='   ', color=self.page.titlecolor, dark=self.page.titledark,
+                                    titleheight=40, width=600,
+                                    show=True, addclosebuttons=True, addokcancelbuttons=True,
+                                    fullscreen=False, content=[self.saveFilename], output=self.output)
     
+        
+    # Effective save and download of the Python code
+    def onDoSaveCode(self):
+        
+        jsonfile = self.saveFilename.v_model
+        if jsonfile[-5:] != '.json':
+            jsonfile += '.json'
+        
+        self.onDoSaveState()   # Saves <filename>.json
+        
+        classname = self.saveFilename.v_model
+        pythonfile = classname
+        pythonfile += '.py'
+        
+        
+        # Selection of the base class
+        if self.togglePanels.value == 0:
+            baseclass = 'template1panel'
+        elif self.togglePanels.value == 1:
+            baseclass = 'template2panels'
+        else:
+            baseclass = 'template3panels'
+        
+        # Code generation
+        txt = '''from vois.vuetify import settings
+settings.color_first    = '%s'
+settings.color_second   = '%s'
+settings.button_rounded = %s
+settings.dark_mode      = %s
+
+from ipywidgets import widgets, HTML, Layout
+from IPython.display import display
+import ipyvuetify as v
+import json
+
+from vois import cssUtils
+from vois.vuetify import switch, Button
+from vois.templates import %s
+
+
+output = widgets.Output(layout=Layout(width='0px', height='0px'))
+display(output)
+
+cssUtils.allSettings(output)
+cssUtils.switchFontSize(output,14)
+
+# Derived page class
+class %s(%s.%s):
+    
+    # Create the content of the Main panel
+    def createMain(self):
+        super().createMain()
+
+    # Create sample widgets on the Left panel
+    def createLeft(self):
+
+        # Create sample widgets
+        spacer  = v.Html(tag='div', style_='width: 10px; height: 10px;')
+        lab = v.Html(tag='div', children=['Place here you widgets:'], class_='pa-0 ma-0 ml-4 mt-4 mb-3')
+        sw  = switch.switch(True, "Sample switch", inset=True, dense=True, onchange=None)
+        b   = Button('Sample button with icon and tooltip', on_click=None, width=360, height=42,
+                     tooltip='Tooltip for button', selected=True, icon='mdi-cogs')
+        
+        # Add widgets to Left card
+        self.cardLeft.children = [widgets.VBox([lab, 
+                                                sw.draw(), 
+                                                spacer,
+                                                widgets.HBox([spacer, b])
+                                               ])]
+
+# Create an instance of mypage
+p = %s(output)
+p.create()
+
+# Read the state of the page from the .json file
+with open('%s') as f:
+    p.state = json.load(f)
+
+# Open the page
+p.open()'''%(self.titlecolor.color, self.footercolor.color, str(self.rounded.value), str(self.page.titledark),
+             baseclass, classname, baseclass, baseclass, classname, jsonfile)
+        
+        # Convert to string and download
+        download.downloadText(txt, fileName=pythonfile)
+        
         
     # Reset page to initial state
     def onReset(self):

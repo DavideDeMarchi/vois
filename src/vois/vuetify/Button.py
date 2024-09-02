@@ -20,7 +20,6 @@
 
 import ipyvuetify as v
 
-from vois.vuetify import settings, fontsettings
 from vois.vuetify.utils.util import *
 from typing import Callable, Any, Union, Optional
 
@@ -145,7 +144,6 @@ class Button(v.Html):
 
        Example of a 4 button widgets with different display modes.
    """
-
     deprecation_alias = dict(onclick='on_click', xlarge='x_large', xsmall='x_small', textweight='text_weight',
                              onlytext='only_text', textcolor='text_color', iconlarge='icon_large',
                              iconsmall='icon_small',
@@ -180,15 +178,17 @@ class Button(v.Html):
                  icon_left: bool = False,
                  icon_color='black',
                  auto_select: bool = False,
-                 dark: bool = settings.dark_mode,
-                 rounded: bool = settings.button_rounded,
+                 dark: bool = None,
+                 rounded: bool = None,
                  tile: bool = False,
-                 color_selected: str = settings.color_first,
-                 color_unselected: str = settings.color_second,
+                 color_selected: str = None,
+                 color_unselected: str = None,
                  on_dblclick: Optional[Union[Callable[[], None], Callable[[dict[str, Any]], None]]] = None,
                  style_: str = '',
                  **kwargs) -> None:
 
+        from vois.vuetify import settings, fontsettings
+        
         super().__init__(**kwargs)
 
         self.on_click = on_click
@@ -201,11 +201,11 @@ class Button(v.Html):
         self.icon_large = icon_large
         self.icon_small = icon_small
         self.icon_color = icon_color
-        self.color_selected = color_selected
-        self.color_unselected = color_unselected
-        self._dark = dark
-        self._rounded = rounded
-
+        self.color_selected   = settings.color_first  if color_selected is None else color_selected
+        self.color_unselected = settings.color_second if color_unselected is None else color_unselected
+        self._dark            = settings.dark_mode if dark is None else dark
+        self._rounded         = settings.button_rounded if rounded is None else rounded
+                
         self._icon = icon
 
         self.icon_distance = " ml-2"
