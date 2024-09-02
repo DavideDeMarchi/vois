@@ -87,15 +87,15 @@ class PageConfigurator(v.Html):
         
         
         self.output = output
-        self.spacerX = v.Html(tag='div', style_='width: 10px; height:  0px;')
-        self.spacerY = v.Html(tag='div', style_='width:  0px; height: 10px;')
+        self.spacerX = v.Html(tag='div', style_='width: 10px; height: 0px;')
+        self.spacerY = v.Html(tag='div', style_='width:  0px; height: 6px;')
         self.spacer  = v.Html(tag='div', style_='width: 10px; height: 10px;')
 
         self.card = v.Card(flat=True, width=template1panel.LEFT_WIDTH, min_width=template1panel.LEFT_WIDTH, max_width=template1panel.LEFT_WIDTH,
                            height='400px', class_='pa-2 pt-4 ma-0', style_='overflow: auto;')
 
         # Widgets
-        self.labelwidth   = 110
+        self.labelwidth   = 96
         self.togglewidth  = 50
         self.paddingrow   = 1
         self.biglabelsize = 15
@@ -123,8 +123,9 @@ class PageConfigurator(v.Html):
                                           dark=True, onchange=self.onSelectedTemplate, row=True, width=self.togglewidth, justify='start', paddingrow=self.paddingrow, tile=True)
 
         
-        self.titlecolor  = ColorPicker(color=settings.color_first,  width=50, height=30, rounded=False, on_change=self.titlecolorChange,  offset_x=True, offset_y=False)        
-        self.footercolor = ColorPicker(color=settings.color_second, width=50, height=30, rounded=False, on_change=self.footercolorChange, offset_x=True, offset_y=False)        
+        self.titlecolor  = ColorPicker(color=settings.color_first,  width=50, height=30, rounded=False, on_change=self.titlecolorChange,  offset_x=True, offset_y=False, color_theory_popup=True)        
+        self.footercolor = ColorPicker(color=settings.color_second, width=50, height=30, rounded=False, on_change=self.footercolorChange, offset_x=True, offset_y=False, color_theory_popup=True)
+        
         
         self.footerlinked = toggle.toggle(self.reset_state['footerlinkedvalue'], ['', '', '', ''], dark=True, icons=['mdi-link-off', 'mdi-link-variant', 'mdi-link-variant-minus', 'mdi-link-variant-plus'], outlined=False,
                                           tooltips=['Free selection of footer color', 'Footer color is the complementary of the title color',
@@ -181,9 +182,9 @@ class PageConfigurator(v.Html):
                                  widgets.HBox([self.panelsLabel, self.togglePanels.draw()]),
                                  self.spacerY,
                                  self.spacerY,
-                                 widgets.HBox([label('Title bar color:',  color='black', width=self.labelwidth), self.titlecolor, self.spacerX, label('Link:', color='black', width=30), self.footerlinked.draw()]),
+                                 widgets.HBox([label('Title bar color:',  color='black', width=self.labelwidth), self.titlecolor, self.titlecolor.ctpopup.draw(), self.spacerX, label('Link:', color='black', width=30), self.footerlinked.draw()]),
                                  self.spacerY,
-                                 widgets.HBox([label('Footer bar color:', color='black', width=self.labelwidth), self.footercolor]),
+                                 widgets.HBox([label('Footer color:',     color='black', width=self.labelwidth), self.footercolor, self.footercolor.ctpopup.draw()]),
                                  self.spacerY,
                                  widgets.HBox([label('Title bar text:',   color='black', width=self.labelwidth), self.titledark.draw()]),
                                  self.spacerY,
@@ -228,13 +229,12 @@ class PageConfigurator(v.Html):
         self.copyrighttext.v_model = self.page.copyrighttext
         
         
-        
-
     # Load state from file
     def onOpen(self):
         uj = UploadJson.UploadJson(self.output, onOK=self.onSelectedState, required_attributes=['appname', 'title'], attributes_width=80,
                                    color=self.page.titlecolor, dark=self.page.titledark)
         uj.show()
+        
         
     # Called when the UploadJson dialo-box is closed with the OK button
     def onSelectedState(self, state):
@@ -306,10 +306,10 @@ class PageConfigurator(v.Html):
     def onReset(self):
         self.onSelectedState(self.reset_state)
             
-            
+
     # Forced close
     def on_force_close(self, *args):
-        self.output.clear_output()
+        self.output.clear_output()    # V.I.!!! removes double draw of popups!!!
 
         
     # Selection of 1, 2 or 3 panels template
@@ -328,11 +328,11 @@ class PageConfigurator(v.Html):
 
         # Create the instance of the page with the requested number of panels
         if index == 0:
-            self.page = template1panel.template1panel(self.output)
+            self.page = template1panel.template1panel(self.output, onclose=self.on_force_close)
         elif index == 1:
-            self.page = template2panels.template2panels(self.output)
+            self.page = template2panels.template2panels(self.output, onclose=self.on_force_close)
         else:
-            self.page = template3panels.template3panels(self.output)
+            self.page = template3panels.template3panels(self.output, onclose=self.on_force_close)
             
         self.page.customButtonAdd('mdi-delete', 'Click here to force page closing', self.on_force_close)
             

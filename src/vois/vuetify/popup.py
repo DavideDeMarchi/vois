@@ -207,8 +207,10 @@ class popup:
     # Manage event
     def __internal_input(self, widget=None, event=None, data=None):
         if not self.on_input is None:
-            if data is True: self.on_input(True)
-            else:            self.on_input(False)
+            if data is True:
+                self.on_input(True)
+            else:
+                self.on_input(False)
     
     
     # Returns the vuetify object to display
@@ -244,3 +246,56 @@ class popup:
             self.buttontext = t
             self.btn.children, self.btn.icon = self.__setup_btn_children()
             
+            
+    # disabled property
+    @property
+    def disabled(self):
+        """
+        Get/Set the disabled state of the widget.
+        
+        Returns
+        --------
+        flag : bool
+            True if the widget is disabled, False otherwise
+
+        Example
+        -------
+        Programmatically change the disabled state::
+            
+            p.disabled = True
+            print(p.disabled)
+        
+        """
+        return self.btn.disabled
+
+    
+    @disabled.setter
+    def disabled(self, flag):
+        self.btn.disabled = flag
+            
+            
+    # color property
+    @property
+    def color(self):
+        """
+        Get/Set the color of the widget.
+        
+        Returns
+        --------
+        c : str
+            widget color in the hex format ('#xxxxxx')
+
+        Example
+        -------
+        Programmatically change the widget color::
+            
+            p.color = '#00FF00'
+            print(p.color)
+        
+        """
+        return self.btn.color
+
+    @color.setter
+    def color(self, c):
+        if isinstance(c, str):
+            self.btn.color = c

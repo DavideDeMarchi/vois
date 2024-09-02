@@ -18,12 +18,125 @@
 # See the Licence for the specific language governing permissions and
 # limitations under the Licence.
 import ipyvuetify as v
-from vois.vuetify import settings
+from ipywidgets import widgets
+from vois import colors
+from vois.vuetify import settings, popup
 from vois.vuetify.utils.util import *
 from typing import Callable, Any, Union, Optional
 import warnings
 
 
+# Popup widget that, on hover, opens a card with complementary, triadic, analogous, etc. clickable colors
+class colorTheoryPopup():
+
+    # Initialisation
+    def __init__(self, picker):
+        
+        self.picker = picker
+        self._color = self.picker.color
+
+        card_width  = 560
+        card_height = 260
+
+        self.card  = v.Card(flat=True, width=card_width, height=card_height, class_='pa-2 ma-0')
+        self.popup = popup.popup(self.card, '', text=False, outlined=False, icon='mdi-palette', color='#333333', rounded=False,
+                                 buttonwidth=30, buttonheight=self.picker.height+1, popupwidth=card_width, popupheight=card_height)
+        self.updateCard()
+        
+    
+    # Update the content of the card to be dispalyed when hover on the popup
+    def updateCard(self):
+        l_compl = self.label('Complementary colors:', width=160)
+        c_col   = self.colorcard(self._color)
+        c_compl = self.colorcard(colors.rgb2hex(colors.complementaryColor(colors.string2rgb(self._color))))
+
+        l_tri = self.label('Triadic colors:', width=160)
+        tri = [colors.rgb2hex(x) for x in colors.triadicColor(colors.string2rgb(self._color))]
+        c_tri1 = self.colorcard(tri[0])
+        c_tri2 = self.colorcard(tri[1])
+
+        l_split = self.label('Split complementary col.:', width=160)
+        split = [colors.rgb2hex(x) for x in colors.splitComplementaryColor(colors.string2rgb(self._color))]
+        c_split1 = self.colorcard(split[0])
+        c_split2 = self.colorcard(split[1])
+
+        l_tet = self.label('Tetradic colors:', width=160)
+        tet = [colors.rgb2hex(x) for x in colors.tetradicColor(colors.string2rgb(self._color))]
+        c_tet1 = self.colorcard(tet[0])
+        c_tet2 = self.colorcard(tet[1])
+        c_tet3 = self.colorcard(tet[2])
+
+        l_ana = self.label('Analogous colors:', width=160)
+        ana = [colors.rgb2hex(x) for x in colors.analogousColor(colors.string2rgb(self._color))]
+        c_ana1 = self.colorcard(ana[0])
+        c_ana2 = self.colorcard(ana[1])
+
+        l_mono = self.label('Monochromatic colors:', width=160)
+        c_mono1 = self.colorcard(colors.rgb2hex(colors.monochromaticColor(colors.string2rgb(self._color), increment=-0.6)))
+        c_mono2 = self.colorcard(colors.rgb2hex(colors.monochromaticColor(colors.string2rgb(self._color), increment=-0.4)))
+        c_mono3 = self.colorcard(colors.rgb2hex(colors.monochromaticColor(colors.string2rgb(self._color), increment=-0.2)))
+        c_mono4 = self.colorcard(colors.rgb2hex(colors.monochromaticColor(colors.string2rgb(self._color), increment= 0.2)))
+        c_mono5 = self.colorcard(colors.rgb2hex(colors.monochromaticColor(colors.string2rgb(self._color), increment= 0.4)))
+        c_mono6 = self.colorcard(colors.rgb2hex(colors.monochromaticColor(colors.string2rgb(self._color), increment= 0.6)))
+        self.card.children = [
+            widgets.VBox([
+                widgets.HBox([l_compl, c_col, c_compl]),
+                widgets.HBox([l_tri,   c_col, c_tri1, c_tri2]),
+                widgets.HBox([l_split, c_col, c_split1, c_split2]),
+                widgets.HBox([l_tet,   c_col, c_tet1, c_tet2, c_tet3]),
+                widgets.HBox([l_ana,   c_col, c_ana1, c_ana2]),
+                widgets.HBox([l_mono,  c_mono1, c_mono2, c_mono3, c_col, c_mono4, c_mono5, c_mono6]),
+            ])
+        ]
+        
+
+    # Returns the vuetify object to display
+    def draw(self):
+        return self.popup.draw()
+        
+        
+    # color property
+    @property
+    def color(self):
+        return self._color
+
+    @color.setter
+    def color(self, c):
+        if isinstance(c, str):
+            self._color = c
+            self.updateCard()
+        
+        
+    # disabled property
+    @property
+    def disabled(self):
+        return self.popup.disabled
+    
+    @disabled.setter
+    def disabled(self, flag):
+        self.popup.disabled = flag
+        
+        
+    # Creation of a label
+    def label(self, text, class_='pa-0 ma-0 mt-1 mr-3 mb-4', size=14, weight=400, color='#000000', width=None):
+        lab = v.Html(tag='div', children=[text], class_=class_)
+        if width is None: lab.style_ = 'font-size: %dpx; font-weight: %d; color: %s; overflow: hidden;'%(size,weight,color)
+        else:             lab.style_ = 'font-size: %dpx; font-weight: %d; color: %s;  overflow: hidden; width: %dpx'%(size,weight,color,int(width))
+        return lab
+
+    
+    # Create and returns a card displaying a color and clickable
+    def colorcard(self, color, width=54, height=30):
+
+        def onclick(*args):
+            self.picker.color = color
+
+        c = v.Card(flat=True, hover=True, color=color, width=width, min_width=width, max_width=width, height=height, tile=True)
+        c.on_event('click',onclick)
+        return c
+
+
+    
 class ColorPicker(v.Menu):
     """
     Input widget to select a color.
@@ -68,6 +181,8 @@ class ColorPicker(v.Menu):
         If True the popup window will be opened on the bottom of the color button (default is True)
     disabled : bool, optional
         True if the selection of the color is disabled, False otherwise (default is False)
+    color_theory_popup : bool, optional
+        If True a popup window (self.ctpopup) is created to show the complementary, analogous, etc.. colors on hover (default is False)
 
     Example
     -------
@@ -135,7 +250,8 @@ class ColorPicker(v.Menu):
                  argument: Optional[Any] = None,
                  offset_x: bool = False,
                  offset_y: bool = True,
-                 disabled: bool = False):
+                 disabled: bool = False,
+                 color_theory_popup: bool = False):
 
         self._color = str(color).upper()
         self.dark = dark
@@ -156,6 +272,10 @@ class ColorPicker(v.Menu):
         self.offset_x = offset_x
         self.offset_y = offset_y
         self._disabled = disabled
+        
+        self.ctpopup = None
+        if color_theory_popup:
+            self.ctpopup = colorTheoryPopup(self)
 
         if self._disabled:
             von = ''
@@ -192,6 +312,8 @@ class ColorPicker(v.Menu):
         if data.upper() != self._color.upper():
             self._color = data.upper()
             self.button.color = self._color
+            if self.ctpopup is not None:
+                self.ctpopup.color = self._color
             if self._dark_text is None:
                 self.button.dark = self.textDark(self._color)
             if self.on_change:
@@ -234,6 +356,8 @@ class ColorPicker(v.Menu):
             self._color = c
             self.p.value = self._color
             self.button.color = self._color
+            if self.ctpopup is not None:
+                self.ctpopup.color = self._color
             if self._dark_text is None:
                 self.button.dark = self.textDark(self._color)
             if self.on_change:
@@ -273,6 +397,9 @@ class ColorPicker(v.Menu):
             von = 'menuData.on'
             self.button.children = [self.text]
         self.button.v_on = von
+        
+        if self.ctpopup is not None:
+            self.ctpopup.disabled = self._disabled
 
         
     # dark_text property
