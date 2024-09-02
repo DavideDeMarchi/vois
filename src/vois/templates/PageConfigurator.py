@@ -82,7 +82,7 @@ class PageConfigurator(v.Html):
             'titledarkvalue':    2,
             'footerlinkedvalue': 0,
             'footerdarkvalue':   2,
-            'button_rounded':    True
+            'button_rounded':    False
         }
         
         
@@ -127,6 +127,7 @@ class PageConfigurator(v.Html):
         self.titlecolor  = ColorPicker(color=settings.color_first,  width=50, height=30, rounded=False, on_change=self.titlecolorChange,  offset_x=True, offset_y=False, color_theory_popup=True)        
         self.footercolor = ColorPicker(color=settings.color_second, width=50, height=30, rounded=False, on_change=self.footercolorChange, offset_x=True, offset_y=False, color_theory_popup=True)
         
+        self.rounded = switch.switch(self.reset_state['button_rounded'], 'Rounded buttons', inset=True, dense=True, onchange=self.onroundedChange)
         
         self.footerlinked = toggle.toggle(self.reset_state['footerlinkedvalue'], ['', '', '', ''], dark=True, icons=['mdi-link-off', 'mdi-link-variant', 'mdi-link-variant-minus', 'mdi-link-variant-plus'], outlined=False,
                                           tooltips=['Free selection of footer color', 'Footer color is the complementary of the title color',
@@ -185,7 +186,7 @@ class PageConfigurator(v.Html):
                                  self.spacerY,
                                  widgets.HBox([label('Title bar color:',  color='black', width=self.labelwidth), self.titlecolor, self.titlecolor.ctpopup.draw(), self.spacerX, label('Link:', color='black', width=30), self.footerlinked.draw()]),
                                  self.spacerY,
-                                 widgets.HBox([label('Footer color:',     color='black', width=self.labelwidth), self.footercolor, self.footercolor.ctpopup.draw()]),
+                                 widgets.HBox([label('Footer color:',     color='black', width=self.labelwidth), self.footercolor, self.footercolor.ctpopup.draw(), self.spacerX, self.rounded.draw()]),
                                  self.spacerY,
                                  widgets.HBox([label('Title bar text:',   color='black', width=self.labelwidth), self.titledark.draw()]),
                                  self.spacerY,
@@ -237,7 +238,7 @@ class PageConfigurator(v.Html):
         uj.show()
         
         
-    # Called when the UploadJson dialo-box is closed with the OK button
+    # Called when the UploadJson dialog-box is closed with the OK button
     def onSelectedState(self, state):
 
         with self.debug:
@@ -263,12 +264,13 @@ class PageConfigurator(v.Html):
             self.logowidth.value       = self.page.logowidth
             self.creditswidth.value    = self.page.creditswidth
             self.copyrighttext.v_model = self.page.copyrighttext
+            self.rounded.value         = state['button_rounded']
         
         
     # Save current state to file
     def onSave(self):
         
-        self.saveFilename = v.TextField(label='File name:', autofocus=True, v_model=self.page.appname + '_' + self.page.title, dense=False, color=settings.color_first, clearable=True, class_="pa-0 ma-0 ml-3 mt-3 mr-3")
+        self.saveFilename = v.TextField(label='File name:', autofocus=True, v_model=self.page.appname + '_' + self.page.title, dense=False, color=self.page.titlecolor, clearable=False, class_="pa-0 ma-0 ml-3 mt-3 mr-3")
 
         dlg = dialogGeneric.dialogGeneric(title='Save and download current state...' , on_ok=self.onDoSave, 
                                           text='   ', color=self.page.titlecolor, dark=self.page.titledark,
@@ -287,11 +289,12 @@ class PageConfigurator(v.Html):
         # Read the state from the page
         state = self.page.state
     
-        # Add dditional states from the PageCOnfigurator
+        # Add additional states from the PageConfigurator
         state['panelsvalue']       = self.togglePanels.value
         state['titledarkvalue']    = self.titledark.value
         state['footerlinkedvalue'] = self.footerlinked.value
         state['footerdarkvalue']   = self.footerdark.value
+        state['button_rounded']    = self.rounded.value
     
         # Convert to string and download
         txt = json.dumps(state)
@@ -400,6 +403,7 @@ class PageConfigurator(v.Html):
         self.left_back.switch.color           = color
         self.show_help.switch.color           = color
         self.show_credits.switch.color        = color
+        self.rounded.switch.color             = color
         self.titledarkChange(self.titledark.value)
                 
         # labels color
@@ -440,6 +444,13 @@ class PageConfigurator(v.Html):
         self.footerlinked.colorunselected       = color
         self.footerdarkChange(self.footerdark.value)
                 
+            
+    # Button rounded flag
+    def onroundedChange(self, flag):
+        self.titleimageurl.rounded  = flag
+        self.logoappurl.rounded     = flag
+        self.logocreditsurl.rounded = flag
+    
         
     # Change of the titledark property
     def titledarkChange(self, index):
