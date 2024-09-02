@@ -81,7 +81,7 @@ class Button(v.Html):
     icon_left : bool, optional
         Flag that sets the position of the icon  to the left of the text of the label (default is False)
     icon_color : str, optional
-        Color of the icon (default is 'black')
+        Color of the icon (default is 'black' if settings.dark_mode is False and 'white if settings.dark_mode is True)
     auto_select : bool, optional
         If True, the button becomes selected when clicked (default is False)
     dark : bool, optional
@@ -176,7 +176,7 @@ class Button(v.Html):
                  icon_large: bool = False,
                  icon_small: bool = False,
                  icon_left: bool = False,
-                 icon_color='black',
+                 icon_color: str = None,
                  auto_select: bool = False,
                  dark: bool = None,
                  rounded: bool = None,
@@ -200,11 +200,14 @@ class Button(v.Html):
         self._text = text
         self.icon_large = icon_large
         self.icon_small = icon_small
-        self.icon_color = icon_color
         self.color_selected   = settings.color_first  if color_selected is None else color_selected
         self.color_unselected = settings.color_second if color_unselected is None else color_unselected
         self._dark            = settings.dark_mode if dark is None else dark
         self._rounded         = settings.button_rounded if rounded is None else rounded
+        if icon_color is None:
+            self.icon_color = 'white' if settings.dark_mode else 'black'
+        else:
+            self.icon_color = icon_color
                 
         self._icon = icon
 
