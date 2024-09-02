@@ -82,7 +82,8 @@ class PageConfigurator(v.Html):
             'titledarkvalue':    2,
             'footerlinkedvalue': 0,
             'footerdarkvalue':   2,
-            'button_rounded':    False
+            'button_rounded':    False,
+            'transitionvalue':   'Bottom'
         }
         
         
@@ -111,7 +112,7 @@ class PageConfigurator(v.Html):
                                   children=[widgets.HBox([self.appname, self.buttOpen.draw(), self.buttSave.draw(), self.buttCode.draw(), self.buttReset.draw()])])
         
         self.pagetitle  = v.TextField(label='Page title:', autofocus=False, v_model=None, dense=False, color=settings.color_first, clearable=True, class_="pa-0 ma-0 mt-3 mr-3", style_='width: 246px; min_width: 246px;')
-        self.transition = selectSingle.selectSingle('Open animation:', ['None', 'Top', 'Bottom'], selection='Bottom', clearable =False, width=120, onchange=None)
+        self.transition = selectSingle.selectSingle('Open animation:', ['None', 'Dialog', 'Bottom'], selection='Bottom', clearable =False, width=120, onchange=self.transitionChange)
         
         self.cardpagetitle = v.Card(flat=True, width=template1panel.LEFT_WIDTH, max_width=template1panel.LEFT_WIDTH,
                                     children=[widgets.HBox([self.pagetitle, self.transition.draw()])])
@@ -270,6 +271,10 @@ class PageConfigurator(v.Html):
             self.creditswidth.value    = self.page.creditswidth
             self.copyrighttext.v_model = self.page.copyrighttext
             self.rounded.value         = state['button_rounded']
+            if 'transitionvalue' in state:
+                self.transition.value = state['transitionvalue']
+            else:
+                self.transition.value = 'Bottom'
         
         
     # Save current state to file
@@ -298,6 +303,7 @@ class PageConfigurator(v.Html):
         state['footerlinkedvalue'] = self.footerlinked.value
         state['footerdarkvalue']   = self.footerdark.value
         state['button_rounded']    = self.rounded.value
+        state['trainsitionvalue']  = self.transition.value
     
         # Convert to string and download
         txt = json.dumps(state)
@@ -349,7 +355,7 @@ import ipyvuetify as v
 import json
 
 from vois import cssUtils
-from vois.vuetify import switch, Button
+from vois.vuetify import switch, Button, dialogMessage
 from vois.templates import %s
 
 
@@ -362,6 +368,28 @@ cssUtils.switchFontSize(output,14)
 # Derived page class
 class %s(%s.%s):
     
+    # Initialisation
+    def __init__(self, output, **kwargs):
+        super().__init__(output=output, on_logoapp=self.on_logoapp, on_help=self.on_help, on_credits=self.on_credits, **kwargs)
+
+    # Clicked the application logo
+    def on_logoapp(self):
+        dialogMessage.dialogMessage(title=self.appname,
+                                    text='Text to customise for info on the application<br>Add text here or open a PDF file',
+                                    addclosebuttons=True, show=True, width=400, output=self.output)
+        
+    # Clicked the "Help" button
+    def on_help(self):
+        dialogMessage.dialogMessage(title='Help',
+                                    text='Text to customise for the application help<br>Add text here or open a PDF file',
+                                    addclosebuttons=True, show=True, width=400, output=self.output)
+    
+    # Clicked the credits logo
+    def on_credits(self):
+        dialogMessage.dialogMessage(title=self.appname,
+                                    text='Text to customise for the credits info<br>Add text here or open a PDF file',
+                                    addclosebuttons=True, show=True, width=400, output=self.output)
+                                    
     # Create the content of the Main panel
     def createMain(self):
         super().createMain()
@@ -465,6 +493,16 @@ p.open()'''%(self.titlecolor.color, self.footercolor.color, str(self.rounded.val
         self.card.height = self.card.min_height = self.card.max_height = self.page.height
 
         
+    # Change the transition mode
+    def transitionChange(self):
+        if self.transition.value == 'None':
+            self.page.transition = 'dialog-top-transition'
+        elif self.transition.value == 'Dialog':
+            self.page.transition = 'dialog-transition'
+        else:
+            self.page.transition = 'dialog-bottom-transition'
+        
+
     # Change of the titlecolor property
     def titlecolorChange(self):
         color = self.titlecolor.color
@@ -475,7 +513,7 @@ p.open()'''%(self.titlecolor.color, self.footercolor.color, str(self.rounded.val
         # widgets color
         self.appname.color                    = color
         self.pagetitle.color                  = color
-        self.transition.color
+        self.transition.color                 = color
         self.buttOpen.color                   = color
         self.buttSave.color                   = color
         self.buttCode.color                   = color
