@@ -323,27 +323,30 @@ class PageConfigurator(v.Html):
     # Effective save and download of the Python code
     def onDoSaveCode(self):
         
-        jsonfile = self.saveFilename.v_model
-        if jsonfile[-5:] != '.json':
-            jsonfile += '.json'
-        
         self.onDoSaveState()   # Saves <filename>.json
-        
-        classname = self.saveFilename.v_model
-        pythonfile = classname
-        pythonfile += '.py'
-        
-        
-        # Selection of the base class
-        if self.togglePanels.value == 0:
-            baseclass = 'template1panel'
-        elif self.togglePanels.value == 1:
-            baseclass = 'template2panels'
-        else:
-            baseclass = 'template3panels'
-        
-        # Code generation
-        txt = '''from vois.vuetify import settings
+
+        with self.debug:
+            jsonfile = self.saveFilename.v_model
+            if jsonfile[-5:] != '.json':
+                jsonfile += '.json'
+                
+            classname = self.saveFilename.v_model
+            pythonfile = classname
+            pythonfile += '.py'
+
+            notebookfile = classname
+            notebookfile += '.ipynb'
+
+            # Selection of the base class
+            if self.togglePanels.value == 0:
+                baseclass = 'template1panel'
+            elif self.togglePanels.value == 1:
+                baseclass = 'template2panels'
+            else:
+                baseclass = 'template3panels'
+
+            # Code generation
+            txt = '''from vois.vuetify import settings
 settings.color_first    = '%s'
 settings.color_second   = '%s'
 settings.button_rounded = %s
@@ -378,7 +381,7 @@ class %s(%s.%s):
                                     text='Text to customise for info on the application<br>Add text here or open a PDF file',
                                     addclosebuttons=True, show=True, width=400, output=self.output)
         
-    # Clicked the "Help" button
+    # Clicked the 'Help' button
     def on_help(self):
         dialogMessage.dialogMessage(title='Help', titleheight=36,
                                     text='Text to customise for the application help<br>Add text here or open a PDF file',
@@ -400,8 +403,8 @@ class %s(%s.%s):
 
         # Create sample widgets
         spacer  = v.Html(tag='div', style_='width: 10px; height: 10px;')
-        lab = v.Html(tag='div', children=['Place here you widgets:'], class_='pa-0 ma-0 ml-4 mt-4 mb-3')
-        sw  = switch.switch(True, "Sample switch", inset=True, dense=True, onchange=None)
+        lab = v.Html(tag='div', children=['Place here your widgets:'], class_='pa-0 ma-0 ml-4 mt-4 mb-3')
+        sw  = switch.switch(True, 'Sample switch', inset=True, dense=True, onchange=None)
         b   = Button('Sample button with icon and tooltip', on_click=None, width=360, height=42,
                      tooltip='Tooltip for button', selected=True, icon='mdi-cogs')
         
@@ -424,9 +427,52 @@ with open('%s') as f:
 p.open()'''%(self.titlecolor.color, self.footercolor.color, str(self.rounded.value), str(self.page.titledark),
              baseclass, classname, baseclass, baseclass, classname, jsonfile)
         
-        # Convert to string and download
-        download.downloadText(txt, fileName=pythonfile)
+            # Convert to string and download .py file
+            download.downloadText(txt, fileName=pythonfile)
+
+            lines = txt.split('\n')
+            lines = ",\n".join(["\"%s\\n\""%x for x in lines])
+
+            txt = '''{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "65d32196-829e-41b9-a4e4-bdb6381998e9",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    %s
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python [interapro_env]",
+   "language": "python",
+   "name": "conda-env-interapro_env-py"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.11.6"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
+'''%lines
         
+            # Download .ipynb file
+            download.downloadText(txt, fileName=notebookfile)
+
         
     # Reset page to initial state
     def onReset(self):
