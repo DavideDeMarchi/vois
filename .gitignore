@@ -1,6 +1,7 @@
 .ipynb_checkpoints/
 __pycache__/
 .idea/
+deploy/
 src/vois/development/.ipynb_checkpoints
 src/vois/development/load_local_vois.py
 /tests/ui/test_results/
