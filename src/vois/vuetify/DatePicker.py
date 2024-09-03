@@ -19,7 +19,6 @@
 # limitations under the Licence.
 import ipyvuetify as v
 from datetime import datetime
-from vois.vuetify import settings
 from vois.vuetify.utils.util import *
 from typing import Callable, Optional
 
@@ -94,9 +93,9 @@ class DatePicker(v.Menu):
     def __init__(self,
                  date: Optional[str] = None,
                  label: str = '',
-                 dark: bool = settings.dark_mode,
+                 dark: bool = None,
                  width: int = 88,
-                 color: str = settings.color_first,
+                 color: str = None,
                  show_week: bool = False,
                  on_change: Optional[Callable[[], None]] = None,
                  offset_x: bool = False,
@@ -105,15 +104,17 @@ class DatePicker(v.Menu):
                  min_date: Optional[str] = None,
                  max_date: Optional[str] = None):
 
+        from vois.vuetify import settings
+
         if date is None:
             self._date = datetime.today().strftime('%Y-%m-%d')
         else:
             self._date = date
 
         self.label = label
-        self.dark = dark
+        self.dark = dark if dark is not None else settings.dark_mode
         self.width = width
-        self.color = color
+        self.color = color if color is not None else settings.color_first
         self.show_week = show_week
         self.on_change = on_change
         self.offset_x = offset_x
