@@ -26,10 +26,7 @@ import ipyvuetify as v
 
 # Vois imports
 from vois.vuetify import settings, toggle, page
-
-# Local imports
-import mapUtils
-import dynamicButton
+from vois.templates import mapUtils, dynamicButton
 
 # Panels dimensioning
 LEFT_WIDTH    = 400      # Width  in pixels of the left bar
