@@ -20,7 +20,6 @@
 from IPython.display import display
 import ipyvuetify as v
 from vois.vuetify.utils.util import *
-from vois.vuetify import settings
 
 
 #####################################################################################################################################################
@@ -87,7 +86,9 @@ class Progress:
                  size: int = 120,  # Diameter of the circle in pixels
                  width: int = 15,  # Width of the moving line
                  output_height: int = 400,  # Height in pixels of the output widget
-                 color: str = settings.color_first):  # Color
+                 color: str = None):  # Color
+
+        from vois.vuetify import settings
 
         self.output = output
         self.size = size
@@ -99,7 +100,7 @@ class Progress:
                                        size=size,
                                        width=width,
                                        children=[text],
-                                       color=color)
+                                       color=color if color is not None else settings.color_first)
 
         self.nav = None
 

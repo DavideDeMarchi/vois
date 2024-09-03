@@ -20,7 +20,7 @@
 from IPython.display import display
 import ipyvuetify as v
 
-from vois.vuetify import settings, tooltip
+from vois.vuetify import tooltip
 from vois.vuetify.utils.util import *
 from typing import Callable, Optional
 
@@ -85,14 +85,16 @@ class Radio(v.RadioGroup):
                  index: int,
                  labels: list[str],
                  tooltips: list[str] = [],
-                 color: str = settings.color_first,
+                 color: str = None,
                  on_change: Optional[Callable[[int], None]] = None,
                  row: bool = True):
+
+        from vois.vuetify import settings
 
         self.value = index
         self.labels = labels
         self.tooltips = tooltips
-        self.color = color
+        self.color = color if color is not None else settings.color_first
         self.on_change = on_change
         self.row = row
 

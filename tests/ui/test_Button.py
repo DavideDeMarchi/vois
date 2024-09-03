@@ -1,7 +1,59 @@
 from IPython.display import display
 
 
-class Test_button:
+class _Test_Button():
+    def _test_simple_init(self, kernel_code, ipywidgets_vois_runner, page_session, assert_vois_compare_image,
+                          assert_vois_bytes_image):
+        ipywidgets_vois_runner(kernel_code)
+
+        my_button_1_sel = page_session.get_by_role("button", name="Edoardo1")
+        my_button_1_sel.wait_for()
+
+        my_button_2_sel = page_session.get_by_role("button", name="Edoardo2")
+        my_button_2_sel.wait_for()
+
+        my_button_3_sel = page_session.locator(".btn3").locator('.v-btn')
+        my_button_3_sel.wait_for()
+
+        my_button_4_sel = page_session.locator(".btn4").locator('.v-btn')
+        my_button_4_sel.wait_for()
+
+        assert_vois_bytes_image(image1=my_button_3_sel.screenshot(animations='disabled'),
+                                image2=my_button_4_sel.screenshot(animations='disabled'),
+                                differ=True)
+
+        assert_vois_compare_image(image=my_button_1_sel.screenshot(animations='disabled'), postfix='1')
+        assert_vois_compare_image(image=my_button_2_sel.screenshot(animations='disabled'), postfix='2')
+
+    def _test_icon(self, kernel_code, ipywidgets_vois_runner, page_session, assert_vois_compare_image,
+                   assert_vois_bytes_image):
+        ipywidgets_vois_runner(kernel_code)
+
+        my_button_1_sel = page_session.locator(".btn1").locator('.v-btn')
+        my_button_2_sel = page_session.locator(".btn2").locator('.v-btn')
+        my_button_3_sel = page_session.locator(".btn3").locator('.v-btn')
+        my_button_1_sel.wait_for()
+        my_button_2_sel.wait_for()
+        my_button_3_sel.wait_for()
+
+        assert_vois_bytes_image(image1=my_button_1_sel.screenshot(animations='disabled'),
+                                image2=my_button_2_sel.screenshot(animations='disabled'),
+                                differ=True)
+        assert_vois_bytes_image(image1=my_button_2_sel.screenshot(animations='disabled'),
+                                image2=my_button_3_sel.screenshot(animations='disabled'),
+                                differ=True)
+
+        assert_vois_compare_image(image=my_button_1_sel.screenshot(animations='disabled'), postfix='1')
+
+        my_button_1_sel.click()
+        my_button_1_sel.wait_for()
+
+        assert_vois_compare_image(image=my_button_1_sel.screenshot(animations='disabled'), postfix='2')
+
+    def _test_clicks(self, kernel_code, ipywidgets_vois_runner, page_session, assert_vois_compare_image,):
+
+
+class Test_button(_Test_Button):
 
     def test_simple_init(self, ipywidgets_vois_runner, page_session, assert_vois_compare_image,
                          assert_vois_bytes_image):
@@ -92,28 +144,11 @@ class Test_button:
             display(my_button_3.draw())
             display(my_button_4.draw())
 
-        ipywidgets_vois_runner(kernel_code)
-
-        my_button_1_sel = page_session.get_by_role("button", name="Edoardo1")
-        my_button_1_sel.wait_for()
-
-        my_button_2_sel = page_session.get_by_role("button", name="Edoardo2")
-        my_button_2_sel.wait_for()
-
-        my_button_3_sel = page_session.locator(".btn3").locator('.v-btn')
-        my_button_3_sel.wait_for()
-
-        my_button_4_sel = page_session.locator(".btn4").locator('.v-btn')
-        my_button_4_sel.wait_for()
-
-        assert_vois_bytes_image(image1=my_button_3_sel.screenshot(animations='disabled'),
-                                image2=my_button_4_sel.screenshot(animations='disabled'),
-                                differ=True)
-
-        assert_vois_compare_image(image=my_button_1_sel.screenshot(animations='disabled'), postfix='1')
-        assert_vois_compare_image(image=my_button_2_sel.screenshot(animations='disabled'), postfix='2')
-        # assert_vois_compare_image(image=page_session.locator(".v-btn").screenshot(animations='disabled'),
-        #                           postfix=1)
+        super()._test_simple_init(kernel_code=kernel_code,
+                                  ipywidgets_vois_runner=ipywidgets_vois_runner,
+                                  page_session=page_session,
+                                  assert_vois_compare_image=assert_vois_compare_image,
+                                  assert_vois_bytes_image=assert_vois_bytes_image)
 
     def test_icon(self, ipywidgets_vois_runner, page_session, assert_vois_compare_image,
                   assert_vois_bytes_image):
@@ -160,28 +195,11 @@ class Test_button:
             display(my_button_2.draw())
             display(my_button_3.draw())
 
-        ipywidgets_vois_runner(kernel_code)
-
-        my_button_1_sel = page_session.locator(".btn1").locator('.v-btn')
-        my_button_2_sel = page_session.locator(".btn2").locator('.v-btn')
-        my_button_3_sel = page_session.locator(".btn3").locator('.v-btn')
-        my_button_1_sel.wait_for()
-        my_button_2_sel.wait_for()
-        my_button_3_sel.wait_for()
-
-        assert_vois_bytes_image(image1=my_button_1_sel.screenshot(animations='disabled'),
-                                image2=my_button_2_sel.screenshot(animations='disabled'),
-                                differ=True)
-        assert_vois_bytes_image(image1=my_button_2_sel.screenshot(animations='disabled'),
-                                image2=my_button_3_sel.screenshot(animations='disabled'),
-                                differ=True)
-
-        assert_vois_compare_image(image=my_button_1_sel.screenshot(animations='disabled'), postfix='1')
-
-        my_button_1_sel.click()
-        my_button_1_sel.wait_for()
-
-        assert_vois_compare_image(image=my_button_1_sel.screenshot(animations='disabled'), postfix='2')
+        super()._test_icon(kernel_code=kernel_code,
+                           ipywidgets_vois_runner=ipywidgets_vois_runner,
+                           page_session=page_session,
+                           assert_vois_compare_image=assert_vois_compare_image,
+                           assert_vois_bytes_image=assert_vois_bytes_image)
 
     def test_clicks(self, ipywidgets_vois_runner, page_session, assert_vois_compare_image):
         def kernel_code():

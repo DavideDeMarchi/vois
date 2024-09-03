@@ -20,9 +20,9 @@
 import ipyvuetify as v
 from ipywidgets import widgets
 from vois import colors
-from vois.vuetify import settings, popup
+from vois.vuetify import popup
 from vois.vuetify.utils.util import *
-from typing import Callable, Any, Union, Optional
+from typing import Callable, Any, Optional
 import warnings
 
 
@@ -249,7 +249,7 @@ class ColorPicker(v.Menu):
     @deprecated_init_alias(**deprecation_alias)
     def __init__(self,
                  color: str = "#FF0000",
-                 dark: bool = settings.dark_mode,
+                 dark: bool = None,
                  dark_text: bool = None,
                  width: int = 40,
                  height: int = 30,
@@ -269,8 +269,10 @@ class ColorPicker(v.Menu):
                  disabled: bool = False,
                  color_theory_popup: bool = False):
 
+        from vois.vuetify import settings
+
         self._color = str(color).upper()
-        self.dark = dark
+        self.dark = dark if dark is not None else settings.dark_mode
         self._dark_text = dark_text
         self.width = width
         self.height = height
