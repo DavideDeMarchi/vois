@@ -11,3 +11,5 @@ https://jupyterbook.org/en/stable/intro.html
 General documentation guidance:
 
 https://documentation.divio.com/
+
+https://stackoverflow.com/questions/60364789/how-do-i-correctly-start-using-readthedocs-yml
