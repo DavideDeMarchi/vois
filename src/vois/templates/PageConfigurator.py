@@ -130,8 +130,8 @@ class PageConfigurator(v.Html):
                                           dark=True, onchange=self.onSelectedTemplate, row=True, width=self.togglewidth, justify='start', paddingrow=self.paddingrow, tile=True)
 
         
-        self.titlecolor  = ColorPicker(color=settings.color_first,  width=50, height=30, rounded=False, on_change=self.titlecolorChange,  offset_x=True, offset_y=False, color_theory_popup=True)        
-        self.footercolor = ColorPicker(color=settings.color_second, width=50, height=30, rounded=False, on_change=self.footercolorChange, offset_x=True, offset_y=False, color_theory_popup=True)
+        self.titlecolor  = ColorPicker(dark=False, color=settings.color_first,  width=50, height=30, rounded=False, on_change=self.titlecolorChange,  offset_x=True, offset_y=False, color_theory_popup=True)        
+        self.footercolor = ColorPicker(dark=False, color=settings.color_second, width=50, height=30, rounded=False, on_change=self.footercolorChange, offset_x=True, offset_y=False, color_theory_popup=True)
         
         self.rounded = switch.switch(self.reset_state['button_rounded'], 'Rounded buttons', inset=True, dense=True, onchange=self.onroundedChange)
         
