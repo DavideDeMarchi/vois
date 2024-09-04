@@ -25,9 +25,6 @@ from io import BytesIO
 import ipyvuetify
 import ipyvuetify as v
 
-from osgeo import ogr, osr
-from jeodpp import inter       # V.I.: importing inter after GDAL seem to solve the HDF5 C errors
-
 import requests
 import math
 
@@ -109,7 +106,6 @@ def GoogleHybrid():
 # Any ImageProcess or VectorLayer: returns an ipyleaflet.TileLayer instance
 def BDAPLayer(p):
     procid = p.toLayer()
-    #return ipyleaflet.TileLayer(url='https://jeodpp.jrc.ec.europa.eu/jiplib-view-dev?x={x}&y={y}&z={z}&procid=%s'%procid, max_zoom=21, max_native_zoom=21)
     return ipyleaflet.TileLayer(url='https://jeodpp.jrc.ec.europa.eu/jiplib-view?x={x}&y={y}&z={z}&procid=%s'%procid, max_zoom=21, max_native_zoom=21)
 
 
@@ -168,57 +164,6 @@ def zoomToExtents(m, xmin, ymin, xmax, ymax, epsg=4326):
     return
 
 
-def zoomToExtents_OLD(m, xmin, ymin, xmax, ymax, epsg=4326):
-    def transformPoint(x, y, coordtrans):
-        point = ogr.CreateGeometryFromWkt("POINT (%f %f)"%(x,y))
-        point.Transform(coordtrans)
-        pt = point.GetPoint(0)
-        return pt[0], pt[1]
-
-    def transformExtent(xmin, ymin, xmax, ymax, epsgsource, epsgtarget):
-        if epsgsource == epsgtarget:
-            return xmin, ymin, xmax, ymax
-
-        source = osr.SpatialReference()
-        source.ImportFromEPSG(epsgsource)
-        source.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-
-        target = osr.SpatialReference()
-        target.ImportFromEPSG(epsgtarget)
-        target.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-
-        ct = osr.CoordinateTransformation(source, target)
-
-        x1, y1 = transformPoint(xmin, ymin, ct)
-        x2, y2 = transformPoint(xmin, ymax, ct)
-        x3, y3 = transformPoint(xmax, ymin, ct)
-        x4, y4 = transformPoint(xmax, ymax, ct)
-
-        targetxmin = min(x1, x2, x3, x4)
-        targetxmax = max(x1, x2, x3, x4)
-        targetymin = min(y1, y2, y3, y4)
-        targetymax = max(y1, y2, y3, y4)
-
-        return targetxmin, targetymin, targetxmax, targetymax
-
-    geoxmin, geoymin, geoxmax, geoymax = transformExtent(xmin, ymin, xmax, ymax, epsg, 4326)
-    mercxmin, mercymin, mercxmax, mercymax = transformExtent(geoxmin, geoymin, geoxmax, geoymax, 4326, 3857)
-
-    distance = mercxmax - mercxmin
-
-    # Given a distance on a parallel, returns the number of pixels at a certain zoom level
-    def pixels(distance, zoom):
-        return 256 * (distance/40000000) * math.pow(2,zoom)
-
-    # See https://gis.stackexchange.com/questions/19632/how-to-calculate-the-optimal-zoom-level-to-display-two-or-more-points-on-a-map
-    zoom = 0
-    while pixels(distance, zoom) < 500:
-        zoom = zoom + 1
-
-    m.center = [(geoymin+geoymax)*0.5, (geoxmin+geoxmax)*0.5]
-    m.zoom = zoom
-
-
 #####################################################################################################################################################
 # Display of coordinated at mousemove on a map
 #####################################################################################################################################################
@@ -258,118 +203,6 @@ def getCoordinatesCard(m):
 # Remove the Coordinates WidgetControl from the map, if present
 def removeCoordinates(m):
     removeCardByName(m, 'Coordinates')
-
-
-#####################################################################################################################################################
-# Functions for vector layers management and display
-#####################################################################################################################################################
-
-# Apply a symbol to a category of a VectorLayer instance
-def applySymbol(vectorlayer, rule='all', symbol=[]):
-    for layer in symbol:
-        style = "default"
-        for member in layer:
-            symbolizer, attribute, value = member
-            vectorlayer.set(style, rule, symbolizer, attribute, str(value))
-
-
-# Generate an image from a symbol
-def symbol2Image(symbol=[], size=1, layer_type='Point', clipdimension=MEDIUM_SYMBOLS_DIMENSION, showborder=False):
-    doclip = False
-    if layer_type == 'Line':
-        if size >= 3:    wkt = 'LINESTRING (-170 82, -100 55, -60 70, -10 38)'
-        elif size == 2:  wkt = 'LINESTRING (-175 83, -158 81, -148 83, -129 81)'
-        else:            wkt = 'LINESTRING (-177 84.45, -171 83.9, -167.4 84.25, -161 83.75)'
-    elif layer_type == 'Polygon':
-        if size >= 3:    wkt = 'POLYGON ((-170 83.85, -170 10, -10 10, -10 83.85, -170 83.85))'
-        elif size == 2:  wkt = 'POLYGON ((-175 84.5, -175 78, -128.5 78, -128.5 84.5, -175 84.5))'
-        else:            wkt = 'POLYGON ((-178 84.85, -178 83.2, -160.5 83.2, -160.5 84.85, -178 84.85))'
-    else:
-        if size >= 3:    wkt = 'POINT (-90 65)'
-        elif size == 2:  wkt = 'POINT (-152 82)'
-        else:            wkt = 'POINT (-169.52 84.05)'
-
-    if size >= 3:
-        if clipdimension < LARGE_SYMBOLS_DIMENSION:
-            doclip = True
-    elif size == 2:
-        if clipdimension < MEDIUM_SYMBOLS_DIMENSION:
-            doclip = True
-    else:
-        if clipdimension < SMALL_SYMBOLS_DIMENSION:
-            doclip = True
-
-    v = inter.Collection(inter.collections.Vector)
-    v.geomAdd(wkt)
-    v.remove('default', 'all')
-    applySymbol(v, 'all', symbol)
-    ip = v.process()
-    ip.toLayer()
-    url = SYMBOLS_URL % ip.getProcessID()
-    response = requests.get(url)
-    if len(response.content) > 5 and response.content[0] == 137 and response.content[1] == 80 and response.content[2] == 78 and response.content[3] == 71 and response.content[4] == 13:
-        img = Image.open(BytesIO(response.content))
-        if size == 2:
-            img = img.crop((0, 0, MEDIUM_SYMBOLS_DIMENSION, MEDIUM_SYMBOLS_DIMENSION))
-        elif size < 2:
-            img = img.crop((0, 0, SMALL_SYMBOLS_DIMENSION, SMALL_SYMBOLS_DIMENSION))
-
-        if doclip:
-            s = img.size
-            cx = s[0]/2
-            cy = s[1]/2
-            img = img.crop((cx-clipdimension/2, cy-clipdimension/2, cx+clipdimension/2, cy+clipdimension/2))
-    else:
-        # print('URL with errors:',url)
-        if size >= 3:    img = Image.new("RGB", (LARGE_SYMBOLS_DIMENSION,  LARGE_SYMBOLS_DIMENSION),  (255, 255, 255))
-        elif size == 2:  img = Image.new("RGB", (MEDIUM_SYMBOLS_DIMENSION, MEDIUM_SYMBOLS_DIMENSION), (255, 255, 255))
-        else:            img = Image.new("RGB", (SMALL_SYMBOLS_DIMENSION,  SMALL_SYMBOLS_DIMENSION),  (255, 255, 255))
-        draw = ImageDraw.Draw(img)
-        draw.text((0, 0),"Error",(0,0,0))
-
-    # Add a thin black border
-    if showborder:
-        draw = ImageDraw.Draw(img)
-        s = img.size
-        draw.rectangle(((0, 0), (s[0]-1, s[1]-1)), outline='black')
-    return img
-
-
-# Change color of a symbol and returns the modified symbol
-def setColor(symbol, color='#ff0000', fillColor='#ff0000', fillOpacity=1.0, strokeColor='#ffff00', strokeWidth=0.5, scalemin=None, scalemax=None):
-    newsymbol = []
-    for layer in symbol:
-        newlayer = []
-        for member in layer:
-            symbolizer,attribute,value = member
-
-            if value == 'COLOR':
-                value = color
-
-            if value == 'FILL-COLOR':
-                value = fillColor
-
-            if value == 'FILL-OPACITY':
-                value = fillOpacity
-
-            if value == 'STROKE-COLOR':
-                value = strokeColor
-
-            if value == 'STROKE-WIDTH':
-                value = strokeWidth
-
-            if value == 'SCALE-MIN':
-                value = scalemin
-
-            if value == 'SCALE-MAX':
-                value = scalemax
-
-            if value is not None:
-                newlayer.append((symbolizer,attribute,value))
-
-        newsymbol.append(newlayer)
-
-    return newsymbol
 
 
 #####################################################################################################################################################
