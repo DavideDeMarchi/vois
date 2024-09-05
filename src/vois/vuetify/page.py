@@ -457,7 +457,7 @@ class page():
         
     @titleimageurl.setter
     def titleimageurl(self, imageurl):
-        self._titleimageurl = imageurl
+        self._titleimageurl = str(imageurl)
 
         if len(self._titleimageurl) > 0:
             self.appbar.src = self._titleimageurl
@@ -708,7 +708,7 @@ class page():
         
     @logoappurl.setter
     def logoappurl(self, imageurl):
-        self._logoappurl = imageurl
+        self._logoappurl = str(imageurl)
         
         if len(self._logoappurl) > 0:
             self.logoapp = v.Img(class_='pa-0 ma-0 mr-2', max_width=self._logowidth, src=self._logoappurl)
@@ -740,7 +740,7 @@ class page():
         
     @logocreditsurl.setter
     def logocreditsurl(self, imageurl):
-        self._logocreditsurl = imageurl
+        self._logocreditsurl = str(imageurl)
         
         if len(self._logocreditsurl) == 0:
             self._logocreditsurl = 'https://jeodpp.jrc.ec.europa.eu/services/shared/pngs/EC-JRC-logo_horizontal_EN_neg_transparent-background.png'

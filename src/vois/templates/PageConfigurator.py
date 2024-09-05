@@ -27,6 +27,7 @@ import json
 from vois import colors, download
 from vois.vuetify import settings, toggle, ColorPicker, sliderFloat, UploadImage, UploadJson, Button, switch, tooltip, iconButton, dialogGeneric, selectSingle
 from vois.templates import template1panel, template2panels, template3panels
+from vois import cssUtils
 
 
 # Change style of a label
@@ -251,16 +252,19 @@ class PageConfigurator(v.Html):
             
             # Set the page state (does a refresh if the page is open)
             self.page.state = state
-        
+
+            #print('BEFORE:')
+            #print('state.footercolor', state['footercolor'])
+            #print('page.footercolor ', self.page.footercolor)
+            #print('footercolor.color', self.footercolor.color)
+            
             # Set the state of the confuguration widgets
             self.togglePanels.value    = state['panelsvalue']
             self.appname.v_model       = self.page.appname
             self.pagetitle.v_model     = self.page.title
-            self.titlecolor.color      = self.page.titlecolor
+            self.footerlinked.value    = state['footerlinkedvalue']
             self.titledark.value       = state['titledarkvalue']
             self.titleheight.value     = self.page.titleheight
-            self.footercolor.color     = self.page.footercolor
-            self.footerlinked.value    = state['footerlinkedvalue']
             self.footerdark.value      = state['footerdarkvalue']
             self.footerheight.value    = self.page.footerheight
             self.show_back.value       = self.page.show_back
@@ -275,7 +279,15 @@ class PageConfigurator(v.Html):
                 self.transition.value = state['transitionvalue']
             else:
                 self.transition.value = 'Bottom'
+                
+            self.footercolor.color     = state['footercolor']
+            self.titlecolor.color      = state['titlecolor']
         
+            #print('AFTER:')
+            #print('state.footercolor', state['footercolor'])
+            #print('page.footercolor ', self.page.footercolor)
+            #print('footercolor.color', self.footercolor.color)
+            
         
     # Save current state to file
     def onSave(self):
@@ -482,6 +494,8 @@ p.open()'''%(self.titlecolor.color, self.footercolor.color, str(self.rounded.val
     # Forced close
     def on_force_close(self, *args):
         self.output.clear_output()    # V.I.!!! removes double draw of popups!!!
+        cssUtils.allSettings(self.output)
+        cssUtils.switchFontSize(self.output,14)
 
         
     # Selection of 1, 2 or 3 panels template
@@ -515,9 +529,9 @@ p.open()'''%(self.titlecolor.color, self.footercolor.color, str(self.rounded.val
         # Set the state
         self.page.state = statusdict
 
-        self.page.toggleBasemap.dark            = self.page.titledark
-        self.page.toggleBasemap.colorselected   = self.page.titlecolor
-        self.page.toggleBasemap.colorunselected = self.page.footercolor
+        self.page.map.dark                     = self.page.titledark
+        self.page.map.basemaps_colorselected   = self.page.titlecolor
+        self.page.map.basemaps_colorunselected = self.page.footercolor
         
         self.titleimageurl.color_selected  = self.page.titlecolor
         self.titleimageurl.dark            = self.page.titledark
@@ -565,7 +579,7 @@ p.open()'''%(self.titlecolor.color, self.footercolor.color, str(self.rounded.val
         self.buttSave.color                   = color
         self.buttCode.color                   = color
         self.buttReset.color                  = color
-        self.page.toggleBasemap.colorselected = color
+        self.page.map.basemaps_colorselected  = color
         self.togglePanels.colorselected       = color
         self.titledark.colorselected          = color
         self.footerdark.colorselected         = color
@@ -616,7 +630,7 @@ p.open()'''%(self.titlecolor.color, self.footercolor.color, str(self.rounded.val
         self.page.footercolor = color
 
         # widgets color
-        self.page.toggleBasemap.colorunselected = color
+        self.page.map.basemaps_colorunselected  = color
         self.togglePanels.colorunselected       = color
         self.titledark.colorunselected          = color
         self.footerdark.colorunselected         = color
@@ -659,7 +673,7 @@ p.open()'''%(self.titlecolor.color, self.footercolor.color, str(self.rounded.val
         self.titleimageurl.dark      = flag
         self.logoappurl.dark         = flag
         self.logocreditsurl.dark     = flag
-        self.page.toggleBasemap.dark = flag
+        self.page.map.basemaps_dark  = flag
         self.footercolor.dark_text   = flag
                 
             
