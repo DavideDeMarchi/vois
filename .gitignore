@@ -7,5 +7,6 @@ src/vois/development/.ipynb_checkpoints
 src/vois/development/load_local_vois.py
 /tests/ui/test_results/
 requirements.txt
-src/vois/geo/
+src/vois/geo/bdap/
+src/vois/geo/leafmap/
 src/vois.egg-info/

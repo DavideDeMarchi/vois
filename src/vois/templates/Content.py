@@ -32,14 +32,23 @@ from vois.templates import mapUtils
 class Content(v.Card):
 
     # Initialization
-    def __init__(self, width='50vw', height='50vh', splitmode=0, bordercolor='#006600', **kwargs):
+    def __init__(self,
+                 width='50vw',            # Overall width
+                 height='50vh',           # Overall height
+                 splitmode=0,             # 0=single content,  1=two contents splitted vertically,   2=two contents splitted horizontally,   3=three contents,   4=four contents
+                 bordercolor='#006600',   # Color of the splitting borders
+                 leftwidthperc=50,        # width in percentage of left column
+                 topheightperc=50,        # height in percentage of top row
+                 **kwargs):
         
         super().__init__(**kwargs)
         
-        self._width       = width
-        self._height      = height
-        self._splitmode   = splitmode
-        self._bordercolor = bordercolor
+        self._width         = width
+        self._height        = height
+        self._splitmode     = splitmode
+        self._bordercolor   = bordercolor
+        self._leftwidthperc = leftwidthperc
+        self._topheightperc = topheightperc
         
         self.card = v.Card(flat=True, color='#eeeeee', tile=True,
                            width=self._width,   min_width=self._width,   max_width=self._width,
@@ -57,6 +66,11 @@ class Content(v.Card):
     # Update the content when splitmode is changed
     def update(self):
 
+        wl = 'calc(%s * %f)'%(self._width, self._leftwidthperc/100)
+        wr = 'calc(%s * %f)'%(self._width, (100 - self._leftwidthperc)/100)
+        ht = 'calc(%s * %f)'%(self._height, self._topheightperc/100)
+        hb = 'calc(%s * %f)'%(self._height, (100 - self._topheightperc)/100)
+        
         # Single content
         if self._splitmode == 0:
             self.card1 = v.Card(flag=True, tile=True,
@@ -70,12 +84,11 @@ class Content(v.Card):
         
         # 2 horizontal contents
         elif self._splitmode == 1:
-            w = 'calc(%s / 2)'%self._width
             self.card1 = v.Card(flag=True, tile=True, outlined=True, style_='border: 0px solid red; border-right: 1px solid %s;'%self._bordercolor,
-                                width=w, min_width=w, max_width=w,
+                                width=wl, min_width=wl, max_width=wl,
                                 height=self._height, min_height=self._height, max_height=self._height)
-            self.card2 = v.Card(flag=True, tile=True,
-                                width=w, min_width=w, max_width=w,
+            self.card2 = v.Card(flag=True, tile=True, 
+                                width=wr, min_width=wr, max_width=wr,
                                 height=self._height, min_height=self._height, max_height=self._height)
     
             self.card3 = None
@@ -86,13 +99,12 @@ class Content(v.Card):
             
         # 2 vertical contents
         elif self._splitmode == 2:
-            h = 'calc(%s / 2)'%self._height
             self.card1 = v.Card(flag=True, tile=True, outlined=True, style_='border: 0px solid red; border-bottom: 1px solid %s;'%self._bordercolor,
                                 width=self._width, min_width=self._width, max_width=self._width,
-                                height=h, min_height=h, max_height=h)
+                                height=ht, min_height=ht, max_height=ht)
             self.card2 = v.Card(flag=True, tile=True, 
                                 width=self._width, min_width=self._width, max_width=self._width,
-                                height=h, min_height=h, max_height=h)
+                                height=hb, min_height=hb, max_height=hb)
     
             self.card3 = None
             self.card4 = None
@@ -101,16 +113,14 @@ class Content(v.Card):
 
         # 2 vertical contents + 1 on the right at full height
         elif self._splitmode == 3:
-            w = 'calc(%s / 2)'%self._width
-            h = 'calc(%s / 2)'%self._height
             self.card1 = v.Card(flag=True, tile=True, outlined=True, style_='border: 0px solid red; border-right: 1px solid %s; border-bottom: 1px solid %s'%(self._bordercolor,self._bordercolor),
-                                width=w, min_width=w, max_width=w,
-                                height=h, min_height=h, max_height=h)
+                                width=wl, min_width=wl, max_width=wl,
+                                height=ht, min_height=ht, max_height=ht)
             self.card2 = v.Card(flag=True, tile=True, outlined=True, style_='border: 0px solid red; border-right: 1px solid %s;'%self._bordercolor,
-                                width=w, min_width=w, max_width=w,
-                                height=h, min_height=h, max_height=h)
+                                width=wl, min_width=wl, max_width=wl,
+                                height=hb, min_height=hb, max_height=hb)
             self.card3 = v.Card(flag=True, tile=True,
-                                width=w, min_width=w, max_width=w,
+                                width=wr, min_width=wr, max_width=wr,
                                 height=self._height, min_height=self._height, max_height=self._height)
             self.card4 = None
             
@@ -118,20 +128,18 @@ class Content(v.Card):
             
         # 4 contents
         else:
-            w = 'calc(%s / 2)'%self._width
-            h = 'calc(%s / 2)'%self._height
             self.card1 = v.Card(flag=True, tile=True, outlined=True, style_='border: 0px solid red; border-right: 1px solid %s; border-bottom: 1px solid %s'%(self._bordercolor,self._bordercolor),
-                                width=w, min_width=w, max_width=w,
-                                height=h, min_height=h, max_height=h)
+                                width=wl, min_width=wl, max_width=wl,
+                                height=ht, min_height=ht, max_height=ht)
             self.card2 = v.Card(flag=True, tile=True, outlined=True, style_='border: 0px solid red; border-right: 1px solid %s;'%self._bordercolor,
-                                width=w, min_width=w, max_width=w,
-                                height=h, min_height=h, max_height=h)
+                                width=wl, min_width=wl, max_width=wl,
+                                height=hb, min_height=hb, max_height=hb)
             self.card3 = v.Card(flag=True, tile=True, style_='border: 0px solid red; border-bottom: 1px solid %s'%self._bordercolor,
-                                width=w, min_width=w, max_width=w,
-                                height=h, min_height=h, max_height=h)
+                                width=wr, min_width=wr, max_width=wr,
+                                height=ht, min_height=ht, max_height=ht)
             self.card4 = v.Card(flag=True, tile=True,
-                                width=w, min_width=w, max_width=w,
-                                height=h, min_height=h, max_height=h)
+                                width=wr, min_width=wr, max_width=wr,
+                                height=hb, min_height=hb, max_height=hb)
             self.card.children = [widgets.HBox([widgets.VBox([self.card1, self.card2]), widgets.VBox([self.card3, self.card4])])]
     
     
@@ -178,4 +186,23 @@ class Content(v.Card):
     def bordercolor(self, bc):
         self._bordercolor = bc
         self.update()
+
         
+    @property
+    def leftwidthperc(self):
+        return self._leftwidthperc
+        
+    @leftwidthperc.setter
+    def leftwidthperc(self, w):
+        self._leftwidthperc = min(100, max(w, 0))
+        self.update()
+
+        
+    @property
+    def topheightperc(self):
+        return self._topheightperc
+        
+    @topheightperc.setter
+    def topheightperc(self, h):
+        self._topheightperc = min(100, max(h, 0))
+        self.update()        

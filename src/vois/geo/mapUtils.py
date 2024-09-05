@@ -17,11 +17,10 @@
 # 
 # See the Licence for the specific language governing permissions and
 # limitations under the Licence.
-
+from ipywidgets import widgets, Layout
 import ipyleaflet
-from ipyleaflet import basemaps, basemap_to_tiles, WidgetControl
-from PIL import Image, ImageDraw
-from io import BytesIO
+from ipyleaflet import basemaps, basemap_to_tiles, WidgetControl, Rectangle
+from PIL import Image
 import ipyvuetify
 import ipyvuetify as v
 
@@ -29,13 +28,8 @@ import requests
 import math
 
 
-# Symbols dimension in pixels
-SMALL_SYMBOLS_DIMENSION = 30
-MEDIUM_SYMBOLS_DIMENSION = 80
-LARGE_SYMBOLS_DIMENSION = 256
-
-# Base URL for generating images from symbols
-SYMBOLS_URL = 'https://jeodpp.jrc.ec.europa.eu/jiplib-view?x=0&y=0&z=1&procid=%s'
+MAPCARD_COORDINATES = 'Coordinates'
+MAPCARD_OVERVIEW    = 'Overview'
 
 
 #####################################################################################################################################################
@@ -122,7 +116,7 @@ def addLayer(m, tLayer, name, opacity=1.0):
             break
 
     if not alreadyPresent:
-        m.add_layer(tLayer)
+        m.add(tLayer)
 
     return tLayer
 
@@ -139,14 +133,14 @@ def getLayer(m, name):
 def removeLayer(m, name):
     for layer in m.layers:
         if name == layer.name:
-            m.remove_layer(layer)
+            m.remove(layer)
 
 
 # Remove all popups from the map
 def removeAllPopups(m):
     for layer in reversed(m.layers):
         if isinstance(layer, ipyleaflet.leaflet.Popup):
-            m.remove_layer(layer)
+            m.remove(layer)
 
 
 # Remove all layer except current basemap
@@ -154,7 +148,7 @@ def clear(m):
     baselayer = ipyleaflet.basemap_to_tiles(m.basemap)
     baselayer.base = True
     m.clear_layers()
-    m.add_layer(baselayer)
+    m.add(baselayer)
 
 
 # Zoom a map to a rectangle
@@ -178,7 +172,7 @@ def getCardByName(m, name, position='topright', class_='pa-0 ma-0'):
     # If not found: add it to the map!
     card = v.Card(flat=True, class_=class_, active_class=name)
     wc = WidgetControl(widget=card, position=position)
-    m.add_control(wc)
+    m.add(wc)
     return card
 
     
@@ -188,7 +182,7 @@ def removeCardByName(m, name):
         if isinstance(control, ipyleaflet.leaflet.WidgetControl):
             if isinstance(control.widget, ipyvuetify.generated.Card):
                 if control.widget.active_class == name:
-                    m.remove_control(control)
+                    m.remove(control)
 
 
 #####################################################################################################################################################
@@ -197,14 +191,55 @@ def removeCardByName(m, name):
 # Searches the controls of the Map m to find the coordinates control
 # N.B.: the Coordinates control is a v.Card having active_class == 'Coordinates' (so that it can be retrieved from the list of m.controls)
 def getCoordinatesCard(m):
-    return getCardByName(m, 'Coordinates', 'topright')
+    return getCardByName(m, MAPCARD_COORDINATES, 'topright')
 
     
 # Remove the Coordinates WidgetControl from the map, if present
 def removeCoordinates(m):
-    removeCardByName(m, 'Coordinates')
+    removeCardByName(m, MAPCARD_COORDINATES)
 
+    
+#####################################################################################################################################################
+# Display of an overview map
+#####################################################################################################################################################
 
+# Add an overview map
+def addOverview(m, color='red', position='bottomright', overviewLayer=None):
+    
+    removeCardByName(m, MAPCARD_OVERVIEW)
+    
+    # Create the overview map
+    moverview = ipyleaflet.Map(center=[57,10], zoom=2, scroll_wheel_zoom=False, zoom_control=False, dragging=False,
+                               attribution_control=False, layout=Layout(height='200px', width='200px'), max_zoom=2)
+
+    # Add the overview layer
+    if not overviewLayer is None:
+        addLayer(moverview, overviewLayer, 'CustomLayer')
+
+    # Set the card for the overview
+    card = getCardByName(m, MAPCARD_OVERVIEW, position=position, class_='pa-0 ma-1')
+    card.style_ = 'overflow: hidden;'
+    card.children = [moverview]
+
+    # Add the current zoom
+    rect = Rectangle(color=color, fill=False, bounds=m.bounds)
+    moverview.add(rect)
+
+    # Update the rectangle at each zoom/pan on the main map
+    def onMapBoundsChanged(*args):
+        nonlocal rect
+        newrect = Rectangle(color=color, fill=False, bounds=m.bounds)
+        moverview.substitute_layer(rect, newrect)
+        rect = newrect
+
+    m.observe(onMapBoundsChanged, 'bounds')
+    
+
+# Remove the overview card from the map
+def removeOverview(m):
+    removeCardByName(m, MAPCARD_OVERVIEW)
+
+    
 #####################################################################################################################################################
 # Save a map view in a PIL image
 #####################################################################################################################################################

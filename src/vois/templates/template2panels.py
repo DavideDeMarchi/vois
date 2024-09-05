@@ -26,7 +26,8 @@ import ipyvuetify as v
 
 # Vois imports
 from vois.vuetify import settings, toggle, page
-from vois.templates import mapUtils, dynamicButton
+from vois.templates import dynamicButton
+from vois.geo import Map, mapUtils
 
 # Panels dimensioning
 LEFT_WIDTH    = 400      # Width  in pixels of the left bar
@@ -111,10 +112,8 @@ class template2panels(page.page):
         self.dynbBottom.color = color
         
         # Set the color of basemaps toggle
-        for b in self.toggleBasemap.buttons:
-            b.color_selected = color
-            if b._selected:
-                b.b.color = color
+        self.map.basemaps_colorselected = color
+        
                 
     @property
     def footercolor(self):
@@ -125,10 +124,7 @@ class template2panels(page.page):
         page.page.footercolor.fset(self, color)   # call super() property setter
 
         # Set the color of basemaps toggle
-        for b in self.toggleBasemap.buttons:
-            b.color_unselected = color
-            if not b._selected:
-                b.b.color = color
+        self.map.basemaps_colorunselected = color
                 
         
     @property
@@ -143,7 +139,7 @@ class template2panels(page.page):
         self.cardLeft.height = self.height
         self.cardMain.height = self.main_height
         
-        self.map.layout.height = 'calc(%s - %fpx)'%(self.height,self.bottomHeight+1.5)
+        self.map.height = 'calc(%s - %fpx)'%(self.height,self.bottomHeight+1.5)
         
         d = self._titleheight - 54
         newy = '%dpx'%(64+d)
@@ -163,7 +159,7 @@ class template2panels(page.page):
         self.cardLeft.height = self.height
         self.cardMain.height = self.main_height
         
-        self.map.layout.height = 'calc(%s - %fpx)'%(self.height,self.bottomHeight+1.5)
+        self.map.height = 'calc(%s - %fpx)'%(self.height,self.bottomHeight+1.5)
         
         d = self._titleheight - 54
         newy = '%dpx'%(64+d)
@@ -186,79 +182,12 @@ class template2panels(page.page):
         
     # Create the content of the Main panel
     def createMain(self):
-        # Initial center and zoom of the map
-        self.center = [50, 12]
-        self.zoom   = 5
 
-        # Map widget
-        main_width  = 'calc(100vw - %dpx)'%self.leftWidth
-        main_height = 'calc(%s - %fpx)'%(self.height,self.bottomHeight+1.5)
-        self.map = ipyleaflet.Map(max_zoom=21, center=self.center, zoom=self.zoom, scroll_wheel_zoom=True, 
-                                  basemap=mapUtils.EmptyBasemap(), attribution_control=False, layout=Layout(width=main_width, height=main_height, margin='0px 0px 0px 0px'))
-        
-        mapUtils.addLayer(self.map, mapUtils.OSM_EC(),      LAYERNAME_BACKGROUND)
-        mapUtils.addLayer(self.map, mapUtils.CartoLabels(), LAYERNAME_LABELS)
-        layer = mapUtils.getLayer(self.map, LAYERNAME_LABELS)
-        layer.opacity = 0.0
-        
-        
-        # Add FullScreen control
-        self.map.add_control(FullScreenControl(position="topright"))
-
-        # Add Search control
-        self.map.add_control(SearchControl(position="topleft",url='https://nominatim.openstreetmap.org/search?format=json&q={s}',zoom=12))
-
-        # Add Scale control
-        self.map.add_control(ScaleControl(position='topleft'))
-
-        # Add widget control to select basemaps
-        self.toggleBasemap = toggle.toggle(0,
-                                           ['Gisco', 'Esri', 'Google'],
-                                           tooltips=['Select EC Gisco roadmap as background layer', 'Select ESRI WorldImagery as background layer', 'Select GOOGLE Satellite as background layer'],
-                                           colorselected=settings.color_first, colorunselected=settings.color_second, rounded=False,
-                                           dark=settings.dark_mode, onchange=self.onSelectBasemap, row=True, width=70, justify='start', paddingrow=0, tile=True)
-        wcBasemap = WidgetControl(widget=self.toggleBasemap.draw(), position='bottomright')
-        self.map.add_control(wcBasemap)
-        
-        
-        # Add widget control to display geographic coordinates at mouse move
-        self.cardCoordinates = v.Card(flat=True)
-        wcCoordinates = WidgetControl(widget=self.cardCoordinates, position='topright')
-        self.map.add_control(wcCoordinates)
-        
-        # Setup interaction on the map
-        self.map._interaction_callbacks = CallbackDispatcher()
-        self.map.on_interaction(self.handleMapInteraction)
+        # Create the map instance
+        self.map = Map.Map(width='calc(100vw - %dpx)'%self.leftWidth,  height='calc(%s - %fpx)'%(self.height,self.bottomHeight+1.5))
         
         # Display the map inside the main card
         self.cardMain.children = [self.map]
-        
-
-    # Manage all user interaction on the map
-    def handleMapInteraction(self, **kwargs):
-        if kwargs.get('type') == 'mousemove':
-            lon = kwargs.get('coordinates')[1]
-            lat = kwargs.get('coordinates')[0]
-            self.cardCoordinates.children = [v.Html(tag='div', children=[' %.4f° N, %.4f° E'%(lat,lon)], style_='color: black;', class_='pa-0 ma-0 ml-1 mr-1')]
-        #elif not self.handleInteractionStations(**kwargs):
-        #    self.handleInteractionModel(**kwargs)
-        
-
-    # Selection of a basemap
-    def onSelectBasemap(self, index):
-        layer = mapUtils.getLayer(self.map, LAYERNAME_LABELS)
-
-        if index == 1:
-            basemaplayer = mapUtils.EsriWorldImagery()
-            layer.opacity = 1.0
-        elif index == 2:
-            basemaplayer = mapUtils.GoogleHybrid()
-            layer.opacity = 0.0
-        else:
-            basemaplayer = mapUtils.OSM_EC()
-            layer.opacity = 0.0
-
-        mapUtils.addLayer(self.map, basemaplayer, LAYERNAME_BACKGROUND)
     
     
     #################################################################################################################################################
@@ -275,7 +204,7 @@ class template2panels(page.page):
         
         self.cardBottom.width = '100vw'
         self.cardMain.width   = self.main_width
-        self.map.layout.width = self.main_width
+        self.map.width        = self.main_width
         
 
     # Open the left panel
@@ -288,7 +217,7 @@ class template2panels(page.page):
         
         self.cardBottom.width = self.main_width
         self.cardMain.width   = self.main_width
-        self.map.layout.width = self.main_width
+        self.map.width        = self.main_width
         
 
     # Close the bottom panel
@@ -298,7 +227,7 @@ class template2panels(page.page):
         self.cardBottom.min_height = self.bottomHeight
         
         self.cardMain.height = self.height
-        self.map.layout.height = 'calc(%s - 1.5px)'%self.height
+        self.map.height      = 'calc(%s - 1.5px)'%self.height
         
 
     # Open the bottom panel
@@ -307,6 +236,6 @@ class template2panels(page.page):
         self.cardBottom.height     = self.bottomHeight
         self.cardBottom.min_height = self.bottomHeight
         
-        self.cardMain.height   = 'calc(%s - %dpx)'%(self.height,self.bottomHeight)
-        self.map.layout.height = 'calc(%s - %fpx)'%(self.height,self.bottomHeight+1.5)
+        self.cardMain.height = 'calc(%s - %dpx)'%(self.height,self.bottomHeight)
+        self.map.height      = 'calc(%s - %fpx)'%(self.height,self.bottomHeight+1.5)
         
