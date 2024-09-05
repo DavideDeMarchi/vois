@@ -19,11 +19,12 @@
 # limitations under the Licence.
 
 # Imports
-from ipywidgets import widgets
+from ipywidgets import widgets, Layout
 import ipyvuetify as v
 
 # Vois imports
-from vois.geo import mapUtils
+from vois.vuetify import settings
+from vois.geo import Map, mapUtils
 
 
 #####################################################################################################################################################
@@ -50,10 +51,14 @@ class Content(v.Card):
         self._leftwidthperc = leftwidthperc
         self._topheightperc = topheightperc
         
-        self.card = v.Card(flat=True, color='#eeeeee', tile=True,
+        self.card = v.Card(flat=True, color='#ffffff', tile=True,
                            width=self._width,   min_width=self._width,   max_width=self._width,
                            height=self._height, min_height=self._height, max_height=self._height)
         
+        self.card1 = self.card2 = self.card3 = self.card4 = None
+        self.card1children = self.card2children = self.card3children = self.card4children = None
+        
+        self.set1(Map.Map())
         self.update()
         
         self.children = [self.card]
@@ -62,6 +67,7 @@ class Content(v.Card):
     # Returns the vuetify object to display (the v.Card)
     def draw(self):
         return self
+    
     
     # Update the content when splitmode is changed
     def update(self):
@@ -73,7 +79,7 @@ class Content(v.Card):
         
         # Single content
         if self._splitmode == 0:
-            self.card1 = v.Card(flag=True, tile=True,
+            self.card1 = v.Card(flag=True, tile=True, style_='overflow: hidden;',
                                 width=self._width,   min_width=self._width,   max_width=self._width,
                                 height=self._height, min_height=self._height, max_height=self._height)
             self.card2 = None
@@ -84,7 +90,7 @@ class Content(v.Card):
         
         # 2 horizontal contents
         elif self._splitmode == 1:
-            self.card1 = v.Card(flag=True, tile=True, outlined=True, style_='border: 0px solid red; border-right: 1px solid %s;'%self._bordercolor,
+            self.card1 = v.Card(flag=True, tile=True, outlined=True, style_='border: 0px solid red; border-right: 1px solid %s; overflow: hidden;'%self._bordercolor,
                                 width=wl, min_width=wl, max_width=wl,
                                 height=self._height, min_height=self._height, max_height=self._height)
             self.card2 = v.Card(flag=True, tile=True, 
@@ -99,7 +105,7 @@ class Content(v.Card):
             
         # 2 vertical contents
         elif self._splitmode == 2:
-            self.card1 = v.Card(flag=True, tile=True, outlined=True, style_='border: 0px solid red; border-bottom: 1px solid %s;'%self._bordercolor,
+            self.card1 = v.Card(flag=True, tile=True, outlined=True, style_='border: 0px solid red; border-bottom: 1px solid %s; overflow: hidden;'%self._bordercolor,
                                 width=self._width, min_width=self._width, max_width=self._width,
                                 height=ht, min_height=ht, max_height=ht)
             self.card2 = v.Card(flag=True, tile=True, 
@@ -113,10 +119,10 @@ class Content(v.Card):
 
         # 2 vertical contents + 1 on the right at full height
         elif self._splitmode == 3:
-            self.card1 = v.Card(flag=True, tile=True, outlined=True, style_='border: 0px solid red; border-right: 1px solid %s; border-bottom: 1px solid %s'%(self._bordercolor,self._bordercolor),
+            self.card1 = v.Card(flag=True, tile=True, outlined=True, style_='border: 0px solid red; border-right: 1px solid %s; border-bottom: 1px solid %s; overflow: hidden;'%(self._bordercolor,self._bordercolor),
                                 width=wl, min_width=wl, max_width=wl,
                                 height=ht, min_height=ht, max_height=ht)
-            self.card2 = v.Card(flag=True, tile=True, outlined=True, style_='border: 0px solid red; border-right: 1px solid %s;'%self._bordercolor,
+            self.card2 = v.Card(flag=True, tile=True, outlined=True, style_='border: 0px solid red; border-right: 1px solid %s; overflow: hidden;'%self._bordercolor,
                                 width=wl, min_width=wl, max_width=wl,
                                 height=hb, min_height=hb, max_height=hb)
             self.card3 = v.Card(flag=True, tile=True,
@@ -128,13 +134,13 @@ class Content(v.Card):
             
         # 4 contents
         else:
-            self.card1 = v.Card(flag=True, tile=True, outlined=True, style_='border: 0px solid red; border-right: 1px solid %s; border-bottom: 1px solid %s'%(self._bordercolor,self._bordercolor),
+            self.card1 = v.Card(flag=True, tile=True, outlined=True, style_='border: 0px solid red; border-right: 1px solid %s; border-bottom: 1px solid %s; overflow: hidden;'%(self._bordercolor,self._bordercolor),
                                 width=wl, min_width=wl, max_width=wl,
                                 height=ht, min_height=ht, max_height=ht)
-            self.card2 = v.Card(flag=True, tile=True, outlined=True, style_='border: 0px solid red; border-right: 1px solid %s;'%self._bordercolor,
+            self.card2 = v.Card(flag=True, tile=True, outlined=True, style_='border: 0px solid red; border-right: 1px solid %s; overflow: hidden;'%self._bordercolor,
                                 width=wl, min_width=wl, max_width=wl,
                                 height=hb, min_height=hb, max_height=hb)
-            self.card3 = v.Card(flag=True, tile=True, style_='border: 0px solid red; border-bottom: 1px solid %s'%self._bordercolor,
+            self.card3 = v.Card(flag=True, tile=True, style_='border: 0px solid red; border-bottom: 1px solid %s; overflow: hidden;'%self._bordercolor,
                                 width=wr, min_width=wr, max_width=wr,
                                 height=ht, min_height=ht, max_height=ht)
             self.card4 = v.Card(flag=True, tile=True,
@@ -142,7 +148,58 @@ class Content(v.Card):
                                 height=hb, min_height=hb, max_height=hb)
             self.card.children = [widgets.HBox([widgets.VBox([self.card1, self.card2]), widgets.VBox([self.card3, self.card4])])]
     
+        
+        self.set1(self.card1children)
+        self.set2(self.card2children)
+        self.set3(self.card3children)
+        self.set4(self.card4children)
     
+    
+    # Set the content of cards 1,2,3,4 (can pass None or a widget that has width and height properties
+    def set1(self, children=None):
+        self.card1children = children
+        if self.card1 is not None:
+            if self.card1children is None:
+                self.card1.children = []
+            else:
+                self.card1children.width  = 'calc(%s - 1px)'%self.card1.width
+                self.card1children.height = 'calc(%s - 1px)'%self.card1.height
+                self.card1.children = [self.card1children]
+    
+    def set2(self, children=None):
+        self.card2children = children
+        if self.card2 is not None:
+            if self.card2children is None:
+                self.card2.children = []
+            else:
+                self.card2children.width  = 'calc(%s - 1px)'%self.card2.width
+                self.card2children.height = 'calc(%s - 1px)'%self.card2.height
+                self.card2.children = [self.card2children]
+    
+    def set3(self, children=None):
+        self.card3children = children
+        if self.card3 is not None:
+            if self.card3children is None:
+                self.card3.children = []
+            else:
+                self.card3children.width  = 'calc(%s - 1px)'%self.card3.width
+                self.card3children.height = 'calc(%s - 1px)'%self.card3.height
+                self.card3.children = [self.card3children]
+    
+    def set4(self, children=None):
+        self.card4children = children
+        if self.card4 is not None:
+            if self.card4children is None:
+                self.card4.children = []
+            else:
+                self.card4children.width  = 'calc(%s - 1px)'%self.card4.width
+                self.card4children.height = 'calc(%s - 1px)'%self.card4.height
+                self.card4.children = [self.card4children]
+                
+                
+    #####################################################################################################################################################
+    # Properties
+    #####################################################################################################################################################
     
     @property
     def width(self):
@@ -205,4 +262,4 @@ class Content(v.Card):
     @topheightperc.setter
     def topheightperc(self, h):
         self._topheightperc = min(100, max(h, 0))
-        self.update()        
+        self.update()
