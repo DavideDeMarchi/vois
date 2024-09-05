@@ -529,9 +529,9 @@ p.open()'''%(self.titlecolor.color, self.footercolor.color, str(self.rounded.val
         # Set the state
         self.page.state = statusdict
 
-        self.page.map.dark                     = self.page.titledark
-        self.page.map.basemaps_colorselected   = self.page.titlecolor
-        self.page.map.basemaps_colorunselected = self.page.footercolor
+        self.page.map.dark         = self.page.titledark
+        self.page.map.color_first  = self.page.titlecolor
+        self.page.map.color_second = self.page.footercolor
         
         self.titleimageurl.color_selected  = self.page.titlecolor
         self.titleimageurl.dark            = self.page.titledark
@@ -572,31 +572,31 @@ p.open()'''%(self.titlecolor.color, self.footercolor.color, str(self.rounded.val
         self.page.titlecolor = color
         
         # widgets color
-        self.appname.color                    = color
-        self.pagetitle.color                  = color
-        self.transition.color                 = color
-        self.buttOpen.color                   = color
-        self.buttSave.color                   = color
-        self.buttCode.color                   = color
-        self.buttReset.color                  = color
-        self.page.map.basemaps_colorselected  = color
-        self.togglePanels.colorselected       = color
-        self.titledark.colorselected          = color
-        self.footerdark.colorselected         = color
-        self.footerlinked.colorselected       = color
-        self.titleheight.slider.color         = color
-        self.footerheight.slider.color        = color
-        self.titleimageurl.b.color            = color
-        self.logoappurl.b.color               = color
-        self.logocreditsurl.b.color           = color
-        self.logowidth.slider.color           = color
-        self.creditswidth.slider.color        = color
-        self.copyrighttext.color              = color
-        self.show_back.switch.color           = color
-        self.left_back.switch.color           = color
-        self.show_help.switch.color           = color
-        self.show_credits.switch.color        = color
-        self.rounded.switch.color             = color
+        self.appname.color              = color
+        self.pagetitle.color            = color
+        self.transition.color           = color
+        self.buttOpen.color             = color
+        self.buttSave.color             = color
+        self.buttCode.color             = color
+        self.buttReset.color            = color
+        self.page.map.color_first       = color
+        self.togglePanels.colorselected = color
+        self.titledark.colorselected    = color
+        self.footerdark.colorselected   = color
+        self.footerlinked.colorselected = color
+        self.titleheight.slider.color   = color
+        self.footerheight.slider.color  = color
+        self.titleimageurl.b.color      = color
+        self.logoappurl.b.color         = color
+        self.logocreditsurl.b.color     = color
+        self.logowidth.slider.color     = color
+        self.creditswidth.slider.color  = color
+        self.copyrighttext.color        = color
+        self.show_back.switch.color     = color
+        self.left_back.switch.color     = color
+        self.show_help.switch.color     = color
+        self.show_credits.switch.color  = color
+        self.rounded.switch.color       = color
         self.titledarkChange(self.titledark.value)
                 
         # labels color
@@ -630,11 +630,11 @@ p.open()'''%(self.titlecolor.color, self.footercolor.color, str(self.rounded.val
         self.page.footercolor = color
 
         # widgets color
-        self.page.map.basemaps_colorunselected  = color
-        self.togglePanels.colorunselected       = color
-        self.titledark.colorunselected          = color
-        self.footerdark.colorunselected         = color
-        self.footerlinked.colorunselected       = color
+        self.page.map.color_second         = color
+        self.togglePanels.colorunselected  = color
+        self.titledark.colorunselected     = color
+        self.footerdark.colorunselected    = color
+        self.footerlinked.colorunselected  = color
         self.footerdarkChange(self.footerdark.value)
                 
             
@@ -665,16 +665,16 @@ p.open()'''%(self.titlecolor.color, self.footercolor.color, str(self.rounded.val
             else:
                 flag = False
 
-        self.page.titledark          = flag
-        self.togglePanels.dark       = flag
-        self.titledark.dark          = flag
-        self.footerdark.dark         = flag
-        self.footerlinked.dark       = flag
-        self.titleimageurl.dark      = flag
-        self.logoappurl.dark         = flag
-        self.logocreditsurl.dark     = flag
-        self.page.map.basemaps_dark  = flag
-        self.footercolor.dark_text   = flag
+        self.page.titledark         = flag
+        self.togglePanels.dark      = flag
+        self.titledark.dark         = flag
+        self.footerdark.dark        = flag
+        self.footerlinked.dark      = flag
+        self.titleimageurl.dark     = flag
+        self.logoappurl.dark        = flag
+        self.logocreditsurl.dark    = flag
+        self.page.map.dark          = flag
+        self.footercolor.dark_text  = flag
                 
             
     # Change of the footerdark property

@@ -23,7 +23,7 @@ from ipywidgets import widgets
 import ipyvuetify as v
 
 # Vois imports
-from vois.templates import mapUtils
+from vois.geo import mapUtils
 
 
 #####################################################################################################################################################
