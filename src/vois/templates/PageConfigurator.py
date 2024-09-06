@@ -113,7 +113,7 @@ class PageConfigurator(v.Html):
                                   children=[widgets.HBox([self.appname, self.buttOpen.draw(), self.buttSave.draw(), self.buttCode.draw(), self.buttReset.draw()])])
         
         self.pagetitle  = v.TextField(label='Page title:', autofocus=False, v_model=None, dense=False, color=settings.color_first, clearable=True, class_="pa-0 ma-0 mt-3 mr-3", style_='width: 246px; min_width: 246px;')
-        self.transition = selectSingle.selectSingle('Open animation:', ['None', 'Dialog', 'Bottom'], selection='Bottom', clearable =False, width=120, onchange=self.transitionChange)
+        self.transition = selectSingle.selectSingle('Open animation:', ['None', 'Dialog', 'Bottom'], selection='Bottom', clearable=False, width=120, onchange=self.transitionChange)
         
         self.cardpagetitle = v.Card(flat=True, width=template1panel.LEFT_WIDTH, max_width=template1panel.LEFT_WIDTH,
                                     children=[widgets.HBox([self.pagetitle, self.transition.draw()])])
