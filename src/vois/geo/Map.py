@@ -118,6 +118,10 @@ class Map(ipyleaflet.Map):
         self.show_coordinates = self._show_coordinates
         
 
+    # Fake "draw" method
+    def draw(self):
+        return self
+      
         
     # Manage all user interaction on the map
     def handleMapInteraction(self, **kwargs):

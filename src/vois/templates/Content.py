@@ -25,6 +25,7 @@ import ipyvuetify as v
 # Vois imports
 from vois.vuetify import settings
 from vois.geo import Map, mapUtils
+from vois.templates import PlotlyChart, SVGdrawing
 
 
 #####################################################################################################################################################
@@ -164,7 +165,7 @@ class Content(v.Card):
             else:
                 self.card1children.width  = 'calc(%s - 1px)'%self.card1.width
                 self.card1children.height = 'calc(%s - 1px)'%self.card1.height
-                self.card1.children = [self.card1children]
+                self.card1.children = [self.card1children.draw()]
     
     def set2(self, children=None):
         self.card2children = children
@@ -174,7 +175,7 @@ class Content(v.Card):
             else:
                 self.card2children.width  = 'calc(%s - 1px)'%self.card2.width
                 self.card2children.height = 'calc(%s - 1px)'%self.card2.height
-                self.card2.children = [self.card2children]
+                self.card2.children = [self.card2children.draw()]
     
     def set3(self, children=None):
         self.card3children = children
@@ -184,7 +185,7 @@ class Content(v.Card):
             else:
                 self.card3children.width  = 'calc(%s - 1px)'%self.card3.width
                 self.card3children.height = 'calc(%s - 1px)'%self.card3.height
-                self.card3.children = [self.card3children]
+                self.card3.children = [self.card3children.draw()]
     
     def set4(self, children=None):
         self.card4children = children
@@ -194,7 +195,7 @@ class Content(v.Card):
             else:
                 self.card4children.width  = 'calc(%s - 1px)'%self.card4.width
                 self.card4children.height = 'calc(%s - 1px)'%self.card4.height
-                self.card4.children = [self.card4children]
+                self.card4.children = [self.card4children.draw()]
                 
                 
     #####################################################################################################################################################

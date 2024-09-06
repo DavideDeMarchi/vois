@@ -95,7 +95,7 @@ class selectSingle():
     
     # Initialization
     def __init__(self, label, values, selection='', mapping=None, reverse_mapping=None, width=300, onchange=None, clearable=True, marginy=1,
-                       newvalues_enabled=False, newvalues_type='text', colorbackground=False, color=settings.color_first):
+                       newvalues_enabled=False, newvalues_type='text', colorbackground=False, color=None):
         
         self.label           = label
         self.values          = values
@@ -108,12 +108,15 @@ class selectSingle():
         self.value = selection
         
         self.colorbackground = colorbackground
-        self._color          = color
+        
+        self._color = color
+        if self._color is None:
+            self._color = settings.color_first
         
         color,backcolor = self.__getColors()
         if newvalues_enabled:
             self.select = v.Combobox(v_model=self._value, label=self.label, dense=True, solo=False, outlined=True, multiple=False, chips=False, clearable=clearable, 
-                                     item_color=color, color=color, class_='pa-0 mx-0 my-%d mb-n4' % marginy,
+                                     item_color=self._color, color=self._color, class_='pa-0 mx-0 my-%d mb-n4' % marginy,
                                      background_color=backcolor,
                                      items=self.values, style_='max-width: %dpx; font-family: %s; font-weight:400; text-transform: none' % (self.width, fontsettings.font_name),
                                      type_=newvalues_type, autofocus=False, disabled=False)
@@ -121,7 +124,7 @@ class selectSingle():
             #self.select.on_event('change', self.__internal_onchange)
         else:
             self.select = v.Select(v_model=self._value, label=self.label, dense=True, solo=False, outlined=True, multiple=False, chips=False, clearable=clearable, 
-                                   item_color=color, color=color, class_='pa-0 mx-0 my-%d mb-n4' % marginy,
+                                   item_color=self._color, color=self._color, class_='pa-0 mx-0 my-%d mb-n4' % marginy,
                                    background_color=backcolor, # menu_props="{ auto: true, maxHeight: 600 }",  # menu_props seems not working!
                                    items=self.values, style_='max-width: %dpx; font-family: %s; font-weight:400; text-transform: none' % (self.width, fontsettings.font_name), disabled=False)
         
@@ -231,6 +234,6 @@ class selectSingle():
         if isinstance(c, str):
             self._color = c
             color,backcolor = self.__getColors()
-            self.select.color     = color
+            self.select.color     = c
             self.background_color = backcolor
         

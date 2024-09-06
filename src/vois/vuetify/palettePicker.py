@@ -297,7 +297,7 @@ class palettePicker():
     
     def __init__(self, family='sequential', label='', interpolate=True, width=400, height=34,
                  custompalettes=[], clearable=True,
-                 color=settings.color_first, onchange=None):
+                 color=None, onchange=None):
         
         self.family         = family
         self.custompalettes = custompalettes
@@ -306,13 +306,16 @@ class palettePicker():
         self.width          = width
         self.height         = height
         self.clearable      = clearable
-        self.color          = color
         self.onchange       = onchange
         self.index          = -1
         
+        self._color = color
+        if self._color is None:
+            self._color = settings.color_first
+        
         self.s = selectImage.selectImage(images=[], width="%dpx"%(self.width+165),
                                          max_width=self.width, max_height=self.height,
-                                         color=self.color,
+                                         color=self._color,
                                          label=self.label,
                                          outlined=True, margins="ma-0 mr-2",
                                          clearable=self.clearable,
@@ -392,6 +395,33 @@ class palettePicker():
             return [rgb2hex(text2rgb(x)) if x[0:4] == 'rgb(' else x for x in colors]
         else:
             return []
+    
+    
+    @property
+    def color(self):
+        """
+        Get/Set the widget color.
+        
+        Returns
+        --------
+        c : str
+            widget color
+
+        Example
+        -------
+        Programmatically change the widget color::
+            
+            s.color = '#00FF00'
+            print(s.color)
+        
+        """
+        return self._color
+        
+    @color.setter
+    def color(self, c):
+        if isinstance(c, str):
+            self._color = c
+            self.s.color = self._color
     
     
     # Update the palettes

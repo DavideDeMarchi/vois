@@ -75,11 +75,15 @@ class switch():
    """
 
     # Initialization
-    def __init__(self, flag, label, color=settings.color_first, inset=True, dense=False, onchange=None):
+    def __init__(self, flag, label, color=None, inset=True, dense=False, onchange=None):
         
         self.onchange = onchange
         
-        self.switch = v.Switch(v_model=bool(flag), dense=dense, flat=True, label=label, color=color, inset=inset, class_="pa-0 ma-0 ml-3 mt-2 mb-n3", disabled=False)
+        self._color = color
+        if self._color is None:
+            self._color = settings.color_first
+        
+        self.switch = v.Switch(v_model=bool(flag), dense=dense, flat=True, label=label, color=self._color, inset=inset, class_="pa-0 ma-0 ml-3 mt-2 mb-n3", disabled=False)
         
         # If requested onchange management
         if not self.onchange is None:
@@ -137,4 +141,31 @@ class switch():
     
     @disabled.setter
     def disabled(self, flag):
-        self.switch.disabled = flag        
+        self.switch.disabled = flag
+        
+    @property
+    def color(self):
+        """
+        Get/Set the widget color.
+        
+        Returns
+        --------
+        c : str
+            widget color
+
+        Example
+        -------
+        Programmatically change the widget color::
+            
+            s.color = '#00FF00'
+            print(s.color)
+        
+        """
+        return self._color
+        
+    @color.setter
+    def color(self, c):
+        if isinstance(c, str):
+            self._color = c
+            self.switch.color = self._color
+        

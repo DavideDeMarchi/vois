@@ -95,7 +95,8 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
                  value_column='value',        # Name of the column containing the value
                  label_column='label',        # Name of the column containing the label
                  codes_selected=[],           # codes of the countries selected
-                 width=400,                   # width in pixel of the drawing
+                 width='400px',               # width of the drawing
+                 height='600px',              # height of the drawing
                  colorlist=['#0d0887', '#46039f', '#7201a8', '#9c179e', '#bd3786', '#d8576b', '#ed7953', '#fb9f3a', '#fdca26', '#f0f921'],   # default color scale
                  stdevnumber=2.0,             # Number of stddev to calculate (minvalue,maxvalue) range
                  fill='#f1f1f1',              # fill color for countries
@@ -239,7 +240,8 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
 <svg
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   width="%d"
+   width="%s"
+   height="%s"
    viewBox="0 0 3000 2480"
    version="1.1">
 
@@ -254,7 +256,7 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
      svg .bar   {display: none; stroke: %s; stroke-width: 20; }
      svg .barselected  {stroke: %s; stroke-width: 20; }
      svg .country:hover .bar   { display: block; }
-''' % (width, fontsettings.font_url, onhoverfill, fontsettings.font_name, textcolor, onhoverfill, stroke_selected)
+''' % (width, height, fontsettings.font_url, onhoverfill, fontsettings.font_name, textcolor, onhoverfill, stroke_selected)
 
    
     # Labels and colors indexed by iso2_code of countries
@@ -319,8 +321,8 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
     #print(minvalue,maxvalue, y1, y2)
         
     # Add color for every polygon
-    for c in country_codes:
-        svg += 'svg #%s { fill: %s; }\n' % (c, polycolors[c])
+    #for c in country_codes:
+    #    svg += 'svg #%s { fill: %s; }\n' % (c, polycolors[c])
         
     svg += '</style>'
 
@@ -395,7 +397,7 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
 
    
     svg_elem = '''
-    <g id="LV" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -404,12 +406,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['LV'],labels['LV'], x1, polybary['LV'], x2, polybary['LV'] )
+''' % (polyclass['LV'],polycolors['LV'],labels['LV'], x1, polybary['LV'], x2, polybary['LV'] )
     if 'LV' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g id="AL" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -418,12 +420,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['AL'],labels['AL'], x1, polybary['AL'], x2, polybary['AL'] )
+''' % (polyclass['AL'],polycolors['AL'],labels['AL'], x1, polybary['AL'], x2, polybary['AL'] )
     if 'AL' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g id="CH" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -432,13 +434,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['CH'],labels['CH'], x1, polybary['CH'], x2, polybary['CH'] )
+''' % (polyclass['CH'],polycolors['CH'],labels['CH'], x1, polybary['CH'], x2, polybary['CH'] )
     if 'CH' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="AT" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -447,13 +448,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['AT'],labels['AT'], x1, polybary['AT'], x2, polybary['AT'] )
+''' % (polyclass['AT'],polycolors['AT'],labels['AT'], x1, polybary['AT'], x2, polybary['AT'] )
     if 'AT' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="HR" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -462,13 +462,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['HR'],labels['HR'], x1, polybary['HR'], x2, polybary['HR'] )
+''' % (polyclass['HR'],polycolors['HR'],labels['HR'], x1, polybary['HR'], x2, polybary['HR'] )
     if 'HR' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="ES" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -477,13 +476,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['ES'],labels['ES'], x1, polybary['ES'], x2, polybary['ES'] )
+''' % (polyclass['ES'],polycolors['ES'],labels['ES'], x1, polybary['ES'], x2, polybary['ES'] )
     if 'ES' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="IS" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -492,13 +490,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['IS'],labels['IS'], x1, polybary['IS'], x2, polybary['IS'] )
+''' % (polyclass['IS'],polycolors['IS'],labels['IS'], x1, polybary['IS'], x2, polybary['IS'] )
     if 'IS' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="RO" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -507,13 +504,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['RO'],labels['RO'], x1, polybary['RO'], x2, polybary['RO'] )
+''' % (polyclass['RO'],polycolors['RO'],labels['RO'], x1, polybary['RO'], x2, polybary['RO'] )
     if 'RO' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="IT" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -537,13 +533,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['IT'],labels['IT'], x1, polybary['IT'], x2, polybary['IT'] )
+''' % (polyclass['IT'],polycolors['IT'],labels['IT'], x1, polybary['IT'], x2, polybary['IT'] )
     if 'IT' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="VA" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -552,13 +547,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['VA'],labels['VA'], x1, polybary['VA'], x2, polybary['VA'] )
+''' % (polyclass['VA'],polycolors['VA'],labels['VA'], x1, polybary['VA'], x2, polybary['VA'] )
     if 'VA' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="HU" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -567,13 +561,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['HU'],labels['HU'], x1, polybary['HU'], x2, polybary['HU'] )
+''' % (polyclass['HU'],polycolors['HU'],labels['HU'], x1, polybary['HU'], x2, polybary['HU'] )
     if 'HU' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="SE" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -592,13 +585,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['SE'],labels['SE'], x1, polybary['SE'], x2, polybary['SE'] )
+''' % (polyclass['SE'],polycolors['SE'],labels['SE'], x1, polybary['SE'], x2, polybary['SE'] )
     if 'SE' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="NL" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -617,13 +609,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['NL'],labels['NL'], x1, polybary['NL'], x2, polybary['NL'] )
+''' % (polyclass['NL'],polycolors['NL'],labels['NL'], x1, polybary['NL'], x2, polybary['NL'] )
     if 'NL' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="CZ" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -632,13 +623,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['CZ'],labels['CZ'], x1, polybary['CZ'], x2, polybary['CZ'] )
+''' % (polyclass['CZ'],polycolors['CZ'],labels['CZ'], x1, polybary['CZ'], x2, polybary['CZ'] )
     if 'CZ' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="DE" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -652,13 +642,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['DE'],labels['DE'], x1, polybary['DE'], x2, polybary['DE'] )
+''' % (polyclass['DE'],polycolors['DE'],labels['DE'], x1, polybary['DE'], x2, polybary['DE'] )
     if 'DE' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="FR" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -672,13 +661,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['FR'],labels['FR'], x1, polybary['FR'], x2, polybary['FR'] )
+''' % (polyclass['FR'],polycolors['FR'],labels['FR'], x1, polybary['FR'], x2, polybary['FR'] )
     if 'FR' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="ME" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -687,13 +675,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['ME'],labels['ME'], x1, polybary['ME'], x2, polybary['ME'] )
+''' % (polyclass['ME'],polycolors['ME'],labels['ME'], x1, polybary['ME'], x2, polybary['ME'] )
     if 'ME' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="BE" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -702,13 +689,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['BE'],labels['BE'], x1, polybary['BE'], x2, polybary['BE'] )
+''' % (polyclass['BE'],polycolors['BE'],labels['BE'], x1, polybary['BE'], x2, polybary['BE'] )
     if 'BE' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="SI" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -717,13 +703,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['SI'],labels['SI'], x1, polybary['SI'], x2, polybary['SI'] )
+''' % (polyclass['SI'],polycolors['SI'],labels['SI'], x1, polybary['SI'], x2, polybary['SI'] )
     if 'SI' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="LU" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -732,13 +717,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['LU'],labels['LU'], x1, polybary['LU'], x2, polybary['LU'] )
+''' % (polyclass['LU'],polycolors['LU'],labels['LU'], x1, polybary['LU'], x2, polybary['LU'] )
     if 'LU' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="IE" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -747,13 +731,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['IE'],labels['IE'], x1, polybary['IE'], x2, polybary['IE'] )
+''' % (polyclass['IE'],polycolors['IE'],labels['IE'], x1, polybary['IE'], x2, polybary['IE'] )
     if 'IE' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="BA" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -762,13 +745,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['BA'],labels['BA'], x1, polybary['BA'], x2, polybary['BA'] )
+''' % (polyclass['BA'],polycolors['BA'],labels['BA'], x1, polybary['BA'], x2, polybary['BA'] )
     if 'BA' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="MC" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -777,13 +759,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['MC'],labels['MC'], x1, polybary['MC'], x2, polybary['MC'] )
+''' % (polyclass['MC'],polycolors['MC'],labels['MC'], x1, polybary['MC'], x2, polybary['MC'] )
     if 'MC' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="BG" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -792,13 +773,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['BG'],labels['BG'], x1, polybary['BG'], x2, polybary['BG'] )
+''' % (polyclass['BG'],polycolors['BG'],labels['BG'], x1, polybary['BG'], x2, polybary['BG'] )
     if 'BG' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="PL" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -807,13 +787,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['PL'],labels['PL'], x1, polybary['PL'], x2, polybary['PL'] )
+''' % (polyclass['PL'],polycolors['PL'],labels['PL'], x1, polybary['PL'], x2, polybary['PL'] )
     if 'PL' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="LI" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -822,13 +801,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['LI'],labels['LI'], x1, polybary['LI'], x2, polybary['LI'] )
+''' % (polyclass['LI'],polycolors['LI'],labels['LI'], x1, polybary['LI'], x2, polybary['LI'] )
     if 'LI' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="GB" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -882,13 +860,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['GB'],labels['GB'], x1, polybary['GB'], x2, polybary['GB'] )
+''' % (polyclass['GB'],polycolors['GB'],labels['GB'], x1, polybary['GB'], x2, polybary['GB'] )
     if 'GB' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="RS" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -897,13 +874,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['RS'],labels['RS'], x1, polybary['RS'], x2, polybary['RS'] )
+''' % (polyclass['RS'],polycolors['RS'],labels['RS'], x1, polybary['RS'], x2, polybary['RS'] )
     if 'RS' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="SM" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -912,13 +888,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['SM'],labels['SM'], x1, polybary['SM'], x2, polybary['SM'] )
+''' % (polyclass['SM'],polycolors['SM'],labels['SM'], x1, polybary['SM'], x2, polybary['SM'] )
     if 'SM' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="DK" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -952,13 +927,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['DK'],labels['DK'], x1, polybary['DK'], x2, polybary['DK'] )
+''' % (polyclass['DK'],polycolors['DK'],labels['DK'], x1, polybary['DK'], x2, polybary['DK'] )
     if 'DK' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="IM" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -967,13 +941,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['IM'],labels['IM'], x1, polybary['IM'], x2, polybary['IM'] )
+''' % (polyclass['IM'],polycolors['IM'],labels['IM'], x1, polybary['IM'], x2, polybary['IM'] )
     if 'IM' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="EE" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -992,13 +965,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['EE'],labels['EE'], x1, polybary['EE'], x2, polybary['EE'] )
+''' % (polyclass['EE'],polycolors['EE'],labels['EE'], x1, polybary['EE'], x2, polybary['EE'] )
     if 'EE' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="SK" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -1007,7 +979,7 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['SK'],labels['SK'], x1, polybary['SK'], x2, polybary['SK'] )
+''' % (polyclass['SK'],polycolors['SK'],labels['SK'], x1, polybary['SK'], x2, polybary['SK'] )
     if 'SK' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
@@ -1057,8 +1029,7 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="LT" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -1067,13 +1038,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['LT'],labels['LT'], x1, polybary['LT'], x2, polybary['LT'] )
+''' % (polyclass['LT'],polycolors['LT'],labels['LT'], x1, polybary['LT'], x2, polybary['LT'] )
     if 'LT' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="NO" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -1082,13 +1052,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['NO'],labels['NO'], x1, polybary['NO'], x2, polybary['NO'] )
+''' % (polyclass['NO'],polycolors['NO'],labels['NO'], x1, polybary['NO'], x2, polybary['NO'] )
     if 'NO' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="PT" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -1097,13 +1066,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['PT'],labels['PT'], x1, polybary['PT'], x2, polybary['PT'] )
+''' % (polyclass['PT'],polycolors['PT'],labels['PT'], x1, polybary['PT'], x2, polybary['PT'] )
     if 'PT' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="AD" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -1112,13 +1080,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['AD'],labels['AD'], x1, polybary['AD'], x2, polybary['AD'] )
+''' % (polyclass['AD'],polycolors['AD'],labels['AD'], x1, polybary['AD'], x2, polybary['AD'] )
     if 'AD' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="MK" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -1127,13 +1094,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['MK'],labels['MK'], x1, polybary['MK'], x2, polybary['MK'] )
+''' % (polyclass['MK'],polycolors['MK'],labels['MK'], x1, polybary['MK'], x2, polybary['MK'] )
     if 'MK' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="MT" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -1147,13 +1113,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['MT'],labels['MT'], x1, polybary['MT'], x2, polybary['MT'] )
+''' % (polyclass['MT'],polycolors['MT'],labels['MT'], x1, polybary['MT'], x2, polybary['MT'] )
     if 'MT' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="GI" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -1162,13 +1127,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['GI'],labels['GI'], x1, polybary['GI'], x2, polybary['GI'] )
+''' % (polyclass['GI'],polycolors['GI'],labels['GI'], x1, polybary['GI'], x2, polybary['GI'] )
     if 'GI' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="FI" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -1177,13 +1141,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['FI'],labels['FI'], x1, polybary['FI'], x2, polybary['FI'] )
+''' % (polyclass['FI'],polycolors['FI'],labels['FI'], x1, polybary['FI'], x2, polybary['FI'] )
     if 'FI' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="XK" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -1192,13 +1155,12 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['XK'],labels['XK'], x1, polybary['XK'], x2, polybary['XK'] )
+''' % (polyclass['XK'],polycolors['XK'],labels['XK'], x1, polybary['XK'], x2, polybary['XK'] )
     if 'XK' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 
     svg_elem = '''
-    <g
-       id="CY" class="%s">
+    <g class="%s" fill="%s">
       <path
          vector-effect="none"
          fill-rule="evenodd"
@@ -1207,7 +1169,7 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         <text class="label" x="10" y="100" font-size="70">%s</text>
         <line class="bar" x1="%d" y1="%d" x2="%d" y2="%d"/>
     </g>
-''' % (polyclass['CY'],labels['CY'], x1, polybary['CY'], x2, polybary['CY'] )
+''' % (polyclass['CY'],polycolors['CY'],labels['CY'], x1, polybary['CY'], x2, polybary['CY'] )
     if 'CY' in codes_selected: svg_selected += svg_elem.replace('<path','<path %s' % stroke_replace)
     else:                      svg += svg_elem
 

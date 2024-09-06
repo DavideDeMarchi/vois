@@ -64,6 +64,8 @@ class sliderFloat():
         If True the up and down buttons will have a tooltip (default is False)
     onchange : function, optional
         Python function to call when the changes the value of the slider. The function will receive a single parameter, containing the new value of the slider in the range from minvalue to maxvalue (default is None)
+    color : str, optional
+        Color of the widget (default is settings.color_first)
             
     Example
     -------
@@ -93,7 +95,7 @@ class sliderFloat():
 
     # Initialization
     def __init__(self, value=1.0, minvalue=0.0, maxvalue=1.0, text='Select', showpercentage=True, decimals=2, maxint=None, 
-                 labelwidth=0, sliderwidth=200, resetbutton=False, showtooltip=False, onchange=None):
+                 labelwidth=0, sliderwidth=200, resetbutton=False, showtooltip=False, onchange=None, color=None):
         
         self.onchange = onchange
         
@@ -101,6 +103,10 @@ class sliderFloat():
         self.maxvalue = maxvalue
         self.showpercentage = showpercentage
         self.decimals       = decimals
+        
+        self._color = color
+        if self._color is None:
+            self._color = settings.color_first
         
         if maxint is None:
             if self.decimals <= 1:
@@ -136,7 +142,7 @@ class sliderFloat():
         self.slider = v.Slider(v_model=self.int_initial_value,
                                dense=True, xsmall=True, 
                                ticks=False, thumb_size=10, dark=settings.dark_mode,
-                               color=settings.color_first, track_color="grey",
+                               color=self._color, track_color="grey",
                                class_="pa-0 ma-0 ml-5 mr-4 mt-3 mb-n1",
                                style_='max-width: %dpx; width: %dpx;'%(self.sliderwidth,self.sliderwidth),
                                min=0, max=self.maxint, vertical=False, height=32)
@@ -266,3 +272,30 @@ class sliderFloat():
         intvalue = self.float2integer(newvalue)
         self.slider.v_model = intvalue
         self.onsliderchange()
+
+    @property
+    def color(self):
+        """
+        Get/Set the widget color.
+        
+        Returns
+        --------
+        c : str
+            widget color
+
+        Example
+        -------
+        Programmatically change the widget color::
+            
+            s.color = '#00FF00'
+            print(s.color)
+        
+        """
+        return self._color
+        
+    @color.setter
+    def color(self, c):
+        if isinstance(c, str):
+            self._color = c
+            self.slider.color = self._color
+        

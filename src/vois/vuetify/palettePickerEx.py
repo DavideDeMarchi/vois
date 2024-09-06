@@ -23,7 +23,7 @@
 # https://get-map.org/mapnik-lost-manual/book.pdf
 # https://github.com/mapnik/mapnik-reference/blob/gh-pages/3.0.20/reference.json#L1517
 
-from vois.vuetify import palettePicker, selectSingle, switch, sliderFloat
+from vois.vuetify import settings, palettePicker, selectSingle, switch, sliderFloat
 
 import ipyvuetify as v
 from ipywidgets import widgets
@@ -69,6 +69,8 @@ class palettePickerEx():
         Width of the widget in pixels (default is 400)
     clearable : bool, optional
         If True the dwopdown list of palettes will allow for no selection (default is True)
+    color : str, optional
+        Color of the selection widget (default is settings.color_first)
     onchange : function, optional
         Python function to call when the user selects one of the palettes. The function will pass as parameters the list of colors and the interpolate flag (default is None)
     show_opacity_slider : bool, optional
@@ -111,6 +113,7 @@ class palettePickerEx():
                  onchange=None,
                  width=400,
                  clearable=True,
+                 color=None,
                  show_opacity_slider=True,
                  onchangeOpacity=None):
         
@@ -119,19 +122,23 @@ class palettePickerEx():
         self.onchange    = onchange
         self.width       = width
         
+        self._color = color
+        if self._color is None:
+            self._color = settings.color_first
+        
         self.show_interpolate_switch = show_interpolate_switch
         
         self.show_opacity_slider = show_opacity_slider
         self.onchangeOpacity     = onchangeOpacity
 
         self.p = None
-        self.sel = selectSingle.selectSingle('Family:', families, selection=family, width=150, onchange=self.onchangeFamily, marginy=1, clearable=False)
-        self.sw  = switch.switch(self.interpolate, "Interpolate", onchange=self.onchangeInterpolate)
+        self.sel = selectSingle.selectSingle('Family:', families, selection=family, width=150, onchange=self.onchangeFamily, marginy=1, clearable=False, color=self._color)
+        self.sw  = switch.switch(self.interpolate, "Interpolate", onchange=self.onchangeInterpolate, color=self._color)
         
         if not self.show_interpolate_switch and self.show_opacity_slider:
-            self.op = sliderFloat.sliderFloat(1.0, text='Opacity:', minvalue=0.0, maxvalue=1.0, sliderwidth=self.width-128, onchange=self.onchangeOpacity)
+            self.op = sliderFloat.sliderFloat(1.0, text='Opacity:', minvalue=0.0, maxvalue=1.0, sliderwidth=self.width-128, onchange=self.onchangeOpacity, color=self._color)
             
-        self.p = palettePicker.palettePicker(family=self.family, custompalettes=custompalettes, label='Palette:', clearable=clearable, width=self.width, height=26, onchange=self.onchangePalette)
+        self.p = palettePicker.palettePicker(family=self.family, custompalettes=custompalettes, label='Palette:', clearable=clearable, color=self._color, width=self.width, height=26, onchange=self.onchangePalette)
         self.p.value = value
 
         self.spacer = v.Html(tag='div',children=[' '], style_='width: 10px;')
@@ -288,5 +295,37 @@ class palettePickerEx():
     @opacity.setter
     def opacity(self, value):
         self.op.value = value
-    
+
+        
+    @property
+    def color(self):
+        """
+        Get/Set the widget color.
+        
+        Returns
+        --------
+        c : str
+            widget color
+
+        Example
+        -------
+        Programmatically change the widget color::
             
+            s.color = '#00FF00'
+            print(s.color)
+        
+        """
+        return self._color
+        
+    @color.setter
+    def color(self, c):
+        if isinstance(c, str):
+            self._color = c
+
+            self.sel.color = self._color
+            self.sw.color  = self._color
+        
+            if self.show_opacity_slider:
+                self.op.color = self._color
+            
+            self.p.color = self._color
