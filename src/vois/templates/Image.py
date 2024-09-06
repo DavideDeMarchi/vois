@@ -1,4 +1,4 @@
-"""Example of resizable SVG drawing to use inside a Content"""
+"""Example of image display to use inside a Content"""
 # Author(s): Davide.De-Marchi@ec.europa.eu
 # Copyright © European Union 2024
 # 
@@ -25,25 +25,29 @@ import pandas as pd
 import random
 
 # Vois imports
-from vois import svgMap
-from vois.vuetify import settings, palettePickerEx
+from vois.vuetify import settings, Button, UploadImage
 
 
 #####################################################################################################################################################
-# Example of resizable SVG drawing to use inside a Content
+# Example of image display to use inside a Content
 #####################################################################################################################################################
-class SVGdrawing():
+class Image():
     
     def __init__(self,
-                 width='30vw',        # Dimensions of the overall card displaying the SVG
+                 output,
+                 width='30vw',        # Dimensions of the image
                  height='40vh',
                  color_first=None,    # Main color
                  color_second=None,   # Secondary color
                  dark=None,           # Dark flag
+                 imageurl='',         # Image to display
                  **kwargs):
         
-        self._width  = width
-        self._height = height
+        self.output = output
+        
+        self._width    = width
+        self._height   = height
+        self._imageurl = imageurl
         
         # Colors of the configuration widgets
         self._color_first = color_first
@@ -58,59 +62,45 @@ class SVGdrawing():
         if self._dark is None:
             self._dark = settings.dark_mode
 
-        # Create the card that will contain the SVG drawing
+        # Create the card that will contain the image
         self.card = v.Card(flat=True, tile=True, width=self._width, height=self._height,
                            style_='overflow: hidden;', class_='d-flex align-center justify-center')  # The content of the card is centered horizontally and vertically
         
+        self.img = v.Img(src=self._imageurl, contain=True, width=self._width, height=self._height, position='center center')
         
-        # Creation of the SVG displaying the map of Europe
-        self.codes_selected = []
-        self.df = pd.DataFrame(columns=['iso2code','value','label'])
-        for code in svgMap.country_codes:
-            value = random.randint(0,100)
-            record = {'iso2code': code, 'value': value, 'label': '%d' % value }
-            self.df.loc[len(self.df)] = record
-            
-            selected = random.randint(0,100) >= 90
-            if selected:
-                self.codes_selected.append(code)
+        self.b = None
         
-        # Palette picker
-        self.pp = None
-        self.pp = palettePickerEx.palettePickerEx(family='sequential', value='Viridis', interpolate=True, show_interpolate_switch=False, clearable=False, width=200,
-                                                  onchange=self.updateChart, show_opacity_slider=False, onchangeOpacity=None)
-        
-        self.updateChart()
+        self.card.children = [self.img]
         
         
     # Draw th widget
     def draw(self):
         return self.card
+    
+    # Called when an image is selected
+    def onImageSelected(self, imageurl):
+        self.imageurl = imageurl
         
         
-    # Updte the chart
-    def updateChart(self, *args):
-        if self.pp is not None and self.pp.colors is not None and len(self.pp.colors) > 1:
-            svg = svgMap.svgMapEurope(self.df,
-                                      code_column='iso2code',
-                                      width=self._width,
-                                      height=self._height,
-                                      stdevnumber=1.5, 
-                                      colorlist=self.pp.colors,
-                                      stroke_width=4.0,
-                                      stroke_selected='red',
-                                      onhoverfill='#f8bd1a',
-                                      codes_selected=self.codes_selected,
-                                      legendtitle='Legent title',
-                                      legendunits='KTOE per 100K inhabit.')
-
-            # Display the SVG inside the card
-            self.card.children = [HTML(svg)]
+    # Selection of an image
+    def onSelectImage(self, *args):
+        upload = UploadImage.UploadImage(self.output, width=620)
+        upload.title   = 'Select image to display'
+        upload.onOK    = self.onImageSelected
+        upload.color   = self._color_first
+        upload.u.color = self._color_first
+        upload.dark    = self._dark
+        upload.show()
         
         
     # Configure the SVG drawing
     def configure(self):
-        return v.Card(flat=True, class_='pa-2 ma-0', children=[self.pp.draw()])
+        self.b  = Button('Select image to display', color_selected=self._color_first, dark=self._dark, 
+                         text_weight=450, on_click=self.onSelectImage, width=200, height=40,
+                         tooltip='Click to select an image to use as background on the title bar', selected=True,
+                         rounded=False)
+        
+        return v.Card(flat=True, class_='pa-2 ma-0', children=[self.b])
 
 
     @property
@@ -120,8 +110,8 @@ class SVGdrawing():
     @width.setter
     def width(self, w):
         self._width = w
-        self.updateChart()
         self.card.width = w
+        self.img.width = w
 
         
     @property
@@ -131,9 +121,19 @@ class SVGdrawing():
     @height.setter
     def height(self, h):
         self._height = h
-        self.updateChart()
         self.card.height = h
+        self.img.height = h
 
+        
+    @property
+    def imageurl(self):
+        return self._imageurl
+        
+    @imageurl.setter
+    def imageurl(self, url):
+        self._imageurl = url
+        self.img.src = self._imageurl
+        
         
     @property
     def color_first(self):
@@ -143,10 +143,9 @@ class SVGdrawing():
     def color_first(self, color):
         self._color_first = color
 
-        if self.pp is not None:
-            self.pp.color = color
-    
-    
+        if self.b is not None:
+            self.b.color_selected = self._color_first
+
     @property
     def color_second(self):
         return self._color_second

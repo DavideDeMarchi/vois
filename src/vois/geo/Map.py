@@ -179,12 +179,12 @@ class Map(ipyleaflet.Map):
         if self.configure_card is None:
             self.configure_card = v.Card(flat=True, class_='pa-2 ma-0')
             
-            self.s1 = switch.switch(self.show_fullscreen,  'Show the Fullscreen control',  inset=True, dense=True, onchange=self.change_fullscreen)
-            self.s2 = switch.switch(self.show_coordinates, 'Show the Coordinates control', inset=True, dense=True, onchange=self.change_coordinates)
-            self.s3 = switch.switch(self.show_search,      'Show the Search control',      inset=True, dense=True, onchange=self.change_search)
-            self.s4 = switch.switch(self.show_scale,       'Show the Scale control',       inset=True, dense=True, onchange=self.change_scale)
-            self.s5 = switch.switch(self.show_basemaps,    'Show the Basemaps control',    inset=True, dense=True, onchange=self.change_basemaps)
-            self.s6 = switch.switch(self.show_overview,    'Show the Overview control',    inset=True, dense=True, onchange=self.change_overview)
+            self.s1 = switch.switch(self.show_fullscreen,  'Add the Fullscreen control',  inset=True, dense=True, onchange=self.change_fullscreen, color=self._color_first)
+            self.s2 = switch.switch(self.show_coordinates, 'Add the Coordinates control', inset=True, dense=True, onchange=self.change_coordinates, color=self._color_first)
+            self.s3 = switch.switch(self.show_search,      'Add the Search control',      inset=True, dense=True, onchange=self.change_search, color=self._color_first)
+            self.s4 = switch.switch(self.show_scale,       'Add the Scale control',       inset=True, dense=True, onchange=self.change_scale, color=self._color_first)
+            self.s5 = switch.switch(self.show_basemaps,    'Add the Basemaps control',    inset=True, dense=True, onchange=self.change_basemaps, color=self._color_first)
+            self.s6 = switch.switch(self.show_overview,    'Add the Overview control',    inset=True, dense=True, onchange=self.change_overview, color=self._color_first)
             
             self.configure_card.children = [widgets.VBox([self.s1.draw(), self.s2.draw(), self.s3.draw(), self.s4.draw(), self.s5.draw(), self.s6.draw()])]
             
@@ -348,6 +348,14 @@ class Map(ipyleaflet.Map):
 
         if self.toggleBasemap is not None:
             self.toggleBasemap.colorselected = self._color_first
+
+        if self.configure_card is not None:
+            self.s1.color = self._color_first
+            self.s2.color = self._color_first
+            self.s3.color = self._color_first
+            self.s4.color = self._color_first
+            self.s5.color = self._color_first
+            self.s6.color = self._color_first
 
 
     @property

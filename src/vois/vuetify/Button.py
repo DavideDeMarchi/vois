@@ -200,10 +200,10 @@ class Button(v.Html):
         self._text = text
         self.icon_large = icon_large
         self.icon_small = icon_small
-        self.color_selected   = settings.color_first  if color_selected is None else color_selected
-        self.color_unselected = settings.color_second if color_unselected is None else color_unselected
-        self._dark            = settings.dark_mode if dark is None else dark
-        self._rounded         = settings.button_rounded if rounded is None else rounded
+        self._color_selected   = settings.color_first  if color_selected is None else color_selected
+        self._color_unselected = settings.color_second if color_unselected is None else color_unselected
+        self._dark             = settings.dark_mode if dark is None else dark
+        self._rounded          = settings.button_rounded if rounded is None else rounded
         if icon_color is None:
             self.icon_color = 'white' if settings.dark_mode else 'black'
         else:
@@ -216,7 +216,7 @@ class Button(v.Html):
         if text_color:
             color = text_color
         else:
-            color = self.color_selected if self._selected else self.color_unselected
+            color = self._color_selected if self._selected else self._color_unselected
 
         if self._icon is None:
             childs = [self._text]
@@ -310,12 +310,11 @@ class Button(v.Html):
     @selected.setter
     def selected(self, flag):
         self._selected = bool(flag)
-        if self._selected:
-            color = self.color_selected
-        else:
-            color = self.color_unselected
+        if self._selected: color = self._color_selected
+        else:              color = self._color_unselected
         self.b.color = color
 
+        
     @property
     def disabled(self):
         """
@@ -434,6 +433,61 @@ class Button(v.Html):
         self.b.children = tmp
         self._text = value
 
+        
+    @property
+    def color_selected(self):
+        """
+        Get/Set the color of the button when it is in the selected state.
+        
+        Returns
+        --------
+        c : str
+            widget color
+
+        Example
+        -------
+        Programmatically change the widget color::
+            
+            s.color_selected = '#00FF00'
+            print(s.color_selected)
+        
+        """
+        return self._color_selected
+        
+    @color_selected.setter
+    def color_selected(self, color):
+        self._color_selected = color
+        if self._selected:
+            self.b.color = self._color_selected
+
+
+    @property
+    def color_unselected(self):
+        """
+        Get/Set the color of the button when it is in the unselected state.
+        
+        Returns
+        --------
+        c : str
+            widget color
+
+        Example
+        -------
+        Programmatically change the widget color::
+            
+            s.color_unselected = '#00FF00'
+            print(s.color_unselected)
+        
+        """
+        return self._color_selected
+        
+    @color_unselected.setter
+    def color_unselected(self, color):
+        self._color_unselected = color
+        if not self._selected:
+            self.b.color = self._color_unselected
+
+        
     @property
     def dark(self):
         return self._dark

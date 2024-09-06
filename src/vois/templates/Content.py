@@ -35,16 +35,21 @@ class Content(v.Card):
 
     # Initialization
     def __init__(self,
+                 output,
                  width='50vw',            # Overall width
                  height='50vh',           # Overall height
                  splitmode=0,             # 0=single content,  1=two contents splitted vertically,   2=two contents splitted horizontally,   3=three contents,   4=four contents
                  bordercolor='#006600',   # Color of the splitting borders
                  leftwidthperc=50,        # width in percentage of left column
                  topheightperc=50,        # height in percentage of top row
+                 color_first=None,        # Main color
+                 color_second=None,       # Secondary color
+                 dark=None,               # Dark flag
                  **kwargs):
         
         super().__init__(**kwargs)
         
+        self.output         = output
         self._width         = width
         self._height        = height
         self._splitmode     = splitmode
@@ -52,6 +57,20 @@ class Content(v.Card):
         self._leftwidthperc = leftwidthperc
         self._topheightperc = topheightperc
         
+        # Colors of the configuration widgets
+        self._color_first = color_first
+        if self._color_first is None:
+            self._color_first = settings.color_first
+        
+        self._color_second = color_second
+        if self._color_second is None:
+            self._color_second = settings.color_second
+            
+        self._dark = dark
+        if self._dark is None:
+            self._dark = settings.dark_mode
+
+        # Main card
         self.card = v.Card(flat=True, color='#ffffff', tile=True,
                            width=self._width,   min_width=self._width,   max_width=self._width,
                            height=self._height, min_height=self._height, max_height=self._height)
@@ -264,3 +283,44 @@ class Content(v.Card):
     def topheightperc(self, h):
         self._topheightperc = min(100, max(h, 0))
         self.update()
+        
+        
+    @property
+    def color_first(self):
+        return self._color_first
+        
+    @color_first.setter
+    def color_first(self, color):
+        self._color_first = color
+
+        if self.card1children is not None: self.card1children.color_first = self._color_first
+        if self.card2children is not None: self.card2children.color_first = self._color_first
+        if self.card3children is not None: self.card3children.color_first = self._color_first
+        if self.card4children is not None: self.card4children.color_first = self._color_first
+
+
+    @property
+    def color_second(self):
+        return self._color_second
+        
+    @color_second.setter
+    def color_second(self, color):
+        self._color_second = color
+
+        if self.card1children is not None: self.card1children.color_second = self._color_second
+        if self.card2children is not None: self.card2children.color_second = self._color_second
+        if self.card3children is not None: self.card3children.color_second = self._color_second
+        if self.card4children is not None: self.card4children.color_second = self._color_second
+
+    @property
+    def dark(self):
+        return self._dark
+        
+    @dark.setter
+    def dark(self, flag):
+        self._dark = flag
+        
+        if self.card1children is not None: self.card1children.dark = self._dark
+        if self.card2children is not None: self.card2children.dark = self._dark
+        if self.card3children is not None: self.card3children.dark = self._dark
+        if self.card4children is not None: self.card4children.dark = self._dark
