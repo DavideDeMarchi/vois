@@ -54,6 +54,7 @@ class Map(ipyleaflet.Map):
                  color_first=None,        # Main color
                  color_second=None,       # Secondary color
                  dark=None,               # Dark flag
+                 basemapindex=0,          # Initial basemap index (0=EC, 1=Esri, 2=Google)
                  **kwargs):
         
         self._width            = width
@@ -76,6 +77,8 @@ class Map(ipyleaflet.Map):
         self._dark = dark
         if self._dark is None:
             self._dark = settings.dark_mode
+            
+        self._basemapindex = basemapindex
         
         # Initial center and zoom of the map
         self.center = center
@@ -95,6 +98,7 @@ class Map(ipyleaflet.Map):
         mapUtils.addLayer(self, mapUtils.CartoLabels(), LAYERNAME_LABELS)
         layer = mapUtils.getLayer(self, LAYERNAME_LABELS)
         layer.opacity = 0.0
+        self.onSelectBasemap(self._basemapindex)
         
         self.toggleBasemap   = None
         self.cardCoordinates = None
@@ -135,10 +139,12 @@ class Map(ipyleaflet.Map):
     def onSelectBasemap(self, index):
         layer = mapUtils.getLayer(self, LAYERNAME_LABELS)
 
-        if index == 1:
+        self._basemapindex = max(0, min(2, index))
+        
+        if self._basemapindex == 1:
             basemaplayer = mapUtils.EsriWorldImagery()
             layer.opacity = 1.0
-        elif index == 2:
+        elif self._basemapindex == 2:
             basemaplayer = mapUtils.GoogleHybrid()
             layer.opacity = 0.0
         else:
@@ -312,7 +318,7 @@ class Map(ipyleaflet.Map):
         if self._show_basemaps:
             c = mapUtils.getCardByName(self, 'Basemaps', position='bottomright')
             c.tile = True
-            self.toggleBasemap = toggle.toggle(0,
+            self.toggleBasemap = toggle.toggle(self._basemapindex,
                                                ['Gisco', 'Esri', 'Google'],
                                                tooltips=['Select EC Gisco roadmap as background layer', 'Select ESRI WorldImagery as background layer', 'Select GOOGLE Satellite as background layer'],
                                                colorselected=self._color_first, colorunselected=self._color_second, rounded=False,
@@ -380,4 +386,40 @@ class Map(ipyleaflet.Map):
 
         if self.toggleBasemap is not None:
             self.toggleBasemap.dark = self._dark
+            
+            
+    @property
+    def basemapindex(self):
+        return self._basemapindex
+        
+    @basemapindex.setter
+    def basemapindex(self, index):
+        self.onSelectBasemap(index)
+
+        if self.toggleBasemap is not None:
+            self.toggleBasemap.value = self._basemapindex
+            
+            
+    @property
+    def state(self):
+        return {x: getattr(self, x) for x in ['width',
+                                              'height',
+                                              'show_fullscreen',
+                                              'show_coordinates',
+                                              'show_search',
+                                              'show_scale',
+                                              'show_basemaps',
+                                              'show_overview',
+                                              'color_first',
+                                              'color_second',
+                                              'dark',
+                                              'basemapindex',
+                                              'center',
+                                              'zoom'
+                                             ]}
+        
+    @state.setter
+    def state(self, statusdict):
+        for key, value in statusdict.items():
+            setattr(self, key, value)
             

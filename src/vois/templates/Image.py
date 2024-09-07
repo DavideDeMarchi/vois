@@ -68,7 +68,8 @@ class Image():
         
         self.img = v.Img(src=self._imageurl, contain=True, width=self._width, height=self._height, position='center center')
         
-        self.b = None
+        self.tf = None
+        self.b  = None
         
         self.card.children = [self.img]
         
@@ -92,15 +93,27 @@ class Image():
         upload.dark    = self._dark
         upload.show()
         
+    # Changed image URL in the self.tf TextField
+    def onChangedURL(self, *args):
+        if self.tf.v_model is None:
+            url = ''
+        else:
+            url = self.tf.v_model
+        self.imageurl = url
+
         
     # Configure the SVG drawing
     def configure(self):
-        self.b  = Button('Select image to display', color_selected=self._color_first, dark=self._dark, 
-                         text_weight=450, on_click=self.onSelectImage, width=200, height=40,
-                         tooltip='Click to select an image to use as background on the title bar', selected=True,
+        
+        self.tf = v.TextField(label='Image URL:', autofocus=False, v_model=None, dense=False, color=self._color_first, clearable=True, class_="pa-0 ma-0 mt-3 mb-1")
+        self.tf.on_event('change', self.onChangedURL)
+        
+        self.b  = Button('Upload image from local computer', color_selected=self._color_first, dark=self._dark, 
+                         text_weight=450, on_click=self.onSelectImage, width=300, height=40,
+                         tooltip='Click to select an image to upload from you local computer', selected=True,
                          rounded=False)
         
-        return v.Card(flat=True, class_='pa-2 ma-0', children=[self.b])
+        return v.Card(flat=True, class_='pa-2 ma-0', children=[widgets.VBox([self.tf, self.b])])
 
 
     @property
@@ -145,6 +158,9 @@ class Image():
 
         if self.b is not None:
             self.b.color_selected = self._color_first
+            
+        if self.tf is not None:
+            self.tf.color = self._color_first
 
     @property
     def color_second(self):
