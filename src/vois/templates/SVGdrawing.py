@@ -98,7 +98,7 @@ class SVGdrawing():
                                       stdevnumber=1.5, 
                                       colorlist=self.pp.colors,
                                       stroke_width=4.0,
-                                      stroke_selected='red',
+                                      stroke_selected=self._color_first,
                                       onhoverfill='#f8bd1a',
                                       codes_selected=self.codes_selected,
                                       legendtitle='Legent title',
@@ -163,4 +163,40 @@ class SVGdrawing():
     @dark.setter
     def dark(self, flag):
         self._dark = flag
+    
+    
+    
+    @property
+    def familyname(self):
+        return self.pp.familyname
+    
+    @familyname.setter
+    def familyname(self, name):
+        self.pp.familyname = name
+    
+    
+    @property
+    def palette(self):
+        return self.pp.value
+    
+    @palette.setter
+    def palette(self, name):
+        self.pp.value = name
+    
+    
+    @property
+    def state(self):
+        return {x: getattr(self, x) for x in ['width',
+                                              'height',
+                                              'color_first',
+                                              'color_second',
+                                              'dark',
+                                              'familyname',
+                                              'palette'
+                                             ]}
+        
+    @state.setter
+    def state(self, statusdict):
+        for key, value in statusdict.items():
+            setattr(self, key, value)
     
