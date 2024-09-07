@@ -191,3 +191,19 @@ class PlotlyChart(v.Card):
             self.configure_card.children = [widgets.VBox([self.sw.draw(), self.sh.draw()])]
             
         return self.configure_card
+
+    
+    @property
+    def state(self):
+        return {x: getattr(self, x) for x in ['chart_width',
+                                              'chart_height',
+                                              'color_first',
+                                              'color_second',
+                                              'dark'
+                                             ]}
+        
+    @state.setter
+    def state(self, statusdict):
+        for key, value in statusdict.items():
+            setattr(self, key, value)
+    
