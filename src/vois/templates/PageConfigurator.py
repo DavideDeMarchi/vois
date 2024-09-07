@@ -25,7 +25,7 @@ import json
 
 # Vois imports
 from vois import colors, download
-from vois.vuetify import settings, toggle, ColorPicker, sliderFloat, UploadImage, UploadJson, Button, switch, tooltip, iconButton, dialogGeneric, selectSingle
+from vois.vuetify import settings, toggle, ColorPicker, sliderFloat, UploadImage, UploadJson, Button, switch, tooltip, iconButton, dialogGeneric, selectSingle, tabs
 from vois.templates import template1panel, template2panels, template3panels
 from vois import cssUtils
 
@@ -184,11 +184,11 @@ class PageConfigurator(v.Html):
         self.copyrighttext.on_event('change',      self.copyrighttextChange)
         self.copyrighttext.on_event('click:clear', self.copyrighttextClear)
         
-        self.card.children = [widgets.VBox([
-                                 self.cardappname,
-                                 self.cardpagetitle,
-                                 self.spacerY,
-                                 widgets.HBox([self.panelsLabel, self.togglePanels.draw()]),
+        self.card_appearance = v.Card(flat=True)
+        self.card_content    = v.Card(flat=True)
+        self.tabsView = tabs.tabs(0, ['Appearance', 'Content'], contents=[self.card_appearance, self.card_content], dark=False, onchange=None, row=True)
+        
+        self.card_appearance.children = [widgets.VBox([
                                  self.spacerY,
                                  self.spacerY,
                                  widgets.HBox([label('Title bar color:',  color='black', width=self.labelwidth), self.titlecolor, self.titlecolor.ctpopup.draw(), self.spacerX, label('Link:', color='black', width=30), self.footerlinked.draw()]),
@@ -218,6 +218,16 @@ class PageConfigurator(v.Html):
                                  self.spacerY,
                                  self.copyrighttext,
                                 ])
+        ]
+        
+        self.card.children = [widgets.VBox([
+                                 self.cardappname,
+                                 self.cardpagetitle,
+                                 self.spacerY,
+                                 widgets.HBox([self.panelsLabel, self.togglePanels.draw()]),
+                                 self.spacerY,
+                                 self.tabsView.draw()
+                                ])
                              ]
         
         # Set v.Html members
@@ -231,6 +241,9 @@ class PageConfigurator(v.Html):
         
         # Set the initial state
         self.page.state = self.reset_state
+        
+        # Set the content initial state
+        self.page.content.state = self.page.content.reset_state
         
         # Initialise widgets
         self.appname.v_model       = self.page.appname
@@ -252,6 +265,9 @@ class PageConfigurator(v.Html):
             
             # Set the page state (does a refresh if the page is open)
             self.page.state = state
+            
+            # Set the content state
+            self.page.content.state = state['content']
 
             #print('BEFORE:')
             #print('state.footercolor', state['footercolor'])
@@ -316,9 +332,12 @@ class PageConfigurator(v.Html):
         state['footerdarkvalue']   = self.footerdark.value
         state['button_rounded']    = self.rounded.value
         state['trainsitionvalue']  = self.transition.value
+        
+        # Save content
+        state['content'] = self.page.content.state
     
         # Convert to string and download
-        txt = json.dumps(state)
+        txt = json.dumps(state, indent=4)
         download.downloadText(txt, fileName=filename)
             
     
@@ -433,7 +452,10 @@ p.create()
 
 # Read the state of the page from the .json file
 with open('%s') as f:
-    p.state = json.load(f)
+    state = json.load(f)
+    p.state = state
+    if 'content' in state:
+        p.content.state = state['content']
 
 # Open the page
 p.open()'''%(self.titlecolor.color, self.footercolor.color, str(self.rounded.value), str(self.page.titledark),
@@ -501,57 +523,73 @@ p.open()'''%(self.titlecolor.color, self.footercolor.color, str(self.rounded.val
     # Selection of 1, 2 or 3 panels template
     def onSelectedTemplate(self, index):
 
-        # Default state (back button on the left and JEODPP logo as application logo
-        statusdict = {
-            'left_back'  : True,
-            'logoappurl' : 'https://jeodpp.jrc.ec.europa.eu/services/shared/pngs/BDAP_Logo1024transparent.png'
-        }
-        
-        # Read the state and close the current page
-        if self.page is not None:
-            statusdict = self.page.state
-            self.page.close()
+        with self.debug:
+            # Default state (back button on the left and JEODPP logo as application logo
+            statusdict = {
+                'left_back'  : True,
+                'logoappurl' : 'https://jeodpp.jrc.ec.europa.eu/services/shared/pngs/BDAP_Logo1024transparent.png'
+            }
 
-        # Create the instance of the page with the requested number of panels
-        if index == 0:
-            self.page = template1panel.template1panel(self.output, onclose=self.on_force_close)
-        elif index == 1:
-            self.page = template2panels.template2panels(self.output, onclose=self.on_force_close)
-        else:
-            self.page = template3panels.template3panels(self.output, onclose=self.on_force_close)
-            
-        self.page.customButtonAdd('mdi-delete', 'Click here to force page closing', self.on_force_close)
-            
-        # Create the page widgets and display the PageConfigurator in the left panel
-        self.page.create()
-        self.page.cardLeft.children = [self]
+            contentdict = { 'color_first':  settings.color_first,
+                            'color_second': settings.color_second,
+                            'dark':         settings.dark_mode
+            }
 
-        # Set the state
-        self.page.state = statusdict
 
-        self.page.map.dark         = self.page.titledark
-        self.page.map.color_first  = self.page.titlecolor
-        self.page.map.color_second = self.page.footercolor
-        
-        self.titleimageurl.color_selected  = self.page.titlecolor
-        self.titleimageurl.dark            = self.page.titledark
-        
-        self.logoappurl.color_selected     = self.page.titlecolor
-        self.logoappurl.dark               = self.page.titledark
+            # Read the state and close the current page
+            if self.page is not None:
+                statusdict  = self.page.state
+                contentdict = self.page.content.state
+                contentdict['color_first']  = statusdict['titlecolor']
+                contentdict['color_second'] = statusdict['footercolor']
+                contentdict['color_dark']   = statusdict['titledark']
+                del contentdict['width']
+                del contentdict['height']
+                self.page.close()
 
-        self.logocreditsurl.color_selected = self.page.titlecolor
-        self.logocreditsurl.dark           = self.page.titledark
-        
-        # Open the page with minimal transition
-        self.page.transition = 'dialog-top-transition'
-        self.page.open()
-        if 'transition' in statusdict:
-            self.page.transition = statusdict['transition']
-        else:
-            self.page.transition = 'dialog-bottom-transition'
+            # Create the instance of the page with the requested number of panels
+            if index == 0:
+                self.page = template1panel.template1panel(self.output, onclose=self.on_force_close)
+            elif index == 1:
+                self.page = template2panels.template2panels(self.output, onclose=self.on_force_close)
+            else:
+                self.page = template3panels.template3panels(self.output, onclose=self.on_force_close)
 
-        # Dimension the left card
-        self.card.height = self.card.min_height = self.card.max_height = self.page.height
+            self.page.customButtonAdd('mdi-delete', 'Click here to force page closing', self.on_force_close)
+
+            # Create the page widgets and display the PageConfigurator in the left panel
+            self.page.create()
+            self.page.cardLeft.children = [self]
+
+            self.card_content.children = [self.page.configure()]
+
+            # Set the state
+            self.page.state         = statusdict
+            self.page.content.state = contentdict
+
+            self.page.content.dark         = self.page.titledark
+            self.page.content.color_first  = self.page.titlecolor
+            self.page.content.color_second = self.page.footercolor
+
+            self.titleimageurl.color_selected  = self.page.titlecolor
+            self.titleimageurl.dark            = self.page.titledark
+
+            self.logoappurl.color_selected     = self.page.titlecolor
+            self.logoappurl.dark               = self.page.titledark
+
+            self.logocreditsurl.color_selected = self.page.titlecolor
+            self.logocreditsurl.dark           = self.page.titledark
+
+            # Open the page with minimal transition
+            self.page.transition = 'dialog-top-transition'
+            self.page.open()
+            if 'transition' in statusdict:
+                self.page.transition = statusdict['transition']
+            else:
+                self.page.transition = 'dialog-bottom-transition'
+
+            # Dimension the left card
+            self.card.height = self.card.min_height = self.card.max_height = self.page.height
 
         
     # Change the transition mode
@@ -579,7 +617,7 @@ p.open()'''%(self.titlecolor.color, self.footercolor.color, str(self.rounded.val
         self.buttSave.color             = color
         self.buttCode.color             = color
         self.buttReset.color            = color
-        self.page.map.color_first       = color
+        self.page.content.color_first   = color
         self.togglePanels.colorselected = color
         self.titledark.colorselected    = color
         self.footerdark.colorselected   = color
@@ -597,6 +635,7 @@ p.open()'''%(self.titlecolor.color, self.footercolor.color, str(self.rounded.val
         self.show_help.switch.color     = color
         self.show_credits.switch.color  = color
         self.rounded.switch.color       = color
+        self.tabsView.color             = color
         self.titledarkChange(self.titledark.value)
                 
         # labels color
@@ -630,7 +669,7 @@ p.open()'''%(self.titlecolor.color, self.footercolor.color, str(self.rounded.val
         self.page.footercolor = color
 
         # widgets color
-        self.page.map.color_second         = color
+        self.page.content.color_second     = color
         self.togglePanels.colorunselected  = color
         self.titledark.colorunselected     = color
         self.footerdark.colorunselected    = color
@@ -673,7 +712,7 @@ p.open()'''%(self.titlecolor.color, self.footercolor.color, str(self.rounded.val
         self.titleimageurl.dark     = flag
         self.logoappurl.dark        = flag
         self.logocreditsurl.dark    = flag
-        self.page.map.dark          = flag
+        self.page.content.dark      = flag
         self.footercolor.dark_text  = flag
                 
             

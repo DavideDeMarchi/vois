@@ -91,14 +91,19 @@ class tabs:
    """
 
     # Initialization
-    def __init__(self, index, labels, contents=None, tooltips=None, color=settings.color_first, dark=settings.dark_mode, onchange=None, row=True):
+    def __init__(self, index, labels, contents=None, tooltips=None, color=None, dark=settings.dark_mode, onchange=None, row=True):
         
         self.index    = index
         self.labels   = labels
         self.onchange = onchange
+
+        self._color = color
+        if self._color is None:
+            self._color = settings.color_first
         
         s = ''
-        if dark: s = "color: %s;" % settings.textcolor_dark
+        if dark:
+            s = "color: %s;" % settings.textcolor_dark
             
         self.tab_list = []
         self.tab_list_with_tooltips = []
@@ -118,7 +123,7 @@ class tabs:
         if not contents is None:
             content_list = [v.TabItem(children=[x]) for x in contents]
             
-        slider = v.TabsSlider(color=color, dark=dark)
+        self.slider = v.TabsSlider(color=self._color, dark=dark)
         
         backcolor = 'white'
         textcolor = settings.textcolor_notdark
@@ -129,7 +134,7 @@ class tabs:
         self.tabswidget = v.Tabs(v_model=self.index, vertical=not row, dense=True, class_='pa-0 ma-0', 
                                  #background_color='white', color=settings.textcolor_notdark,
                                  background_color=backcolor, color=textcolor, 
-                                 children=[slider] + self.tab_list_with_tooltips + content_list)
+                                 children=[self.slider] + self.tab_list_with_tooltips + content_list)
         
    
 
@@ -189,3 +194,31 @@ class tabs:
     def disabled(self, flag):
         for tab in self.tab_list:
             tab.disabled = flag
+            
+            
+    @property
+    def color(self):
+        """
+        Get/Set the widget color.
+        
+        Returns
+        --------
+        c : str
+            widget color
+
+        Example
+        -------
+        Programmatically change the widget color::
+            
+            s.color = '#00FF00'
+            print(s.color)
+        
+        """
+        return self._color
+        
+    @color.setter
+    def color(self, c):
+        if isinstance(c, str):
+            self._color = c
+            self.slider.color = self._color
+            

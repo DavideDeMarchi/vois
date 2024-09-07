@@ -70,6 +70,37 @@ class Content(v.Card):
         self.spacerY = v.Html(tag='div', style_='width:  0px; height: 10px;')
         self.spacer  = v.Html(tag='div', style_='width: 10px; height: 10px;')
         
+        # Flag to update controls when loading the state
+        self.updateWidgetsOnLoadState = False
+        
+        self.reset_state = {
+ 'splitmode': 0,
+ 'leftwidthperc': 50,
+ 'topheightperc': 50,
+ 'borderwidth': 2,
+ 'linkedmaps': False,
+ 'color_first': '#0d856d',
+ 'color_second': '#a0dcd0',
+ 'dark': True,
+ 'content1': {
+    'content': 'Map',
+    'width': '50vw',
+    'height': '50vh',
+    'show_fullscreen': True,
+    'show_coordinates': True,
+    'show_search': True,
+    'show_scale': True,
+    'show_basemaps': True,
+    'show_overview': False,
+    'color_first': '#0d856d',
+    'color_second': '#a0dcd0',
+    'dark': True,
+    'basemapindex': 0,
+    'center': [50, 12],
+    'zoom': 5.0
+    }
+}
+        
         # List of all the Map.Map instances
         self.maps = []
         
@@ -401,8 +432,8 @@ class Content(v.Card):
             if self.card1children is None:
                 self.card1.children = []
             else:
-                self.card1children.width  = 'calc(%s - 1px)'%self.card1.width
-                self.card1children.height = 'calc(%s - 1px)'%self.card1.height
+                self.card1children.width  = self.card1.width
+                self.card1children.height = self.card1.height
                 self.card1.children = [self.card1children.draw()]
     
     def set2(self, children=None):
@@ -411,8 +442,8 @@ class Content(v.Card):
             if self.card2children is None:
                 self.card2.children = []
             else:
-                self.card2children.width  = 'calc(%s - 1px)'%self.card2.width
-                self.card2children.height = 'calc(%s - 1px)'%self.card2.height
+                self.card2children.width  = self.card2.width
+                self.card2children.height = self.card2.height
                 self.card2.children = [self.card2children.draw()]
     
     def set3(self, children=None):
@@ -421,8 +452,8 @@ class Content(v.Card):
             if self.card3children is None:
                 self.card3.children = []
             else:
-                self.card3children.width  = 'calc(%s - 1px)'%self.card3.width
-                self.card3children.height = 'calc(%s - 1px)'%self.card3.height
+                self.card3children.width  = self.card3.width
+                self.card3children.height = self.card3.height
                 self.card3.children = [self.card3children.draw()]
     
     def set4(self, children=None):
@@ -431,8 +462,8 @@ class Content(v.Card):
             if self.card4children is None:
                 self.card4.children = []
             else:
-                self.card4children.width  = 'calc(%s - 1px)'%self.card4.width
-                self.card4children.height = 'calc(%s - 1px)'%self.card4.height
+                self.card4children.width  = self.card4.width
+                self.card4children.height = self.card4.height
                 self.card4.children = [self.card4children.draw()]
                 
                 
@@ -481,7 +512,13 @@ class Content(v.Card):
         
         self.sliderleftwidth.slider.disabled = self._splitmode == 0 or self._splitmode == 2
         self.slidertopheight.slider.disabled = self._splitmode < 2
-        
+
+        if self.updateWidgetsOnLoadState:
+            old = self.toggle_splitmode.onchange
+            self.toggle_splitmode.onchange = None
+            self.toggle_splitmode.value = self._splitmode
+            self.toggle_splitmode.onchange = old
+
         self.update()
 
         
@@ -492,6 +529,13 @@ class Content(v.Card):
     @leftwidthperc.setter
     def leftwidthperc(self, w):
         self._leftwidthperc = min(100, max(w, 0))
+        
+        if self.updateWidgetsOnLoadState:
+            old = self.sliderleftwidth.onchange
+            self.sliderleftwidth.onchange = None
+            self.sliderleftwidth.value = self._leftwidthperc
+            self.sliderleftwidth.onchange = old
+        
         self.update()
 
         
@@ -502,6 +546,13 @@ class Content(v.Card):
     @topheightperc.setter
     def topheightperc(self, h):
         self._topheightperc = min(100, max(h, 0))
+        
+        if self.updateWidgetsOnLoadState:
+            old = self.slidertopheight.onchange
+            self.slidertopheight.onchange = None
+            self.slidertopheight.value = self._topheightperc
+            self.slidertopheight.onchange = old
+        
         self.update()
         
         
@@ -514,6 +565,13 @@ class Content(v.Card):
         self._borderwidth = min(3, max(int(w), 0))
         if self.propagateBounds:
             self.selectborder.value = str(self._borderwidth)
+            
+        if self.updateWidgetsOnLoadState:
+            old = self.selectborder.onchange
+            self.selectborder.onchange = None
+            self.selectborder.value = str(self._borderwidth)
+            self.selectborder.onchange = old
+            
         self.update()
 
         
@@ -612,6 +670,10 @@ class Content(v.Card):
         self.showWaitDialogOnUpdate = False
         dlg = dialogWait.dialogWait(text='Updating content...', output=self.output, color=statusdict['color_first'], dark=statusdict['dark'])
         
+        self.updateWidgetsOnLoadState = True
+        
+        self.card1children = self.card2children = self.card3children = self.card4children = None
+        
         for key, value in statusdict.items():
             if key == 'content1':
                 self.select1.value = value['content']
@@ -628,6 +690,10 @@ class Content(v.Card):
             else:
                 setattr(self, key, value)
                 
+        self.update()
+        
+        self.updateWidgetsOnLoadState = False
+        
         dlg.close()
         self.showWaitDialogOnUpdate = True
         

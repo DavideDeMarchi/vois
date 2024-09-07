@@ -875,7 +875,8 @@ class page():
     @state.setter
     def state(self, statusdict):
         for key, value in statusdict.items():
-            setattr(self, key, value)
+            if key != 'content':
+                setattr(self, key, value)
             
         doRefresh = False
         if 'titleheight' in statusdict:
