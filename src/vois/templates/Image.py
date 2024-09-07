@@ -178,4 +178,19 @@ class Image():
     @dark.setter
     def dark(self, flag):
         self._dark = flag
+
     
+    @property
+    def state(self):
+        return {x: getattr(self, x) for x in ['width',
+                                              'height',
+                                              'imageurl',
+                                              'color_first',
+                                              'color_second',
+                                              'dark'
+                                             ]}
+        
+    @state.setter
+    def state(self, statusdict):
+        for key, value in statusdict.items():
+            setattr(self, key, value)    
