@@ -27,6 +27,7 @@ import random
 # Vois imports
 from vois import svgMap
 from vois.vuetify import settings, palettePickerEx
+from vois.templates import PageConfigurator
 
 
 #####################################################################################################################################################
@@ -110,9 +111,19 @@ class SVGdrawing():
         
     # Configure the SVG drawing
     def configure(self):
-        return v.Card(flat=True, class_='pa-2 ma-0', children=[self.pp.draw()])
+        return v.Card(flat=True, class_='pa-2 ma-0', children=[widgets.VBox([PageConfigurator.label('SVG drawing', color='black'), self.pp.draw()])])
 
 
+
+    @property
+    def content(self):
+        return 'SVG Drawing'
+        
+    @content.setter
+    def content(self, c):
+        pass
+    
+    
     @property
     def width(self):
         return self._width
@@ -186,7 +197,8 @@ class SVGdrawing():
     
     @property
     def state(self):
-        return {x: getattr(self, x) for x in ['width',
+        return {x: getattr(self, x) for x in ['content',
+                                              'width',
                                               'height',
                                               'color_first',
                                               'color_second',

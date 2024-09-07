@@ -26,8 +26,7 @@ import ipyvuetify as v
 
 # Vois imports
 from vois.vuetify import settings, toggle, page
-from vois.templates import dynamicButton
-from vois.geo import Map, mapUtils
+from vois.templates import dynamicButton, Content
 
 # Panels dimensioning
 LEFT_WIDTH = 400      # Width  in pixels of the left bar
@@ -93,8 +92,8 @@ class template1panel(page.page):
         # Set the color of the dynamicButton
         self.dynbLeft.color = color
         
-        # Set the color of basemaps toggle
-        self.map.basemaps_colorselected = color
+        # Set the color first
+        self.content.color_first = color
     
             
     @property
@@ -105,8 +104,8 @@ class template1panel(page.page):
     def footercolor(self, color):
         page.page.footercolor.fset(self, color)   # call super() property setter
 
-        # Set the color of basemaps toggle
-        self.map.basemaps_colorunselected = color
+        # Set the color second
+        self.content.color_second = color
         
         
     @property
@@ -121,7 +120,7 @@ class template1panel(page.page):
         self.cardLeft.height = self.height
         self.cardMain.height = self.main_height
         
-        self.map.height = 'calc(%s - 1.5px)'%self.height
+        self.content.height = self.height
         
         d = self._titleheight - 54
         newy = '%dpx'%(64+d)
@@ -141,7 +140,7 @@ class template1panel(page.page):
         self.cardLeft.height = self.height
         self.cardMain.height = self.main_height
         
-        self.map.height = 'calc(%s - 1.5px)'%self.height
+        self.content.height = self.height
         
         d = self._titleheight - 54
         newy = '%dpx'%(64+d)
@@ -156,13 +155,18 @@ class template1panel(page.page):
     # Create the content of the Main panel
     def createMain(self):
 
-        # Create the map instance
-        self.map = Map.Map(width='calc(100vw - %dpx)'%self.leftWidth,  height='calc(%s - 1.5px)'%self.height)
+        # Create the content instance
+        self.content = Content.Content(output=self.output, width='calc(100vw - %dpx)'%self.leftWidth, height=self.height)
         
-        # Display the map inside the main card
-        self.cardMain.children = [self.map]
+        # Display the content inside the main card
+        self.cardMain.children = [self.content]
         
     
+    # Display the configuration GUI
+    def configure(self):
+        return self.content.configure()
+        
+        
     #################################################################################################################################################
     # Manage the opening/closing of the dynamic panels (left and bottom)
     #################################################################################################################################################
@@ -176,7 +180,7 @@ class template1panel(page.page):
         self.cardLeft.max_width = self.leftWidth
         
         self.cardMain.width = self.main_width
-        self.map.width      = self.main_width
+        self.content.width  = self.main_width
         
 
     # Open the left panel
@@ -188,4 +192,4 @@ class template1panel(page.page):
         self.cardLeft.max_width = self.leftWidth
         
         self.cardMain.width = self.main_width
-        self.map.width      = self.main_width
+        self.content.width  = self.main_width

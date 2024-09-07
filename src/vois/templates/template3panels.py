@@ -26,8 +26,7 @@ import ipyvuetify as v
 
 # Vois imports
 from vois.vuetify import settings, toggle, page
-from vois.templates import dynamicButton
-from vois.geo import Map, mapUtils
+from vois.templates import dynamicButton, Content
 
 # Panels dimensioning
 LEFT_WIDTH    = 400      # Width  in pixels of the left bar
@@ -39,7 +38,6 @@ LAYERNAME_BACKGROUND  = 'Background'
 LAYERNAME_LABELS      = 'Labels'
 
 
-                
 #####################################################################################################################################################
 # Template page with left, bottom and right panels
 #####################################################################################################################################################
@@ -146,8 +144,8 @@ class template3panels(page.page):
         self.dynbBottom.color = color
         self.dynbRight.color  = color
         
-        # Set the color of basemaps toggle
-        self.map.basemaps_colorselected = color
+        # Set the color first
+        self.content.color_first = color
         
         
     @property
@@ -175,8 +173,8 @@ class template3panels(page.page):
     def footercolor(self, color):
         page.page.footercolor.fset(self, color)   # call super() property setter
 
-        # Set the color of basemaps toggle
-        self.map.basemaps_colorunselected = color
+        # Set the color second
+        self.content.color_second = color
 
                 
     @property
@@ -192,7 +190,7 @@ class template3panels(page.page):
         self.cardRight.height = self.height
         self.cardMain.height  = self.main_height
         
-        self.map.height = 'calc(%s - %fpx)'%(self.height,self.bottomHeight+1.5)
+        self.content.height = 'calc(%s - %fpx)'%(self.height,self.bottomHeight)
         
         d = self._titleheight - 54
         newy = '%dpx'%(64+d)
@@ -215,7 +213,7 @@ class template3panels(page.page):
         self.cardRight.height = self.height
         self.cardMain.height  = self.main_height
         
-        self.map.height = 'calc(%s - %fpx)'%(self.height,self.bottomHeight+1.5)
+        self.content.height = 'calc(%s - %fpx)'%(self.height,self.bottomHeight)
         
         d = self._titleheight - 54
         newy = '%dpx'%(64+d)
@@ -245,11 +243,16 @@ class template3panels(page.page):
     # Create the content of the Main panel
     def createMain(self):
 
-        # Map widget
-        self.map = Map.Map(width='calc(100vw - %dpx)'%(self.leftWidth+self.rightWidth),  height='calc(%s - %fpx)'%(self.height,self.bottomHeight+1.5))
+        # Create the content instance
+        self.content = Content.Content(output=self.output, width='calc(100vw - %dpx)'%(self.leftWidth+self.rightWidth), height='calc(%s - %fpx)'%(self.height,self.bottomHeight))
         
-        # Display the map inside the Main card
-        self.cardMain.children = [self.map]
+        # Display the content inside the main card
+        self.cardMain.children = [self.content]
+    
+    
+    # Display the configuration GUI
+    def configure(self):
+        return self.content.configure()
 
         
     #################################################################################################################################################
@@ -268,7 +271,7 @@ class template3panels(page.page):
         self.cardMain.width     = self.main_width
         self.cardMain.min_width = self.main_width
         self.cardMain.max_width = self.main_width
-        self.map.width          = self.main_width
+        self.content.width      = self.main_width
         
         self.titlecolor = self._titlecolor  # Set left border to right panel
         
@@ -285,7 +288,7 @@ class template3panels(page.page):
         self.cardMain.width     = self.main_width
         self.cardMain.min_width = self.main_width
         self.cardMain.max_width = self.main_width
-        self.map.width          = self.main_width
+        self.content.width      = self.main_width
         
         self.titlecolor = self._titlecolor  # Remove left border to right panel
         
@@ -297,7 +300,7 @@ class template3panels(page.page):
         self.cardBottom.min_height = self.bottomHeight
         
         self.cardMain.height = self.height
-        self.map.height      = 'calc(%s - 1.5px)'%self.height
+        self.content.height  = self.height
         
 
     # Open the bottom panel
@@ -307,7 +310,7 @@ class template3panels(page.page):
         self.cardBottom.min_height = self.bottomHeight
         
         self.cardMain.height = 'calc(%s - %dpx)'%(self.height,self.bottomHeight)
-        self.map.height      = 'calc(%s - %fpx)'%(self.height,self.bottomHeight+1.5)
+        self.content.height  = 'calc(%s - %fpx)'%(self.height,self.bottomHeight)
         
 
     # Close the right panel
@@ -322,7 +325,7 @@ class template3panels(page.page):
         self.cardMain.width     = self.main_width
         self.cardMain.min_width = self.main_width
         self.cardMain.max_width = self.main_width
-        self.map.width          = self.main_width
+        self.content.width      = self.main_width
         
         x = 'calc(100vw - %dpx)'%(45 + self.rightWidth)
         self.dynbBottom.x1 = x
@@ -343,7 +346,7 @@ class template3panels(page.page):
         self.cardMain.width     = self.main_width
         self.cardMain.min_width = self.main_width
         self.cardMain.max_width = self.main_width
-        self.map.width          = self.main_width
+        self.content.width      = self.main_width
         
         x = 'calc(100vw - %dpx)'%(45 + self.rightWidth)
         self.dynbBottom.x1 = x

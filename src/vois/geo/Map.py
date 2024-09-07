@@ -27,6 +27,7 @@ import ipyvuetify as v
 # Vois imports
 from vois.vuetify import settings, toggle, switch
 from vois.geo import mapUtils
+from vois.templates import PageConfigurator
 
 # Name of layers
 LAYERNAME_BACKGROUND  = 'Background'
@@ -192,10 +193,20 @@ class Map(ipyleaflet.Map):
             self.s5 = switch.switch(self.show_basemaps,    'Add the Basemaps control',    inset=True, dense=True, onchange=self.change_basemaps, color=self._color_first)
             self.s6 = switch.switch(self.show_overview,    'Add the Overview control',    inset=True, dense=True, onchange=self.change_overview, color=self._color_first)
             
-            self.configure_card.children = [widgets.VBox([self.s1.draw(), self.s2.draw(), self.s3.draw(), self.s4.draw(), self.s5.draw(), self.s6.draw()])]
+            self.configure_card.children = [widgets.VBox([PageConfigurator.label('Map', color='black'), self.s1.draw(), self.s2.draw(), self.s3.draw(), self.s4.draw(), self.s5.draw(), self.s6.draw()])]
             
         return self.configure_card
+
+
+    @property
+    def content(self):
+        return 'Map'
         
+    @content.setter
+    def content(self, c):
+        pass
+    
+    
     @property
     def width(self):
         return self._width
@@ -402,7 +413,8 @@ class Map(ipyleaflet.Map):
             
     @property
     def state(self):
-        return {x: getattr(self, x) for x in ['width',
+        return {x: getattr(self, x) for x in ['content',
+                                              'width',
                                               'height',
                                               'show_fullscreen',
                                               'show_coordinates',

@@ -25,6 +25,7 @@ import plotly.express as px
 
 # Vois imports
 from vois.vuetify import settings, sliderFloat
+from vois.templates import PageConfigurator
 
 
 #####################################################################################################################################################
@@ -102,6 +103,15 @@ class PlotlyChart(v.Card):
             display(self.fig.show())
         
         
+    @property
+    def content(self):
+        return 'Plotly Chart'
+        
+    @content.setter
+    def content(self, c):
+        pass
+    
+    
     @property
     def chart_width(self):
         return self._chart_width
@@ -188,14 +198,15 @@ class PlotlyChart(v.Card):
             self.sh = sliderFloat.sliderFloat(self._chart_height, text='Chart height in pixels:', minvalue=20.0, maxvalue=800.0, maxint=780, showpercentage=False, decimals=0,
                                                    labelwidth=96, sliderwidth=150, resetbutton=True, showtooltip=True, onchange=self.changeH)
             
-            self.configure_card.children = [widgets.VBox([self.sw.draw(), self.sh.draw()])]
+            self.configure_card.children = [widgets.VBox([PageConfigurator.label('Plotly chart', color='black'), self.sw.draw(), self.sh.draw()])]
             
         return self.configure_card
 
     
     @property
     def state(self):
-        return {x: getattr(self, x) for x in ['chart_width',
+        return {x: getattr(self, x) for x in ['content',
+                                              'chart_width',
                                               'chart_height',
                                               'color_first',
                                               'color_second',

@@ -39,9 +39,10 @@ class Content(v.Card):
                  width='50vw',            # Overall width
                  height='50vh',           # Overall height
                  splitmode=0,             # 0=single content,  1=two contents splitted vertically,   2=two contents splitted horizontally,   3=three contents,   4=four contents
-                 bordercolor='#006600',   # Color of the splitting borders
                  leftwidthperc=50,        # width in percentage of left column
                  topheightperc=50,        # height in percentage of top row
+                 borderwidth=2,           # Number of pixels for the border
+                 linkedmaps=False,        # If True all the maps bounds are linked
                  color_first=None,        # Main color
                  color_second=None,       # Secondary color
                  dark=None,               # Dark flag
@@ -53,9 +54,10 @@ class Content(v.Card):
         self._width         = width
         self._height        = height
         self._splitmode     = splitmode
-        self._bordercolor   = bordercolor
         self._leftwidthperc = leftwidthperc
         self._topheightperc = topheightperc
+        self._borderwidth   = borderwidth
+        self._linkedmaps    = linkedmaps
         
         self.debug = widgets.Output()
         
@@ -121,10 +123,14 @@ class Content(v.Card):
                                                        labelwidth=self.labelwidth-10, sliderwidth=150, resetbutton=True, showtooltip=True, onchange=self.topheightChange)
         self.slidertopheight.slider.disabled = True
 
-        self.mapslinked = switch.switch(False, 'Maps linked', inset=True, dense=True, onchange=self.linkedChange)
+        self.mapslinked = switch.switch(self._linkedmaps, 'Maps linked', inset=True, dense=True, onchange=self.linkedChange)
         self.mapslinked.disabled = True
         self.propagateBounds = True
-        
+        self.showWaitDialogOnUpdate = True
+
+        self.selectborder = selectSingle.selectSingle('Border in pixel:', ['0', '1', '2', '3'], selection=str(self._borderwidth),  clearable=False, width=100, onchange=self.onselectBorder)
+
+            
         self.toggle_configure = toggle.toggle(0, ['', '', '', ''], dark=self._dark, icons=['mdi-numeric-1-box-outline', 'mdi-numeric-2-box-outline', 'mdi-numeric-3-box-outline', 'mdi-numeric-4-box-outline'], outlined=False,
                                               tooltips=['Configure area 1', 'Configure area 2', 'Configure area 3', 'Configure area 4'],
                                               onchange=self.configureChange, row=True, width=self.togglewidth, height=30, justify='start', paddingrow=self.paddingrow, tile=True)
@@ -132,8 +138,10 @@ class Content(v.Card):
         self.toggle_configure.buttons[2].disabled = True
         self.toggle_configure.buttons[3].disabled = True
         
+        
         self.card_configure = v.Card(flat=True)
         
+        self.splitmodeChange(self.splitmode)
         self.configureChange(0)
         self.update()
 
@@ -168,11 +176,11 @@ class Content(v.Card):
             self.spacerY,
             self.spacerY,
             widgets.HBox([self.select1.draw(), self.spacerX, self.mapslinked.draw()]),
-            self.select2.draw(),
+            widgets.HBox([self.select2.draw(), self.spacerX, self.spacerX, self.selectborder.draw()]),
             self.select3.draw(),
             self.select4.draw(),
             self.spacerY,
-            self.toggle_configure.draw(),
+            widgets.HBox([PageConfigurator.label('Content: ', color='black', width=self.labelwidth-40), self.toggle_configure.draw()]),
             self.spacerY,
             self.card_configure,
         ])])
@@ -185,7 +193,9 @@ class Content(v.Card):
 
     # Change of an area content
     def changeAreaContent(self, setfunction, contentname):
-        dlg = dialogWait.dialogWait(text='Updating content...', output=self.output, color=self._color_first, dark=self._dark)
+        
+        if self.showWaitDialogOnUpdate:
+            dlg = dialogWait.dialogWait(text='Updating content...', output=self.output, color=self._color_first, dark=self._dark)
         
         if contentname == 'Map':
             m = Map.Map(color_first=self._color_first, color_second=self._color_second, dark=self._dark)
@@ -213,15 +223,17 @@ class Content(v.Card):
             self.mapslinked.disabled = False
             
         self.configureChange(self.toggle_configure.value)
-            
-        dlg.close()
-            
+        
+        if self.showWaitDialogOnUpdate:
+            dlg.close()
+                       
 
+            
     # Management of the linked state among the maps
     def onMapBoundsChanged(self, change):
         if self.propagateBounds:
             if len(self.maps) > 1:
-                if self.mapslinked.value:
+                if self._linkedmaps:
                     inputMap = change['owner']
                     for m in self.maps:
                         if not m is inputMap:
@@ -232,10 +244,17 @@ class Content(v.Card):
     
     
     # Select* change
-    def onselect1Change(self): self.changeAreaContent(self.set1, self.select1.value)
-    def onselect2Change(self): self.changeAreaContent(self.set2, self.select2.value)
-    def onselect3Change(self): self.changeAreaContent(self.set3, self.select3.value)
-    def onselect4Change(self): self.changeAreaContent(self.set4, self.select4.value)
+    def onselect1Change(self):
+        self.changeAreaContent(self.set1, self.select1.value)
+        
+    def onselect2Change(self):
+        self.changeAreaContent(self.set2, self.select2.value)
+        
+    def onselect3Change(self):
+        self.changeAreaContent(self.set3, self.select3.value)
+        
+    def onselect4Change(self):
+        self.changeAreaContent(self.set4, self.select4.value)
                                
     
     # Change of left width
@@ -249,11 +268,19 @@ class Content(v.Card):
     
     
     # Set the linked flag
-    def linkedChange(self,flag):
-        if self.mapslinked.value:
+    def linkedChange(self, flag):
+        self._linkedmaps = self.mapslinked.value
+        if self._linkedmaps:
             if len(self.maps) > 1:
                 self.onMapBoundsChanged({'owner': self.maps[0]})
     
+    
+    # Selection of a border
+    def onselectBorder(self):
+        self.propagateBounds = False
+        self.borderwidth = int(self.selectborder.value)
+        self.propagateBounds = True
+
     
     # Returns the vuetify object to display (the v.Card)
     def draw(self):
@@ -285,7 +312,7 @@ class Content(v.Card):
         
         # 2 horizontal contents
         elif self._splitmode == 1:
-            self.card1 = v.Card(flag=True, tile=True, outlined=True, style_='border: 0px solid red; border-right: 1px solid %s; overflow: hidden;'%self._bordercolor,
+            self.card1 = v.Card(flag=True, tile=True, outlined=True, style_='border: 0px solid red; border-right: %dpx solid %s; overflow: hidden;'%(self._borderwidth,self._color_first),
                                 width=wl, min_width=wl, max_width=wl,
                                 height=self._height, min_height=self._height, max_height=self._height)
             self.card2 = v.Card(flag=True, tile=True, 
@@ -304,7 +331,7 @@ class Content(v.Card):
             
         # 2 vertical contents
         elif self._splitmode == 2:
-            self.card1 = v.Card(flag=True, tile=True, outlined=True, style_='border: 0px solid red; border-bottom: 1px solid %s; overflow: hidden;'%self._bordercolor,
+            self.card1 = v.Card(flag=True, tile=True, outlined=True, style_='border: 0px solid red; border-bottom: %dpx solid %s; overflow: hidden;'%(self._borderwidth,self._color_first),
                                 width=self._width, min_width=self._width, max_width=self._width,
                                 height=ht, min_height=ht, max_height=ht)
             self.card2 = v.Card(flag=True, tile=True, 
@@ -322,10 +349,11 @@ class Content(v.Card):
 
         # 2 vertical contents + 1 on the right at full height
         elif self._splitmode == 3:
-            self.card1 = v.Card(flag=True, tile=True, outlined=True, style_='border: 0px solid red; border-right: 1px solid %s; border-bottom: 1px solid %s; overflow: hidden;'%(self._bordercolor,self._bordercolor),
+            self.card1 = v.Card(flag=True, tile=True, outlined=True, style_='border: 0px solid red; border-right: %dpx solid %s; border-bottom: %dpx solid %s; overflow: hidden;'%(self._borderwidth, self._color_first,
+                                                                                                                                                                                   self._borderwidth, self._color_first),
                                 width=wl, min_width=wl, max_width=wl,
                                 height=ht, min_height=ht, max_height=ht)
-            self.card2 = v.Card(flag=True, tile=True, outlined=True, style_='border: 0px solid red; border-right: 1px solid %s; overflow: hidden;'%self._bordercolor,
+            self.card2 = v.Card(flag=True, tile=True, outlined=True, style_='border: 0px solid red; border-right: %dpx solid %s; overflow: hidden;'%(self._borderwidth,self._color_first),
                                 width=wl, min_width=wl, max_width=wl,
                                 height=hb, min_height=hb, max_height=hb)
             self.card3 = v.Card(flag=True, tile=True,
@@ -341,13 +369,14 @@ class Content(v.Card):
             
         # 4 contents
         else:
-            self.card1 = v.Card(flag=True, tile=True, outlined=True, style_='border: 0px solid red; border-right: 1px solid %s; border-bottom: 1px solid %s; overflow: hidden;'%(self._bordercolor,self._bordercolor),
+            self.card1 = v.Card(flag=True, tile=True, outlined=True, style_='border: 0px solid red; border-right: %dpx solid %s; border-bottom: %dpx solid %s; overflow: hidden;'%(self._borderwidth, self._color_first,
+                                                                                                                                                                                   self._borderwidth, self._color_first),
                                 width=wl, min_width=wl, max_width=wl,
                                 height=ht, min_height=ht, max_height=ht)
-            self.card2 = v.Card(flag=True, tile=True, outlined=True, style_='border: 0px solid red; border-right: 1px solid %s; overflow: hidden;'%self._bordercolor,
+            self.card2 = v.Card(flag=True, tile=True, outlined=True, style_='border: 0px solid red; border-right: %dpx solid %s; overflow: hidden;'%(self._borderwidth,self._color_first),
                                 width=wl, min_width=wl, max_width=wl,
                                 height=hb, min_height=hb, max_height=hb)
-            self.card3 = v.Card(flag=True, tile=True, style_='border: 0px solid red; border-bottom: 1px solid %s; overflow: hidden;'%self._bordercolor,
+            self.card3 = v.Card(flag=True, tile=True, style_='border: 0px solid red; border-bottom: %dpx solid %s; overflow: hidden;'%(self._borderwidth,self._color_first),
                                 width=wr, min_width=wr, max_width=wr,
                                 height=ht, min_height=ht, max_height=ht)
             self.card4 = v.Card(flag=True, tile=True,
@@ -421,6 +450,7 @@ class Content(v.Card):
         self.card.width = self._width
         self.card.min_width = self._width
         self.card.max_width = self._width
+        self.update()
 
         
     @property
@@ -433,6 +463,7 @@ class Content(v.Card):
         self.card.height = self._height
         self.card.min_height = self._height
         self.card.max_height = self._height
+        self.update()
 
         
     @property
@@ -448,19 +479,9 @@ class Content(v.Card):
         self.select3.disabled = self._splitmode < 3
         self.select4.disabled = self._splitmode < 4
         
-        self.sliderleftwidth.slider.disabled = self._splitmode == 0
+        self.sliderleftwidth.slider.disabled = self._splitmode == 0 or self._splitmode == 2
         self.slidertopheight.slider.disabled = self._splitmode < 2
         
-        self.update()
-
-        
-    @property
-    def bordercolor(self):
-        return self._bordercolor
-        
-    @bordercolor.setter
-    def bordercolor(self, bc):
-        self._bordercolor = bc
         self.update()
 
         
@@ -485,6 +506,28 @@ class Content(v.Card):
         
         
     @property
+    def borderwidth(self):
+        return self._borderwidth
+        
+    @borderwidth.setter
+    def borderwidth(self, w):
+        self._borderwidth = min(3, max(int(w), 0))
+        if self.propagateBounds:
+            self.selectborder.value = str(self._borderwidth)
+        self.update()
+
+        
+    @property
+    def linkedmaps(self):
+        return self._linkedmaps
+        
+    @linkedmaps.setter
+    def linkedmaps(self, flag):
+        self._linkedmaps = flag
+        self.mapslinked.value = self._linkedmaps
+
+        
+    @property
     def color_first(self):
         return self._color_first
         
@@ -501,11 +544,14 @@ class Content(v.Card):
         self.slidertopheight.color = self._color_first
         self.mapslinked.color = self._color_first
         self.toggle_configure.colorselected = self._color_first
+        self.selectborder.color = self._color_first
         
         if self.card1children is not None: self.card1children.color_first = self._color_first
         if self.card2children is not None: self.card2children.color_first = self._color_first
         if self.card3children is not None: self.card3children.color_first = self._color_first
         if self.card4children is not None: self.card4children.color_first = self._color_first
+        
+        self.update()
 
 
     @property
@@ -539,3 +585,49 @@ class Content(v.Card):
         if self.card2children is not None: self.card2children.dark = self._dark
         if self.card3children is not None: self.card3children.dark = self._dark
         if self.card4children is not None: self.card4children.dark = self._dark
+
+        
+    @property
+    def state(self):
+        s = {x: getattr(self, x) for x in ['width',
+                                           'height',
+                                           'splitmode',
+                                           'leftwidthperc',
+                                           'topheightperc',
+                                           'borderwidth',
+                                           'linkedmaps',
+                                           'color_first',
+                                           'color_second',
+                                           'dark'
+                                          ]}
+        
+        if self.card1children is not None: s['content1'] = self.card1children.state
+        if self.card2children is not None: s['content2'] = self.card2children.state
+        if self.card3children is not None: s['content3'] = self.card3children.state
+        if self.card4children is not None: s['content4'] = self.card4children.state
+        return s
+        
+    @state.setter
+    def state(self, statusdict):
+        self.showWaitDialogOnUpdate = False
+        dlg = dialogWait.dialogWait(text='Updating content...', output=self.output, color=statusdict['color_first'], dark=statusdict['dark'])
+        
+        for key, value in statusdict.items():
+            if key == 'content1':
+                self.select1.value = value['content']
+                self.card1children.state = value
+            elif key == 'content2':
+                self.select2.value = value['content']
+                self.card2children.state = value
+            elif key == 'content3':
+                self.select3.value = value['content']
+                self.card3children.state = value
+            elif key == 'content4':
+                self.select4.value = value['content']
+                self.card4children.state = value
+            else:
+                setattr(self, key, value)
+                
+        dlg.close()
+        self.showWaitDialogOnUpdate = True
+        

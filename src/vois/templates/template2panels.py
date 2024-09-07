@@ -26,8 +26,7 @@ import ipyvuetify as v
 
 # Vois imports
 from vois.vuetify import settings, toggle, page
-from vois.templates import dynamicButton
-from vois.geo import Map, mapUtils
+from vois.templates import dynamicButton, Content
 
 # Panels dimensioning
 LEFT_WIDTH    = 400      # Width  in pixels of the left bar
@@ -36,7 +35,6 @@ BOTTOM_HEIGHT = 240      # Height in pixels of the bottom bar
 # Name of layers
 LAYERNAME_BACKGROUND  = 'Background'
 LAYERNAME_LABELS      = 'Labels'
-
 
                 
 #####################################################################################################################################################
@@ -111,8 +109,8 @@ class template2panels(page.page):
         self.dynbLeft.color   = color
         self.dynbBottom.color = color
         
-        # Set the color of basemaps toggle
-        self.map.basemaps_colorselected = color
+        # Set the color first
+        self.content.color_first = color
         
                 
     @property
@@ -123,8 +121,8 @@ class template2panels(page.page):
     def footercolor(self, color):
         page.page.footercolor.fset(self, color)   # call super() property setter
 
-        # Set the color of basemaps toggle
-        self.map.basemaps_colorunselected = color
+        # Set the color second
+        self.content.color_second = color
                 
         
     @property
@@ -139,7 +137,7 @@ class template2panels(page.page):
         self.cardLeft.height = self.height
         self.cardMain.height = self.main_height
         
-        self.map.height = 'calc(%s - %fpx)'%(self.height,self.bottomHeight+1.5)
+        self.content.height = 'calc(%s - %fpx)'%(self.height,self.bottomHeight)
         
         d = self._titleheight - 54
         newy = '%dpx'%(64+d)
@@ -159,7 +157,7 @@ class template2panels(page.page):
         self.cardLeft.height = self.height
         self.cardMain.height = self.main_height
         
-        self.map.height = 'calc(%s - %fpx)'%(self.height,self.bottomHeight+1.5)
+        self.content.height = 'calc(%s - %fpx)'%(self.height,self.bottomHeight)
         
         d = self._titleheight - 54
         newy = '%dpx'%(64+d)
@@ -183,13 +181,18 @@ class template2panels(page.page):
     # Create the content of the Main panel
     def createMain(self):
 
-        # Create the map instance
-        self.map = Map.Map(width='calc(100vw - %dpx)'%self.leftWidth,  height='calc(%s - %fpx)'%(self.height,self.bottomHeight+1.5))
+        # Create the content instance
+        self.content = Content.Content(output=self.output, width='calc(100vw - %dpx)'%self.leftWidth, height='calc(%s - %fpx)'%(self.height,self.bottomHeight))
         
         # Display the map inside the main card
-        self.cardMain.children = [self.map]
+        self.cardMain.children = [self.content]
     
     
+    # Display the configuration GUI
+    def configure(self):
+        return self.content.configure()
+        
+        
     #################################################################################################################################################
     # Manage the opening/closing of the dynamic panels (left and bottom)
     #################################################################################################################################################
@@ -204,7 +207,7 @@ class template2panels(page.page):
         
         self.cardBottom.width = '100vw'
         self.cardMain.width   = self.main_width
-        self.map.width        = self.main_width
+        self.content.width    = self.main_width
         
 
     # Open the left panel
@@ -217,7 +220,7 @@ class template2panels(page.page):
         
         self.cardBottom.width = self.main_width
         self.cardMain.width   = self.main_width
-        self.map.width        = self.main_width
+        self.content.width    = self.main_width
         
 
     # Close the bottom panel
@@ -227,7 +230,7 @@ class template2panels(page.page):
         self.cardBottom.min_height = self.bottomHeight
         
         self.cardMain.height = self.height
-        self.map.height      = 'calc(%s - 1.5px)'%self.height
+        self.content.height  = self.height
         
 
     # Open the bottom panel
@@ -237,5 +240,5 @@ class template2panels(page.page):
         self.cardBottom.min_height = self.bottomHeight
         
         self.cardMain.height = 'calc(%s - %dpx)'%(self.height,self.bottomHeight)
-        self.map.height      = 'calc(%s - %fpx)'%(self.height,self.bottomHeight+1.5)
+        self.content.height  = 'calc(%s - %fpx)'%(self.height,self.bottomHeight)
         

@@ -26,6 +26,7 @@ import random
 
 # Vois imports
 from vois.vuetify import settings, Button, UploadImage
+from vois.templates import PageConfigurator
 
 
 #####################################################################################################################################################
@@ -113,9 +114,18 @@ class Image():
                          tooltip='Click to select an image to upload from you local computer', selected=True,
                          rounded=False)
         
-        return v.Card(flat=True, class_='pa-2 ma-0', children=[widgets.VBox([self.tf, self.b])])
+        return v.Card(flat=True, class_='pa-2 ma-0', children=[widgets.VBox([PageConfigurator.label('Image', color='black'), self.tf, self.b])])
 
 
+    @property
+    def content(self):
+        return 'Image'
+        
+    @content.setter
+    def content(self, c):
+        pass
+    
+    
     @property
     def width(self):
         return self._width
@@ -182,7 +192,8 @@ class Image():
     
     @property
     def state(self):
-        return {x: getattr(self, x) for x in ['width',
+        return {x: getattr(self, x) for x in ['content',
+                                              'width',
                                               'height',
                                               'imageurl',
                                               'color_first',
