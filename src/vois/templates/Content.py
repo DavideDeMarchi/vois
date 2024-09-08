@@ -216,6 +216,11 @@ class Content(v.Card):
             self.card_configure,
         ])])
         
+        
+    # Reset the state to the initial one
+    def reset(self):
+        self.state = self.reset_state
+    
     
     # Selecton of the splitmode
     def splitmodeChange(self, index):
@@ -317,7 +322,25 @@ class Content(v.Card):
     def draw(self):
         return self
     
-    
+
+    # Update all colors
+    def updateColors(self):
+        if self.card1children is not None: self.card1children.color_first = self._color_first
+        if self.card2children is not None: self.card2children.color_first = self._color_first
+        if self.card3children is not None: self.card3children.color_first = self._color_first
+        if self.card4children is not None: self.card4children.color_first = self._color_first
+        
+        if self.card1children is not None: self.card1children.color_second = self._color_second
+        if self.card2children is not None: self.card2children.color_second = self._color_second
+        if self.card3children is not None: self.card3children.color_second = self._color_second
+        if self.card4children is not None: self.card4children.color_second = self._color_second
+        
+        if self.card1children is not None: self.card1children.dark = self._dark
+        if self.card2children is not None: self.card2children.dark = self._dark
+        if self.card3children is not None: self.card3children.dark = self._dark
+        if self.card4children is not None: self.card4children.dark = self._dark
+        
+        
     # Update the content when splitmode is changed
     def update(self):
 
@@ -419,6 +442,8 @@ class Content(v.Card):
             self.toggle_configure.buttons[3].disabled = False
     
         
+        self.updateColors()
+        
         self.set1(self.card1children)
         self.set2(self.card2children)
         self.set3(self.card3children)
@@ -435,6 +460,7 @@ class Content(v.Card):
                 self.card1children.width  = self.card1.width
                 self.card1children.height = self.card1.height
                 self.card1.children = [self.card1children.draw()]
+                self.updateColors()
     
     def set2(self, children=None):
         self.card2children = children
@@ -445,6 +471,7 @@ class Content(v.Card):
                 self.card2children.width  = self.card2.width
                 self.card2children.height = self.card2.height
                 self.card2.children = [self.card2children.draw()]
+                self.updateColors()
     
     def set3(self, children=None):
         self.card3children = children
@@ -455,6 +482,7 @@ class Content(v.Card):
                 self.card3children.width  = self.card3.width
                 self.card3children.height = self.card3.height
                 self.card3.children = [self.card3children.draw()]
+                self.updateColors()
     
     def set4(self, children=None):
         self.card4children = children
@@ -465,6 +493,7 @@ class Content(v.Card):
                 self.card4children.width  = self.card4.width
                 self.card4children.height = self.card4.height
                 self.card4.children = [self.card4children.draw()]
+                self.updateColors()
                 
                 
     #####################################################################################################################################################
@@ -603,12 +632,6 @@ class Content(v.Card):
         self.mapslinked.color = self._color_first
         self.toggle_configure.colorselected = self._color_first
         self.selectborder.color = self._color_first
-        
-        if self.card1children is not None: self.card1children.color_first = self._color_first
-        if self.card2children is not None: self.card2children.color_first = self._color_first
-        if self.card3children is not None: self.card3children.color_first = self._color_first
-        if self.card4children is not None: self.card4children.color_first = self._color_first
-        
         self.update()
 
 
@@ -622,12 +645,9 @@ class Content(v.Card):
 
         self.toggle_splitmode.colorunselected = self._color_second
         self.toggle_configure.colorunselected = self._color_second
-        
-        if self.card1children is not None: self.card1children.color_second = self._color_second
-        if self.card2children is not None: self.card2children.color_second = self._color_second
-        if self.card3children is not None: self.card3children.color_second = self._color_second
-        if self.card4children is not None: self.card4children.color_second = self._color_second
+        self.updateColors()
 
+        
     @property
     def dark(self):
         return self._dark
@@ -638,11 +658,7 @@ class Content(v.Card):
         
         self.toggle_splitmode.dark = self._dark
         self.toggle_configure.dark = self._dark
-        
-        if self.card1children is not None: self.card1children.dark = self._dark
-        if self.card2children is not None: self.card2children.dark = self._dark
-        if self.card3children is not None: self.card3children.dark = self._dark
-        if self.card4children is not None: self.card4children.dark = self._dark
+        self.updateColors()
 
         
     @property

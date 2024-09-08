@@ -267,7 +267,10 @@ class PageConfigurator(v.Html):
             self.page.state = state
             
             # Set the content state
-            self.page.content.state = state['content']
+            if 'content' in state:
+                self.page.content.state = state['content']
+            else:
+                self.page.content.reset()
 
             #print('BEFORE:')
             #print('state.footercolor', state['footercolor'])
