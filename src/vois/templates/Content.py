@@ -46,6 +46,7 @@ class Content(v.Card):
                  color_first=None,        # Main color
                  color_second=None,       # Secondary color
                  dark=None,               # Dark flag
+                 onStateChanged=None,     # Called just after the state property is changes
                  **kwargs):
         
         super().__init__(**kwargs)
@@ -58,6 +59,8 @@ class Content(v.Card):
         self._topheightperc = topheightperc
         self._borderwidth   = borderwidth
         self._linkedmaps    = linkedmaps
+        
+        self.onStateChanged = onStateChanged
         
         self.debug = widgets.Output()
         
@@ -175,6 +178,23 @@ class Content(v.Card):
         self.splitmodeChange(self.splitmode)
         self.configureChange(0)
         self.update()
+        
+        self.createAccessStrings()
+
+        
+    # Create strings for easy access to content
+    def createAccessStrings(self):
+        dnames = {
+            Map.Map: 'map',
+            PlotlyChart.PlotlyChart: 'chart',
+            SVGdrawing.SVGdrawing:   'svg',
+            Image.Image:             'image'
+        }
+        self.access1 = self.access2 = self.access3 = self.access4 = ''
+        if self.card1children is not None: self.access1 = "self.%s1 = self.content.card1children"%dnames[type(self.card1children)]
+        if self.card2children is not None: self.access2 = "self.%s2 = self.content.card2children"%dnames[type(self.card2children)]
+        if self.card3children is not None: self.access3 = "self.%s3 = self.content.card3children"%dnames[type(self.card3children)]
+        if self.card4children is not None: self.access4 = "self.%s4 = self.content.card4children"%dnames[type(self.card4children)]
 
         
     # Selection of the area to configure
@@ -259,6 +279,8 @@ class Content(v.Card):
             self.mapslinked.disabled = False
             
         self.configureChange(self.toggle_configure.value)
+
+        self.createAccessStrings()
         
         if self.showWaitDialogOnUpdate:
             dlg.close()
@@ -709,6 +731,12 @@ class Content(v.Card):
         self.update()
         
         self.updateWidgetsOnLoadState = False
+        
+        self.createAccessStrings()
+        
+        # Call the callback function
+        if self.onStateChanged is not None:
+            self.onStateChanged()
         
         dlg.close()
         self.showWaitDialogOnUpdate = True

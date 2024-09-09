@@ -188,8 +188,8 @@ class Image():
     @dark.setter
     def dark(self, flag):
         self._dark = flag
-
-    
+        
+        
     @property
     def state(self):
         return {x: getattr(self, x) for x in ['content',

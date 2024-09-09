@@ -44,19 +44,19 @@ class template2panels(page.page):
 
     
     # Initialization
-    def __init__(self, output, onclose=None, **kwargs):
+    def __init__(self, output, onclose=None, leftWidth=LEFT_WIDTH, bottomHeight=BOTTOM_HEIGHT, **kwargs):
         super().__init__('Demo', 'Geospatial page with left and bottom panel', output, onclose=onclose, copyrighttext='European Commission - Joint Research Centre', **kwargs)
 
+        # Initialize member variables
+        self.init_leftWidth    = self.leftWidth    = leftWidth
+        self.init_bottomHeight = self.bottomHeight = bottomHeight
    
+
     #################################################################################################################################################
     # Create the page and returns the card widget where the content of the page must be displayed
     #################################################################################################################################################
     def create(self):
         super().create()
-        
-        # Initialize some member variables
-        self.leftWidth    = LEFT_WIDTH
-        self.bottomHeight = BOTTOM_HEIGHT
         
         # Cards for the panels
         st = 'border-radius: 0px; border-color: %s; border-width: 1px; overflow: hidden;'%settings.color_first
@@ -182,7 +182,7 @@ class template2panels(page.page):
     def createMain(self):
 
         # Create the content instance
-        self.content = Content.Content(output=self.output, width='calc(100vw - %dpx)'%self.leftWidth, height='calc(%s - %fpx)'%(self.height,self.bottomHeight))
+        self.content = Content.Content(output=self.output, width='calc(100vw - %dpx)'%self.leftWidth, height='calc(%s - %fpx)'%(self.height,self.bottomHeight), onStateChanged=self.onStateChanged)
         
         # Display the map inside the main card
         self.cardMain.children = [self.content]
@@ -193,6 +193,11 @@ class template2panels(page.page):
         return self.content.configure()
         
         
+    # Called when the state changes
+    def onStateChanged(self):
+        pass
+
+    
     #################################################################################################################################################
     # Manage the opening/closing of the dynamic panels (left and bottom)
     #################################################################################################################################################
@@ -212,7 +217,7 @@ class template2panels(page.page):
 
     # Open the left panel
     def leftOpen(self):
-        self.leftWidth = LEFT_WIDTH
+        self.leftWidth = self.init_leftWidth
         self.main_width = 'calc(100vw - %dpx)'%self.leftWidth
         self.cardLeft.width     = self.leftWidth
         self.cardLeft.min_width = self.leftWidth
@@ -235,7 +240,7 @@ class template2panels(page.page):
 
     # Open the bottom panel
     def bottomOpen(self):
-        self.bottomHeight = BOTTOM_HEIGHT
+        self.bottomHeight = self.init_bottomHeight
         self.cardBottom.height     = self.bottomHeight
         self.cardBottom.min_height = self.bottomHeight
         

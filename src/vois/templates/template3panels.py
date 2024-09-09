@@ -45,8 +45,13 @@ class template3panels(page.page):
 
     
     # Initialization
-    def __init__(self, output, onclose=None, **kwargs):
+    def __init__(self, output, onclose=None, leftWidth=LEFT_WIDTH, bottomHeight=BOTTOM_HEIGHT, rightWidth=RIGHT_WIDTH, **kwargs):
         super().__init__('Demo', 'Geospatial page with left, bottom and right panels', output, onclose=onclose, copyrighttext='European Commission - Joint Research Centre', **kwargs)
+
+        # Initialize member variables
+        self.init_leftWidth    = self.leftWidth    = leftWidth
+        self.init_bottomHeight = self.bottomHeight = bottomHeight
+        self.init_rightWidth   = self.rightWidth   = rightWidth
 
    
     #################################################################################################################################################
@@ -54,11 +59,6 @@ class template3panels(page.page):
     #################################################################################################################################################
     def create(self):
         super().create()
-        
-        # Initialize some member variables
-        self.leftWidth    = LEFT_WIDTH
-        self.bottomHeight = BOTTOM_HEIGHT
-        self.rightWidth   = RIGHT_WIDTH
         
         # Cards for the panels
         st = 'border-radius: 0px; border-color: %s; border-width: 1px; overflow: hidden;'%settings.color_first
@@ -244,7 +244,7 @@ class template3panels(page.page):
     def createMain(self):
 
         # Create the content instance
-        self.content = Content.Content(output=self.output, width='calc(100vw - %dpx)'%(self.leftWidth+self.rightWidth), height='calc(%s - %fpx)'%(self.height,self.bottomHeight))
+        self.content = Content.Content(output=self.output, width='calc(100vw - %dpx)'%(self.leftWidth+self.rightWidth), height='calc(%s - %fpx)'%(self.height,self.bottomHeight), onStateChanged=self.onStateChanged)
         
         # Display the content inside the main card
         self.cardMain.children = [self.content]
@@ -255,6 +255,11 @@ class template3panels(page.page):
         return self.content.configure()
 
         
+    # Called when the state changes
+    def onStateChanged(self):
+        pass
+
+    
     #################################################################################################################################################
     # Manage the opening/closing of the dynamic panels (left and bottom)
     #################################################################################################################################################
@@ -278,7 +283,7 @@ class template3panels(page.page):
 
     # Open the left panel
     def leftOpen(self):
-        self.leftWidth = LEFT_WIDTH
+        self.leftWidth = self.init_leftWidth
         self.main_width = 'calc(100vw - %dpx)'%(self.leftWidth+self.rightWidth)
         self.cardLeft.width     = self.leftWidth
         self.cardLeft.min_width = self.leftWidth
@@ -305,7 +310,7 @@ class template3panels(page.page):
 
     # Open the bottom panel
     def bottomOpen(self):
-        self.bottomHeight = BOTTOM_HEIGHT
+        self.bottomHeight = self.init_bottomHeight
         self.cardBottom.height     = self.bottomHeight
         self.cardBottom.min_height = self.bottomHeight
         
@@ -335,7 +340,7 @@ class template3panels(page.page):
 
     # Open the right panel
     def rightOpen(self):
-        self.rightWidth = RIGHT_WIDTH
+        self.rightWidth = self.init_rightWidth
         self.main_width = 'calc(100vw - %dpx)'%(self.leftWidth+self.rightWidth)
         self.cardRight.width     = self.rightWidth
         self.cardRight.min_width = self.rightWidth

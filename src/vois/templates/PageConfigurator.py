@@ -378,13 +378,44 @@ class PageConfigurator(v.Html):
             notebookfile = classname
             notebookfile += '.ipynb'
 
+            
+            # Access to the content items
+            access_strings = []
+            if len(self.page.content.access1) > 0: access_strings.append(self.page.content.access1)
+            if len(self.page.content.access2) > 0: access_strings.append(self.page.content.access2)
+            if len(self.page.content.access3) > 0: access_strings.append(self.page.content.access3)
+            if len(self.page.content.access4) > 0: access_strings.append(self.page.content.access4)
+            access = '\n        '.join(access_strings)
+
+            
             # Selection of the base class
             if self.togglePanels.value == 0:
                 baseclass = 'template1panel'
+                dimensioning = 'leftWidth=400,'
+                otherCreationOverload = ''
             elif self.togglePanels.value == 1:
                 baseclass = 'template2panels'
+                dimensioning = 'leftWidth=400, bottomHeight=240,'
+                otherCreationOverload = '''
+
+    # Create widgets on the Bottom panel
+    def createBottom(self):
+        super().createBottom()
+'''                
             else:
                 baseclass = 'template3panels'
+                dimensioning = 'leftWidth=400, bottomHeight=240, rightWidth=480,'
+                otherCreationOverload = '''
+
+    # Create widgets on the Bottom panel
+    def createBottom(self):
+        super().createBottom()
+    
+
+    # Create widgets on the Right panel
+    def createRight(self):
+        super().createRight()
+'''                
 
             # Code generation
             txt = '''from vois.vuetify import settings
@@ -414,7 +445,9 @@ class %s(%s.%s):
     
     # Initialisation
     def __init__(self, output, **kwargs):
-        super().__init__(output=output, on_logoapp=self.on_logoapp, on_help=self.on_help, on_credits=self.on_credits, **kwargs)
+        super().__init__(output=output, on_logoapp=self.on_logoapp, on_help=self.on_help, on_credits=self.on_credits,
+                         %s
+                         **kwargs)
 
     # Clicked the application logo
     def on_logoapp(self):
@@ -434,9 +467,18 @@ class %s(%s.%s):
                                     text='Text to customise for the credits info<br>Add text here or open a PDF file',
                                     addclosebuttons=True, show=True, width=400, output=self.output)
                                     
+                                    
     # Create the content of the Main panel
     def createMain(self):
         super().createMain()
+
+
+    # Overload the method called when the state changes
+    def onStateChanged(self):
+    
+        # Save reference to content items (map, charts, etc.)
+        %s
+        
 
     # Create sample widgets on the Left panel
     def createLeft(self):
@@ -455,6 +497,7 @@ class %s(%s.%s):
                                                 spacer,
                                                 widgets.HBox([spacer, b])
                                                ])]
+%s
 
 # Create an instance of mypage
 p = %s(output)
@@ -467,9 +510,12 @@ with open('%s') as f:
     if 'content' in state:
         p.content.state = state['content']
 
+# Change the content here:
+    
 # Open the page
 p.open()'''%(self.titlecolor.color, self.footercolor.color, str(self.rounded.value), str(self.page.titledark),
-             baseclass, classname, baseclass, baseclass, classname, jsonfile)
+             baseclass, classname, baseclass, baseclass, 
+             dimensioning, access, otherCreationOverload, classname, jsonfile)
         
             # Convert to string and download .py file
             download.downloadText(txt, fileName=pythonfile)
@@ -520,6 +566,7 @@ p.open()'''%(self.titlecolor.color, self.footercolor.color, str(self.rounded.val
         
     # Reset page to initial state
     def onReset(self):
+        self.tabsView.value = 0
         self.onSelectedState(self.reset_state)
             
 

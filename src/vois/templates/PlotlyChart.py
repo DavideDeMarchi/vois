@@ -75,12 +75,12 @@ class PlotlyChart(v.Card):
         
         # Sample chart
         df = px.data.iris()
-        self.fig = px.scatter(df, x="sepal_width", y="sepal_length", color="species")
-        self.fig.update_layout(title='Sample chart', template='plotly_white', autosize=False, width=self._chart_width, height=self._chart_height, margin=dict(l=0, r=0, b=0, t=30))
+        self._fig = px.scatter(df, x="sepal_width", y="sepal_length", color="species")
+        self._fig.update_layout(title='Sample chart', template='plotly_white', autosize=False, width=self._chart_width, height=self._chart_height, margin=dict(l=0, r=0, b=0, t=30))
         
         # Display figure in the output widget
         with self.output:
-            display(self.fig.show())
+            display(self._fig.show())
             
         # Set the clipped Card as the children of the overall Card
         self.children = [self.clip]
@@ -100,7 +100,7 @@ class PlotlyChart(v.Card):
 
         self.output.clear_output(wait=True)
         with self.output:
-            display(self.fig.show())
+            display(self._fig.show())
         
         
     @property
@@ -119,7 +119,7 @@ class PlotlyChart(v.Card):
     @chart_width.setter
     def chart_width(self, w):
         self._chart_width = int(w)
-        self.fig.update_layout(width=self._chart_width)
+        self._fig.update_layout(width=self._chart_width)
         self.update()
 
         if self.sw is not None:
@@ -135,7 +135,7 @@ class PlotlyChart(v.Card):
     @chart_height.setter
     def chart_height(self, h):
         self._chart_height = int(h)
-        self.fig.update_layout(height=self._chart_height)
+        self._fig.update_layout(height=self._chart_height)
         self.update()
         
         if self.sh is not None:
@@ -178,6 +178,23 @@ class PlotlyChart(v.Card):
         self._dark = flag
 
             
+    @property
+    def fig(self):
+        return self._fig
+        
+    @fig.setter
+    def fig(self, f):
+        self._fig = f
+        self._fig.update_layout(width=self._chart_width)
+        self._fig.update_layout(height=self._chart_height)
+        
+        self.output.clear_output(wait=True)
+        with self.output:
+            display(self._fig.show())
+        
+        
+        
+        
     def changeW(self, w):
         if self.update_properties:
             self.chart_width = w

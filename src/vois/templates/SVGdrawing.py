@@ -46,6 +46,9 @@ class SVGdrawing():
         self._width  = width
         self._height = height
         
+        self._svg = ''
+        self.customsvg = False   # True if user passed its own SVG
+        
         # Colors of the configuration widgets
         self._color_first = color_first
         if self._color_first is None:
@@ -92,21 +95,23 @@ class SVGdrawing():
     # Updte the chart
     def updateChart(self, *args):
         if self.pp is not None and self.pp.colors is not None and len(self.pp.colors) > 1:
-            svg = svgMap.svgMapEurope(self.df,
-                                      code_column='iso2code',
-                                      width=self._width,
-                                      height=self._height,
-                                      stdevnumber=1.5, 
-                                      colorlist=self.pp.colors,
-                                      stroke_width=4.0,
-                                      stroke_selected=self._color_first,
-                                      onhoverfill='#f8bd1a',
-                                      codes_selected=self.codes_selected,
-                                      legendtitle='Legent title',
-                                      legendunits='KTOE per 100K inhabit.')
+            
+            if not self.customsvg:
+                self._svg = svgMap.svgMapEurope(self.df,
+                                                code_column='iso2code',
+                                                width=self._width,
+                                                height=self._height,
+                                                stdevnumber=1.5, 
+                                                colorlist=self.pp.colors,
+                                                stroke_width=4.0,
+                                                stroke_selected=self._color_first,
+                                                onhoverfill='#f8bd1a',
+                                                codes_selected=self.codes_selected,
+                                                legendtitle='Legent title',
+                                                legendunits='KTOE per 100K inhabit.')
 
             # Display the SVG inside the card
-            self.card.children = [HTML(svg)]
+            self.card.children = [HTML(self._svg)]
         
         
     # Configure the SVG drawing
@@ -195,6 +200,17 @@ class SVGdrawing():
         self.pp.value = name
     
     
+    @property
+    def svg(self):
+        return self._svg
+    
+    @svg.setter
+    def svg(self, text):
+        self._svg = text
+        self.customsvg = True
+        self.card.children = [HTML(self._svg)]
+        
+        
     @property
     def state(self):
         return {x: getattr(self, x) for x in ['content',
