@@ -263,6 +263,9 @@ class PageConfigurator(v.Html):
 
         with self.debug:
             
+            # Close to avoid many visual updates
+            self.page.close()
+            
             # Set the page state (does a refresh if the page is open)
             self.page.state = state
             
@@ -306,6 +309,10 @@ class PageConfigurator(v.Html):
             #print('state.footercolor', state['footercolor'])
             #print('page.footercolor ', self.page.footercolor)
             #print('footercolor.color', self.footercolor.color)
+            
+            # Re-open at the end
+            #self.page.open()
+            
             
         
     # Save current state to file
