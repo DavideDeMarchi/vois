@@ -71,8 +71,7 @@
             "color_second": "#a0dcd0",
             "dark": true,
             "familyname": "sequential",
-            "palette": "Viridis",
-            "svg": ""
+            "palette": "Viridis"
         }
     }
 }

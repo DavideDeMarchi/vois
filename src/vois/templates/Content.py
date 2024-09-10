@@ -87,8 +87,6 @@ class Content(v.Card):
  'dark': True,
  'content1': {
     'content': 'Map',
-    'width': '50vw',
-    'height': '50vh',
     'show_fullscreen': True,
     'show_coordinates': True,
     'show_search': True,

@@ -204,4 +204,4 @@ class Image():
     @state.setter
     def state(self, statusdict):
         for key, value in statusdict.items():
-            setattr(self, key, value)    
+            setattr(self, key, value)

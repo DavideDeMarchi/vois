@@ -18,6 +18,7 @@
 # See the Licence for the specific language governing permissions and
 # limitations under the Licence.
 import pandas as pd
+import re
 
 try:
     from . import colors
@@ -87,6 +88,21 @@ dict with key=EUROSTAT code of countries, value=name of the country.
 """
 
 
+
+###########################################################################################################################################################################
+# Utility: Returns a modified SVG string by substituting the original width with the width passed as argument
+###########################################################################################################################################################################
+def svgChangeWidth(svgstring, width='500px'):
+    return re.sub('width="\w*"', 'width="%s"'%width, svgstring, 1)
+
+
+###########################################################################################################################################################################
+# Utility: Returns a modified SVG string by substituting the original width with the width passed as argument
+###########################################################################################################################################################################
+def svgChangeHeight(svgstring, height='600px'):
+    return re.sub('height="\w*"', 'height="%s"'%height, svgstring, 1)
+
+
 ###########################################################################################################################################################################
 # Return an SVG for the Map of Europe
 ###########################################################################################################################################################################
@@ -126,8 +142,10 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
         Name of the column of the Pandas DataFrame containing the values to be assigned to the countries using the join on the EUROSTAT Country Codes (default is 'value')
     codes_selected : list of strings, optional
         List of codes of countries to display as selected (default is [])
-    width : int, optional
-        Width of the map in pixels (default is 400)
+    width : str, optional
+        Width of the map (default is '400px')
+    height : str, optional
+        Height of the map (default is '600px')
     colorlist : list of colors, optional
         List of colors to assign to the country polygons (default is the Plotly px.colors.sequential.Plasma, see `Plotly sequential color scales <https://plotly.com/python/builtin-colorscales/#builtin-sequential-color-scales>`_ and `Plotly qualitative color sequences <https://plotly.com/python/discrete-color/#color-sequences-in-plotly-express>`_ )
     stdevnumber : float, optional
@@ -184,7 +202,8 @@ def svgMapEurope(df,                          # Pandas dataframe indexed on iso2
 
         svg = svgMap.svgMapEurope(df,
                                   code_column='iso2code',
-                                  width=650,
+                                  width='650px',
+                                  height='800px',
                                   stdevnumber=1.5, 
                                   colorlist=px.colors.sequential.Viridis,
                                   stroke_width=4.0,

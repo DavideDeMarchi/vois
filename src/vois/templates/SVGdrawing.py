@@ -136,7 +136,8 @@ class SVGdrawing():
     @width.setter
     def width(self, w):
         self._width = w
-        self.updateChart()
+        if self._svg is not None:
+            self._svg = svgMap.svgChangeWidth(self._svg, self._width)
         self.card.width = w
 
         
@@ -147,7 +148,8 @@ class SVGdrawing():
     @height.setter
     def height(self, h):
         self._height = h
-        self.updateChart()
+        if self._svg is not None:
+            self._svg = svgMap.svgChangeHeight(self._svg, self._height)
         self.card.height = h
 
         

@@ -92,7 +92,7 @@ with open('samplePage.json') as f:
     if 'content' in state:
         p.content.state = state['content']
 
-    # Change the content here:
+# Change the content here:
     
 # Open the page
 p.open()
