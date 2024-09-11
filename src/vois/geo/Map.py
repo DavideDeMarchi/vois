@@ -130,6 +130,8 @@ class Map(ipyleaflet.Map):
     
     # Add a ipyleaflet.TileLayer to the map
     def addLayer(self, tileLayer, name=None, opacity=1.0):
+        
+        # if no name is passed, generate a layer name
         if name is None:
             count = len(self.layers)
             name = "layer%d"%(count+1)
