@@ -127,6 +127,19 @@ class Map(ipyleaflet.Map):
     def draw(self):
         return self
       
+    
+    # Add a ipyleaflet.TileLayer to the map
+    def addLayer(self, tileLayer, name=None, opacity=1.0):
+        if name is None:
+            count = len(self.layers)
+            name = "layer%d"%(count+1)
+            
+        # In case a vectorlayer or rasterlayer is passed: call .tileLayer() to get the ipyleaflet.TileLayer instance!
+        if isinstance(tileLayer, ipyleaflet.TileLayer):
+            mapUtils.addLayer(self, tileLayer, name=name, opacity=opacity)
+        else:
+            mapUtils.addLayer(self, tileLayer.tileLayer(), name=name, opacity=opacity)
+        
         
     # Manage all user interaction on the map
     def handleMapInteraction(self, **kwargs):
