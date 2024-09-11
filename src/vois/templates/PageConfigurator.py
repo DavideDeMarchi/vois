@@ -476,7 +476,7 @@ class %s(%s.%s):
     # Overload the method called when the state changes
     def onStateChanged(self):
     
-        # Save reference to content items (map, charts, etc.)
+        # Save reference to content items (maps, charts, etc.)
         %s
         
 

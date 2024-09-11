@@ -193,8 +193,8 @@ class Image():
     @property
     def state(self):
         return {x: getattr(self, x) for x in ['content',
-                                              'width',
-                                              'height',
+                                              #'width',      # Will inherit from content!!!
+                                              #'height',
                                               'imageurl',
                                               'color_first',
                                               'color_second',

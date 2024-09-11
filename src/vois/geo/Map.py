@@ -414,8 +414,8 @@ class Map(ipyleaflet.Map):
     @property
     def state(self):
         return {x: getattr(self, x) for x in ['content',
-                                              'width',
-                                              'height',
+                                              #'width',      # Will inherit from content!!!
+                                              #'height',
                                               'show_fullscreen',
                                               'show_coordinates',
                                               'show_search',
