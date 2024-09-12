@@ -56,7 +56,7 @@ class Map(ipyleaflet.Map):
                  color_second=None,       # Secondary color
                  dark=None,               # Dark flag
                  basemapindex=0,          # Initial basemap index (0=EC, 1=Esri, 2=Google)
-                 onclick=None,            # Callback function to call on click (receives lon,lat coordinates)
+                 onclick=None,            # Callback function to call on click (receives lon,lat coordinates + the current zoom)
                  **kwargs):
         
         self._width            = width
@@ -138,6 +138,7 @@ class Map(ipyleaflet.Map):
     def clear(self):
         mapUtils.clear(self)
     
+    
     # Add a ipyleaflet.TileLayer to the map
     def addLayer(self, tileLayer, name=None, opacity=1.0):
         
@@ -166,7 +167,7 @@ class Map(ipyleaflet.Map):
             if kwargs.get('type') == 'click':
                 lon = kwargs.get('coordinates')[1]
                 lat = kwargs.get('coordinates')[0]
-                self._onclick(lon,lat)
+                self._onclick(lon,lat, int(self.zoom))
         
 
     # Selection of a basemap
