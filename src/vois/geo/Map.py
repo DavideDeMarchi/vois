@@ -56,6 +56,7 @@ class Map(ipyleaflet.Map):
                  color_second=None,       # Secondary color
                  dark=None,               # Dark flag
                  basemapindex=0,          # Initial basemap index (0=EC, 1=Esri, 2=Google)
+                 onclick=None,            # Callback function to call on click (receives lon,lat coordinates)
                  **kwargs):
         
         self._width            = width
@@ -66,6 +67,7 @@ class Map(ipyleaflet.Map):
         self._show_coordinates = show_coordinates
         self._show_overview    = show_overview
         self._show_basemaps    = show_basemaps
+        self._onclick          = onclick
         
         self._color_first = color_first
         if self._color_first is None:
@@ -122,11 +124,19 @@ class Map(ipyleaflet.Map):
         # Add widget control to display geographic coordinates at mouse move
         self.show_coordinates = self._show_coordinates
         
+        # Manage interaction events
+        self._interaction_callbacks = CallbackDispatcher()
+        self.on_interaction(self.handleMapInteraction)
+        
 
     # Fake "draw" method
     def draw(self):
         return self
       
+    
+    # Remove all layers from map
+    def clear(self):
+        mapUtils.clear(self)
     
     # Add a ipyleaflet.TileLayer to the map
     def addLayer(self, tileLayer, name=None, opacity=1.0):
@@ -145,10 +155,18 @@ class Map(ipyleaflet.Map):
         
     # Manage all user interaction on the map
     def handleMapInteraction(self, **kwargs):
-        if kwargs.get('type') == 'mousemove':
-            lon = kwargs.get('coordinates')[1]
-            lat = kwargs.get('coordinates')[0]
-            self.cardCoordinates.children = [v.Html(tag='div', children=[' %.4f° N, %.4f° E'%(lat,lon)], style_='color: black;', class_='pa-0 ma-0 ml-1 mr-1')]
+        
+        if self._show_coordinates:
+            if kwargs.get('type') == 'mousemove':
+                lon = kwargs.get('coordinates')[1]
+                lat = kwargs.get('coordinates')[0]
+                self.cardCoordinates.children = [v.Html(tag='div', children=[' %.4f° N, %.4f° E'%(lat,lon)], style_='color: black;', class_='pa-0 ma-0 ml-1 mr-1')]
+        
+        if self._onclick is not None:
+            if kwargs.get('type') == 'click':
+                lon = kwargs.get('coordinates')[1]
+                lat = kwargs.get('coordinates')[0]
+                self._onclick(lon,lat)
         
 
     # Selection of a basemap
@@ -280,8 +298,6 @@ class Map(ipyleaflet.Map):
                 
         if self._show_coordinates:
             self.cardCoordinates = mapUtils.getCoordinatesCard(self)
-            self._interaction_callbacks = CallbackDispatcher()
-            self.on_interaction(self.handleMapInteraction)
 
             
     @property
@@ -449,4 +465,13 @@ class Map(ipyleaflet.Map):
     def state(self, statusdict):
         for key, value in statusdict.items():
             setattr(self, key, value)
+            
+            
+    @property
+    def onclick(self):
+        return self._onclick
+        
+    @onclick.setter
+    def onclick(self, callback):
+        self._onclick = callback
             
