@@ -1,6 +1,6 @@
 """CSS utility functions to ensure Voila' behaviour is coherent with JupyterLab."""
 # Author(s): Davide.De-Marchi@ec.europa.eu
-# Copyright © European Union 2022-2023
+# Copyright © European Union 2022-2024
 # 
 # Licensed under the EUPL, Version 1.2 or as soon they will be approved by 
 # the European Commission subsequent versions of the EUPL (the "Licence");
@@ -19,6 +19,10 @@
 # limitations under the Licence.
 from ipywidgets import HTML
 from IPython.display import display
+from IPython.display import HTML as ipyHTML
+import ipyvuetify as v
+
+from vois.vuetify import settings, iconButton
 
 
 ###########################################################################################################################################################################
@@ -122,7 +126,7 @@ def copyToClipboard(txt, output=None):
 </script>'''%(txt)
     
     if output is None:
-        display(HTML(command))
+        display(ipyHTML(command))
     else:
         with output:
-            display(HTML(command))
+            display(ipyHTML(command))

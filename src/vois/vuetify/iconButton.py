@@ -46,6 +46,8 @@ class iconButton():
         If True applies a thin border to the button (default is False)
     rounded : bool, optional
         If True the shape of the button is rounded (default is True)
+    width : str, optional
+        Width of the widget (default is None)
     large : bool, optional
         If True makes the button large (default is False)
     small : bool, optional

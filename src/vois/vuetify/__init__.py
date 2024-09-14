@@ -4,6 +4,7 @@ from .ColorPicker import ColorPicker
 from .DatePicker import DatePicker
 from .Progress import Progress
 from .Radio import Radio
+from .IconClipboard import IconClipboard
 # from .Menu import Menu
 
 from .deprecated import button

@@ -93,6 +93,7 @@ Vuetify package
  fontsettings
  footer
  iconButton
+ IconClipboard
  label
  layers
  mainPage
