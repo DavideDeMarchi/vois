@@ -142,10 +142,10 @@ iconButton widget
 
 .. image:: figures/line.png
 
-iconClipboard widget
+IconClipboard widget
 --------------------
 
-.. automodule:: iconClipboard
+.. automodule:: IconClipboard
     :members:
 
 .. image:: figures/line.png

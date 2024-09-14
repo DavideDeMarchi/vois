@@ -93,7 +93,7 @@ class IconClipboard(v.Html):
         self._text = text
 
         self._color = color
-        if self._color == None:
+        if self._color is None:
             self._color = settings.color_first
         
         self.b = iconButton.iconButton(icon='mdi-content-copy', color=self._color, onclick=self.onclick, tooltip=tooltip,
@@ -112,7 +112,11 @@ class IconClipboard(v.Html):
     # Manage click event
     def onclick(self):
         with self.output:
-            display(ipyHTML("<script>navigator.clipboard.writeText('%s')</script>"%self._text))
+            display(ipyHTML('''
+<script>
+navigator.clipboard.writeText("%s");
+//navigator.clipboard.readText().then((clipText) => (console.log("clipboard: "+clipText)))
+</script>'''%self._text))
     
     
     @property
@@ -121,6 +125,6 @@ class IconClipboard(v.Html):
         
     @text.setter
     def text(self, t):
-        self._text = t
+        self._text = t.replace("\n","\\"+"n")   # V.I. Need to have two separate character "\" + "n" if a text with newline is copied to the clipboard!!!
         
         self.b.disabled = len(self._text)==0
