@@ -19,7 +19,7 @@
 # limitations under the Licence.
 
 # Imports
-from vois.vuetify import settings, dialogGeneric, card
+from vois.vuetify import settings, dialogGeneric
 from ipywidgets import widgets, Layout, HTML
 from IPython.display import display
 import ipyvuetify as v
@@ -30,7 +30,95 @@ import os
 # Check if running in Voila: /eos is not mounted...
 ######################################################################################################################################################
 def RunningInVoila():
-    return not os.path.isdir("/eos/jeodpp/data/SRS/")
+    return True
+
+
+######################################################################################################################################################
+# Check if running in Voila: /eos is not mounted...
+######################################################################################################################################################
+class card(v.Html):
+
+    def __init__(self,
+                 width='400px',
+                 height='100px',
+                 margins='pa-0 ma-0 pl-3',
+                 color='white',
+                 dark=False,
+                 ripple=False,
+                 disabled=False,
+                 elevation=3,
+                 title='Title',
+                 subtitle='Subtitle',
+                 image='',
+                 imagesize='100px',
+                 on_click=None,
+                 argument=None,
+                 textcolor='black',
+                 titleweight=500,
+                 subtitleweight=400,
+                 titlesize='1.3em',
+                 subtitlesize='0.9em',
+                 **kwargs):
+
+        super().__init__(**kwargs)
+        
+        self.width     = width
+        self.height    = height
+        self.margins   = margins
+        self.color     = color
+        self.dark      = dark
+        self.ripple    = ripple
+        self.disabled  = disabled
+        self.elevation = elevation
+        self.title     = title
+        self.subtitle  = subtitle
+                 
+        self.textcolor      = textcolor
+        self.titleweight    = titleweight
+        self.subtitleweight = subtitleweight
+        self.titlesize      = titlesize
+        self.subtitlesize   = subtitlesize
+ 
+        self.image = image
+        if len(image) == 0: self.imagesize = '0px'
+        else:               self.imagesize = imagesize
+        
+        self.on_click = on_click
+        self.argument = argument
+        
+        
+        self.card = v.Card(width=self.width, height=self.height, color=self.color, dark=self.dark,
+                           ripple=self.ripple, disabled=self.disabled, elevation=self.elevation, class_=margins)
+           
+        t = v.CardTitle(children=[self.title], style_='color: %s; font-weight: %d; font-size: %s;'%(self.textcolor,self.titleweight,self.titlesize))
+        
+        if len(self.subtitle) > 0:
+            s = v.CardSubtitle(children=[self.subtitle], style_='color: %s; font-weight: %d; font-size: %s;'%(self.textcolor,self.subtitleweight,self.subtitlesize))
+        else:
+            s = v.Html(tag='div', children=[''])
+        
+        if len(self.image) > 0:
+            img = v.Img(src=self.image, contain=True,
+                        width=self.imagesize, min_width=self.imagesize, max_width=self.imagesize, max_height=self.height)
+            h = v.Html(tag='div', children=[t,s])
+            self.card.children = [v.Row(justify='space-between', children=[h,img])]
+        else:
+            self.card.children = [t, s]
+        
+        if self.on_click is not None:
+            self.card.on_event('click', self.__internal_onclick)
+            
+        self.tag = 'div'
+        self.children = [self.card]
+        
+        
+    # Click on the card
+    def __internal_onclick(self, *args):
+        if self.argument is None:
+            self.on_click()
+        else:
+            self.on_click(self.argument)        
+
 
 
 #####################################################################################################################################################
@@ -415,17 +503,19 @@ class mainPage():
         children = []
         i = 0
         for b in self.buttons:
-            c = card.card(elevation=self.button_elevation, width='%fvw'%self.button_widthpercent, imagesize="%fvh"%self.button_heightpercent, responsive=True,
-                          title=b['title'], subtitle=b['subtitle'], titletooltip=b['tooltip'],
-                          color='#ffffff%0.2X'%int(self.button_opacity*255), fontsizemultiplier=1.1, subtitleweight=400,
-                          image=b['image'], on_click=b['onclick'], argument=b['argument'], textcolor=self.text_color)
+            c = card(elevation=self.button_elevation, width='%fvw'%self.button_widthpercent, height="%fvh"%self.button_heightpercent, imagesize="%fvh"%self.button_heightpercent,
+                     title=b['title'], subtitle=b['subtitle'], 
+                     color='#ffffff%0.2X'%int(self.button_opacity*255), subtitleweight=400,
+                     image=b['image'], on_click=b['onclick'], argument=b['argument'], textcolor=self.text_color)
+            
             if len(children) > 0:
+                children.append(self.spacer)
                 children.append(self.spacer)
             children.append(c)
             
             i += 1
             if i >= nbuttons_per_row:
-                r = v.Row(justify="center", children=children, class_="pa-0 ma-0 mt-2")
+                r = v.Row(justify="center", children=children, class_="pa-0 ma-0 mt-2 mb-6")
                 rows.append(r)
                 i = 0
                 children = []
@@ -435,7 +525,8 @@ class mainPage():
             rows.append(r)
             
         hpages = v.Html(tag='div', children=rows, class_="pa-0 ma-0",
-                        style_='width: %fvw; height: %fvh; position: absolute; top: %fvh; left: %fvw; background-color: #ffffff00; overflow: hidden;'%(self.buttonbox_widthpercent, self.buttonbox_heightpercent, self.buttonbox_toppercent, (100.0-self.buttonbox_widthpercent)/2.0))
+                        style_='width: %fvw; height: %fvh; position: absolute; top: %fvh; left: %fvw; background-color: #ffffff00; overflow: hidden;'%(self.buttonbox_widthpercent, self.buttonbox_heightpercent,
+                                                                                                                                                       self.buttonbox_toppercent, (100.0-self.buttonbox_widthpercent)/2.0))
 
         ######################################################################################################################################################
         # Background image
