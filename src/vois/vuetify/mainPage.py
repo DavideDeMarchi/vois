@@ -19,7 +19,7 @@
 # limitations under the Licence.
 
 # Imports
-from vois.vuetify import settings, dialogGeneric
+from vois.vuetify import dialogGeneric, tooltip
 from ipywidgets import widgets, Layout, HTML
 from IPython.display import display
 import ipyvuetify as v
@@ -27,20 +27,21 @@ import os
 
 
 ######################################################################################################################################################
-# Check if running in Voila: /eos is not mounted...
+# Check if running in Voila: check environ variable SERVER_SOFTWARE
 ######################################################################################################################################################
 def RunningInVoila():
-    return True
+    return os.environ.get('SERVER_SOFTWARE','jupyter').startswith('voila')
+    #return not os.path.isdir("/eos/jeodpp/data/SRS/")
 
 
 ######################################################################################################################################################
-# Check if running in Voila: /eos is not mounted...
+# Card that displays a clickable button
 ######################################################################################################################################################
-class card(v.Html):
+class buttonCard(v.Html):
 
     def __init__(self,
                  width='400px',
-                 height='100px',
+                 height='160px',
                  margins='pa-0 ma-0 pl-3',
                  color='white',
                  dark=False,
@@ -50,14 +51,16 @@ class card(v.Html):
                  title='Title',
                  subtitle='Subtitle',
                  image='',
-                 imagesize='100px',
+                 imagesize='160px',
                  on_click=None,
                  argument=None,
+                 tooltiptext='',
                  textcolor='black',
                  titleweight=500,
                  subtitleweight=400,
-                 titlesize='1.3em',
-                 subtitlesize='0.9em',
+                 titlesize='2vh',
+                 subtitlesize='1.2vh',
+                 button_radius='0px',
                  **kwargs):
 
         super().__init__(**kwargs)
@@ -78,6 +81,7 @@ class card(v.Html):
         self.subtitleweight = subtitleweight
         self.titlesize      = titlesize
         self.subtitlesize   = subtitlesize
+        self.button_radius  = button_radius
  
         self.image = image
         if len(image) == 0: self.imagesize = '0px'
@@ -86,24 +90,30 @@ class card(v.Html):
         self.on_click = on_click
         self.argument = argument
         
+        self.tooltiptext = tooltiptext
         
-        self.card = v.Card(width=self.width, height=self.height, color=self.color, dark=self.dark,
+        
+        self.card = v.Card(width=self.width, height=self.height, color=self.color, dark=self.dark, style_='border-radius: %s;'%self.button_radius,
                            ripple=self.ripple, disabled=self.disabled, elevation=self.elevation, class_=margins)
            
-        t = v.CardTitle(children=[self.title], style_='color: %s; font-weight: %d; font-size: %s;'%(self.textcolor,self.titleweight,self.titlesize))
+        t = v.CardTitle(children=[self.title], style_='color: %s; font-weight: %d; font-size: %s; padding: 0px; padding-left: 10px; padding-top: 10px;'%(self.textcolor,self.titleweight,self.titlesize))
         
         if len(self.subtitle) > 0:
-            s = v.CardSubtitle(children=[self.subtitle], style_='color: %s; font-weight: %d; font-size: %s;'%(self.textcolor,self.subtitleweight,self.subtitlesize))
+            s = v.CardSubtitle(children=[self.subtitle], style_='color: %s; font-weight: %d; font-size: %s; padding: 0px; padding-left: 10px;'%(self.textcolor,self.subtitleweight,self.subtitlesize))
         else:
             s = v.Html(tag='div', children=[''])
         
+        # Set the tooltip to title and subtitle
+        t = tooltip.tooltip(self.tooltiptext,t)
+        s = tooltip.tooltip(self.tooltiptext,s)
+        
         if len(self.image) > 0:
-            img = v.Img(src=self.image, contain=True,
-                        width=self.imagesize, min_width=self.imagesize, max_width=self.imagesize, max_height=self.height)
-            h = v.Html(tag='div', children=[t,s])
-            self.card.children = [v.Row(justify='space-between', children=[h,img])]
+            img = v.Img(src=self.image, contain=True, width=self.imagesize, min_width=self.imagesize, max_width=self.imagesize, height=self.height, max_height=self.height)
+            img = tooltip.tooltip(self.tooltiptext,img)
+            h = v.Html(tag='div', children=[t,s], style_='max-width: calc(%s - %s);'%(self.width,self.imagesize))
+            self.card.children = [v.Row(justify='space-between', children=[h,img], style_='width: %s; max-width: %s;'%(self.width,self.width))]
         else:
-            self.card.children = [t, s]
+            self.card.children = [t,s]
         
         if self.on_click is not None:
             self.card.on_event('click', self.__internal_onclick)
@@ -184,6 +194,12 @@ class mainPage():
         Elevation in pixels to apply to the buttons (default is 6)
     button_opacity: float, optional
         Opacity to apply to the buttons (default is 0.5)
+    button_titlesize: str, optional
+        Font size to use for the buttons title (default is '2.0vh')
+    button_subtitlesize: str, optional
+        Font size to use for the buttons subtitle (default is '1.2vh')
+    button_radius: str, optional
+        Border radius for the buttons area (default is '0px' which means completely squared buttons)
     disclaimer: str, optional
         Text to display at the bottom of the creditbox (default is the empty string)
 
@@ -257,6 +273,9 @@ class mainPage():
                  button_heightpercent=10.0,
                  button_elevation=6,
                  button_opacity=0.5,
+                 button_titlesize='2.0vh',
+                 button_subtitlesize='1.2vh',
+                 button_radius='0px',
                  disclaimer=''):
 
         self.output = widgets.Output(layout=Layout(width='0px', height='0px'))
@@ -292,6 +311,9 @@ class mainPage():
         self.button_heightpercent    = button_heightpercent
         self.button_elevation        = button_elevation
         self.button_opacity          = button_opacity
+        self.button_titlesize        = button_titlesize
+        self.button_subtitlesize     = button_subtitlesize
+        self.button_radius           = button_radius
         
         self.disclaimer              = disclaimer
         
@@ -503,10 +525,12 @@ class mainPage():
         children = []
         i = 0
         for b in self.buttons:
-            c = card(elevation=self.button_elevation, width='%fvw'%self.button_widthpercent, height="%fvh"%self.button_heightpercent, imagesize="%fvh"%self.button_heightpercent,
-                     title=b['title'], subtitle=b['subtitle'], 
-                     color='#ffffff%0.2X'%int(self.button_opacity*255), subtitleweight=400,
-                     image=b['image'], on_click=b['onclick'], argument=b['argument'], textcolor=self.text_color)
+            c = buttonCard(elevation=self.button_elevation, width='%fvw'%self.button_widthpercent, 
+                           height="%fvh"%self.button_heightpercent, imagesize="%fvh"%self.button_heightpercent,
+                           title=b['title'], subtitle=b['subtitle'], tooltiptext=b['tooltip'],
+                           color='#ffffff%0.2X'%int(self.button_opacity*255), subtitleweight=400,
+                           image=b['image'], on_click=b['onclick'], argument=b['argument'], button_radius=self.button_radius,
+                           textcolor=self.text_color, titlesize=self.button_titlesize, subtitlesize=self.button_subtitlesize)
             
             if len(children) > 0:
                 children.append(self.spacer)
