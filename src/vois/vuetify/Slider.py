@@ -20,7 +20,6 @@
 
 import ipyvuetify as v
 from vois.vuetify.utils.util import *
-from vois.vuetify import settings
 from typing import Callable, Any, Union, Optional
 
 
@@ -86,7 +85,7 @@ class Slider(v.Html):
                  min_value: Union[int, float],
                  max_value: Union[int, float],
                  vertical=False,
-                 color: str = settings.color_first,
+                 color: str = None,
                  on_change: Optional[Callable[[], None]] = None,
                  height: int = 120,
                  width: int = None,
@@ -94,6 +93,8 @@ class Slider(v.Html):
                  **kwargs):
 
         super().__init__(**kwargs)
+
+        from vois.vuetify import settings
 
         self.min_value = min_value
         self.max_value = max_value
@@ -108,7 +109,8 @@ class Slider(v.Html):
             c = "pa-0 ma-0 ml-5 mr-5 mt-n2 mb-n12"
         self.slider = v.Slider(v_model=selected_value, dense=True, small=True, thumb_color=color,
                                thumb_label="always", thumb_size=32, ticks=True, ticks_size=10,
-                               color=color, track_color="grey", class_=c,
+                               color=color if color is not None else settings.color_first,
+                               track_color="grey", class_=c,
                                min=self.min_value, max=self.max_value, step=self.step,
                                vertical=self.vertical, height=height)
 
