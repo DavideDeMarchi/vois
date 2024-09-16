@@ -23,7 +23,7 @@ from ipywidgets import widgets, HTML
 import ipyvuetify as v
 
 # Vois imports
-from vois.vuetify import settings, page
+from vois.vuetify import settings, page, selectImage
 
 # Local imports
 import mainPage
@@ -46,6 +46,10 @@ class MainConfigurator(page.page):
         # Initialize member variables
         self.leftWidth = leftWidth
 
+        self.spacerX = v.Html(tag='div', style_='width: 10px; height:  0px;')
+        self.spacerY = v.Html(tag='div', style_='width:  0px; height: 10px;')
+        self.spacer  = v.Html(tag='div', style_='width: 10px; height: 10px;')
+        
     #################################################################################################################################################
     # Create the page and returns the card widget where the content of the page must be displayed
     #################################################################################################################################################
@@ -69,16 +73,40 @@ class MainConfigurator(page.page):
         return self.card
 
     
+    #################################################################################################################################################
     # Create the content of the left panel
+    #################################################################################################################################################
     def createLeft(self):
-        pass
+        
+        images = [{ "name": 'Image %d'%x, "image": 'https://jeodpp.jrc.ec.europa.eu/services/shared/wallpapers/%d.jpg'%x, "max_width": 150, "max_height": 100 } for x in range(60)]
+
+        self.background_image = selectImage.selectImage(images=images, selection=0, onchange=self.background_image_selected, width='calc(30vw - 30px)',
+                                                        label='Please select an image from the list', max_height=100, dense=True, outlined=True, clearable=True, margins="ma-0 mt-2 mr-1")
+        
+        self.cardLeft.children = [widgets.VBox([
+            self.spacerY,
+            widgets.HBox([self.spacerX, self.background_image])
+        ])]
+
     
+    
+    #################################################################################################################################################
     # Create the content of the Main panel
+    #################################################################################################################################################
     def createMain(self):
 
         self.main = mainPage.mainPage(background_image=55)
+        self.updatePreview()
         
-        # Display the content inside the main card
+    
+    # Update the preview
+    def updatePreview(self):
         self.cardMain.children = [self.main.preview()]
+        
+    
+    # Selection of a backround image
+    def background_image_selected(self):
+        self.main.background_image = self.background_image.value
+        self.updatePreview()
         
     
