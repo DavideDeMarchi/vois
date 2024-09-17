@@ -642,7 +642,7 @@ class EditButton():
         self.onOK = onOK
         self.upload = UploadImage.UploadImage(output, width=620)
 
-        self.image = ''
+        self.image = image
 
         self.tit    = v.TextField(label='Title:',          autofocus=True,  v_model=title,    dense=True, color=settings.color_first, clearable=True, class_="pa-0 ma-0 mt-3")
         self.subtit = v.TextField(label='Subtitle:',       autofocus=False, v_model=subtitle, dense=True, color=settings.color_first, clearable=True, class_="pa-0 ma-0 mt-3")
