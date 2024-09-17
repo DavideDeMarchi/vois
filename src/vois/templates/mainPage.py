@@ -162,7 +162,7 @@ class mainPage():
     applogo_widthpercent : float, optional
         Width of the area where the application logo is displayed in percentage of the screen (default is 35.0)
     credits : str, optional
-        Credits string to display inside the credit box on the bottom of the page (default is 'Credits Team XXX')
+        Credits string to display inside the credit box on the bottom of the page (default is 'Unit T.4, Data Visualisation Team')
     creditslogo_url : str, optional
         Url of the image to display inside the credit box on the bottom of the page (default is 'https://jeodpp.jrc.ec.europa.eu/services/shared/pngs/TransparentJRC.png')
     text_color : str, optional
@@ -194,9 +194,9 @@ class mainPage():
     creditbox_widthpercent : float, optional
         Width of the box containing the credits, in percentage of the screen width. Default is 80.0.
     creditbox_heightpercent : float, optional
-        Height of the box containing the credits, in percentage of the screen height. Default is 18.0.
+        Height of the box containing the credits, in percentage of the screen height. Default is 25.0.
     creditbox_toppercent : float, optional
-        Top position of the box containing the credits, in percentage of the screen height, measured from the top of the page. Default is 80.0.
+        Top position of the box containing the credits, in percentage of the screen height, measured from the top of the page. Default is 74.0.
     creditbox_opacity : float, optional
         Opacity to apply to the box containing the credits (default is 0.0)
     button_widthpercent : float, optional
@@ -263,7 +263,7 @@ class mainPage():
                  subtitle='Subtitle to be shown below the main title',
                  applogo_url='https://jeodpp.jrc.ec.europa.eu/services/shared/pngs/sampleapplogo.png',
                  applogo_widthpercent=35.0,
-                 credits='Credits Team XXX',
+                 credits='Unit T.4, Data Visualisation Team',
                  creditslogo_url='https://jeodpp.jrc.ec.europa.eu/services/shared/pngs/TransparentJRC.png',
                  text_color='#0e446e',
                  background_image=22,
@@ -279,8 +279,8 @@ class mainPage():
                  buttonbox_heightpercent=50.0,
                  buttonbox_toppercent=43.0,
                  creditbox_widthpercent=80.0,
-                 creditbox_heightpercent=18.0,
-                 creditbox_toppercent=80.0,
+                 creditbox_heightpercent=25.0,
+                 creditbox_toppercent=74.0,
                  creditbox_opacity=0.,
                  button_widthpercent=22.0,
                  button_heightpercent=10.0,
@@ -289,7 +289,7 @@ class mainPage():
                  button_titlesize='2.0vh',
                  button_subtitlesize='1.2vh',
                  button_radius='0px',
-                 disclaimer=''):
+                 disclaimer='The contents of this viewer are intended solely for the use of the Commission and may not be reproduced, distributed, or communicated outside the Commission in any format without explicit prior written consent'):
 
         self.output = widgets.Output(layout=Layout(width='0px', height='0px'))
         
@@ -357,7 +357,7 @@ class mainPage():
                     text-shadow: -0.06vh -0.06vh 0 #fff, 0.06vh -0.06vh 0 #fff, -0.06vh 0.06vh 0 #fff, 0.06vh 0.06vh 0 #fff;
                     text-align: center;
                     line-height: 2.0;
-                    color: %s;
+                    color: %s !important; 
                 }
                 .normal {
                     font-family: 'PT Sans', sans-serif;
@@ -365,7 +365,7 @@ class mainPage():
                     font-weight: 700;
                     text-align: center;
                     line-height: 1.0;
-                    color: %s;
+                    color: %s !important;
                 }
                 .responsive4 {
                     width: %fvh;

@@ -104,10 +104,10 @@ class PageConfigurator(v.Html):
         self.biglabelsize = 15
         
         self.appname   = v.TextField(label='Application name:', autofocus=False, v_model=None, dense=False, color=settings.color_first, clearable=True, class_="pa-0 ma-0 mt-3 mr-3")
-        self.buttOpen  = iconButton.iconButton(icon='mdi-folder-open',  onclick=self.onOpen,  tooltip='Load state from file',                      margins='pa-0 ma-0 mt-3 mr-2')
-        self.buttSave  = iconButton.iconButton(icon='mdi-content-save', onclick=self.onSave,  tooltip='Save current state to file',                margins='pa-0 ma-0 mt-3 mr-2')
-        self.buttCode  = iconButton.iconButton(icon='mdi-file-code',    onclick=self.onCode,  tooltip='Generate and download page code in Python', margins='pa-0 ma-0 mt-3 mr-2')
-        self.buttReset = iconButton.iconButton(icon='mdi-backspace',    onclick=self.onReset, tooltip='Reset page to default state',               margins='pa-0 ma-0 mt-3 mr-2')
+        self.buttOpen  = iconButton.iconButton(icon='mdi-folder-open',  onclick=self.onOpen,  tooltip='Load state from file',                      margins='pa-0 ma-0 mt-3 mr-2', color=settings.color_first)
+        self.buttSave  = iconButton.iconButton(icon='mdi-content-save', onclick=self.onSave,  tooltip='Save current state to file',                margins='pa-0 ma-0 mt-3 mr-2', color=settings.color_first)
+        self.buttCode  = iconButton.iconButton(icon='mdi-file-code',    onclick=self.onCode,  tooltip='Generate and download page code in Python', margins='pa-0 ma-0 mt-3 mr-2', color=settings.color_first)
+        self.buttReset = iconButton.iconButton(icon='mdi-backspace',    onclick=self.onReset, tooltip='Reset page to default state',               margins='pa-0 ma-0 mt-3 mr-2', color=settings.color_first)
         
         self.cardappname = v.Card(flat=True, width=template1panel.LEFT_WIDTH-46, max_width=template1panel.LEFT_WIDTH-46,
                                   children=[widgets.HBox([self.appname, self.buttOpen.draw(), self.buttSave.draw(), self.buttCode.draw(), self.buttReset.draw()])])
