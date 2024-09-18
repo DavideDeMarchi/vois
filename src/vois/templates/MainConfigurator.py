@@ -21,9 +21,11 @@
 # Imports
 from ipywidgets import widgets, HTML, Layout
 import ipyvuetify as v
+import json
 
 # Vois imports
-from vois.vuetify import settings, page, selectImage, Button, UploadImage, sliderFloat, ColorPicker, switch, selectSingle, tabs, sortableList, dialogGeneric
+from vois import download
+from vois.vuetify import settings, page, selectImage, Button, UploadImage, UploadJson, sliderFloat, ColorPicker, switch, selectSingle, tabs, sortableList, dialogGeneric, iconButton
 
 # Local imports
 import mainPage
@@ -53,6 +55,8 @@ class MainConfigurator(page.page):
         self.spacer  = v.Html(tag='div', style_='width: 10px; height: 10px;')
         
         self.debug = widgets.Output()
+        
+        self.updatePageEnabled = True
         
         
     #################################################################################################################################################
@@ -92,7 +96,7 @@ class MainConfigurator(page.page):
         
         
         maxwidth = 'calc(%s - 20px)'%LEFT_WIDTH
-        self.controls = v.Card(flat=True, width=maxwidth, min_width=maxwidth, max_width=maxwidth, class_='pa-3 pt-4 ma-0', style_='overflow: auto;')
+        self.controls = v.Card(flat=True, width=maxwidth, min_width=maxwidth, max_width=maxwidth, class_='pa-3 pt-1 ma-0', style_='overflow: auto;')
         
         netwidth = 'calc(%s - 58px)'%LEFT_WIDTH
         titwidth = 'calc(%s - 190px)'%LEFT_WIDTH
@@ -113,10 +117,18 @@ class MainConfigurator(page.page):
         self.tfsubtitle.on_event('change',      self.subtitleChange)
         self.tfsubtitle.on_event('click:clear', self.subtitleClear)
         
+        self.titlesizepercent = sliderFloat.sliderFloat(self.main.titlesizepercent, text='Title size percent:', minvalue=10, maxvalue=200, maxint=190, showpercentage=True, decimals=1,
+                                                        labelwidth=self.labelwidth, sliderwidth=self.sliderwidth, resetbutton=True, showtooltip=True, onchange=self.on_titlesizepercent)
+        self.subtitlesizepercent = sliderFloat.sliderFloat(self.main.subtitlesizepercent, text='Subtitle size percent:', minvalue=10, maxvalue=200, maxint=190, showpercentage=True, decimals=1,
+                                                           labelwidth=self.labelwidth, sliderwidth=self.sliderwidth, resetbutton=True, showtooltip=True, onchange=self.on_subtitlesizepercent)
+        
+        self.titleshadow = switch.switch(self.main.titleshadow, 'Add shadow around application title', inset=True, dense=True, onchange=self.titleshadowChange)
+        self.titleshadow_color = ColorPicker(dark=False, color=self.main.titleshadow_color, width=50, height=30, rounded=False, on_change=self.titleshadow_colorChange,  offset_x=True, offset_y=False)
+        
         self.applogo_image_url  = Button('Select image for the application logo', color_selected=settings.color_first, dark=settings.dark_mode, 
                                          text_weight=450, on_click=self.applogo_image_load, width=netwidth, height=40,
                                          tooltip='Click to select an image to use as application logo on the title bar', selected=True, rounded=settings.button_rounded)
-        self.logowidth = sliderFloat.sliderFloat(self.main.applogo_widthpercent, text='Application logo width %:', minvalue=0.0, maxvalue=100.0, maxint=100, showpercentage=True, decimals=0,
+        self.slogowidth = sliderFloat.sliderFloat(self.main.applogo_widthpercent, text='Application logo width %:', minvalue=0.0, maxvalue=100.0, maxint=100, showpercentage=True, decimals=0,
                                                  labelwidth=self.labelwidth, sliderwidth=self.sliderwidth, resetbutton=True, showtooltip=True, onchange=self.logowidthChange)
         
         
@@ -192,7 +204,7 @@ class MainConfigurator(page.page):
         self.button_radius = sliderFloat.sliderFloat(float(self.main.button_radius.replace('px','')), text='Button radius (px):', minvalue=0.0, maxvalue=20.0, maxint=20, showpercentage=False, decimals=0,
                                                      labelwidth=self.labelwidth, sliderwidth=self.sliderwidth, resetbutton=True, showtooltip=True, onchange=self.on_button_radius)
         
-        self.blist = sortableList.sortableList(items=self.main.buttons, dark=False, allowNew=True, itemNew=self.buttonNew, itemContent=self.buttonDisplay,
+        self.blist = sortableList.sortableList(items=self.main.buttons, dark=False, allowNew=True, itemNew=self.buttonNew, itemContent=self.buttonDisplay, onchange=self.AssignOrderToButtons,
                                                onadded=self.buttonsUpdate, onremoved=self.buttonsUpdate, onmovedown=self.buttonsUpdate, onmoveup=self.buttonsUpdate)
         
         self.vois_show = switch.switch(self.main.vois_show, 'Show vois credits', inset=True, dense=True, onchange=self.vois_showChange)
@@ -232,18 +244,27 @@ class MainConfigurator(page.page):
                                   contents=[self.card_title, self.card_background, self.card_buttons, self.card_credits, self.card_vois],
                                   dark=False, onchange=None, row=True)
 
+        
+        self.buttOpen  = iconButton.iconButton(icon='mdi-folder-open',  onclick=self.onOpen,  tooltip='Load state from file',             margins='pa-0 ma-0 mt-3 mr-2', color=settings.color_first)
+        self.buttSave  = iconButton.iconButton(icon='mdi-content-save', onclick=self.onSave,  tooltip='Save current state to file',       margins='pa-0 ma-0 mt-3 mr-2', color=settings.color_first)
+        self.buttReset = iconButton.iconButton(icon='mdi-backspace',    onclick=self.onReset, tooltip='Reset main page to default state', margins='pa-0 ma-0 mt-3 mr-2', color=settings.color_first)
+        
         self.card_title.children = [widgets.VBox([
             self.spacerY,
             self.spacerY,
             cr1,
             self.tfsubtitle,
+            self.titlesizepercent.draw(),
+            self.subtitlesizepercent.draw(),
             self.applogo_image_url,
-            self.logowidth.draw(),
+            self.slogowidth.draw(),
             self.title_width.draw(),
             self.title_height.draw(),
             self.title_top.draw(),
             self.title_opacity.draw(),
-            self.title_border.draw()
+            self.title_border.draw(),
+            self.titleshadow.draw(),
+            widgets.HBox([PageConfigurator.label('Shadow color:', color='black'), self.titleshadow_color])
         ])]
         
         self.card_background.children = [widgets.VBox([
@@ -310,7 +331,10 @@ class MainConfigurator(page.page):
             self.vois_opacity.draw()
         ])]
         
-        self.controls.children = [self.tabsView.draw()]
+        self.controls.children = [ widgets.VBox([
+            widgets.HBox([self.buttOpen.draw(), self.buttSave.draw(), self.buttReset.draw()]),
+            self.tabsView.draw()
+        ])]
         
         self.cardLeft.children = [self.controls]
 
@@ -325,6 +349,169 @@ class MainConfigurator(page.page):
         self.updatePreview()
         
         
+    #################################################################################################################################################
+    # Open, Save Reset buttons
+    #################################################################################################################################################
+        
+    # Load state from file
+    def onOpen(self):
+        uj = UploadJson.UploadJson(self.output, onOK=self.onSelectedState, required_attributes=['title', 'subtitle'], attributes_width=80)
+        uj.show()
+        
+        
+    # Called when the UploadJson dialog-box is closed with the OK button
+    def onSelectedState(self, state):
+        self.main.fromJson(state)
+        self.updateWidgets()
+        self.updatePreview()
+            
+            
+        
+    # Save current state to file
+    def onSave(self):
+        self.saveFilename = v.TextField(label='File name:', autofocus=True, v_model=self.main.title, dense=False, color=settings.color_first, clearable=False, class_="pa-0 ma-0 ml-3 mt-3 mr-3")
+        dialogGeneric.dialogGeneric(title='Save and download current state...' , on_ok=self.onDoSaveState, 
+                                    text='   ', color=settings.color_first, dark=settings.dark_mode,
+                                    titleheight=40, width=600,
+                                    show=True, addclosebuttons=True, addokcancelbuttons=True,
+                                    fullscreen=False, content=[self.saveFilename], output=self.output)
+        
+    
+    # Effective save and download of the current state
+    def onDoSaveState(self):
+        
+        filename = self.saveFilename.v_model
+        if filename[-5:] != '.json':
+            filename += '.json'
+        
+        state = self.main.toJson()
+    
+        # Convert to string and download
+        txt = json.dumps(state, indent=4)
+        download.downloadText(txt, fileName=filename)
+        
+        
+        
+    # Reset page to initial state
+    def onReset(self):
+        self.main = mainPage.mainPage(background_image=55)
+        self.updateWidgets()
+        self.updatePreview()
+        
+        
+        
+    #################################################################################################################################################
+    # Update widgets reading members of self.main
+    #################################################################################################################################################
+    def updateWidgets(self):
+        
+        self.updatePageEnabled = False
+        
+        self.tftitle.v_model    = self.main.title
+        self.text_color.color   = self.main.text_color
+        self.tfsubtitle.v_model = self.main.subtitle
+        
+        self.titlesizepercent.value    = self.main.titlesizepercent
+        self.subtitlesizepercent.value = self.main.subtitlesizepercent
+
+        self.titleshadow.value       = self.main.titleshadow
+        self.titleshadow_color.color = self.main.titleshadow_color
+        
+        self.slogowidth.value = self.main.applogo_widthpercent
+        
+        self.title_width.value    = self.main.titlebox_widthpercent
+        self.title_height.value   = self.main.titlebox_heightpercent
+        self.title_top.value      = self.main.titlebox_toppercent
+        self.title_opacity.value  = self.main.titlebox_opacity*100.0
+        self.title_border.value   = self.main.titlebox_border
+        
+        if isinstance(self.main.background_image, int):
+            self.background_image.value = self.main.background_image
+        else:
+            self.background_image.value = -1
+
+        self.filter_blur.value       = '0'
+        self.filter_grayscale.value  = 0
+        self.filter_brightness.value = 100
+        self.filter_contrast.value   = 100
+        self.filter_saturate.value   = 100
+        self.filter_hue.value        = 0
+        self.filter_opacity.value    = 100
+        self.filter_sepia.value      = 0
+                                                    
+        filters = self.main.background_filter.strip().split(' ')
+        for f in filters:
+            if '(' in f and ')' in f:
+                if 'blur' in f:
+                    s = f.replace('blur','').replace('(','').replace(')','').strip().replace('px','')
+                    if len(s) > 0:
+                        self.filter_blur.value = str(int(s))
+
+                if 'grayscale' in f:
+                    s = f.replace('grayscale','').replace('(','').replace(')','').strip().replace('%','')
+                    if len(s) > 0:
+                        self.filter_grayscale.value = int(s)
+
+                if 'brightness' in f:
+                    s = f.replace('brightness','').replace('(','').replace(')','').strip().replace('%','')
+                    if len(s) > 0:
+                        self.filter_brightness.value = int(s)
+
+                if 'contrast' in f:
+                    s = f.replace('contrast','').replace('(','').replace(')','').strip().replace('%','')
+                    if len(s) > 0:
+                        self.filter_contrast.value = int(s)
+
+                if 'saturate' in f:
+                    s = f.replace('saturate','').replace('(','').replace(')','').strip().replace('%','')
+                    if len(s) > 0:
+                        self.filter_saturate.value = int(s)
+
+                if 'hue-rotate' in f:
+                    s = f.replace('hue-rotate','').replace('(','').replace(')','').strip().replace('deg','')
+                    if len(s) > 0:
+                        self.filter_hue.value = int(s)
+
+                if 'sepia' in f:
+                    s = f.replace('sepia','').replace('(','').replace(')','').strip().replace('%','')
+                    if len(s) > 0:
+                        self.filter_sepia.value = int(s)
+
+                if 'opacity' in f:
+                    s = f.replace('opacity','').replace('(','').replace(')','').strip().replace('%','')
+                    if len(s) > 0:
+                        self.filter_opacity.value = int(s)
+            
+        
+        self.buttonbox_width.value     = self.main.buttonbox_widthpercent
+        self.buttonbox_height.value    = self.main.buttonbox_heightpercent
+        self.buttonbox_top.value       = self.main.buttonbox_toppercent
+        
+        self.button_width.value        = self.main.button_widthpercent
+        self.button_height.value       = self.main.button_heightpercent
+        self.button_elevation.value    = self.main.button_elevation
+        self.button_opacity.value      = self.main.titlebox_opacity*100.0
+        self.button_titlesize.value    = float(self.main.button_titlesize.replace('vh',''))
+        self.button_subtitlesize.value = float(self.main.button_subtitlesize.replace('vh',''))
+        self.button_radius.value       = float(self.main.button_radius.replace('px',''))
+        
+        self.blist.items = self.main.buttons
+        
+        self.vois_show.value = self.main.vois_show
+        self.vois_opacity.value = self.main.vois_opacity*100.0
+        if not self.main.vois_show: self.vois_opacity.slider.disabled = True
+
+        self.tfcredits.value = self.main.credits
+        
+        self.credits_width.value   = self.main.creditbox_widthpercent
+        self.credits_height.value  = self.main.creditbox_heightpercent
+        self.credits_top.value     = self.main.creditbox_toppercent
+        self.credits_opacity.value = self.main.creditbox_opacity*100.0
+        
+        self.tfdisclaimer.value = self.main.disclaimer
+        
+        self.updatePageEnabled = True
+        
         
     #################################################################################################################################################
     # Management of events in widgets
@@ -334,230 +521,287 @@ class MainConfigurator(page.page):
     def updatePreview(self):
         self.cardMain.children = [self.main.preview()]
         
+        
     
     # Change application title
     def titleChange(self, *args):
-        if self.tftitle.v_model is None: name = ''
-        else:                            name = self.tftitle.v_model
-        self.main.title = name
-        self.updatePreview()
+        if self.updatePageEnabled:
+            if self.tftitle.v_model is None: name = ''
+            else:                            name = self.tftitle.v_model
+            self.main.title = name
+            self.updatePreview()
 
     def titleClear(self, *args):
-        self.main.title = ''
-        self.updatePreview()
+        if self.updatePageEnabled:
+            self.main.title = ''
+            self.updatePreview()
 
         
     # Change application subtitle
     def subtitleChange(self, *args):
-        if self.tfsubtitle.v_model is None: name = ''
-        else:                               name = self.tfsubtitle.v_model
-        self.main.subtitle = name
-        self.updatePreview()
+        if self.updatePageEnabled:
+            if self.tfsubtitle.v_model is None: name = ''
+            else:                               name = self.tfsubtitle.v_model
+            self.main.subtitle = name
+            self.updatePreview()
 
     def subtitleClear(self, *args):
-        self.main.subtitle = ''
-        self.updatePreview()
+        if self.updatePageEnabled:
+            self.main.subtitlesizepercent = ''
+            self.updatePreview()
+
         
-        
+    def on_titlesizepercent(self, value):
+        if self.updatePageEnabled:
+            self.main.titlesizepercent = value
+            self.updatePreview()
+    
+    def on_subtitlesizepercent(self, value):
+        if self.updatePageEnabled:
+            self.main.subtitlesiazepercent = value
+            self.updatePreview()
+
     # Change of the text_color
     def text_colorChange(self):
-        self.main.text_color = self.text_color.color
-        self.updatePreview()
+        if self.updatePageEnabled:
+            self.main.text_color = self.text_color.color
+            self.updatePreview()
+
         
+    # titleshadow flag
+    def titleshadowChange(self, flag):
+        if self.updatePageEnabled:
+            self.main.titleshadow = flag
+            self.updatePreview()
         
+    # titleshadow_color
+    def titleshadow_colorChange(self,):
+        if self.updatePageEnabled:
+            self.main.titleshadow_color = self.titleshadow_color.color
+            self.updatePreview()
+    
+    
     # Selection of the application image to load from the local machine
     def applogo_image_loaded(self, imageurl):
-        self.main.applogo_url = imageurl
-        self.updatePreview()
+        if self.updatePageEnabled:
+            self.main.applogo_url = imageurl
+            self.updatePreview()
 
     # Click on the button to open the dialog to select the the application image
     def applogo_image_load(self, *args):
-        self.upload.title = 'Select image for the application logo'
-        self.upload.onOK  = self.applogo_image_loaded
-        self.upload.show()
+        if self.updatePageEnabled:
+            self.upload.title = 'Select image for the application logo'
+            self.upload.onOK  = self.applogo_image_loaded
+            self.upload.show()
 
         
     # Change logo width
     def logowidthChange(self, width):
-        self.main.applogo_widthpercent = int(width)
-        self.updatePreview()
+        if self.updatePageEnabled:
+            self.main.applogo_widthpercent = int(width)
+            self.updatePreview()
         
     # titlebox_widthpercent   
     def on_titlebox_widthpercent(self, value):
-        self.main.titlebox_widthpercent = int(value)
-        self.updatePreview()
+        if self.updatePageEnabled:
+            self.main.titlebox_widthpercent = int(value)
+            self.updatePreview()
 
     # titlebox_heightpercent
     def on_titlebox_heightpercent(self, value):
-        self.main.titlebox_heightpercent = int(value)
-        self.updatePreview()
+        if self.updatePageEnabled:
+            self.main.titlebox_heightpercent = int(value)
+            self.updatePreview()
         
     # titlebox_toppercent
     def on_titlebox_toppercent(self, value):
-        self.main.titlebox_toppercent = int(value)
-        self.updatePreview()
+        if self.updatePageEnabled:
+            self.main.titlebox_toppercent = int(value)
+            self.updatePreview()
         
     # titlebox_opacity
     def on_titlebox_opacity(self, value):
-        self.main.titlebox_opacity = value/100.0
-        self.updatePreview()
+        if self.updatePageEnabled:
+            self.main.titlebox_opacity = value/100.0
+            self.updatePreview()
 
     # titlebox_widthpercent   
     def on_titlebox_border(self, value):
-        self.main.titlebox_border = int(value)
-        self.updatePreview()
+        if self.updatePageEnabled:
+            self.main.titlebox_border = int(value)
+            self.updatePreview()
         
         
     # Selection of the backgound image to load from the local machine
     def background_image_loaded(self, imageurl):
-        self.main.background_image = imageurl
-        self.background_image.value = -1
-        self.updatePreview()
+        if self.updatePageEnabled:
+            self.main.background_image = imageurl
+            self.background_image.value = -1
+            self.updatePreview()
 
     # Click on the button to open the dialog to select the the background image
     def background_image_load(self, *args):
-        self.upload.title = 'Select image for the application background'
-        self.upload.onOK  = self.background_image_loaded
-        self.upload.show()
+        if self.updatePageEnabled:
+            self.upload.title = 'Select image for the application background'
+            self.upload.onOK  = self.background_image_loaded
+            self.upload.show()
         
         
     # Selection of a stock background image
     def background_image_selected(self):
-        if self.background_image.value >= 0:
-            self.main.background_image = self.background_image.value
-            self.updatePreview()
+        if self.updatePageEnabled:
+            if self.background_image.value >= 0:
+                self.main.background_image = self.background_image.value
+                self.updatePreview()
         
         
     # Filter reset
     def onFilterReset(self):
-        self.filter_enabled = False
-        self.filter_blur.value       = '0'
-        self.filter_grayscale.value  = 0
-        self.filter_brightness.value = 100
-        self.filter_contrast.value   = 100
-        self.filter_saturate.value   = 100
-        self.filter_hue.value        = 0
-        self.filter_opacity.value    = 100
-        self.filter_sepia.value      = 0
-        self.filter_enabled = True
-        self.onFilterChange()
+        if self.updatePageEnabled:
+            self.filter_enabled = False
+            self.filter_blur.value       = '0'
+            self.filter_grayscale.value  = 0
+            self.filter_brightness.value = 100
+            self.filter_contrast.value   = 100
+            self.filter_saturate.value   = 100
+            self.filter_hue.value        = 0
+            self.filter_opacity.value    = 100
+            self.filter_sepia.value      = 0
+            self.filter_enabled = True
+            self.onFilterChange()
         
         
     # Filter change
     def onFilterChange(self, *args):
-        if self.filter_enabled:
-            filter = ''
+        if self.updatePageEnabled:
+            if self.filter_enabled:
+                filter = ''
 
-            n = int(self.filter_blur.value)
-            if n > 0: filter += 'blur(%dpx) '%n
+                n = int(self.filter_blur.value)
+                if n > 0: filter += 'blur(%dpx) '%n
 
-            n = int(self.filter_grayscale.value)
-            if n > 0: filter += 'grayscale(%d%%) '%n
+                n = int(self.filter_grayscale.value)
+                if n > 0: filter += 'grayscale(%d%%) '%n
 
-            n = int(self.filter_brightness.value)
-            if n != 100: filter += 'brightness(%d%%) '%n
+                n = int(self.filter_brightness.value)
+                if n != 100: filter += 'brightness(%d%%) '%n
 
-            n = int(self.filter_contrast.value)
-            if n != 100: filter += 'contrast(%d%%) '%n
+                n = int(self.filter_contrast.value)
+                if n != 100: filter += 'contrast(%d%%) '%n
 
-            n = int(self.filter_saturate.value)
-            if n != 100: filter += 'saturate(%d%%) '%n
-            
-            n = int(self.filter_hue.value)
-            if n != 0: filter += 'hue-rotate(%ddeg) '%n
+                n = int(self.filter_saturate.value)
+                if n != 100: filter += 'saturate(%d%%) '%n
 
-            n = int(self.filter_sepia.value)
-            if n != 0: filter += 'sepia(%d%%) '%n
-            
-            n = int(self.filter_opacity.value)
-            if n != 100: filter += 'opacity(%d%%) '%n
+                n = int(self.filter_hue.value)
+                if n != 0: filter += 'hue-rotate(%ddeg) '%n
 
-            self.main.background_filter = filter
-            self.updatePreview()
+                n = int(self.filter_sepia.value)
+                if n != 0: filter += 'sepia(%d%%) '%n
+
+                n = int(self.filter_opacity.value)
+                if n != 100: filter += 'opacity(%d%%) '%n
+
+                self.main.background_filter = filter
+                self.updatePreview()
         
         
     # buttonbox_widthpercent   
     def on_buttonbox_widthpercent(self, value):
-        self.main.buttonbox_widthpercent = int(value)
-        self.updatePreview()
+        if self.updatePageEnabled:
+            self.main.buttonbox_widthpercent = int(value)
+            self.updatePreview()
 
     # buttonbox_heightpercent
     def on_buttonbox_heightpercent(self, value):
-        self.main.buttonbox_heightpercent = int(value)
-        self.updatePreview()
+        if self.updatePageEnabled:
+            self.main.buttonbox_heightpercent = int(value)
+            self.updatePreview()
         
     # buttonbox_toppercent
     def on_buttonbox_toppercent(self, value):
-        self.main.buttonbox_toppercent = int(value)
-        self.updatePreview()
+        if self.updatePageEnabled:
+            self.main.buttonbox_toppercent = int(value)
+            self.updatePreview()
 
         
     # button_widthpercent
     def on_button_width(self, value):
-        self.main.button_widthpercent = int(value)
-        self.updatePreview()
+        if self.updatePageEnabled:
+            self.main.button_widthpercent = int(value)
+            self.updatePreview()
 
     # button_heightpercent
     def on_button_height(self, value):
-        self.main.button_heightpercent = int(value)
-        self.updatePreview()
+        if self.updatePageEnabled:
+            self.main.button_heightpercent = int(value)
+            self.updatePreview()
 
     # button_elevation
     def on_button_elevation(self, value):
-        self.main.button_elevation = int(value)
-        self.updatePreview()
+        if self.updatePageEnabled:
+            self.main.button_elevation = int(value)
+            self.updatePreview()
 
     # button_opacity
     def on_button_opacity(self, value):
-        self.main.button_opacity = value/100.0
-        self.updatePreview()
+        if self.updatePageEnabled:
+            self.main.button_opacity = value/100.0
+            self.updatePreview()
 
     # button_titlesize
     def on_button_titlesize(self, value):
-        self.main.button_titlesize = '%fvh'%value
-        self.updatePreview()
+        if self.updatePageEnabled:
+            self.main.button_titlesize = '%fvh'%value
+            self.updatePreview()
 
     # button_subtitlesize
     def on_button_subtitlesize(self, value):
-        self.main.button_subtitlesize = '%fvh'%value
-        self.updatePreview()
-        self.button_subtitlesize.draw(),
+        if self.updatePageEnabled:
+            self.main.button_subtitlesize = '%fvh'%value
+            self.updatePreview()
+            self.button_subtitlesize.draw(),
             
     # button_radius
     def on_button_radius(self, value):
-        self.main.button_radius = '%dpx'%int(value)
-        self.updatePreview()
+        if self.updatePageEnabled:
+            self.main.button_radius = '%dpx'%int(value)
+            self.updatePreview()
 
         
     # Change of vois_show flag
     def vois_showChange(self, flag):
-        self.main.vois_show = flag
-        self.vois_opacity.slider.disabled = not self.main.vois_show
-        self.updatePreview()
+        if self.updatePageEnabled:
+            self.main.vois_show = flag
+            self.vois_opacity.slider.disabled = not self.main.vois_show
+            self.updatePreview()
         
         
     # Change vois opacity
     def vois_opacityChange(self, opacity):
-        self.main.vois_opacity = opacity / 100.0
-        self.updatePreview()
+        if self.updatePageEnabled:
+            self.main.vois_opacity = opacity / 100.0
+            self.updatePreview()
 
         
     # Change credits text
     def creditsChange(self, *args):
-        if self.tfcredits.v_model is None: name = ''
-        else:                              name = self.tfcredits.v_model
-        self.main.credits = name
-        self.updatePreview()
+        if self.updatePageEnabled:
+            if self.tfcredits.v_model is None: name = ''
+            else:                              name = self.tfcredits.v_model
+            self.main.credits = name
+            self.updatePreview()
 
     def creditsClear(self, *args):
-        self.main.credits = ''
-        self.updatePreview()
+        if self.updatePageEnabled:
+            self.main.credits = ''
+            self.updatePreview()
         
         
     # Selection of the credits image to load from the local machine
     def creditslogo_image_loaded(self, imageurl):
-        self.main.creditslogo_url = imageurl
-        self.updatePreview()
+        if self.updatePageEnabled:
+            self.main.creditslogo_url = imageurl
+            self.updatePreview()
 
     # Click on the button to open the dialog to select the the credits image
     def creditslogo_image_load(self, *args):
@@ -568,42 +812,48 @@ class MainConfigurator(page.page):
         
     # Change disclaimer text
     def disclaimerChange(self, *args):
-        if self.tfdisclaimer.v_model is None: name = ''
-        else:                                 name = self.tfdisclaimer.v_model
-        self.main.disclaimer = name
-        self.updatePreview()
+        if self.updatePageEnabled:
+            if self.tfdisclaimer.v_model is None: name = ''
+            else:                                 name = self.tfdisclaimer.v_model
+            self.main.disclaimer = name
+            self.updatePreview()
 
     def disclaimerClear(self, *args):
-        self.main.disclaimer = ''
-        self.updatePreview()
+        if self.updatePageEnabled:
+            self.main.disclaimer = ''
+            self.updatePreview()
 
 
     # creditbox_widthpercent   
     def on_creditbox_widthpercent(self, value):
-        self.main.creditbox_widthpercent = int(value)
-        self.updatePreview()
+        if self.updatePageEnabled:
+            self.main.creditbox_widthpercent = int(value)
+            self.updatePreview()
 
     # creditbox_heightpercent
     def on_creditbox_heightpercent(self, value):
-        self.main.creditbox_heightpercent = int(value)
-        self.updatePreview()
+        if self.updatePageEnabled:
+            self.main.creditbox_heightpercent = int(value)
+            self.updatePreview()
         
         
     # creditbox_toppercent
     def on_creditbox_toppercent(self, value):
-        self.main.creditbox_toppercent = int(value)
-        self.updatePreview()
+        if self.updatePageEnabled:
+            self.main.creditbox_toppercent = int(value)
+            self.updatePreview()
         
         
     # creditbox_opacity
     def on_creditbox_opacity(self, value):
-        self.main.creditbox_opacity = value/100.0
-        self.updatePreview()
+        if self.updatePageEnabled:
+            self.main.creditbox_opacity = value/100.0
+            self.updatePreview()
         
 
     # Add a new button
     def buttonNew(self):
-        eb = EditButton(self.output, newButton=True, onOK=self.AddNewButton)
+        eb = EditButton(self.output, index=len(self.main.buttons), newButton=True, onOK=self.AddNewButton)
         return None
     
     def AddNewButton(self, b):
@@ -615,21 +865,31 @@ class MainConfigurator(page.page):
     def buttonDisplay(self, item, index):
         
         def UpdateButton(b):
-            self.main.buttons[index] = b
+            self.main.buttons[b['index']] = b
             self.blist.items = self.main.buttons
             self.updatePreview()
             
         def onclick(*args):
-            eb = EditButton(self.output, title=item['title'], subtitle=item['subtitle'], tooltip=item['tooltip'], image=item['image'], onclick=item['onclick'], argument=item['argument'], newButton=False, onOK=UpdateButton)
-            
+            eb = EditButton(self.output, index=item['index'], title=item['title'], subtitle=item['subtitle'], tooltip=item['tooltip'], image=item['image'], onclick=item['onclick'], argument=item['argument'], newButton=False, onOK=UpdateButton)
+        
+        self.AssignOrderToButtons()
         lab = PageConfigurator.label(item['title'], class_='pa-0 ma-0 ml-2 mb-2', color='black')
         lab.on_event('click', onclick)
         return [lab]
         
+        
     # Added or removed a button
     def buttonsUpdate(self, *args):
-        self.updatePreview()
+        if self.updatePageEnabled:
+            self.updatePreview()
         
+        
+    # Called at each order change oand each remove of a button
+    def AssignOrderToButtons(self):
+        i = 0
+        for b in self.main.buttons:
+            b['index'] = i
+            i += 1
         
         
 #####################################################################################################################################################
@@ -637,11 +897,13 @@ class MainConfigurator(page.page):
 #####################################################################################################################################################
 class EditButton():
     
-    def __init__(self, output, title='', subtitle='', tooltip='', image='', onclick=None, argument=None, onOK=None, newButton=True):
+    def __init__(self, output, index, title='', subtitle='', tooltip='', image='', onclick=None, argument=None, onOK=None, newButton=True):
         
         self.onOK = onOK
         self.upload = UploadImage.UploadImage(output, width=620)
 
+        self.index = index
+        
         self.image = image
 
         self.tit    = v.TextField(label='Title:',          autofocus=True,  v_model=title,    dense=True, color=settings.color_first, clearable=True, class_="pa-0 ma-0 mt-3")
@@ -682,7 +944,8 @@ class EditButton():
                        'tooltip':  self.ttip.v_model,
                        'image':    self.image,
                        'onclick':  self.oncl.v_model,
-                       'argument': self.arg.v_model}
+                       'argument': self.arg.v_model,
+                       'index':    self.index}
         
         if self.onOK is not None:
             self.onOK(self.button)
