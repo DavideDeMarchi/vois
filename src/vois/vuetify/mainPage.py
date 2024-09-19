@@ -345,6 +345,7 @@ class mainPage():
         
         self.buttons = []
 
+        self.spacer = v.Html(tag='div',children=[' '], style_='width: 16px; height: 20px;')
         
 
     # Add a button
@@ -380,15 +381,10 @@ class mainPage():
     def open(self):
         """Open the page"""
         
-        # Spacers
-        self.spacer = v.Html(tag='div',children=[' '], style_='width: 16px; height: 20px;')
-
         # Dimension of the main title rectangle
         width = '%fvw'%self.titlebox_widthpercent
         height = '%fvh'%self.titlebox_heightpercent
 
-
-        
         ######################################################################################################################################################
         # Main titles
         ######################################################################################################################################################
