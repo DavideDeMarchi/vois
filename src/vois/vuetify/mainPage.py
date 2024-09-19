@@ -160,9 +160,13 @@ class mainPage():
     applogo_url : str, optional
         Url of the application logo (default is a sample logo)
     applogo_widthpercent : float, optional
-        Width of the area where the application logo is displayed in percentage of the screen (default is 35.0)
+        Width of the area where the application logo is displayed in percentage of the screen (default is 20.0)
+    titlesizepercent: int, optional
+        Font size used for the main page title, in percentage compared to the standard dimension (default is 100, change to e.g. 80 for a smaller font, 120 for a bigger one)
+    subtitlesizepercent: int, optional
+        Font size used for the main page subtitle, in percentage compared to the standard dimension (default is 100, change to e.g. 80 for a smaller font, 120 for a bigger one)
     credits : str, optional
-        Credits string to display inside the credit box on the bottom of the page (default is 'Credits Team XXX')
+        Credits string to display inside the credit box on the bottom of the page (default is 'Unit T.4, Data Visualisation Team')
     creditslogo_url : str, optional
         Url of the image to display inside the credit box on the bottom of the page (default is 'https://jeodpp.jrc.ec.europa.eu/services/shared/pngs/TransparentJRC.png')
     text_color : str, optional
@@ -194,9 +198,9 @@ class mainPage():
     creditbox_widthpercent : float, optional
         Width of the box containing the credits, in percentage of the screen width. Default is 80.0.
     creditbox_heightpercent : float, optional
-        Height of the box containing the credits, in percentage of the screen height. Default is 18.0.
+        Height of the box containing the credits, in percentage of the screen height. Default is 25.0.
     creditbox_toppercent : float, optional
-        Top position of the box containing the credits, in percentage of the screen height, measured from the top of the page. Default is 80.0.
+        Top position of the box containing the credits, in percentage of the screen height, measured from the top of the page. Default is 74.0.
     creditbox_opacity : float, optional
         Opacity to apply to the box containing the credits (default is 0.0)
     button_widthpercent : float, optional
@@ -261,9 +265,11 @@ class mainPage():
     def __init__(self,
                  title='Application main title',
                  subtitle='Subtitle to be shown below the main title',
+                 titlesizepercent=100,
+                 subtitlesizepercent=100,
                  applogo_url='https://jeodpp.jrc.ec.europa.eu/services/shared/pngs/sampleapplogo.png',
-                 applogo_widthpercent=35.0,
-                 credits='Credits Team XXX',
+                 applogo_widthpercent=20.0,
+                 credits='Unit T.4, Data Visualisation Team',
                  creditslogo_url='https://jeodpp.jrc.ec.europa.eu/services/shared/pngs/TransparentJRC.png',
                  text_color='#0e446e',
                  background_image=22,
@@ -275,12 +281,14 @@ class mainPage():
                  titlebox_toppercent=12.0,
                  titlebox_opacity=0.4,
                  titlebox_border=2,
+                 titleshadow=True,
+                 titleshadow_color='#ffffff',
                  buttonbox_widthpercent=80.0,
                  buttonbox_heightpercent=50.0,
                  buttonbox_toppercent=43.0,
                  creditbox_widthpercent=80.0,
-                 creditbox_heightpercent=18.0,
-                 creditbox_toppercent=80.0,
+                 creditbox_heightpercent=25.0,
+                 creditbox_toppercent=74.0,
                  creditbox_opacity=0.,
                  button_widthpercent=22.0,
                  button_heightpercent=10.0,
@@ -289,12 +297,14 @@ class mainPage():
                  button_titlesize='2.0vh',
                  button_subtitlesize='1.2vh',
                  button_radius='0px',
-                 disclaimer=''):
+                 disclaimer='The contents of this viewer are intended solely for the use of the Commission and may not be reproduced, distributed, or communicated outside the Commission in any format without explicit prior written consent'):
 
         self.output = widgets.Output(layout=Layout(width='0px', height='0px'))
         
         self.title                   = title
         self.subtitle                = subtitle
+        self.titlesizepercent        = titlesizepercent
+        self.subtitlesizepercent     = subtitlesizepercent
         self.applogo_url             = applogo_url
         self.applogo_widthpercent    = applogo_widthpercent
         self.credits                 = credits
@@ -310,7 +320,10 @@ class mainPage():
         self.titlebox_toppercent     = titlebox_toppercent
         self.titlebox_opacity        = titlebox_opacity
         self.titlebox_border         = titlebox_border
-        
+                         
+        self.titleshadow             = titleshadow
+        self.titleshadow_color       = titleshadow_color
+
         self.buttonbox_widthpercent  = buttonbox_widthpercent
         self.buttonbox_heightpercent = buttonbox_heightpercent
         self.buttonbox_toppercent    = buttonbox_toppercent
@@ -345,6 +358,11 @@ class mainPage():
         ######################################################################################################################################################
         # Main titles
         ######################################################################################################################################################
+        if self.titleshadow:
+            tts = 'text-shadow: -0.06vh -0.06vh 0 %s, 0.06vh -0.06vh 0 %s, -0.06vh 0.06vh 0 %s, 0.06vh 0.06vh 0 %s;'%(self.titleshadow_color,self.titleshadow_color,self.titleshadow_color,self.titleshadow_color)
+        else:
+            tts = ''
+            
         html_main = '''
         <head>
             <meta charset="utf-8" />
@@ -352,20 +370,20 @@ class mainPage():
             <style>
                 .big {
                     font-family: 'PT Sans', sans-serif;
-                    font-size: min(5.0vh, 3.7vw);
+                    font-size: calc(%f * min(5.0vh, 3.7vw));
                     font-weight: 700;
-                    text-shadow: -0.06vh -0.06vh 0 #fff, 0.06vh -0.06vh 0 #fff, -0.06vh 0.06vh 0 #fff, 0.06vh 0.06vh 0 #fff;
+                    %s
                     text-align: center;
                     line-height: 2.0;
-                    color: %s;
+                    color: %s !important; 
                 }
                 .normal {
                     font-family: 'PT Sans', sans-serif;
-                    font-size: min(2.65vh, 2.0vw);
+                    font-size: calc(%f *min(2.65vh, 2.0vw));
                     font-weight: 700;
                     text-align: center;
                     line-height: 1.0;
-                    color: %s;
+                    color: %s !important;
                 }
                 .responsive4 {
                     width: %fvh;
@@ -388,7 +406,7 @@ class mainPage():
                 <img src="%s" alt="" class="responsive4">
             </div>
         </body>
-        ''' % (self.text_color, self.text_color, self.applogo_widthpercent, self.title, self.subtitle, self.applogo_url)
+        ''' % (self.titlesizepercent*0.01, tts, self.text_color, self.subtitlesizepercent*0.01, self.text_color, self.applogo_widthpercent, self.title, self.subtitle, self.applogo_url)
 
         cardmain = v.Card(flat=True, children=[HTML(html_main)], style_="background-color: #ffffff00;")
 
@@ -614,6 +632,11 @@ class mainPage():
         width = '%f%%'%self.titlebox_widthpercent
         height = '%f%%'%self.titlebox_heightpercent
 
+        if self.titleshadow:
+            tts = 'text-shadow: -0.042vh -0.042vh 0 %s, 0.042vh -0.042vh 0 %s, -0.042vh 0.042vh 0 %s, 0.042vh 0.042vh 0 %s;'%(self.titleshadow_color,self.titleshadow_color,self.titleshadow_color,self.titleshadow_color)
+        else:
+            tts = ''
+            
         html_main = '''
         <head>
             <meta charset="utf-8" />
@@ -621,16 +644,16 @@ class mainPage():
             <style>
                 .big7 {
                     font-family: 'PT Sans', sans-serif;
-                    font-size: min(3.5vh, 2.59vw);
+                    font-size: calc(%f * min(3.5vh, 2.59vw));
                     font-weight: 700;
-                    text-shadow: -0.042vh -0.042vh 0 #fff, 0.042vh -0.042vh 0 #fff, -0.042vh 0.042vh 0 #fff, 0.042vh 0.042vh 0 #fff;
+                    %s
                     text-align: center;
                     line-height: 2.0;
                     color: %s;
                 }
                 .normal7 {
                     font-family: 'PT Sans', sans-serif;
-                    font-size: min(1.855vh, 1.4vw);
+                    font-size: calc(%f * min(1.855vh, 1.4vw));
                     font-weight: 700;
                     text-align: center;
                     line-height: 1.0;
@@ -657,7 +680,7 @@ class mainPage():
                 <img src="%s" alt="" class="responsive7">
             </div>
         </body>
-        ''' % (self.text_color, self.text_color, 0.7*self.applogo_widthpercent, self.title, self.subtitle, self.applogo_url)
+        ''' % (self.titlesizepercent*0.01, tts, self.text_color, self.subtitlesizepercent*0.01, self.text_color, self.applogo_widthpercent, self.title, self.subtitle, self.applogo_url)
 
         cardmain = v.Card(flat=True, children=[HTML(html_main)], style_="background-color: #ffffff00;")
 
@@ -821,4 +844,106 @@ class mainPage():
         return v.Card(children=[back, hmain, hvois, hpages, hunit], width='70vw', style_='border-radius: 0px;')
     
     
-            
+        
+    ######################################################################################################################################################
+    # Save the configuration into a JSON file
+    ######################################################################################################################################################
+    def toJson(self):
+
+        return {
+            'title': self.title,
+            'subtitle': self.subtitle,
+            'titlesizepercent': self.titlesizepercent,
+            'subtitlesizepercent': self.subtitlesizepercent,
+            'applogo_widthpercent': self.applogo_widthpercent,
+            'credits': self.credits,
+            'text_color': self.text_color,
+            'background_image': self.background_image,
+            'background_filter': self.background_filter,
+            'vois_show': self.vois_show,
+            'vois_opacity': self.vois_opacity,
+
+            'titlebox_widthpercent': self.titlebox_widthpercent,
+            'titlebox_heightpercent': self.titlebox_heightpercent,
+            'titlebox_toppercent': self.titlebox_toppercent,
+            'titlebox_opacity': self.titlebox_opacity,
+            'titlebox_border': self.titlebox_border,
+
+            'titleshadow': self.titleshadow,
+            'titleshadow_color': self.titleshadow_color,
+
+            'buttonbox_widthpercent': self.buttonbox_widthpercent,
+            'buttonbox_heightpercent': self.buttonbox_heightpercent,
+            'buttonbox_toppercent': self.buttonbox_toppercent,
+
+            'creditbox_widthpercent': self.creditbox_widthpercent,
+            'creditbox_heightpercent': self.creditbox_heightpercent,
+            'creditbox_toppercent': self.creditbox_toppercent,
+            'creditbox_opacity': self.creditbox_opacity,
+
+            'button_widthpercent': self.button_widthpercent,
+            'button_heightpercent': self.button_heightpercent,
+            'button_elevation': self.button_elevation,
+            'button_opacity': self.button_opacity,
+            'button_titlesize': self.button_titlesize,
+            'button_subtitlesize': self.button_subtitlesize,
+            'button_radius': self.button_radius,
+
+            'disclaimer': self.disclaimer,
+
+            'buttons': self.buttons,
+
+            'applogo_url': self.applogo_url,
+            'creditslogo_url': self.creditslogo_url,
+        }
+
+    
+    ######################################################################################################################################################
+    # Read the configuration into a JSON file
+    ######################################################################################################################################################
+    def fromJson(self, j):
+
+            self.title = j['title']
+            self.subtitle = j['subtitle']
+            self.titlesizepercent = j['titlesizepercent']
+            self.subtitlesizepercent = j['subtitlesizepercent']
+            self.applogo_url = j['applogo_url']
+            self.applogo_widthpercent = j['applogo_widthpercent']
+            self.credits = j['credits']
+            self.creditslogo_url = j['creditslogo_url']
+            self.text_color = j['text_color']
+            self.background_image = j['background_image']
+            self.background_filter = j['background_filter']
+            self.vois_show = j['vois_show']
+            self.vois_opacity = j['vois_opacity']
+
+            self.titlebox_widthpercent = j['titlebox_widthpercent']
+            self.titlebox_heightpercent = j['titlebox_heightpercent']
+            self.titlebox_toppercent = j['titlebox_toppercent']
+            self.titlebox_opacity = j['titlebox_opacity']
+            self.titlebox_border = j['titlebox_border']
+
+            self.titleshadow = j['titleshadow']
+            self.titleshadow_color = j['titleshadow_color']
+
+            self.buttonbox_widthpercent = j['buttonbox_widthpercent']
+            self.buttonbox_heightpercent = j['buttonbox_heightpercent']
+            self.buttonbox_toppercent = j['buttonbox_toppercent']
+
+            self.creditbox_widthpercent = j['creditbox_widthpercent']
+            self.creditbox_heightpercent = j['creditbox_heightpercent']
+            self.creditbox_toppercent = j['creditbox_toppercent']
+            self.creditbox_opacity = j['creditbox_opacity']
+
+            self.button_widthpercent = j['button_widthpercent']
+            self.button_heightpercent = j['button_heightpercent']
+            self.button_elevation = j['button_elevation']
+            self.button_opacity = j['button_opacity']
+            self.button_titlesize = j['button_titlesize']
+            self.button_subtitlesize = j['button_subtitlesize']
+            self.button_radius = j['button_radius']
+
+            self.disclaimer = j['disclaimer']
+
+            self.buttons = j['buttons']
+    

@@ -99,14 +99,14 @@ class MainConfigurator(page.page):
         self.controls = v.Card(flat=True, width=maxwidth, min_width=maxwidth, max_width=maxwidth, class_='pa-3 pt-1 ma-0', style_='overflow: auto;')
         
         netwidth = 'calc(%s - 58px)'%LEFT_WIDTH
-        titwidth = 'calc(%s - 190px)'%LEFT_WIDTH
+        titwidth = 'calc(%s - 210px)'%LEFT_WIDTH
         
         self.upload = UploadImage.UploadImage(self.output, width=620)
         
-        self.tftitle = v.TextField(label='Application title:', autofocus=False, v_model=self.main.title, dense=True, color=settings.color_first, clearable=True, class_="pa-0 ma-0 mt-3 mr-3")
-        self.text_color = ColorPicker(dark=False, color=self.main.text_color, width=50, height=30, rounded=False, on_change=self.text_colorChange,  offset_x=True, offset_y=False)
+        self.tftitle = v.TextField(label='Application title:', autofocus=False, v_model=self.main.title, dense=True, color=settings.color_first, clearable=True, class_="pa-0 ma-0 mt-3 mr-6")
+        self.text_color = ColorPicker(dark=False, color=self.main.text_color, width=50, height=30, rounded=False, on_change=self.text_colorChange,  offset_x=True, offset_y=False, color_theory_popup=True)
         ct  = v.Card(flat=True, children=[self.tftitle], width=titwidth, min_width=titwidth, max_width=titwidth)
-        cc  = v.Card(flat=True, children=[widgets.HBox([PageConfigurator.label('Text color:', color='black', width=66), self.text_color])], class_='pa-0 ma-0 mt-4')
+        cc  = v.Card(flat=True, children=[widgets.HBox([PageConfigurator.label('Text color:', color='black', width=66), self.text_color, self.text_color.ctpopup.draw()])], class_='pa-0 ma-0 mt-4')
         cr1 = v.Card(flat=True, children=[widgets.HBox([ct, cc])], width=netwidth, max_width=netwidth)
         
         self.tfsubtitle = v.TextField(label='Application subtitle:', autofocus=False, v_model=self.main.subtitle, dense=True, color=settings.color_first, clearable=True, class_="pa-0 ma-0 mt-3 mr-3")
@@ -117,13 +117,13 @@ class MainConfigurator(page.page):
         self.tfsubtitle.on_event('change',      self.subtitleChange)
         self.tfsubtitle.on_event('click:clear', self.subtitleClear)
         
-        self.titlesizepercent = sliderFloat.sliderFloat(self.main.titlesizepercent, text='Title size percent:', minvalue=10, maxvalue=200, maxint=190, showpercentage=True, decimals=1,
+        self.titlesizepercent = sliderFloat.sliderFloat(self.main.titlesizepercent, text='Title size percent:', minvalue=0, maxvalue=200, maxint=200, showpercentage=True, decimals=0,
                                                         labelwidth=self.labelwidth, sliderwidth=self.sliderwidth, resetbutton=True, showtooltip=True, onchange=self.on_titlesizepercent)
-        self.subtitlesizepercent = sliderFloat.sliderFloat(self.main.subtitlesizepercent, text='Subtitle size percent:', minvalue=10, maxvalue=200, maxint=190, showpercentage=True, decimals=1,
+        self.subtitlesizepercent = sliderFloat.sliderFloat(self.main.subtitlesizepercent, text='Subtitle size percent:', minvalue=0, maxvalue=200, maxint=200, showpercentage=True, decimals=0,
                                                            labelwidth=self.labelwidth, sliderwidth=self.sliderwidth, resetbutton=True, showtooltip=True, onchange=self.on_subtitlesizepercent)
         
         self.titleshadow = switch.switch(self.main.titleshadow, 'Add shadow around application title', inset=True, dense=True, onchange=self.titleshadowChange)
-        self.titleshadow_color = ColorPicker(dark=False, color=self.main.titleshadow_color, width=50, height=30, rounded=False, on_change=self.titleshadow_colorChange,  offset_x=True, offset_y=False)
+        self.titleshadow_color = ColorPicker(dark=False, color=self.main.titleshadow_color, width=50, height=30, rounded=False, on_change=self.titleshadow_colorChange,  offset_x=True, offset_y=False, color_theory_popup=True)
         
         self.applogo_image_url  = Button('Select image for the application logo', color_selected=settings.color_first, dark=settings.dark_mode, 
                                          text_weight=450, on_click=self.applogo_image_load, width=netwidth, height=40,
@@ -245,9 +245,10 @@ class MainConfigurator(page.page):
                                   dark=False, onchange=None, row=True)
 
         
-        self.buttOpen  = iconButton.iconButton(icon='mdi-folder-open',  onclick=self.onOpen,  tooltip='Load state from file',             margins='pa-0 ma-0 mt-3 mr-2', color=settings.color_first)
-        self.buttSave  = iconButton.iconButton(icon='mdi-content-save', onclick=self.onSave,  tooltip='Save current state to file',       margins='pa-0 ma-0 mt-3 mr-2', color=settings.color_first)
-        self.buttReset = iconButton.iconButton(icon='mdi-backspace',    onclick=self.onReset, tooltip='Reset main page to default state', margins='pa-0 ma-0 mt-3 mr-2', color=settings.color_first)
+        self.buttOpen  = iconButton.iconButton(icon='mdi-folder-open',  onclick=self.onOpen,  tooltip='Load state from file',                 margins='pa-0 ma-0 mt-3 mr-2', color=settings.color_first)
+        self.buttSave  = iconButton.iconButton(icon='mdi-content-save', onclick=self.onSave,  tooltip='Save current state to file',           margins='pa-0 ma-0 mt-3 mr-2', color=settings.color_first)
+        self.buttCode  = iconButton.iconButton(icon='mdi-file-code',    onclick=self.onCode,  tooltip='Generate and download code in Python', margins='pa-0 ma-0 mt-3 mr-2', color=settings.color_first)
+        self.buttReset = iconButton.iconButton(icon='mdi-backspace',    onclick=self.onReset, tooltip='Reset main page to default state',     margins='pa-0 ma-0 mt-3 mr-2', color=settings.color_first)
         
         self.card_title.children = [widgets.VBox([
             self.spacerY,
@@ -264,7 +265,7 @@ class MainConfigurator(page.page):
             self.title_opacity.draw(),
             self.title_border.draw(),
             self.titleshadow.draw(),
-            widgets.HBox([PageConfigurator.label('Shadow color:', color='black'), self.titleshadow_color])
+            widgets.HBox([PageConfigurator.label('Shadow color:', color='black'), self.titleshadow_color, self.titleshadow_color.ctpopup.draw()])
         ])]
         
         self.card_background.children = [widgets.VBox([
@@ -332,7 +333,7 @@ class MainConfigurator(page.page):
         ])]
         
         self.controls.children = [ widgets.VBox([
-            widgets.HBox([self.buttOpen.draw(), self.buttSave.draw(), self.buttReset.draw()]),
+            widgets.HBox([self.buttOpen.draw(), self.buttSave.draw(), self.buttCode.draw(), self.buttReset.draw()]),
             self.tabsView.draw()
         ])]
         
@@ -390,8 +391,120 @@ class MainConfigurator(page.page):
         txt = json.dumps(state, indent=4)
         download.downloadText(txt, fileName=filename)
         
+                
+    # Save Python code
+    def onCode(self):
+        self.saveFilename = v.TextField(label='File name:', autofocus=True, v_model=self.main.title, dense=False, color=settings.color_first, clearable=False, class_="pa-0 ma-0 ml-3 mt-3 mr-3")
+        dialogGeneric.dialogGeneric(title='Save and download Python code...' , on_ok=self.onDoSaveCode, 
+                                    text='   ', color=settings.color_first, dark=settings.dark_mode,
+                                    titleheight=40, width=600,
+                                    show=True, addclosebuttons=True, addokcancelbuttons=True,
+                                    fullscreen=False, content=[self.saveFilename], output=self.output)
+
+    
+    # Effective save and download of the Python code
+    def onDoSaveCode(self):
         
+        self.onDoSaveState()   # Saves <filename>.json
         
+        with self.debug:
+            jsonfile = self.saveFilename.v_model
+            if jsonfile[-5:] != '.json':
+                jsonfile += '.json'
+
+            notebookfile = self.saveFilename.v_model
+            notebookfile += '.ipynb'
+
+            scallbacks = ''
+            for b in self.main.buttons:
+                if 'onclick' in b and isinstance(b['onclick'], str) and len(b['onclick']) > 0 and not ' ' in b['onclick']:
+                    scallbacks += '''
+def %s(*args):
+    dialogMessage.dialogMessage(title='Clicked on button %s', titleheight=36,
+                                text='Change this lines with your code',
+                                addclosebuttons=True, show=True, width=400, output=output)
+    
+'''%(b['onclick'],b['title'])
+
+            # Code generation
+            txt = '''from vois.vuetify import settings
+settings.dark_mode      = True
+settings.color_first    = '#0d856d'
+settings.color_second   = '#a0dcd0'
+settings.button_rounded = False
+
+from ipywidgets import widgets, HTML, Layout
+from IPython.display import display
+import json
+
+from vois import cssUtils
+from vois.vuetify import mainPage, dialogMessage
+
+output = widgets.Output(layout=Layout(width='0px', height='0px'))
+display(output)
+
+cssUtils.allSettings(output)
+cssUtils.switchFontSize(output,14)
+
+m = mainPage.mainPage()
+
+%s
+
+with open('%s') as f:
+    j = json.load(f)
+    m.fromJson(j)
+    
+for b in m.buttons:
+    if 'onclick' in b and isinstance(b['onclick'], str) and len(b['onclick']) > 0 and not ' ' in b['onclick']:
+        b['onclick'] = globals()[b['onclick']]
+    
+m.open()'''%(scallbacks, jsonfile)
+
+            lines = txt.split('\n')
+            lines = ",\n".join(["\"%s\\n\""%x for x in lines])
+
+            txt = '''{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "65d32196-829e-41b9-a4e4-bdb6381998e9",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    %s
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python [interapro_env]",
+   "language": "python",
+   "name": "conda-env-interapro_env-py"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.11.6"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
+'''%lines
+        
+            # Download .ipynb file
+            download.downloadText(txt, fileName=notebookfile)
+            
+            
+            
     # Reset page to initial state
     def onReset(self):
         self.main = mainPage.mainPage(background_image=55)
@@ -558,7 +671,7 @@ class MainConfigurator(page.page):
     
     def on_subtitlesizepercent(self, value):
         if self.updatePageEnabled:
-            self.main.subtitlesiazepercent = value
+            self.main.subtitlesizepercent = value
             self.updatePreview()
 
     # Change of the text_color

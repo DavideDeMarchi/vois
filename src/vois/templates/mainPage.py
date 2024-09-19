@@ -161,6 +161,10 @@ class mainPage():
         Url of the application logo (default is a sample logo)
     applogo_widthpercent : float, optional
         Width of the area where the application logo is displayed in percentage of the screen (default is 20.0)
+    titlesizepercent: int, optional
+        Font size used for the main page title, in percentage compared to the standard dimension (default is 100, change to e.g. 80 for a smaller font, 120 for a bigger one)
+    subtitlesizepercent: int, optional
+        Font size used for the main page subtitle, in percentage compared to the standard dimension (default is 100, change to e.g. 80 for a smaller font, 120 for a bigger one)
     credits : str, optional
         Credits string to display inside the credit box on the bottom of the page (default is 'Unit T.4, Data Visualisation Team')
     creditslogo_url : str, optional
@@ -851,10 +855,8 @@ class mainPage():
             'subtitle': self.subtitle,
             'titlesizepercent': self.titlesizepercent,
             'subtitlesizepercent': self.subtitlesizepercent,
-            'applogo_url': self.applogo_url,
             'applogo_widthpercent': self.applogo_widthpercent,
             'credits': self.credits,
-            'creditslogo_url': self.creditslogo_url,
             'text_color': self.text_color,
             'background_image': self.background_image,
             'background_filter': self.background_filter,
@@ -889,7 +891,10 @@ class mainPage():
 
             'disclaimer': self.disclaimer,
 
-            'buttons': self.buttons
+            'buttons': self.buttons,
+
+            'applogo_url': self.applogo_url,
+            'creditslogo_url': self.creditslogo_url,
         }
 
     
