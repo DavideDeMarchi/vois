@@ -26,10 +26,8 @@ import json
 # Vois imports
 from vois import download
 from vois.vuetify import settings, page, selectImage, Button, UploadImage, UploadJson, sliderFloat, ColorPicker, switch, selectSingle, tabs, sortableList, dialogGeneric, iconButton
-
-# Local imports
-import mainPage
-import PageConfigurator
+from vois.vuetify import mainPage
+from vois.templates import PageConfigurator
 
 
 # Panels dimensioning
