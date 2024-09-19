@@ -346,6 +346,40 @@ class mainPage():
         self.buttons = []
 
         
+
+    # Add a button
+    def addButton(self, title, subtitle='', tooltip='', image='', onclick=None, argument=None):
+        """
+        Add a button to the page
+        
+        Parameters
+        ----------
+        title : str
+            Title of the button
+        subtitle : str, optional
+            Subtitle of the button (default is '')
+        tooltip : str, optional
+            Tooltip to show when hovering the button title (default is '')
+        image : str, optional
+            Image to show on the right side of the button (default is '')
+        onclick : function, optional
+            Python function to call when the user clicks on the button. The function will receive the argument value as parameter if it is not None, otherwise it will be calle with no parameters. Default is None
+        argument : any, optional
+            Argument to pass to the onclick python function (default is None)
+            
+        """
+        self.buttons.append({'title':    title,
+                             'subtitle': subtitle,
+                             'tooltip':  tooltip,
+                             'image':    image,
+                             'onclick':  onclick,
+                             'argument': argument})
+        
+        
+    # Display the page as a fullscreen dialog-box
+    def open(self):
+        """Open the page"""
+        
         # Spacers
         self.spacer = v.Html(tag='div',children=[' '], style_='width: 16px; height: 20px;')
 
@@ -514,41 +548,7 @@ class mainPage():
         self.hunit = v.Html(tag='div', children=[cardunit], class_="pa-0 ma-0",
                             style_='width: %fvw; height: %fvh; border: 0px solid #000000; border-radius: 12px; position: absolute; top: %fvh; left: %fvw; background-color: %s; overflow: hidden;'%(self.creditbox_widthpercent, self.creditbox_heightpercent,
                             self.creditbox_toppercent, (100.0-self.creditbox_widthpercent)/2.0, bcol))
-
-
-
-    # Add a button
-    def addButton(self, title, subtitle='', tooltip='', image='', onclick=None, argument=None):
-        """
-        Add a button to the page
         
-        Parameters
-        ----------
-        title : str
-            Title of the button
-        subtitle : str, optional
-            Subtitle of the button (default is '')
-        tooltip : str, optional
-            Tooltip to show when hovering the button title (default is '')
-        image : str, optional
-            Image to show on the right side of the button (default is '')
-        onclick : function, optional
-            Python function to call when the user clicks on the button. The function will receive the argument value as parameter if it is not None, otherwise it will be calle with no parameters. Default is None
-        argument : any, optional
-            Argument to pass to the onclick python function (default is None)
-            
-        """
-        self.buttons.append({'title':    title,
-                             'subtitle': subtitle,
-                             'tooltip':  tooltip,
-                             'image':    image,
-                             'onclick':  onclick,
-                             'argument': argument})
-        
-        
-    # Display the page as a fullscreen dialog-box
-    def open(self):
-        """Open the page"""
         nbuttons_per_row = self.buttonbox_widthpercent // self.button_widthpercent
         
         rows = []
