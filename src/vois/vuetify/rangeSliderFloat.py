@@ -21,14 +21,7 @@ from IPython.display import display
 from ipywidgets import widgets
 import ipyvuetify as v
 
-try:
-    from . import settings
-    from . import label
-    from . import tooltip
-except:
-    import settings
-    import label
-    import tooltip
+from vois.vuetify import settings, label, tooltip
 
 
 #####################################################################################################################################################
@@ -151,7 +144,7 @@ class rangeSliderFloat():
                                     color=settings.color_first, track_color="grey",
                                     class_="pa-0 ma-0 ml-3 mr-5 mt-3 mb-n1",
                                     style_='max-width: %dpx; width: %dpx;'%(self.sliderwidth,self.sliderwidth),
-                                    min=0, max=self.maxint, vertical=False, height=32)
+                                    min=0, max=self.maxint, vertical=False, height=32, disabled=False)
         self.slider.on_event('input',  self.oninput)
         self.slider.on_event('change', self.onsliderchange)
 
@@ -257,13 +250,13 @@ class rangeSliderFloat():
         
     # On click on the self.labelvaluemin: display the self.fieldmin
     def onvaluemin(self, *args):
-        if self.editable:
+        if self.editable and not self.slider.disabled:
             self.fieldmin.v_model = self.value[0]
             self.row.children = [self.label, self.cfieldmin, self.buttonsmin, self.slider, self.buttonsmax, self.labelvaluemax]
         
     # On click on the self.labelvaluemax: display the self.fieldmax
     def onvaluemax(self, *args):
-        if self.editable:
+        if self.editable and not self.slider.disabled:
             self.fieldmax.v_model = self.value[1]
             self.row.children = [self.label, self.labelvaluemin, self.buttonsmin, self.slider, self.buttonsmax, self.cfieldmax]
         
@@ -396,3 +389,24 @@ class rangeSliderFloat():
         intvaluemax = self.float2integer(v2)
         self.slider.v_model = [intvaluemin,intvaluemax]
         self.onsliderchange()
+
+        
+    # disabled property
+    @property
+    def disabled(self):
+        return self.slider.disabled
+    
+    # Set the slider disabled state
+    @disabled.setter
+    def disabled(self, flag):
+        self.slider.disabled = flag
+        
+        if self.resetbutton:
+            self.bresmin.disabled = flag
+            self.bresmax.disabled = flag
+        
+        self.bupmin.disabled = flag
+        self.bdnmin.disabled = flag
+        self.bupmax.disabled = flag
+        self.bdnmax.disabled = flag
+        

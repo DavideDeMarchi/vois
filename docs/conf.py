@@ -19,6 +19,8 @@ sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath('..'))
 sys.path.insert(0, os.path.abspath('../src/vois'))
 sys.path.insert(0, os.path.abspath('../src/vois/vuetify'))
+sys.path.insert(0, os.path.abspath('../src/vois/geo'))
+sys.path.insert(0, os.path.abspath('../src/vois/templates'))
 sys.path.insert(0, os.path.abspath('./_templates'))
 
 
@@ -26,7 +28,7 @@ sys.path.insert(0, os.path.abspath('./_templates'))
 # -- Project information -----------------------------------------------------
 
 project = 'vois'
-copyright = '2023, European Union'
+copyright = '2023-2024, European Union'
 author = 'Davide De Marchi'
 
 # The full version, including alpha/beta/rc tags

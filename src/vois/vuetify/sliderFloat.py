@@ -21,14 +21,7 @@ from IPython.display import display
 from ipywidgets import widgets
 import ipyvuetify as v
 
-try:
-    from . import settings
-    from . import label
-    from . import tooltip
-except:
-    import settings
-    import label
-    import tooltip
+from vois.vuetify import settings, label, tooltip
 
 
 #####################################################################################################################################################
@@ -66,6 +59,10 @@ class sliderFloat():
         Python function to call when the changes the value of the slider. The function will receive a single parameter, containing the new value of the slider in the range from minvalue to maxvalue (default is None)
     color : str, optional
         Color of the widget (default is settings.color_first)
+    editable : bool, optional
+        If True the label can be edited by clicking on it (default is False)
+    editableWidth : int, optional
+        If the slider is editable, set the width of the v.TextField widget to enter the value (default is 90)
             
     Example
     -------
@@ -95,9 +92,13 @@ class sliderFloat():
 
     # Initialization
     def __init__(self, value=1.0, minvalue=0.0, maxvalue=1.0, text='Select', showpercentage=True, decimals=2, maxint=None, 
-                 labelwidth=0, sliderwidth=200, resetbutton=False, showtooltip=False, onchange=None, color=None):
+                 labelwidth=0, sliderwidth=200, resetbutton=False, showtooltip=False, onchange=None, color=None,
+                 editable=False, editableWidth=90):
         
         self.onchange = onchange
+        
+        self.editable = editable
+        self.editableWidth = editableWidth
         
         self.minvalue = minvalue
         self.maxvalue = maxvalue
@@ -149,10 +150,17 @@ class sliderFloat():
         self.slider.on_event('input',  self.oninput)
         self.slider.on_event('change', self.onsliderchange)
         
+        self.fieldvalue = v.TextField(autofocus=True, hide_details=True, single_line=True, hide_spin_buttons=False, dense=True, outlined=True, color=settings.color_first, type="number", class_='pa-0 ma-0 mt-2')
+        self.cfieldvalue = v.Card(flat=True, children=[self.fieldvalue], width=self.editableWidth, max_width=self.editableWidth)
+        self.fieldvalue.on_event('change', self.onchangefieldvalue)
+        self.fieldvalue.on_event('blur',   self.onchangefieldvalue)
+        
         if self.showpercentage:
             self.labelvalue = v.Html(tag='div', children=[str(self.int_initial_value) + self.postchar], class_='pa-0 ma-0 mt-4')
         else:
             self.labelvalue = v.Html(tag='div', children=['{:.{prec}f}'.format(value, prec=self.decimals) + self.postchar], class_='pa-0 ma-0 mt-4')
+
+        self.labelvalue.on_event('click', self.onvaluechange)
 
         if self.resetbutton:
             self.bup = v.Btn(icon=True, small=True, rounded=False, elevation=0, width=15, height=20, class_='pa-0 ma-0', children=[v.Icon(color='grey', children=['mdi-menu-right'])])
@@ -183,7 +191,23 @@ class sliderFloat():
             if showtooltip: self.cdn = tooltip.tooltip("Decrease",self.cdn)
             
             self.buttons = widgets.VBox([self.cup,self.cdn])
+
+        self.row = v.Row(justify='start', class_='pa-0 ma-0', no_gutters=True, children=[self.label, self.slider, self.buttons, self.labelvalue], style_="overflow: hidden;")            
         
+        
+    # When carriage return on the self.fieldvalue or an external click
+    def onchangefieldvalue(self, *args):
+        self.row.children = [self.label, self.slider, self.buttons, self.labelvalue]
+        v = self.value
+        self.value = float(self.fieldvalue.v_model)
+        self.fieldvalue.v_model = self.value
+        
+    # On click on the self.labelvalue: display the self.fieldvalue
+    def onvaluechange(self, *args):
+        if self.editable and not self.slider.disabled:
+            self.fieldvalue.v_model = self.value
+            self.row.children = [self.label, self.slider, self.buttons, self.cfieldvalue]
+            
         
     # Input event on the slider
     def oninput(self, *args):
@@ -237,7 +261,7 @@ class sliderFloat():
     # Draw the widget
     def draw(self):
         """Returns the ipyvuetify object to display (a v.Row widget)"""
-        return v.Row(justify='start', class_='pa-0 ma-0', no_gutters=True, children=[self.label, self.slider, self.buttons, self.labelvalue], style_="overflow: hidden;")
+        return self.row
 
         
     # Get the slider value
