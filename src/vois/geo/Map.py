@@ -21,8 +21,9 @@
 # Imports
 from ipywidgets import widgets, HTML, Layout, CallbackDispatcher
 import ipyleaflet
-from ipyleaflet import SearchControl, ScaleControl, FullScreenControl, WidgetControl
+from ipyleaflet import SearchControl, ScaleControl, FullScreenControl, WidgetControl, DrawControl, Icon
 import ipyvuetify as v
+from threading import Timer
 
 # Vois imports
 from vois.vuetify import settings, toggle, switch
@@ -86,6 +87,12 @@ class Map(ipyleaflet.Map):
         # Initial center and zoom of the map
         self.center = center
         self.zoom   = zoom
+        
+        # List of WKT strings edited using the DrawControl
+        self.wktstrings = []
+        
+        # DrawControl instance
+        self._drawctrl  = None
 
         # Card containing the widgets to configure the map appearance
         self.configure_card = None
@@ -476,3 +483,121 @@ class Map(ipyleaflet.Map):
     def onclick(self, callback):
         self._onclick = callback
             
+
+    #####################################################################################################################################################
+    # Feature draw
+    #####################################################################################################################################################
+
+    @property
+    def drawctrl(self):
+        if self._drawctrl is None:
+            return False
+        else:
+            return True
+        
+        
+    @drawctrl.setter
+    def drawctrl(self, flag):
+        if flag:
+            if self._drawctrl is None:
+                self._drawctrl = DrawControl()
+                
+                self._drawctrl.marker =  {
+                    "shapeOptions": {
+                        "color": self._color_first,
+                        "weight": 4,
+                        "opacity": 1.0
+                    }
+                }
+
+                self._drawctrl.polyline =  {
+                    "shapeOptions": {
+                        "color": self._color_first,
+                        "weight": 4,
+                        "opacity": 1.0
+                    }
+                }
+
+                self._drawctrl.polygon = {
+                    "shapeOptions": {
+                        "fillColor": self._color_first,
+                        "color": self._color_first,
+                        "fillOpacity": 0.2
+                    },
+                    "drawError": {
+                        "color": "#dd253b",
+                        "message": "Error!"
+                    },
+                    "allowIntersection": True
+                }
+
+                self._drawctrl.circle = {}
+                
+                self._drawctrl.circlemarker = {}
+
+                self._drawctrl.rectangle = {
+                    "shapeOptions": {
+                        "fillColor": self._color_first,
+                        "color": self._color_first,
+                        "fillOpacity": 0.2
+                    }
+                }
+                
+                self._drawctrl.on_draw(callback=self.on_draw)
+                
+                self.add(self._drawctrl)
+        else:
+            if self._drawctrl is not None:
+                self.remove(self._drawctrl)
+                self._drawctrl = None
+                
+        
+    def updateWKT(self):
+        self.wktstrings = [geojson2WKT(x) for x in self._drawctrl.data]
+
+
+    def on_draw(self, control, action, geo_json):
+        t = Timer(1.0, self.updateWKT)
+        t.start()
+    
+    
+    
+    
+#####################################################################################################################################################
+# Utility: convert geojson to WKT
+#####################################################################################################################################################
+def geojson2WKT(geojson):
+    
+    # Force a longitude in [0,360]
+    def lon(x):
+        while x > 360: x -= 360
+        while x < 0:   x += 360
+        return x
+
+    # Force a latitude in [0,90]
+    def lat(y):
+        while y > 90: y -= 90
+        while y < 0:   y += 90
+        return y
+    
+    # From a list of x,y to lon,lat
+    def c2latlon(c):
+        return lon(c[0]), lat(c[1])
+    
+    coords = geojson['geometry']
+
+    wkt = coords['type'].upper() + '('
+    
+    if coords['type'] == 'Point':
+        c = coords['coordinates']
+        wkt += '%f %f'%c2latlon(c)
+    elif coords['type'] == 'LineString':
+        wkt += ','.join(['%f %f'%c2latlon(x) for x in coords['coordinates']])
+    else:
+        for ring in coords['coordinates']:
+            wkt += '(' + ','.join(['%f %f'%c2latlon(x) for x in ring]) + ')'
+            break
+        
+    wkt += ')'
+    return wkt
+    
