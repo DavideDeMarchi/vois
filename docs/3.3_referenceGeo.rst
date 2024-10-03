@@ -1,0 +1,29 @@
+.. _ReferenceGeo:
+
+Geo modules
+===========
+
+.. toctree::
+   :maxdepth: 5
+   :caption: Contents:
+
+The Geo modules of the vois library contain functions and classes to display geospatial content on an interactive map.
+
+
+.. image:: figures/line.png
+
+Map module
+----------
+
+.. automodule:: Map
+    :members:
+    
+.. image:: figures/line.png
+
+mapUtils module
+---------------
+
+.. automodule:: mapUtils
+    :members:
+    
+.. image:: figures/line.png

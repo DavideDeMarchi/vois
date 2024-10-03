@@ -27,6 +27,10 @@ The vois library is grouped in these packages:
 |                                  |                                                                       |
 |                                  | GUI elements using ipyvuetify widgets                                 |
 +----------------------------------+-----------------------------------------------------------------------+
+| :ref:`Geo package <Geo>`         | Contains modules that enable the display of geospatial content on an  |
+|                                  |                                                                       |
+|                                  | interactive Map                                                       |
++----------------------------------+-----------------------------------------------------------------------+
      
      
 .. _General:
@@ -138,6 +142,21 @@ To use the modules of the **Vuetify** package they have to be imported using cod
     a.show()
 
 
+.. _Geo:
+
+Geo package
+^^^^^^^^^^^^^^^
+
+ The **Geo** package is made up of these modules:
+
+.. autosummary::
+    :nosignatures:
+
+ Map
+ mapUtils
+ 
+
+
 Modules
 -------
 
@@ -146,4 +165,5 @@ Modules
 
    3.1_referenceGeneral
    3.2_referenceVuetify
+   3.3_referenceGeo
 

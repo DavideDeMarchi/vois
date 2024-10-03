@@ -39,6 +39,46 @@ LAYERNAME_LABELS      = 'Labels'
 # Map class
 #####################################################################################################################################################
 class Map(ipyleaflet.Map):
+    """
+    Map widget for interactive display of geospatial datasets. This class inherits from the `ipyleaflet.Map class <https://ipyleaflet.readthedocs.io/en/latest/map_and_basemaps/map.html>`_ and adds methods and controls to simplify the Map customisation.
+
+    Parameters
+    ----------
+    width : str, optional
+        Width of the Map widget (default is '100%')
+    height : str, optional
+        Height of the Map widget (default is '600px')
+
+    Example
+    -------
+    Creation of a color picker widget to select a color::
+        
+        from vois.vuetify import ColorPicker
+        from ipywidgets import widgets
+        from IPython.display import display
+
+        output = widgets.Output()
+
+        def on_change():
+            with output:
+                print('Changed to', c.color)
+
+        c = ColorPicker(color='#00AAFF',
+                        width=30, height=30,
+                        rounded=False,
+                        on_change=on_change,
+                        offset_x=True,
+                        offset_y=False)
+
+        display(c)
+        display(output)
+
+    .. figure:: figures/colorPicker.png
+       :scale: 100 %
+       :alt: colorPicker widget
+
+       Example of a colorPicker to select a color
+    """
 
 
     # Initialization
