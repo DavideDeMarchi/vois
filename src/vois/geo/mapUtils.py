@@ -42,6 +42,9 @@ def buildBasemap(oldstyledictionary):
 
 
 def EmptyBasemap():  # gray background
+    """
+    Returns a fully gray basemap TileLayer instance.
+    """
     return buildBasemap({'attribution': '',
                          'max_zoom': 21, 
                          'max_native_zoom': 21,
@@ -50,6 +53,9 @@ def EmptyBasemap():  # gray background
 
 
 def OSM_EC():
+    """
+    Returns a OpenStreetMap European Commission compliant TileLayer instance.
+    """
     return buildBasemap({'attribution': '',
                          'max_zoom': 21,
                          'max_native_zoom': 21,
@@ -58,6 +64,9 @@ def OSM_EC():
 
 
 def CartoLabels():
+    """
+    Returns a TileLayer instance displaying only EC compliant labels.
+    """
     return buildBasemap({'attribution': '',
                          'max_zoom': 21,
                          'max_native_zoom': 21,
@@ -66,6 +75,9 @@ def CartoLabels():
 
 
 def EsriWorldImagery():
+    """
+    Returns Esri WorldImagery TileLayer instance.
+    """
     return buildBasemap({'attribution': '',
                          'max_zoom': 21,
                          'max_native_zoom': 21,
@@ -74,6 +86,9 @@ def EsriWorldImagery():
 
 
 def GoogleRoadmap():
+    """
+    Returns Google Roadmap TileLayer instance.
+    """
     return buildBasemap({'attribution': '',
                          'max_zoom': 21,
                          'max_native_zoom': 21,
@@ -82,6 +97,9 @@ def GoogleRoadmap():
 
 
 def GoogleSatellite():
+    """
+    Returns Google Satellite TileLayer instance.
+    """
     return buildBasemap({'attribution': '',
                          'max_zoom': 21,
                          'max_native_zoom': 21,
@@ -90,6 +108,9 @@ def GoogleSatellite():
 
 
 def GoogleHybrid():
+    """
+    Returns Google Hybrid TileLayer instance.
+    """
     return buildBasemap({'attribution': '',
                          'max_zoom': 21,
                          'max_native_zoom': 21,
@@ -99,12 +120,34 @@ def GoogleHybrid():
 
 # Any ImageProcess or VectorLayer: returns an ipyleaflet.TileLayer instance
 def BDAPLayer(p):
+    """
+    Returns a TileLayer instance from a BDAP ImageProcess or VectorLayer instance passed as input parameter.
+    """
     procid = p.toLayer()
     return ipyleaflet.TileLayer(url='https://jeodpp.jrc.ec.europa.eu/jiplib-view?x={x}&y={y}&z={z}&procid=%s'%procid, max_zoom=21, max_native_zoom=21)
 
 
 # Add the layer to a map or substitute it using the name
 def addLayer(m, tLayer, name, opacity=1.0):
+    """
+    Add or substitutes a layer given a name.
+
+    Parameters
+    ----------
+    m : ipyleaflet.Map instance
+        Map where the layer is to be added.
+    tLayer : ipyleaflet.TileLayer instance
+        Layer to add to the map.
+    name : str
+        Name of the layer
+    opacity : float, optional
+        Opacity of the layer in the [0.0,1.0] range. Default is 1.0.
+
+    Returns
+    ----------
+    tLayer : ipyleaflet.TileLayer instance
+        The layer added to the map.
+    """
     removeAllPopups(m)
     alreadyPresent = False
     tLayer.name = name
@@ -123,6 +166,21 @@ def addLayer(m, tLayer, name, opacity=1.0):
 
 # Search for a layer of a map by name
 def getLayer(m, name):
+    """
+    Search for a layer of a map by name.
+
+    Parameters
+    ----------
+    m : ipyleaflet.Map instance
+        Map where to search for the layer.
+    name : str
+        Name of the layer.
+
+    Returns
+    ----------
+    tLayer : ipyleaflet.TileLayer instance
+        If a layer with the name exists on the map it is returned, otherwise the function returns None.
+    """
     for layer in m.layers:
         if name == layer.name:
             return layer
@@ -131,6 +189,16 @@ def getLayer(m, name):
 
 # Remove a layer given its name
 def removeLayer(m, name):
+    """
+    Remove a layer from a map given its name.
+
+    Parameters
+    ----------
+    m : ipyleaflet.Map instance
+        Map where to search for the layer.
+    name : str
+        Name of the layer to remove.
+    """
     for layer in m.layers:
         if name == layer.name:
             m.remove(layer)
@@ -138,6 +206,14 @@ def removeLayer(m, name):
 
 # Remove all popups from the map
 def removeAllPopups(m):
+    """
+    Remove all instances of ipyleaflet.leaflet.Popup class present in the map.
+
+    Parameters
+    ----------
+    m : ipyleaflet.Map instance
+        Map where the popups must be removed.
+    """
     for layer in reversed(m.layers):
         if isinstance(layer, ipyleaflet.leaflet.Popup):
             m.remove(layer)
@@ -145,6 +221,14 @@ def removeAllPopups(m):
 
 # Remove all layer except current basemap
 def clear(m):
+    """
+    Remove all layer except current first layer from a map.
+
+    Parameters
+    ----------
+    m : ipyleaflet.Map instance
+        Map to be cleared.
+    """
     if len(m.layers) > 0:
         baselayer = m.layers[0]
     else:
@@ -159,7 +243,6 @@ def clear(m):
 
 # Zoom a map to a rectangle
 def zoomToExtents(m, xmin, ymin, xmax, ymax, epsg=4326):
-
     m.fit_bounds([[ymin, xmin], [ymax, xmax]])
     return
 
@@ -169,6 +252,25 @@ def zoomToExtents(m, xmin, ymin, xmax, ymax, epsg=4326):
 #####################################################################################################################################################
 # Searches the controls of the Map m to find a control added as a Widget by using its name
 def getCardByName(m, name, position='topright', class_='pa-0 ma-0'):
+    """
+    Searches the controls of the Map m to find a control added as a Widget by using its name. If the control is not found, a new control is added to the map.
+
+    Parameters
+    ----------
+    m : ipyleaflet.Map instance
+        Map instance.
+    name : str
+        Name of the card to search for.
+    position : str, optional
+        Position of the card inside the map. Valid positions are 'bottomleft', 'bottomright', 'topleft' and 'topright'. Default is 'topright'.
+    class_ : str, optional
+        Margins to set for the adde card (default is 'pa-0 ma-0')
+
+    Returns
+    -------
+    c : v.Card instance
+        The card added to the map that can be filled with any type of widgets content by setting its children property.
+    """
     for control in m.controls:
         if isinstance(control, ipyleaflet.leaflet.WidgetControl):
             if isinstance(control.widget, ipyvuetify.generated.Card):
@@ -184,6 +286,16 @@ def getCardByName(m, name, position='topright', class_='pa-0 ma-0'):
     
 # Remove a WidgetControl from the map given its name, if present
 def removeCardByName(m, name):
+    """
+    Remove a WidgetControl Card from the map given its name, if present.
+
+    Parameters
+    ----------
+    m : ipyleaflet.Map instance
+        Map instance.
+    name : str
+        Name of the card to search for.
+    """
     for control in m.controls:
         if isinstance(control, ipyleaflet.leaflet.WidgetControl):
             if isinstance(control.widget, ipyvuetify.generated.Card):
@@ -197,11 +309,17 @@ def removeCardByName(m, name):
 # Searches the controls of the Map m to find the coordinates control
 # N.B.: the Coordinates control is a v.Card having active_class == 'Coordinates' (so that it can be retrieved from the list of m.controls)
 def getCoordinatesCard(m):
+    """
+    Searches the controls of the Map m to find the coordinates control (where the lat/lon coordinates are displayed at mouse move) and returns a v.Card instance.
+    """
     return getCardByName(m, MAPCARD_COORDINATES, 'topright')
 
     
 # Remove the Coordinates WidgetControl from the map, if present
 def removeCoordinates(m):
+    """
+    Remove the WidgetControl dedicated to the display of the coordinates at mouse move.
+    """
     removeCardByName(m, MAPCARD_COORDINATES)
 
     
@@ -211,7 +329,21 @@ def removeCoordinates(m):
 
 # Add an overview map
 def addOverview(m, color='red', position='bottomright', overviewLayer=None):
-    
+    """
+    Add an overview map.
+
+    Parameters
+    ----------
+    m : ipyleaflet.Map instance
+        Map instance.
+    color : str, optional
+        Color of the rectangle that displays the current zoom of the map inside the overview map.
+    position : str, optional
+        Position of the card inside the map. Valid positions are 'bottomleft', 'bottomright', 'topleft' and 'topright'. Default is 'bottomright'.
+    overviewLayer : ipyleaflet.TileLayer instance, optional
+        Optional layer to be displayed on the overview map (default is None).
+    """
+
     removeCardByName(m, MAPCARD_OVERVIEW)
     
     # Create the overview map
@@ -243,6 +375,9 @@ def addOverview(m, color='red', position='bottomright', overviewLayer=None):
 
 # Remove the overview card from the map
 def removeOverview(m):
+    """
+    Remove the overview map, if present.
+    """
     removeCardByName(m, MAPCARD_OVERVIEW)
 
     
@@ -250,6 +385,19 @@ def removeOverview(m):
 # Save a map view in a PIL image
 #####################################################################################################################################################
 def toImage(m):
+    """
+    Save the current map content as a PIL image.
+
+    Parameters
+    ----------
+    m : ipyleaflet.Map instance
+        Map instance.
+
+    Returns
+    -------
+    img : PIL/Pillow image
+        A raster image displaying the current content of the map.
+    """
 
     # Bounds and zoom of the current view
     (latmin, lonmin), (latmax, lonmax) = m.bounds
