@@ -82,7 +82,7 @@ class Map(ipyleaflet.Map):
         display(m)
 
     .. figure:: figures/Map.png
-       :scale: 100 %
+       :scale: 50 %
        :alt: Map widget
 
        Example of a Map with overview
