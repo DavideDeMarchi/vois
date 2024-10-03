@@ -145,10 +145,16 @@ def removeAllPopups(m):
 
 # Remove all layer except current basemap
 def clear(m):
-    baselayer = ipyleaflet.basemap_to_tiles(m.basemap)
-    baselayer.base = True
+    if len(m.layers) > 0:
+        baselayer = m.layers[0]
+    else:
+        baselayer = None
+    #baselayer = ipyleaflet.basemap_to_tiles(m.basemap)
+    #baselayer.base = True
     m.clear_layers()
-    m.add(baselayer)
+    
+    if baselayer is not None:
+        m.add(baselayer)
 
 
 # Zoom a map to a rectangle

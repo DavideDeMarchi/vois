@@ -73,7 +73,7 @@ class Map(ipyleaflet.Map):
 
     Example
     -------
-    Creation of a map instance displaying an overview::
+    Creation of a map instance displaying an overview window::
         
         from IPython.display import display
         from vois.geo import Map
@@ -82,7 +82,7 @@ class Map(ipyleaflet.Map):
         display(m)
 
     .. figure:: figures/Map.png
-       :scale: 50 %
+       :scale: 70 %
        :alt: Map widget
 
        Example of a Map with overview
@@ -191,11 +191,35 @@ class Map(ipyleaflet.Map):
     
     # Remove all layers from map
     def clear(self):
+        """
+        Remove all the additional layers from the map.
+        """
         mapUtils.clear(self)
+        mapUtils.addLayer(self, mapUtils.EmptyBasemap(), LAYERNAME_BACKGROUND)
+        mapUtils.addLayer(self, mapUtils.CartoLabels(),  LAYERNAME_LABELS)
+        self.onSelectBasemap(self.basemapindex)
+        
     
     
     # Add a ipyleaflet.TileLayer to the map
     def addLayer(self, tileLayer, name=None, opacity=1.0):
+        """
+        Add a new layer to the map.
+        
+        Parameters
+        ----------
+        tileLayer : ipyleaflet.TileLayer or a class that has a tileLayer() callable
+            Layer to add to the map
+        name : str, optional
+            Name of the layer (default is None)
+        opacity : float, optional
+            Opacity of the layer in the range [0.0,1.0] (default is 1.0)
+
+        Returns
+        -------
+        layer : instance of ipyleafler.Layer
+            The layer added to the map
+        """
         
         # if no name is passed, generate a layer name
         if name is None:
@@ -204,9 +228,11 @@ class Map(ipyleaflet.Map):
             
         # In case a vectorlayer or rasterlayer is passed: call .tileLayer() to get the ipyleaflet.TileLayer instance!
         if isinstance(tileLayer, ipyleaflet.TileLayer):
-            mapUtils.addLayer(self, tileLayer, name=name, opacity=opacity)
+            res = mapUtils.addLayer(self, tileLayer, name=name, opacity=opacity)
         else:
-            mapUtils.addLayer(self, tileLayer.tileLayer(), name=name, opacity=opacity)
+            res = mapUtils.addLayer(self, tileLayer.tileLayer(), name=name, opacity=opacity)
+            
+        return res
         
         
     # Manage all user interaction on the map
@@ -298,6 +324,9 @@ class Map(ipyleaflet.Map):
     
     @property
     def width(self):
+        """
+        Get/Set the width of the Map widget.
+        """
         return self._width
         
     @width.setter
@@ -308,6 +337,9 @@ class Map(ipyleaflet.Map):
         
     @property
     def height(self):
+        """
+        Get/Set the height of the Map widget.
+        """
         return self._height
         
     @height.setter
@@ -318,6 +350,9 @@ class Map(ipyleaflet.Map):
         
     @property
     def show_fullscreen(self):
+        """
+        Display or hides the Fullscreen control.
+        """
         return self._show_fullscreen
         
     @show_fullscreen.setter
@@ -339,6 +374,9 @@ class Map(ipyleaflet.Map):
 
     @property
     def show_coordinates(self):
+        """
+        Display or hides the Coordinates control.
+        """
         return self._show_coordinates
         
     @show_coordinates.setter
@@ -358,6 +396,9 @@ class Map(ipyleaflet.Map):
             
     @property
     def show_search(self):
+        """
+        Display or hides the Search control.
+        """
         return self._show_search
         
     @show_search.setter
@@ -379,6 +420,9 @@ class Map(ipyleaflet.Map):
 
     @property
     def show_scale(self):
+        """
+        Display or hides the Scale control.
+        """
         return self._show_scale
         
     @show_scale.setter
@@ -400,6 +444,9 @@ class Map(ipyleaflet.Map):
 
     @property
     def show_basemaps(self):
+        """
+        Display or hides the Basemaps selection control.
+        """
         return self._show_basemaps
         
     @show_basemaps.setter
@@ -426,6 +473,9 @@ class Map(ipyleaflet.Map):
 
     @property
     def show_overview(self):
+        """
+        Display or hides the Overview control.
+        """
         return self._show_overview
         
     @show_overview.setter
@@ -444,6 +494,9 @@ class Map(ipyleaflet.Map):
 
     @property
     def color_first(self):
+        """
+        Get/Set the primary color.
+        """
         return self._color_first
         
     @color_first.setter
@@ -464,6 +517,9 @@ class Map(ipyleaflet.Map):
 
     @property
     def color_second(self):
+        """
+        Get/Set the secondary color.
+        """
         return self._color_second
         
     @color_second.setter
@@ -476,6 +532,9 @@ class Map(ipyleaflet.Map):
 
     @property
     def dark(self):
+        """
+        Get/Set the dark mode flag.
+        """
         return self._dark
         
     @dark.setter
@@ -488,6 +547,9 @@ class Map(ipyleaflet.Map):
             
     @property
     def basemapindex(self):
+        """
+        Get/Set the current basemap (index from 0 to 1).
+        """
         return self._basemapindex
         
     @basemapindex.setter
@@ -525,6 +587,9 @@ class Map(ipyleaflet.Map):
             
     @property
     def onclick(self):
+        """
+        Get/Set the python function to call when the user clicks on the map.
+        """
         return self._onclick
         
     @onclick.setter
@@ -538,6 +603,9 @@ class Map(ipyleaflet.Map):
 
     @property
     def drawctrl(self):
+        """
+        Display or hides the Feature Draw control. The wktstrings member of the Map class contains the list of all the features added in WKT format.
+        """
         if self._drawctrl is None:
             return False
         else:
