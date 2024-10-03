@@ -7,7 +7,7 @@ Geo modules
    :maxdepth: 5
    :caption: Contents:
 
-The Geo modules of the vois library contain functions and classes to display geospatial content on an interactive map.
+The Geo modules of the vois library contains functions and classes to display geospatial content on an interactive map.
 
 
 .. image:: figures/line.png

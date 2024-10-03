@@ -1,4 +1,4 @@
-"""Map class"""
+"""Map widget for interactive display of geospatial datasets"""
 # Author(s): Davide.De-Marchi@ec.europa.eu, Edoardo.Ramalli@ec.europa.eu
 # Copyright © European Union 2024
 # 
@@ -45,39 +45,47 @@ class Map(ipyleaflet.Map):
     Parameters
     ----------
     width : str, optional
-        Width of the Map widget (default is '100%')
+        Width of the Map widget (default is '100%').
     height : str, optional
-        Height of the Map widget (default is '600px')
+        Height of the Map widget (default is '600px').
+    show_fullscreen : bool, optional
+        Show or Hide the fullscreen control (default is True).
+    show_search : bool, optional
+        Show or Hide the Search control (default is True).
+    show_scale : bool, optional
+        Show or Hide the Scale control (default is True).
+    show_coordinates : bool, optional
+        Show or hide the Coordinates control (default is True).
+    show_overview : bool, optional
+        Show or hide the Overview control (default is True).
+    show_basemaps : bool, optional
+        Show or hide the Basemaps toggle control (default is True).
+    color_first : str, optional
+        Main color of the overlapped widgets (default is settings.color_first).
+    color_second : str, optional
+        Secondary color of the overlapped widgets (default is settings.color_second).
+    dark : bool, optional
+        Dark flag(default is settings.dark_mode).
+    basemapindex : int, optional
+        Initial basemap index (0=EC, 1=Esri, 2=Google), default is 0.
+    onclick : python function, optional
+        Callback function to call on click (receives as parameter: map, lon, lat, zoom), default is None.
 
     Example
     -------
-    Creation of a color picker widget to select a color::
+    Creation of a map instance displaying an overview::
         
-        from vois.vuetify import ColorPicker
-        from ipywidgets import widgets
         from IPython.display import display
+        from vois.geo import Map
 
-        output = widgets.Output()
+        m = Map(show_overview=True, center=[52,12], zoom=4, basemapindex=1)
+        display(m)
 
-        def on_change():
-            with output:
-                print('Changed to', c.color)
-
-        c = ColorPicker(color='#00AAFF',
-                        width=30, height=30,
-                        rounded=False,
-                        on_change=on_change,
-                        offset_x=True,
-                        offset_y=False)
-
-        display(c)
-        display(output)
-
-    .. figure:: figures/colorPicker.png
+    .. figure:: figures/Map.png
        :scale: 100 %
-       :alt: colorPicker widget
+       :alt: Map widget
 
-       Example of a colorPicker to select a color
+       Example of a Map with overview
     """
 
 

@@ -1,4 +1,4 @@
-"""Upload local json file: dialog box to select and previw of some fields"""
+"""Upload local json file: dialog box to select and preview of some fields"""
 # Author(s): Davide.De-Marchi@ec.europa.eu
 # Copyright © European Union 2024
 # 
