@@ -89,13 +89,13 @@ class UploadImage():
         display(debug)
 
     .. figure:: figures/upload_image_1.png
-       :scale: 100 %
+       :scale: 60 %
        :alt: Upload dialog widget
 
        UploadImage dialog box before the selection of an image
        
     .. figure:: figures/upload_image_2.png
-       :scale: 100 %
+       :scale: 60 %
        :alt: Upload dialog widget with an image selected
 
        UploadImage dialog box showing the preview of the selected image
