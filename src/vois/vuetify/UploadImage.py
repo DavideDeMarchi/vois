@@ -34,6 +34,72 @@ from PIL import Image
 # Upload local image: dialog box with image preview
 #####################################################################################################################################################
 class UploadImage():
+    """
+    Upload local image: dialog box with image preview. Widget that simplifies the selection of an image from the local computer to be uploaded in the cloud. It features the image selection and preview into a modal dialog-box.
+
+    Parameters
+    ----------
+    output : ipywidgets.Output
+        Output widget on which the widget has to be displayed
+    message : str, optional
+        Message to display in the upload widget to guide the user (default is 'Click to select image to upload').
+    label : str, optional
+        Placeholder label displayed on top of the upload widget (default is 'Image:').
+    accept : str, optional
+        List of mime types accepted for the selection (default is 'image/png, image/jpeg, image/bmp').
+    title : str, optional
+        Title of the modal dialog-box (default is 'Select an image').
+    color_first : str, optional
+        Main color of the widgets (default is settings.color_first).
+    dark : bool, optional
+        Dark flag (default is settings.dark_mode).
+    titleheight : int, optional
+        Height in pixels of the title bar of the modal dialog-box (default is 40)
+    width : int, optional
+        Width in pixels of the modal dialog-box (default is 620)
+    height : int, optional
+        height in pixels of the image preview area of the modal dialog-box (default is 600)
+    onOK : function, optional
+        Python function to call when the user clicks on the OK button. The function will receive as parameter the url string of the selected image or the empty string if no image is selected.
+    onCancel : function, optional
+        Python function to call when the user clicks on the CANCEL button. The function will receive no parameters.
+    
+    Example
+    -------
+    Display of a dialog-box to enable the user to select an image from its local machine::
+        
+        from vois.vuetify import UploadImage
+        from ipywidgets import widgets, Layout
+        from IPython.display import display
+        import ipyvuetify as v
+
+        output = widgets.Output(layout=Layout(width='0px', height='0px'))
+        display(output)
+
+        debug = widgets.Output()
+
+        def onSelectedImage(imageurl):
+            debug.clear_output()
+            with debug:
+                display(v.Img(class_='pa-0 ma-0 mr-2', src=imageurl))
+
+        u = UploadImage.UploadImage(output, onOK=onSelectedImage)
+        u.show()
+
+        display(debug)
+
+    .. figure:: figures/upload_image_1.png
+       :scale: 100 %
+       :alt: Upload dialog widget
+
+       UploadImage dialog box before the selection of an image
+       
+    .. figure:: figures/upload_image_2.png
+       :scale: 100 %
+       :alt: Upload dialog widget with an image selected
+
+       UploadImage dialog box showing the preview of the selected image
+    """
     
     # Initialization
     def __init__(self,
@@ -46,8 +112,9 @@ class UploadImage():
                  dark=settings.dark_mode,
                  titleheight=40,
                  width=620,
-                 onOK=None,                                       # Called passing the url string of the selected image or the empty string if no image is selected
-                 onCancel=None):                                  # Called with no argument
+                 height=600,
+                 onOK=None,          # Called passing the url string of the selected image or the empty string if no image is selected
+                 onCancel=None):     # Called with no argument
         
         self.output       = output
         self.title        = title
@@ -55,6 +122,7 @@ class UploadImage():
         self.dark         = dark
         self.titleheight  = titleheight
         self.width        = width
+        self.height       = height
         self.onOK         = onOK
         self.onCancel     = onCancel
         
@@ -65,7 +133,7 @@ class UploadImage():
         
         self.wait = None
         
-        self.preview = widgets.Output(layout=Layout(height='600px'))
+        self.preview = widgets.Output(layout=Layout(height='%dpx')%self.height)
         self.u = upload.upload(accept=accept, label=label, onchanging=self.onFileSelected, onchange=self.onFileUpload, placeholder=message, multiple=False)
 
         spacerY = v.Html(tag='div', style_='width: 0px; height: 20px;')
@@ -74,6 +142,9 @@ class UploadImage():
         
     # Open the dialog-box
     def show(self):
+        """
+        Opens the dialog-box.
+        """
         self.preview.clear_output()
         self.u.clear()
         dialogGeneric.dialogGeneric(title=self.title, on_ok=self._internal_onOK, on_cancel=self._internal_onCancel, on_close=self.onCancel,

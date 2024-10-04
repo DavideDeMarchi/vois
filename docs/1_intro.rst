@@ -70,3 +70,7 @@ The vois library is grouped in these packages:
 |                                  |                                                                       |
 |                                  | GUI elements using ipyvuetify widgets                                 |
 +----------------------------------+-----------------------------------------------------------------------+
+| :ref:`Geo package <Geo>`         | Contains modules that enable the display of geospatial content on an  |
+|                                  |                                                                       |
+|                                  | interactive Map                                                       |
++----------------------------------+-----------------------------------------------------------------------+

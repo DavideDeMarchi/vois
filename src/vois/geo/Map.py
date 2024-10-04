@@ -57,7 +57,7 @@ class Map(ipyleaflet.Map):
     show_coordinates : bool, optional
         Show or hide the Coordinates control (default is True).
     show_overview : bool, optional
-        Show or hide the Overview control (default is True).
+        Show or hide the Overview control (default is False).
     show_basemaps : bool, optional
         Show or hide the Basemaps toggle control (default is True).
     color_first : str, optional
@@ -65,7 +65,7 @@ class Map(ipyleaflet.Map):
     color_second : str, optional
         Secondary color of the overlapped widgets (default is settings.color_second).
     dark : bool, optional
-        Dark flag(default is settings.dark_mode).
+        Dark flag (default is settings.dark_mode).
     basemapindex : int, optional
         Initial basemap index (0=EC, 1=Esri, 2=Google), default is 0.
     onclick : python function, optional
