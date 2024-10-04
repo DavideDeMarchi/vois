@@ -210,7 +210,7 @@ class UploadJson():
                 else:
                     dialogMessage.dialogMessage(title='Error',
                                                 text='The uploaded file has no %s attribute'%a,
-                                                addclosebuttons=False, show=True, width=400, output=self.output)
+                                                addclosebuttons=True, show=True, width=400, output=self.output)
                     
                     self.dlg.okdisabled = True
                     self.json = None
