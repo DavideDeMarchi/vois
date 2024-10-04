@@ -20,6 +20,38 @@ The library contains an example dashboard that is built step by step using the f
    Energy consumption example dashboard
 
 
+News
+----
+
+In order to help new users of the vois library to start using the library without the need to read all the documentation, we have created two dashboards that help in visually define a multipage application structure.
+
+These tools are deployed as Voilà dashboards in Microsoft Azure Cloud at this URL: https://vois.azurewebsites.net/
+
+.. figure:: figures/vois_helpers_1.png
+   :scale: 40 %
+   :alt: Vois Helpers
+   
+   Vois Helpers dashboard
+
+
+The "Main Page Configurator" is a visual tool to create the starting page of a multipage application, by visually position titles, logos, buttons, credits on top of a background image. Sixty predefined background images are available but also custom background images can be uploaded. The result of the visual configuration can be saved locally as a json file and a notebook .ipynb file and immediately used as the first building block of your application.
+
+.. figure:: figures/vois_helpers_2.png
+   :scale: 40 %
+   :alt: Main Page Configurator
+   
+   Main Page Configurator
+
+
+The "Page Configurator" enables the visual configuration of one of your application pages. Users can define the colors, the logos, the content of the page (one or more maps, charts, drawings, etc.) and the number of panels that will contain the widgets that control the application behaviour. Once done, the page configuration can be downloaded locally as a json file, a pyton file and a notebook, and immediately used in JupyterLab.
+
+.. figure:: figures/vois_helpers_2.png
+   :scale: 40 %
+   :alt: Page Configurator
+   
+   Example of a page with a left panel and a bottom panel. The content of the page consists of two maps and a chart.
+
+
 Widgets libraries
 -----------------
 
