@@ -49,7 +49,7 @@ class UploadImage():
         List of mime types accepted for the selection (default is 'image/png, image/jpeg, image/bmp').
     title : str, optional
         Title of the modal dialog-box (default is 'Select an image').
-    color_first : str, optional
+    color : str, optional
         Main color of the widgets (default is settings.color_first).
     dark : bool, optional
         Dark flag (default is settings.dark_mode).
@@ -89,13 +89,13 @@ class UploadImage():
         display(debug)
 
     .. figure:: figures/upload_image_1.png
-       :scale: 60 %
+       :scale: 50 %
        :alt: Upload dialog widget
 
        UploadImage dialog box before the selection of an image
        
     .. figure:: figures/upload_image_2.png
-       :scale: 60 %
+       :scale: 50 %
        :alt: Upload dialog widget with an image selected
 
        UploadImage dialog box showing the preview of the selected image
@@ -108,8 +108,8 @@ class UploadImage():
                  label='Image:',
                  accept='image/png, image/jpeg, image/bmp',
                  title='Select an image',
-                 color=settings.color_first,
-                 dark=settings.dark_mode,
+                 color=None,
+                 dark=None,
                  titleheight=40,
                  width=620,
                  height=600,
@@ -118,13 +118,19 @@ class UploadImage():
         
         self.output       = output
         self.title        = title
-        self.color        = color
-        self.dark         = dark
         self.titleheight  = titleheight
         self.width        = width
         self.height       = height
         self.onOK         = onOK
         self.onCancel     = onCancel
+        
+        self.color = color
+        if self.color is None:
+            self.color = settings.color_first
+            
+        self.dark = dark
+        if self.dark is None:
+            self.dark = settings.dark_mode
         
         cssUtils.allSettings(self.output)
         
@@ -133,7 +139,7 @@ class UploadImage():
         
         self.wait = None
         
-        self.preview = widgets.Output(layout=Layout(height='%dpx')%self.height)
+        self.preview = widgets.Output(layout=Layout(height='%dpx'%self.height))
         self.u = upload.upload(accept=accept, label=label, onchanging=self.onFileSelected, onchange=self.onFileUpload, placeholder=message, multiple=False)
 
         spacerY = v.Html(tag='div', style_='width: 0px; height: 20px;')

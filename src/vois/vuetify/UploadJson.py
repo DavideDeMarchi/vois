@@ -44,6 +44,79 @@ def label(text, class_='pa-0 ma-0 mt-1 mr-3', size=14, weight=400, color=setting
 # Upload local json file: dialog box to select and previw of some fields
 #####################################################################################################################################################
 class UploadJson():
+    """
+    Upload local json file: dialog box to select and preview of some fields. Widget that simplifies the selection of a json from the local computer to be uploaded in the cloud. It features the preview of one or more field of the json into a modal dialog-box.
+
+    Parameters
+    ----------
+    output : ipywidgets.Output
+        Output widget on which the widget has to be displayed
+    message : str, optional
+        Message to display in the upload widget to guide the user (default is 'Click to select the file to upload').
+    label : str, optional
+        Placeholder label displayed on top of the upload widget (default is 'File json:').
+    accept : str, optional
+        List of mime types accepted for the selection (default is 'application/json').
+    title : str, optional
+        Title of the modal dialog-box (default is 'Select a file').
+    required_attributes : list of str, optional
+        List of attribute names to check in selected json file and to display in the preview (default is [])
+    attributes_width : int, optional
+        Width in pixel of the space to display the required attributes names (default is 100)
+    color : str, optional
+        Main color of the widgets (default is settings.color_first).
+    dark : bool, optional
+        Dark flag (default is settings.dark_mode).
+    titleheight : int, optional
+        Height in pixels of the title bar of the modal dialog-box (default is 40)
+    width : int, optional
+        Width in pixels of the modal dialog-box (default is 800)
+    height : int, optional
+        height in pixels of the preview area of the modal dialog-box (default is 200)
+    onOK : function, optional
+        Python function to call when the user clicks on the OK button. The function will receive as parameter the json dictionary read from the selected file.
+    onCancel : function, optional
+        Python function to call when the user clicks on the CANCEL button. The function will receive no parameters.
+    
+    Example
+    -------
+    Display of a dialog-box to enable the user to select a json file from its local machine::
+        
+        from vois.vuetify import UploadJson
+        from ipywidgets import widgets, Layout
+        from IPython.display import display
+        import ipyvuetify as v
+
+        output = widgets.Output(layout=Layout(width='0px', height='0px'))
+        display(output)
+
+        debug = widgets.Output()
+
+        def onSelectedJson(jsonitem):
+            debug.clear_output()
+            with debug:
+                display(jsonitem)
+
+        u = UploadJson.UploadJson(output,
+                                  onOK=onSelectedJson,
+                                  required_attributes=['appname', 'title'],
+                                  attributes_width=80)
+        u.show()
+
+        display(debug)
+
+    .. figure:: figures/upload_json_1.png
+       :scale: 50 %
+       :alt: Upload json dialog widget
+
+       UploadImage dialog box before the selection of a json file
+       
+    .. figure:: figures/upload_json_2.png
+       :scale: 50 %
+       :alt: Upload dialog widget with a json file selected
+
+       UploadJson dialog box showing the preview of some fields of the selected json file
+    """
     
     # Initialization
     def __init__(self,
@@ -54,10 +127,11 @@ class UploadJson():
                  title='Select a file',
                  required_attributes=[],         # List of attribute names to check in selected json file and to display in the preview
                  attributes_width=100,           # width in pixel of the spavce to display the required attributes names
-                 color=settings.color_first,
-                 dark=settings.dark_mode,
+                 color=None,
+                 dark=None,
                  titleheight=40,
                  width=800,
+                 height=200,
                  onOK=None,                      # Called passing the content of the selected file
                  onCancel=None):                 # Called with no argument
         
@@ -65,20 +139,27 @@ class UploadJson():
         self.title               = title
         self.required_attributes = required_attributes
         self.attributes_width    = attributes_width
-        self.color               = color
-        self.dark                = dark
         self.titleheight         = titleheight
         self.width               = width
+        self.height              = height
         self.onOK                = onOK
         self.onCancel            = onCancel
         
+        self.color = color
+        if self.color is None:
+            self.color = settings.color_first
+            
+        self.dark = dark
+        if self.dark is None:
+            self.dark = settings.dark_mode
+            
         cssUtils.allSettings(self.output)
         
         self.json = None
         
         self.wait = None
         
-        self.preview = widgets.Output(layout=Layout(height='200px'))
+        self.preview = widgets.Output(layout=Layout(height='%dpx'%self.height))
         self.u = upload.upload(accept=accept, label=label, onchanging=self.onFileSelected, onchange=self.onFileUpload, placeholder=message, multiple=False, color=self.color)
 
         spacerY = v.Html(tag='div', style_='width: 0px; height: 20px;')
@@ -87,6 +168,9 @@ class UploadJson():
         
     # Open the dialog-box
     def show(self):
+        """
+        Opens the dialog-box.
+        """
         self.preview.clear_output()
         self.u.clear()
         self.dlg = dialogGeneric.dialogGeneric(title=self.title, on_ok=self._internal_onOK, on_cancel=self._internal_onCancel, on_close=self.onCancel,
