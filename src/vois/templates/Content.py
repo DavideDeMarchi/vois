@@ -28,6 +28,9 @@ from vois.geo import Map, mapUtils
 from vois.templates import PlotlyChart, SVGdrawing, Image, PageConfigurator
 
 
+# Global flag to avoid all dialogWait
+dialogWaitEnabled = True
+
 #####################################################################################################################################################
 # Main content of a template1/2/3panels class
 #####################################################################################################################################################
@@ -158,7 +161,7 @@ class Content(v.Card):
         self.mapslinked = switch.switch(self._linkedmaps, 'Maps linked', inset=True, dense=True, onchange=self.linkedChange)
         self.mapslinked.disabled = True
         self.propagateBounds = True
-        self.showWaitDialogOnUpdate = True
+        self.showWaitDialogOnUpdate = False
 
         self.selectborder = selectSingle.selectSingle('Border in pixel:', ['0', '1', '2', '3'], selection=str(self._borderwidth),  clearable=False, width=100, onchange=self.onselectBorder)
 
@@ -248,7 +251,7 @@ class Content(v.Card):
     # Change of an area content
     def changeAreaContent(self, setfunction, contentname):
         
-        if self.showWaitDialogOnUpdate:
+        if self.showWaitDialogOnUpdate and dialogWaitEnabled:
             dlg = dialogWait.dialogWait(text='Updating content...', output=self.output, color=self._color_first, dark=self._dark)
         
         if contentname == 'Map':
@@ -280,7 +283,7 @@ class Content(v.Card):
 
         self.createAccessStrings()
         
-        if self.showWaitDialogOnUpdate:
+        if self.showWaitDialogOnUpdate and dialogWaitEnabled:
             dlg.close()
                        
 
@@ -703,8 +706,12 @@ class Content(v.Card):
         
     @state.setter
     def state(self, statusdict):
+        
+        # To prevent other dialogWait to be opened
         self.showWaitDialogOnUpdate = False
-        dlg = dialogWait.dialogWait(text='Updating content...', output=self.output, color=statusdict['color_first'], dark=statusdict['dark'])
+        
+        if dialogWaitEnabled:
+            dlg = dialogWait.dialogWait(text='Updating content...', output=self.output, color=statusdict['color_first'], dark=statusdict['dark'])
         
         self.updateWidgetsOnLoadState = True
         
@@ -736,6 +743,8 @@ class Content(v.Card):
         if self.onStateChanged is not None:
             self.onStateChanged()
         
-        dlg.close()
+        if dialogWaitEnabled:
+            dlg.close()
+            
         self.showWaitDialogOnUpdate = True
         

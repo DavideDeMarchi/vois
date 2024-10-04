@@ -27,6 +27,14 @@ import plotly.express as px
 from vois.vuetify import settings, sliderFloat
 from vois.templates import PageConfigurator
 
+import warnings
+
+warnings.filterwarnings(
+    action="ignore",
+    message=r"When grouping with a length-1 list-like, you will need to pass a length-1 tuple to get_group in a future version of pandas\. Pass `\(name,\)` instead of `name` to silence this warning\.",
+    category=FutureWarning,
+    module=r"plotly\.express\._core",
+)
 
 #####################################################################################################################################################
 # Example of Plotly Chart that is centered in a v.Card
@@ -80,7 +88,7 @@ class PlotlyChart(v.Card):
         
         # Display figure in the output widget
         with self.output:
-            display(self._fig.show())
+            self._fig.show()
             
         # Set the clipped Card as the children of the overall Card
         self.children = [self.clip]
@@ -209,11 +217,11 @@ class PlotlyChart(v.Card):
         if self.configure_card is None:
             self.configure_card = v.Card(flat=True, class_='pa-2 ma-0')
             
-            self.sw = sliderFloat.sliderFloat(self._chart_width, text='Chart width in pixels:', minvalue=20.0, maxvalue=1000.0, maxint=980, showpercentage=False, decimals=0,
-                                                   labelwidth=96, sliderwidth=150, resetbutton=True, showtooltip=True, onchange=self.changeW)
+            self.sw = sliderFloat.sliderFloat(self._chart_width, text='Chart width in pixels:', minvalue=20.0, maxvalue=1400.0, maxint=1380, showpercentage=False, decimals=0,
+                                                   labelwidth=96, sliderwidth=140, resetbutton=True, showtooltip=True, onchange=self.changeW, color=self._color_first)
             
             self.sh = sliderFloat.sliderFloat(self._chart_height, text='Chart height in pixels:', minvalue=20.0, maxvalue=800.0, maxint=780, showpercentage=False, decimals=0,
-                                                   labelwidth=96, sliderwidth=150, resetbutton=True, showtooltip=True, onchange=self.changeH)
+                                                   labelwidth=96, sliderwidth=140, resetbutton=True, showtooltip=True, onchange=self.changeH, color=self._color_first)
             
             self.configure_card.children = [widgets.VBox([PageConfigurator.label('Plotly chart', color='black'), self.sw.draw(), self.sh.draw()])]
             

@@ -431,8 +431,9 @@ import json
 
 from vois import cssUtils
 from vois.vuetify import switch, Button, dialogMessage
-from vois.templates import %s
+from vois.templates import %s, Content
 
+Content.dialogWaitEnabled = False
 
 output = widgets.Output(layout=Layout(width='0px', height='0px'))
 display(output)
