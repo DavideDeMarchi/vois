@@ -35,15 +35,15 @@ In order to help new users of the vois library to start using the library withou
 
 These tools are deployed as Voilà dashboards in Microsoft Azure Cloud at this URL: https://vois.azurewebsites.net/
 
-![vois_helpers_1](./logo/vois_helpers_1.png)
+![vois_helpers_1](https://daigio.it/JRC/images/vois_helpers_1.png)
 
 The "Main Page Configurator" is a visual tool to create the starting page of a multipage application, by visually position titles, logos, buttons, credits on top of a background image. Sixty predefined background images are available but also custom background images can be uploaded. The result of the visual configuration can be saved locally as a json file and a notebook .ipynb file and immediately used as the first building block of your application.
 
-![vois_helpers_2](./logo/vois_helpers_2.png)
+![vois_helpers_2](https://daigio.it/JRC/images/vois_helpers_2.png)
 
 The "Page Configurator" enables the visual configuration of one of your application pages. Users can define the colors, the logos, the content of the page (one or more maps, charts, drawings, etc.) and the number of panels that will contain the widgets that control the application behaviour. Once done, the page configuration can be downloaded locally as a json file, a pyton file and a notebook, and immediately used in JupyterLab.
 
-![vois_helpers_3](./logo/vois_helpers_3.png)
+![vois_helpers_3](https://daigio.it/JRC/images/vois_helpers_3.png)
 
 Example of a page with a left panel and a bottom panel. The content of the page consists of two maps and a chart.
 
