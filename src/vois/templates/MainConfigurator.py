@@ -145,7 +145,8 @@ class MainConfigurator(page.page):
                                            text_weight=450, on_click=self.background_image_load, width=netwidth, height=40,
                                            tooltip='Click to select an image to use as application background', selected=True, rounded=settings.button_rounded)
         
-        images = [{ "name": '%d'%x, "image": 'https://jeodpp.jrc.ec.europa.eu/services/shared/wallpapers/%d.jpg'%x, "max_width": 150, "max_height": 100 } for x in range(60)]
+        #images = [{ "name": '%d'%x, "image": 'https://jeodpp.jrc.ec.europa.eu/services/shared/wallpapers/%d.jpg'%x, "max_width": 150, "max_height": 100 } for x in range(60)]
+        images = [{ "name": '%d'%x, "image": mainPage.getLocalImageURL('./graphics/%d.jpg'%x), "max_width": 150, "max_height": 100 } for x in range(60)]
         self.background_image = selectImage.selectImage(images=images, selection=55, onchange=self.background_image_selected, width='380px',
                                                         label='Please select a stock image from the list', max_height=100, dense=True, outlined=True, clearable=True, margins="ma-0 mt-2 mr-1")
 
