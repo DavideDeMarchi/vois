@@ -33,14 +33,17 @@ class dynamicButton():
     def __init__(self,
                  icon1='mdi-menu-left',
                  icon2='mdi-menu-right',
-                 color1=settings.color_first,
-                 color2=settings.color_first,
+                 color1=None,
+                 color2=None,
                  tooltip1='Close panel',
                  tooltip2='Open panel',
                  x1='10vw', y1='10vh',
                  x2='1vw',  y2='10vh',
                  onclick1=None,
                  onclick2=None):
+        
+        if color1 is None: color1 = settings.color_first
+        if color2 is None: color2 = settings.color_first
         
         self.icon1    = icon1
         self.icon2    = icon2
@@ -55,7 +58,7 @@ class dynamicButton():
         self.onclick1 = onclick1
         self.onclick2 = onclick2
         
-        self.ib = iconButton.iconButton(icon=self.icon1, onclick=self.onclick, large=True, tooltip=self.tooltip1)
+        self.ib = iconButton.iconButton(icon=self.icon1, onclick=self.onclick, large=True, tooltip=self.tooltip1, color=self.color1)
         
         self.nav = v.NavigationDrawer(stateless=True, permanent=True, floating=True, fixed=True, left=True, color="transparent", width=50, height=50,
                                       style_='left: %s; top: %s; z-index:1000;'%(self.x1, self.y1), class_='pa-0 ma-0', children=[self.ib.draw()])

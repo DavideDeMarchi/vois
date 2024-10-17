@@ -32,10 +32,6 @@ from vois.templates import dynamicButton, Content
 LEFT_WIDTH    = 400      # Width  in pixels of the left bar
 BOTTOM_HEIGHT = 240      # Height in pixels of the bottom bar
 
-# Name of layers
-LAYERNAME_BACKGROUND  = 'Background'
-LAYERNAME_LABELS      = 'Labels'
-
                 
 #####################################################################################################################################################
 # Template page with left and bottom panels

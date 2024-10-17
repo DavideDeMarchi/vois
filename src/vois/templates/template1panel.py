@@ -31,10 +31,6 @@ from vois.templates import dynamicButton, Content
 # Panels dimensioning
 LEFT_WIDTH = 400      # Width  in pixels of the left bar
 
-# Name of layers
-LAYERNAME_BACKGROUND  = 'Background'
-LAYERNAME_LABELS      = 'Labels'
-
 
 #####################################################################################################################################################
 # Template page with left panel

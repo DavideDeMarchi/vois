@@ -33,10 +33,6 @@ LEFT_WIDTH    = 400      # Width  in pixels of the left bar
 BOTTOM_HEIGHT = 240      # Height in pixels of the bottom bar
 RIGHT_WIDTH   = 480      # Width  in pixels of the right panel
 
-# Name of layers
-LAYERNAME_BACKGROUND  = 'Background'
-LAYERNAME_LABELS      = 'Labels'
-
 
 #####################################################################################################################################################
 # Template page with left, bottom and right panels
