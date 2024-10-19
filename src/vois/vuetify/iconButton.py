@@ -91,7 +91,7 @@ class iconButton():
                  onclick=None, argument=None,
                  disabled=False):
         
-        self.icon      = icon
+        self._icon     = icon
         self._tooltip  = tooltip
         self._color    = color
         self.outlined  = outlined
@@ -120,7 +120,7 @@ class iconButton():
                          large=self.large, small=self.small, x_large=self.x_large, x_small=self.x_small,
                          dark=settings.dark_mode, color=self._color, disabled=self._disabled,
                          width=self.width, min_width=self.width, max_width=self.width,
-                         children=[v.Icon(children=[self.icon],
+                         children=[v.Icon(children=[self._icon],
                                           large=self.large, small=self.small,
                                           x_large=self.x_large, x_small=self.x_small)])
         if not self.width is None:
@@ -185,6 +185,19 @@ class iconButton():
         self.btn.disabled = self._disabled
 
         
+    @property
+    def icon(self):
+        """
+        Get/Set the icon of the button.
+        """
+        return self._icon
+
+    @icon.setter
+    def icon(self, iconname):
+        self._icon = iconname
+        self.__createButton()
+
+
     # Returns the vuetify object to display
     def draw(self):
         return self.h
