@@ -5,6 +5,7 @@ from .DatePicker import DatePicker
 from .Progress import Progress
 from .Radio import Radio
 from .IconClipboard import IconClipboard
+from .Switch import Switch
 # from .Menu import Menu
 
 from .deprecated import button
@@ -13,4 +14,5 @@ from .deprecated import colorPicker
 from .deprecated import datePicker
 from .deprecated import progress
 from .deprecated import radio
+from .deprecated import switch
 # from .deprecated import menu
