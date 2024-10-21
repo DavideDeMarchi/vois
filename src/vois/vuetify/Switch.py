@@ -19,17 +19,14 @@
 # limitations under the Licence.
 from IPython.display import display
 import ipyvuetify as v
+from vois.vuetify.utils.util import *
+from typing import Callable, Optional
 
-try:
-    from . import settings
-except:
-    import settings
 
-    
 #####################################################################################################################################################
 # Switch control
 #####################################################################################################################################################
-class switch():
+class Switch(v.Html):
     """
     The switch widget provides users the ability to choose between two distinct values.
 
@@ -73,23 +70,47 @@ class switch():
 
        Switch widget with inset flag True.
    """
+    deprecation_alias = dict(onchange='on_change')
 
     # Initialization
-    def __init__(self, flag, label, color=None, inset=True, dense=False, onchange=None):
-        
-        self.onchange = onchange
-        
-        self._color = color
-        if self._color is None:
-            self._color = settings.color_first
-        
-        self.switch = v.Switch(v_model=bool(flag), dense=dense, flat=True, label=label, color=self._color, inset=inset, class_="pa-0 ma-0 ml-3 mt-2 mb-n3", disabled=False)
-        
+    @deprecated_init_alias(**deprecation_alias)
+    def __init__(self,
+                 flag: int,
+                 label: str,
+                 color: str = None,
+                 inset: bool = True,
+                 dense: bool = False,
+                 on_change: Optional[Callable[[], None]] = None,
+                 **kwargs):
+
+        super().__init__(**kwargs)
+
+        from vois.vuetify import settings
+
+        self.on_change = on_change
+
+        self._color = settings.color_first if color is None else color
+
+        self.switch = v.Switch(v_model=bool(flag),
+                               dense=dense,
+                               flat=True,
+                               label=label,
+                               color=self._color,
+                               inset=inset,
+                               class_="pa-0 ma-0 ml-3 mt-2 mb-n3",
+                               disabled=False)
+
+        self.tag = 'div'
+        self.children = [self.switch]
+        self.style_ = 'overflow: hidden;'
+
         # If requested onchange management
-        if not self.onchange is None:
+        if self.on_change is not None:
             self.switch.on_event('change', self.__internal_onchange)
-    
-    
+
+        for alias, new in self.deprecation_alias.items():
+            create_deprecated_alias(self, alias, new)
+
     # Get the value
     @property
     def value(self):
@@ -110,26 +131,26 @@ class switch():
         
         """
         return self.switch.v_model
-    
-    
+
     # Set the value of the switch
     @value.setter
     def value(self, flag):
         self.switch.v_model = bool(flag)
-        if self.onchange:
-            self.onchange(self.switch.v_model)
-    
-    
+        if self.on_change:
+            self.on_change(self.switch.v_model)
+
     # Manage onchange event
     def __internal_onchange(self, widget=None, event=None, data=None):
-        if self.onchange:
-            self.onchange(self.switch.v_model)
-    
+        if self.on_change:
+            self.on_change(self.switch.v_model)
+
     # Returns the vuetify object to display (the v.Container)
     def draw(self):
         """Returns the ipyvuetify object to display (the internal v.Html that has a v.Switch widget as its only child)"""
-        return v.Html(tag='div',children=[self.switch], style_='overflow: hidden;')
-            
+        warnings.warn('The "draw" method is deprecated, please just use the object widget itself.',
+                      category=DeprecationWarning,
+                      stacklevel=2)
+        return self
 
     # disabled property
     @property
@@ -138,11 +159,11 @@ class switch():
         Get/Set the disabled state.
         """
         return self.switch.disabled
-    
+
     @disabled.setter
     def disabled(self, flag):
         self.switch.disabled = flag
-        
+
     @property
     def color(self):
         """
@@ -162,10 +183,9 @@ class switch():
         
         """
         return self._color
-        
+
     @color.setter
     def color(self, c):
         if isinstance(c, str):
             self._color = c
             self.switch.color = self._color
-        
