@@ -310,10 +310,10 @@ sidePanel widget
 
 .. image:: figures/line.png
 
-slider widget
+Slider widget
 -------------
 
-.. automodule:: slider
+.. automodule:: Slider
     :members: 
 
 .. image:: figures/line.png
@@ -350,10 +350,10 @@ svgsGrid widget
 
 .. image:: figures/line.png
 
-switch widget
+Switch widget
 -------------
 
-.. automodule:: switch
+.. automodule:: Switch
     :members: 
 
 .. image:: figures/line.png
