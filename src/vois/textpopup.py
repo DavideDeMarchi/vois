@@ -65,6 +65,10 @@ class textpopup():
         Color to use for the texts (default is 'black')
     lineheightfactor : float, optional
         Factor to multiply to the font-size to calculate the height of each row (default is 1.5)
+    align : str, optional
+        Aligment of text inside the popup (default is 'center', alternative is 'left')
+    margin : int, optional
+        Margin in pixel on each side of the content (default is 5)
 
     Example
     -------
@@ -126,7 +130,9 @@ class textpopup():
                  titlewidth=50,
                  titlecolor='black',
                  textcolor='black',
-                 lineheightfactor=1.1
+                 lineheightfactor=1.1,
+                 align='center',
+                 margin=5
                 ):
         self.m = m
         self.autoremovedelay = autoremovedelay
@@ -137,11 +143,10 @@ class textpopup():
         if height is None:
             height = max(titlefontsize,textfontsize)*lineheightfactor*1.1*max(len(titles),len(texts)) + 12
     
-        margin = 5
         width  += 2*margin
-        height += margin
+        height += 2*margin
         
-        self.h = '<table border="0" style="border-collapse: collapse; margin-right: %dpx; margin-left: %dpx; margin-top: %dpx; margin-bottom: 0px; display: block; width: %dpx; height: %dpx; overflow-y: auto;"><tbody>'%(margin,margin,margin, width,height)
+        self.h = '<table border="0" style="border-collapse: collapse; margin-right: %dpx; margin-left: %dpx; margin-top: %dpx; margin-bottom: %dpx; display: block; width: %dpx; height: %dpx; overflow-y: auto;"><tbody>'%(margin-2,margin+2,margin+3,margin-3, width,height)
         for i, title in enumerate(titles):
             if i < len(texts):
                 text = texts[i]
@@ -152,18 +157,18 @@ class textpopup():
             if title in textsbold:  tdtext  = 'th'
             else:                   tdtext  = 'td'
             self.h += '''<tr style="border-bottom: 1px solid lightgrey;">
-  <%s align="center" style="width: %dpx; font-size: %dpx; color: %s; %s">%s</%s>
-  <%s align="center" style="width: %dpx; font-size: %dpx; color: %s; %s">%s</%s>
-</tr>'''%(tdtitle,titlewidth,titlefontsize,titlecolor,lineheight,title,tdtitle, 
-          tdtext,width-titlewidth-4*margin,textfontsize,textcolor,lineheight,text,tdtext)
+  <%s align="%s" style="width: %dpx; font-size: %dpx; color: %s; %s">%s</%s>
+  <%s align="%s" style="width: %dpx; font-size: %dpx; color: %s; %s">%s</%s>
+</tr>'''%(tdtitle,align,titlewidth,titlefontsize,titlecolor,lineheight,title,tdtitle, 
+          tdtext,align,width-titlewidth-4*margin,textfontsize,textcolor,lineheight,text,tdtext)
 
         self.h += '</tbody></table>'
         
         center = (lat,lon)
         icon1 = AwesomeIcon(name='', marker_color='white', icon_color='white', spin=False)
-        self.marker1 = Marker(name='textpopup', icon=icon1, location=center)
+        self.marker1 = Marker(name='textpopup', location=center, icon=icon1)
 
-        icon2 = DivIcon(html=self.h, icon_anchor=[width/2, height+14], icon_size=[width, height])
+        icon2 = DivIcon(html=self.h, icon_anchor=[width/2, height+18], icon_size=[width, height])
         self.marker2 = Marker(name='textpopup', location=center, icon=icon2)
     
         self.m.add_layer(self.marker1)
