@@ -79,7 +79,7 @@ DatePicker widget
 dayCalendar widget
 ------------------
 
-.. automodule:: dayCalendar
+.. automodule:: DayCalendar
     :members:
 
 .. image:: figures/line.png

@@ -8,6 +8,7 @@ from .IconClipboard import IconClipboard
 from .Switch import Switch
 from .SliderFloat import SliderFloat
 from .Label import Label
+from .DayCalendar import DayCalendar
 # from .Menu import Menu
 
 from .deprecated import button
@@ -19,4 +20,5 @@ from .deprecated import radio
 from .deprecated import switch
 from .deprecated import sliderFloat
 from .deprecated import label
+from .deprecated import dayCalendar
 # from .deprecated import menu
