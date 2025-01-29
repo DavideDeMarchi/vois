@@ -18,32 +18,28 @@
 # See the Licence for the specific language governing permissions and
 # limitations under the Licence.
 import ipyvuetify as v
-from ipywidgets import widgets, Layout
-
+import warnings
 import collections
 from datetime import datetime, date, timedelta
 from dateutil.relativedelta import relativedelta
 
-try:
-    from . import settings
-except:
-    import settings
+from typing import Callable, Any, Optional
 
-    
-    
+
 # Given two dates as strings in YYY-MM-DD format, returns the number of weeks of covering the period between start and end day
 def number_of_weeks(start, end):
     start_date = datetime.strptime(start, '%Y-%m-%d').date()
-    end_date   = datetime.strptime(end,   '%Y-%m-%d').date()
+    end_date = datetime.strptime(end, '%Y-%m-%d').date()
     start_monday = start_date + timedelta(days=-start_date.weekday())
-    end_monday   = end_date   + timedelta(days=-end_date.weekday())
+    end_monday = end_date + timedelta(days=-end_date.weekday())
     delta = end_monday - start_monday
     return 1 + delta.days // 7
+
 
 #####################################################################################################################################################
 # Calendar that displays days inside an interval of dates and optional events
 #####################################################################################################################################################
-class dayCalendar():
+class DayCalendar(v.Card):
     """
     Input widget to display a daily calendar for a range of dates and allows for highlighting some of the days and manages the click on the days.
 
@@ -97,89 +93,95 @@ class dayCalendar():
 
        Example of a dayCalendar
     """
-    
-    
+
     # Initialization
     def __init__(self,
-                 start=date.today() + relativedelta(months=-1), # Dates as strings in "YYYY-MM-DD" format or datetime or date instances
+                 start=date.today() + relativedelta(months=-1),
                  end=date.today(),
-                 color=settings.color_first,                    # Color used to highlight the events
-                 dark=settings.dark_mode,
-                 days=[],                                       # List of strings in "YYYY-MM-DD" format to highlight some of the days
-                 show_count=False,                              # If True shows in each higlighted day one char '°' for each repetition inside the days list
-                 width=340,                                     # Width on pixels
-                 height=None,                                   # Height in pixels
-                 on_click=None,                                 # Function called at the click on a day (will receive the day as string in "YYYY-MM-DD" format as parameter)
-                 on_click_event=None                            # Function called at the click on an event (will receive the day as string in "YYYY-MM-DD" format as parameter)
-                ):
-        
-        if isinstance(start,datetime) or isinstance(start,date):
+                 color: Optional[str] = None,
+                 dark: Optional[bool] = None,
+                 days: list = [],
+                 show_count: bool = False,
+                 width: int = 340,
+                 height: int = None,
+                 on_click: Optional[Callable[[str], None]] = None,
+                 on_click_event: Optional[Callable[[str], None]] = None,
+                 **kwargs
+                 ):
+
+        if isinstance(start, datetime) or isinstance(start, date):
             self.start = start.strftime('%Y-%m-%d')
         else:
             self.start = start
 
-        if isinstance(end,datetime) or isinstance(end,date):
+        if isinstance(end, datetime) or isinstance(end, date):
             self.end = end.strftime('%Y-%m-%d')
         else:
             self.end = end
-            
-        self._color         = color
-        self._days          = days
-        self.show_count     = show_count
-        self.width          = width
-        self.height         = height
-        self.on_click       = on_click
+
+        from vois.vuetify import settings
+
+        self._color = color if color is not None else settings.color_first
+        self._dark = dark if dark is not None else settings.dark_mode
+        self._days = days
+        self.show_count = show_count
+        self.width = width
+        self.height = height
+        self.on_click = on_click
         self.on_click_event = on_click_event
-        
+
         self.cal = v.Calendar(v_model='', start=self.start, end=self.end, now='1899-12-31', type='custom-weekly',
                               event_more=False, event_height=6, events=[], event_color=self._color, short_weekdays=True,
-                              hide_header=False, show_month_on_first=True, weekdays=[1,2,3,4,5,6,0], dark=dark)                  # Week start on Monday: standard ISO!
+                              hide_header=False, show_month_on_first=True, weekdays=[1, 2, 3, 4, 5, 6, 0],
+                              dark=self._dark)  # Week start on Monday: standard ISO!
         self.cal.on_event('input', self.__internal_on_click)
         self.cal.on_event('click:event', self.__internal_on_click_event)
 
         self.days2events()
-        
-        card_height = 53 * number_of_weeks(self.start, self.end)
-        self.card = v.Card(flat=True, children=[self.cal], width=self.width, height=card_height, class_='pa-0 ma-0 mb-1')
 
-        if self.height is None:
-            self.height = 10 + card_height
-            
-        self.output = widgets.Output(layout=Layout(height='%dpx'%self.height))
-        with self.output:
-            display(self.card)
-         
-    
+        card_height = 53 * number_of_weeks(self.start, self.end)
+
+        super().__init__(flat=True, width=self.width, height=card_height,
+                           class_='pa-0 ma-0 mb-1', **kwargs)
+
+        self.children = [self.cal]
+
+        # if self.height is None:
+        #     self.height = 10 + card_height
+        #
+        # self.output = widgets.Output(layout=Layout(height='%dpx' % self.height))
+        # with self.output:
+        #     display(self.card)
+
     # Convert a list of days in events for the calendar widget
     def days2events(self):
         if self.show_count:
-             # See https://en.wikipedia.org/wiki/List_of_Unicode_characters
-            self.events = [{'name': '\u02DA'*count, 'start': day } for day,count in collections.Counter(self._days).items()]
+            # See https://en.wikipedia.org/wiki/List_of_Unicode_characters
+            self.events = [{'name': '\u02DA' * count, 'start': day} for day, count in
+                           collections.Counter(self._days).items()]
         else:
             self.events = [{'name': '', 'start': d} for d in list(set(self._days))]
         self.cal.events = self.events
 
-        
     # Manage click on a day
     def __internal_on_click(self, widget, event, data):
         if not self.on_click is None:
             self.on_click(data)
-        
-        
+
     # Manage click on an event
     def __internal_on_click_event(self, widget, event, data):
         if 'event' in data:
             day = data['event']['start']
             if not self.on_click_event is None:
                 self.on_click_event(day)
-            
-            
+
     # Returns the vuetify object to display (the Output widget containing the card containing the calendar)
     def draw(self):
-        """Returns the ipyvuetify object to display (the internal Output widget)"""
-        return self.output
+        warnings.warn('The "draw" method is deprecated, please just use the object widget itself.',
+                      category=DeprecationWarning,
+                      stacklevel=2)
+        return self
 
-    
     # color property
     @property
     def color(self):
@@ -200,13 +202,12 @@ class dayCalendar():
         
         """
         return self._color
-    
+
     @color.setter
     def color(self, col):
         self._color = col
         self.cal.event_color = self._color
-    
-    
+
     # days property
     @property
     def days(self):
@@ -227,7 +228,7 @@ class dayCalendar():
         
         """
         return self._days
-    
+
     @days.setter
     def days(self, listofdays):
         self._days = listofdays
