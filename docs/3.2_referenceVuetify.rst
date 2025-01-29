@@ -313,7 +313,7 @@ sidePanel widget
 slider widget
 -------------
 
-.. automodule:: slider
+.. automodule:: Slider
     :members: 
 
 .. image:: figures/line.png
@@ -321,7 +321,7 @@ slider widget
 sliderFloat widget
 ------------------
 
-.. automodule:: sliderFloat
+.. automodule:: SliderFloat
     :members: 
 
 .. image:: figures/line.png

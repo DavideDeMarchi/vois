@@ -136,3 +136,64 @@ class Test_sliderFloat:
         #
         # reset.click()
         # assert_vois_compare_image(image=my_switch_1_sel.screenshot(animations='disabled'), postfix='4')
+
+
+class Test_SliderFloat:
+
+    def test_simple_init(self, ipywidgets_vois_runner, page_session, assert_vois_compare_image,
+                         assert_vois_bytes_image):
+        def kernel_code():
+            import sys
+            sys.path.append('/Users/edoardo/JRC_Projects/vois/src/')
+
+            import warnings
+            warnings.filterwarnings("ignore")
+
+            from vois.vuetify import SliderFloat, settings
+
+            settings.color_first = 'green'
+
+            my_slider_1 = SliderFloat(value=1.8,
+                                      min_value=1.0,
+                                      max_value=3.0,
+                                      text='Select',
+                                      show_percentage=False,
+                                      decimals=2,
+                                      max_int=None,
+                                      label_width=150,
+                                      slider_width=200,
+                                      reset_button=False,
+                                      show_tooltip=False,
+                                      on_change=None,
+                                      color=None,
+                                      editable=False,
+                                      editable_width=90)
+
+            my_slider_2 = SliderFloat(value=3.8,
+                                      min_value=0.0,  # Tested
+                                      max_value=5.0,  # Tested
+                                      text='Select Value',  # Tested
+                                      show_percentage=False,
+                                      decimals=3,  # Tested
+                                      max_int=None,
+                                      label_width=50,  # Tested
+                                      slider_width=100,  # Tested
+                                      reset_button=True,  # Tested
+                                      show_tooltip=True,  # Tested
+                                      on_change=None,
+                                      color='red',  # Tested
+                                      editable=False,
+                                      editable_width=90)
+
+            display(my_slider_1)
+            display(my_slider_2)
+
+        ipywidgets_vois_runner(kernel_code)
+
+        sliders = page_session.locator(".v-application--wrap").all()
+
+        my_switch_1_sel = sliders[1]
+        my_slider_2_sel = sliders[4]
+
+        assert_vois_compare_image(image=my_switch_1_sel.screenshot(animations='disabled'), postfix='1')
+        assert_vois_compare_image(image=my_slider_2_sel.screenshot(animations='disabled'), postfix='2')
