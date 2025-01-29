@@ -177,7 +177,7 @@ class label:
     # Returns the vuetify object to display (the v.Container)
     def draw(self):
         """Returns the ipyvuetify object to display (the internal v.Html which has a v.Container as its only child)"""
-        return v.Html(tag='div',children=[self.container])
+        return v.Html(tag='div', children=[self.container])
     
     
     # Get the label text
