@@ -321,7 +321,7 @@ Slider widget
 sliderFloat widget
 ------------------
 
-.. automodule:: sliderFloat
+.. automodule:: SliderFloat
     :members: 
 
 .. image:: figures/line.png
