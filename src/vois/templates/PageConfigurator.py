@@ -25,7 +25,7 @@ import json
 
 # Vois imports
 from vois import colors, download
-from vois.vuetify import settings, toggle, ColorPicker, sliderFloat, UploadImage, UploadJson, Button, switch, tooltip, iconButton, dialogGeneric, selectSingle, tabs
+from vois.vuetify import settings, Toggle, ColorPicker, sliderFloat, UploadImage, UploadJson, Button, switch, tooltip, iconButton, dialogGeneric, selectSingle, tabs
 from vois.templates import template1panel, template2panels, template3panels
 from vois import cssUtils
 
@@ -125,10 +125,10 @@ class PageConfigurator(v.Html):
         
         
         self.panelsLabel  = label('Page format: ', size=self.biglabelsize, weight=500, width=self.labelwidth)
-        self.togglePanels = toggle.toggle(self.reset_state['panelsvalue'],
+        self.togglePanels = Toggle(self.reset_state['panelsvalue'],
                                           ['1', '2', '3'],
                                           tooltips=['Page with 1 left panel', 'Page with 2 panels: left and bottom', 'Page with 3 panels: left, bottom and right'],
-                                          dark=True, onchange=self.onSelectedTemplate, row=True, width=self.togglewidth, justify='start', paddingrow=self.paddingrow, tile=True)
+                                          dark=True, on_change=self.onSelectedTemplate, row=True, width=self.togglewidth, justify='start', padding_row=self.paddingrow, tile=True)
 
         
         self.titlecolor  = ColorPicker(dark=False, color=settings.color_first,  width=50, height=30, rounded=False, on_change=self.titlecolorChange,  offset_x=True, offset_y=False, color_theory_popup=True)
@@ -136,18 +136,18 @@ class PageConfigurator(v.Html):
         
         self.rounded = switch.switch(self.reset_state['button_rounded'], 'Rounded buttons', inset=True, dense=True, onchange=self.onroundedChange)
         
-        self.footerlinked = toggle.toggle(self.reset_state['footerlinkedvalue'], ['', '', '', ''], dark=True, icons=['mdi-link-off', 'mdi-link-variant', 'mdi-link-variant-minus', 'mdi-link-variant-plus'], outlined=False,
+        self.footerlinked = Toggle(self.reset_state['footerlinkedvalue'], ['', '', '', ''], dark=True, icons=['mdi-link-off', 'mdi-link-variant', 'mdi-link-variant-minus', 'mdi-link-variant-plus'], outlined=False,
                                           tooltips=['Free selection of footer color', 'Footer color is the complementary of the title color',
                                                     'Footer color is a darker version of the title color', 'Footer color is a lighter version of the title color'],
-                                          onchange=self.footerlinkedChange, row=True, width=self.togglewidth-20, height=30, justify='start', paddingrow=self.paddingrow, tile=True)
+                                          on_change=self.footerlinkedChange, row=True, width=self.togglewidth-20, height=30, justify='start', padding_row=self.paddingrow, tile=True)
         
-        self.titledark = toggle.toggle(self.reset_state['titledarkvalue'], ['', '', ''], dark=True, icons=['mdi-alpha-w-box-outline', 'mdi-alpha-b-box-outline', 'mdi-auto-fix'],
+        self.titledark = Toggle(self.reset_state['titledarkvalue'], ['', '', ''], dark=True, icons=['mdi-alpha-w-box-outline', 'mdi-alpha-b-box-outline', 'mdi-auto-fix'],
                                        tooltips=['Display text in white color on the title bar', 'Display text in black color on the title bar', 'Automatically select text color for the title bar'],
-                                       onchange=self.titledarkChange, row=True, width=self.togglewidth, justify='start', paddingrow=self.paddingrow, tile=True)
+                                       on_change=self.titledarkChange, row=True, width=self.togglewidth, justify='start', padding_row=self.paddingrow, tile=True)
 
-        self.footerdark = toggle.toggle(self.reset_state['footerdarkvalue'], ['', '', ''], dark=True, icons=['mdi-alpha-w-box-outline', 'mdi-alpha-b-box-outline', 'mdi-auto-fix'],
+        self.footerdark = Toggle(self.reset_state['footerdarkvalue'], ['', '', ''], dark=True, icons=['mdi-alpha-w-box-outline', 'mdi-alpha-b-box-outline', 'mdi-auto-fix'],
                                         tooltips=['Display text in white color on the footer bar', 'Display text in black color on the footer bar', 'Automatically select text color for the footer bar'],
-                                        onchange=self.footerdarkChange, row=True, width=self.togglewidth, justify='start', paddingrow=self.paddingrow, tile=True)
+                                        on_change=self.footerdarkChange, row=True, width=self.togglewidth, justify='start', padding_row=self.paddingrow, tile=True)
         
         self.titleheight = sliderFloat.sliderFloat(self.reset_state['titleheight'], text='Title bar height:', minvalue=20.0, maxvalue=180.0, maxint=160, showpercentage=False, decimals=0,
                                                    labelwidth=self.labelwidth-10, sliderwidth=150, resetbutton=True, showtooltip=True, onchange=self.titleheightChange)
