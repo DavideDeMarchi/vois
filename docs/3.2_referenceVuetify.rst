@@ -385,7 +385,7 @@ title bar
 toggle widget
 -------------
 
-.. automodule:: toggle
+.. automodule:: Toggle
     :members: 
 
 .. image:: figures/line.png
