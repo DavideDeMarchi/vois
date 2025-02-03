@@ -80,7 +80,7 @@ class Switch(v.Html):
                  color: str = None,
                  inset: bool = True,
                  dense: bool = False,
-                 on_change: Optional[Callable[[], None]] = None,
+                 on_change: Optional[Callable[[bool], None]] = None,
                  **kwargs):
 
         super().__init__(**kwargs)
