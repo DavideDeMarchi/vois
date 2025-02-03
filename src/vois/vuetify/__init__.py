@@ -9,6 +9,7 @@ from .Switch import Switch
 from .SliderFloat import SliderFloat
 from .Label import Label
 from .DayCalendar import DayCalendar
+from .Toggle import Toggle
 # from .Menu import Menu
 
 from .deprecated import button
@@ -21,4 +22,5 @@ from .deprecated import switch
 from .deprecated import sliderFloat
 from .deprecated import label
 from .deprecated import dayCalendar
+from .deprecated import toggle
 # from .deprecated import menu
