@@ -127,7 +127,7 @@ Vuetify package
  tabs
  textlist
  title
- toggle
+ Toggle
  tooltip
  treeview
  upload

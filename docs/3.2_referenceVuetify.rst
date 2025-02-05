@@ -382,7 +382,7 @@ title bar
     
 .. image:: figures/line.png
 
-toggle widget
+Toggle widget
 -------------
 
 .. automodule:: Toggle
