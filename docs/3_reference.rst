@@ -88,7 +88,7 @@ Vuetify package
  ColorPicker
  datatable
  DatePicker
- dayCalendar
+ DayCalendar
  dialogGeneric
  dialogMessage
  dialogWait
@@ -98,7 +98,7 @@ Vuetify package
  footer
  iconButton
  IconClipboard
- label
+ Label
  layers
  mainPage
  menu
