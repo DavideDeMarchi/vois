@@ -170,7 +170,7 @@ class Button(v.Html):
                  href: Optional[str] = None,
                  target: Optional[str] = None,
                  only_text: bool = False,
-                 text_color: Optional[str] = None,
+                 text_color: Optional[str] = None,  # TODO to be fixed. It is competitive with color_selected. Maybe text-color css?
                  class_: str = "pa-0 ma-0",
                  icon: Optional[str] = None,
                  icon_large: bool = False,

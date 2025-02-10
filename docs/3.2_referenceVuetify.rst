@@ -185,7 +185,7 @@ menu widget
 multiSwitch widget
 ------------------
 
-.. automodule:: multiSwitch
+.. automodule:: MultiSwitch
     :members: 
 
 .. image:: figures/line.png
