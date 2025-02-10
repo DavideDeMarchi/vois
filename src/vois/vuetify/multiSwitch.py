@@ -107,11 +107,29 @@ class multiSwitch():
    """
 
     # Initialization
-    def __init__(self, values, labels, tooltips=None, color=settings.color_first, onchange=None, dark=settings.dark_mode,
-                 row=True, width=150, height=36, justify='space-between', rounded=settings.button_rounded, outlined=False,
-                 colorselected=settings.color_first, colorunselected=settings.color_second,
-                 managedblclick=False, paddingrow=1, paddingcol=2, tile=False,
-                 small=False, xsmall=False, large=False, xlarge=False):
+    def __init__(self,
+                 values,
+                 labels,
+                 tooltips=[],
+                 color=settings.color_first,
+                 onchange=None,
+                 dark=settings.dark_mode,
+                 row=True,
+                 width=150,
+                 height=36,
+                 justify='space-between',
+                 rounded=settings.button_rounded,
+                 outlined=False,
+                 colorselected=settings.color_first,
+                 colorunselected=settings.color_second,
+                 managedblclick=False,
+                 paddingrow=1,
+                 paddingcol=2,
+                 tile=False,
+                 small=False,
+                 xsmall=False,
+                 large=False,
+                 xlarge=False):
         
         self.values   = [bool(x) for x in values]    # list of boolean values
         self.labels   = labels
