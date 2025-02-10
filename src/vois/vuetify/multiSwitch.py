@@ -17,17 +17,9 @@
 # 
 # See the Licence for the specific language governing permissions and
 # limitations under the Licence.
-from IPython.display import display
 import ipyvuetify as v
 
-try:
-    from . import settings
-    from . import tooltip
-    from . import Button
-except:
-    import settings
-    import tooltip
-    import Button
+from vois.vuetify import Button, settings
 
 
 #####################################################################################################################################################
