@@ -12,6 +12,7 @@ from .DayCalendar import DayCalendar
 from .Toggle import Toggle
 from .MultiSwitch import MultiSwitch
 from .Tabs import Tabs
+from .TextList import TextList
 # from .Menu import Menu
 
 from .deprecated import button
@@ -27,4 +28,5 @@ from .deprecated import dayCalendar
 from .deprecated import toggle
 from .deprecated import multiSwitch
 from .deprecated import tabs
+from .deprecated import textlist
 # from .deprecated import menu
