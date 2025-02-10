@@ -366,10 +366,10 @@ Tabs widget
 
 .. image:: figures/line.png
 
-textlist widget
+TextList widget
 ---------------
 
-.. automodule:: textlist
+.. automodule:: TextList
     :members: 
 
 .. image:: figures/line.png
