@@ -176,7 +176,7 @@ class multiSwitch():
                     
             b = Button(label,
                        class_=c,
-                       text_color=self.color,
+                       #text_color=self.color,
                        on_click=self.__internal_onchange,
                        on_dblclick=self.__internal_dblclick,
                        argument=i,
