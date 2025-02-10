@@ -76,7 +76,7 @@ DatePicker widget
 
 .. image:: figures/line.png
 
-dayCalendar widget
+DayCalendar widget
 ------------------
 
 .. automodule:: DayCalendar
@@ -150,7 +150,7 @@ IconClipboard widget
 
 .. image:: figures/line.png
 
-label widget
+Label widget
 ------------
 
 .. automodule:: Label
@@ -182,7 +182,7 @@ menu widget
 
 .. image:: figures/line.png
 
-multiSwitch widget
+MultiSwitch widget
 ------------------
 
 .. automodule:: MultiSwitch
