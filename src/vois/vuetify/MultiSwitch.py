@@ -19,13 +19,17 @@
 # limitations under the Licence.
 import ipyvuetify as v
 
-from vois.vuetify import Button, settings
+from vois.vuetify import Button
+
+from vois.vuetify.utils.util import *
+
+from typing import Callable, Optional
 
 
 #####################################################################################################################################################
 # Multi switch  control
 #####################################################################################################################################################
-class multiSwitch():
+class MultiSwitch(v.Html):
     """
     Widget to select independent options using a list of buttons displayed horizontally or vertically.
         
@@ -41,7 +45,7 @@ class multiSwitch():
         Color used for the widget (default is the color_first defined in the settings.py module)
     dark : bool, optional
         Flag to invert the text and backcolor (default is the value of settings.dark_mode)
-    onchange : function, optional
+    on_change : function, optional
         Python function to call when the user clicks on one of the buttons. The function will receive a parameter of list containing the status of all the buttons, from 0 to len(labels)-1
     row : bool, optional
         Flag to display the buttons horizontally or vertically (default is True)
@@ -55,47 +59,47 @@ class multiSwitch():
         Flag to display the buttons with a rounded shape (default is the button_rounded flag defined in the settings.py module)
     outlined : bool, optional
         Flag to display the buttons as outlined (default is True)
-    colorselected : str, optional
+    color_selected : str, optional
         Color used for the buttons when they are selected (default is settings.color_first)
-    colorunselected : str, optional
+    color_unselected : str, optional
         Color used for the buttons when they are not selected (default is settings.color_second)
-    managedblclick : bool, optional
+    manage_dbl_click : bool, optional
         If True the dblclick event is managed to select a single button of the multi-switch (default is False)
-    paddingrow : int, optional
+    padding_row : int, optional
         Horizontal padding among toggle buttons (1 unit means 4 pixels). Default is 1
-    paddingcol : int, optional
+    padding_col : int, optional
         Vertical padding among toggle buttons (1 unit means 4 pixels). Default is 2
     tile : bool, optional
         Flag to remove the buttons small border (default is False)
     large : bool, optional
         Flag that sets the large version of the button (default is False)
-    xlarge : bool, optional
-        Flag that sets the xlarge version of the button (default is False)
+    x_large : bool, optional
+        Flag that sets the x_large version of the button (default is False)
     small : bool, optional
         Flag that sets the small version of the button (default is False)
-    xsmall : bool, optional
-        Flag that sets the xsmall version of the button (default is False)
+    x_small : bool, optional
+        Flag that sets the x_small version of the button (default is False)
 
     Example
     -------
     Creation and display of a widget for the selection of 3 independent options::
         
-        from vois.vuetify import multiSwitch
+        from vois.vuetify import MultiSwitch
         from ipywidgets import widgets
         from IPython.display import display
         
         output = widgets.Output()
 
-        def onchange(values):
+        def on_change(values):
             with output:
                 print(values)
 
-        m = multiSwitch.multiSwitch([False, True, False], ['Option 1', 'Option 2', 'Option 3'],
+        m = MultiSwitch([False, True, False], ['Option 1', 'Option 2', 'Option 3'],
                                     tooltips=['Tooltip for option 1'], 
-                                    onchange=onchange, row=False, width=150, rounded=False, outlined=True,
-                                    colorselected='#FFA300', colorunselected='#aaaaaa')
+                                    on_change=on_change, row=False, width=150, rounded=False, outlined=True,
+                                    color_selected='#FFA300', color_unselected='#aaaaaa')
 
-        display(m.draw())
+        display(m)
         display(output)
 
 
@@ -107,56 +111,71 @@ class multiSwitch():
    """
 
     # Initialization
+    deprecation_alias = dict(onchange='on_change', colorselected='color_selected', colorunselected='color_unselected',
+                             managedblclick='manage_dbl_click', paddingrow='padding_row', paddingcol='padding_col',
+                             xsmall='x_small', xlarge='x_large')
+
+    # Initialization
+    @deprecated_init_alias(**deprecation_alias)
     def __init__(self,
-                 values,
-                 labels,
-                 tooltips=[],
-                 color=settings.color_first,
-                 onchange=None,
-                 dark=settings.dark_mode,
-                 row=True,
-                 width=150,
-                 height=36,
-                 justify='space-between',
-                 rounded=settings.button_rounded,
-                 outlined=False,
-                 colorselected=settings.color_first,
-                 colorunselected=settings.color_second,
-                 managedblclick=False,
-                 paddingrow=1,
-                 paddingcol=2,
-                 tile=False,
-                 small=False,
-                 xsmall=False,
-                 large=False,
-                 xlarge=False):
-        
-        self.values   = [bool(x) for x in values]    # list of boolean values
-        self.labels   = labels
+                 values: list[bool],
+                 labels: list[str],
+                 tooltips: list[str],
+                 color: Optional[str] = None,
+                 on_change: Optional[Callable[[list[bool]], None]] = None,
+                 dark: Optional[bool] = None,
+                 row: bool = True,
+                 width: int = 150,
+                 height: int = 36,
+                 justify: str = 'space-between',
+                 rounded: Optional[bool] = None,
+                 outlined: bool = False,
+                 color_selected: Optional[str] = None,
+                 color_unselected: Optional[str] = None,
+                 manage_dbl_click: bool = False,
+                 padding_row: int = 1,
+                 padding_col: int = 2,
+                 tile: bool = False,
+                 small: bool = False,
+                 x_small: bool = False,
+                 large: bool = False,
+                 x_large: bool = False,
+                 **kwargs):
+
+        from vois.vuetify import settings
+
+        super().__init__(tag='div', **kwargs)
+
+        # self.style_ = 'padding: 0px; margin: 0px; ' + self.style_
+
+        self.values = [bool(x) for x in values]  # list of boolean values
+        self.labels = labels
         self.tooltips = tooltips
-        self.color    = color
-        self.dark     = dark
-        self.onchange = onchange
-        self.row      = row
-        self.width    = width
-        self.height   = height
-        self.justify  = justify
-        self.rounded  = rounded
+        self.color = color if color is not None else settings.color_first
+        self.dark = dark if dark is not None else settings.dark_mode
+        self.on_change = on_change
+        self.row = row
+        self.width = width
+        self.height = height
+        self.justify = justify
+        self.rounded = rounded if rounded is not None else settings.button_rounded
         self.outlined = outlined
-        self.colorselected   = colorselected
-        self.colorunselected = colorunselected
-        self.managedblclick  = managedblclick
-        self.paddingrow = paddingrow
-        self.paddingcol = paddingcol
-        self.tile   = tile
-        self.small  = small
-        self.xsmall = xsmall
-        self.large  = large
-        self.xlarge = xlarge
-        
+        self.color_selected = color_selected if color_selected is not None else settings.color_first
+        self.color_unselected = color_unselected if color_unselected is not None else settings.color_second
+        self.manage_dbl_click = manage_dbl_click
+        self.padding_row = padding_row
+        self.padding_col = padding_col
+        self.tile = tile
+        self.small = small
+        self.x_small = x_small
+        self.large = large
+        self.x_large = x_large
+
         self.__createButtons()
-        
-        
+
+        for alias, new in self.deprecation_alias.items():
+            create_deprecated_alias(self, alias, new)
+
     # Create the toggle buttons
     def __createButtons(self):
 
@@ -166,40 +185,46 @@ class multiSwitch():
             tooltip = ''
             if i < len(self.tooltips):
                 tooltip = self.tooltips[i]
-            
-            if self.row: c = "pa-0 ma-0 mr-%d"%self.paddingrow
+
+            if self.row:
+                c = "pa-0 ma-0 mr-%d" % self.padding_row
             else:
-                if i == len(self.labels)-1:
+                if i == len(self.labels) - 1:
                     c = "pa-0 ma-0 mb-7"
                 else:
-                    c = "pa-0 ma-0 mb-%d"%self.paddingcol
-                    
+                    c = "pa-0 ma-0 mb-%d" % self.padding_col
+
             b = Button(label,
                        class_=c,
-                       #text_color=self.color,
+                       # text_color=self.color,
                        on_click=self.__internal_onchange,
                        on_dblclick=self.__internal_dblclick,
                        argument=i,
                        tooltip=tooltip,
                        selected=self.values[i],
                        small=self.small,
-                       xsmall=self.xsmall,
+                       x_small=self.x_small,
                        large=self.large,
-                       x_large=self.xlarge,
+                       x_large=self.x_large,
                        width=self.width,
                        height=self.height,
                        rounded=self.rounded,
                        tile=self.tile,
                        outlined=self.outlined,
                        dark=self.dark,
-                       color_selected=self.colorselected,
-                       color_unselected=self.colorunselected)
+                       color_selected=self.color_selected,
+                       color_unselected=self.color_unselected)
             self.buttons.append(b)
             i += 1
 
-        if self.row: self.group = v.Row(class_="pa-0 ma-0", justify=self.justify, children=[x.draw() for x in self.buttons], style_="overflow: hidden;")
-        else:        self.group = v.Col(cols=12, class_="pa-0 ma-0", children=[x.draw() for x in self.buttons], style_="overflow: hidden;")
+        if self.row:
+            self.group = v.Row(class_="pa-0 ma-0", justify=self.justify, children=[x for x in self.buttons],
+                               style_="overflow: hidden;")
+        else:
+            self.group = v.Col(cols=12, class_="pa-0 ma-0", children=[x for x in self.buttons],
+                               style_="overflow: hidden;")
 
+        self.children = [self.group]
 
     # Get the active button
     @property
@@ -221,8 +246,7 @@ class multiSwitch():
         
         """
         return self.values
-   
-    
+
     # Set the status of the buttons
     @value.setter
     def value(self, values):
@@ -230,39 +254,38 @@ class multiSwitch():
             self.values = [bool(x) for x in values]
             for i in range(len(self.values)):
                 self.buttons[i].selected = self.values[i]
-            if self.onchange:
-                self.onchange(self.values)
+            if self.on_change:
+                self.on_change(self.values)
 
-
-    # Manage onchange event
+    # Manage on_change event
     def __internal_onchange(self, index):
         self.values[index] = not self.values[index]
         self.buttons[index].selected = self.values[index]
-        if self.onchange:
-            self.onchange(self.values)
-            
-        
+        if self.on_change:
+            self.on_change(self.values)
+
     # Manage dblclick event
     def __internal_dblclick(self, index):
-        if self.managedblclick:
+        if self.manage_dbl_click:
 
             i = 0
             for b in self.buttons:
-                if i == index: 
+                if i == index:
                     self.values[i] = True
                     b.selected = True
                 else:
                     self.values[i] = False
                     b.selected = False
-                    
+
                 i += 1
-                
-            if self.onchange:
-                self.onchange(self.values)
-            
-    
+
+            if self.on_change:
+                self.on_change(self.values)
+
     # Returns the vuetify object to display
     def draw(self):
         """Returns the ipyvuetify object to display (the internal v.Row or v.Col widget)"""
-        return self.group
-
+        warnings.warn('The "draw" method is deprecated, please just use the object widget itself.',
+                      category=DeprecationWarning,
+                      stacklevel=2)
+        return self

@@ -102,7 +102,7 @@ Vuetify package
  layers
  mainPage
  menu
- multiSwitch
+ MultiSwitch
  page
  paletteEditor
  palettePicker
