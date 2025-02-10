@@ -17,21 +17,19 @@
 # 
 # See the Licence for the specific language governing permissions and
 # limitations under the Licence.
-from IPython.display import display
 import ipyvuetify as v
 
-try:
-    from . import settings
-    from . import tooltip
-except:
-    import settings
-    import tooltip
+from vois.vuetify import tooltip
+
+from vois.vuetify.utils.util import *
+
+from typing import Callable, Optional, Any
 
 
 #####################################################################################################################################################
 # Tabs control
 #####################################################################################################################################################
-class tabs:
+class Tabs(v.Tabs):
     """
     Widget to select among alternative display using a list of tabs displayed horizontally or vertically.
         
@@ -49,7 +47,7 @@ class tabs:
         Color used for the widget (default is the color_first defined in the settings.py module)
     dark : bool, optional
         Flag to invert the text and backcolor (default is the value of settings.dark_mode)
-    onchange : function, optional
+    on_change : function, optional
         Python function to call when the user clicks on one of the tabs. The function will receive a parameter of type int containing the index of the selected tab, from 0 to len(labels)-1
     row : bool, optional
         Flag to display the tabs horizontally or vertically (default is True)
@@ -58,7 +56,7 @@ class tabs:
     -------
     Creation and display of a tabs widget to select among alternative Outputs display::
         
-        from vois.vuetify import tabs
+        from vois.vuetify import Tabs
         from ipywidgets import widgets
         from IPython.display import display
 
@@ -72,15 +70,15 @@ class tabs:
         with output1: print('This is output 1')
         with output2: print('This is output 2')
 
-        def onchange(index):
+        def on_change(index):
             with debug:
                 print(index)
 
-        t = tabs.tabs(0, ['Option 0', 'Option 1', 'Option 2'],
+        t = Tabs(0, ['Option 0', 'Option 1', 'Option 2'],
                       contents=[output0,output1,output2],
-                      onchange=onchange, row=False)
+                      on_change=on:change, row=False)
 
-        display(t.draw())
+        display(t)
         display(debug)
 
     .. figure:: figures/tabs.png
@@ -91,65 +89,86 @@ class tabs:
    """
 
     # Initialization
-    def __init__(self, index, labels, contents=None, tooltips=None, color=None, dark=settings.dark_mode, onchange=None, row=True):
-        
-        self.index    = index
-        self.labels   = labels
-        self.onchange = onchange
+    deprecation_alias = dict(onchange='on_change')
+
+    # Initialization
+    @deprecated_init_alias(**deprecation_alias)
+    def __init__(self,
+                 index: int,
+                 labels: list[str],
+                 contents: Optional[list[Any]] = None,
+                 tooltips: Optional[list[str]] = None,
+                 color: Optional[str] = None,
+                 dark: Optional[bool] = None,
+                 on_change: Optional[Callable[[int], None]] = None,
+                 row: bool = True,
+                 **kwargs):
+
+        from vois.vuetify import settings
+
+        self.dark = dark if dark is not None else settings.dark_mode
+
+        self.index = index
+        self.labels = labels
+        self.on_change = on_change
 
         self._color = color
         if self._color is None:
             self._color = settings.color_first
-        
+
         s = ''
-        if dark:
+        if self.dark:
             s = "color: %s;" % settings.textcolor_dark
-            
+
         self.tab_list = []
         self.tab_list_with_tooltips = []
         i = 0
-        for index,label in enumerate(self.labels):
+        for index, label in enumerate(self.labels):
             t = v.Tab(children=[label], style_=s, disabled=False)
             t.on_event('click', self.__internal_onchange)
             if isinstance(tooltips, list) and len(tooltips) > index:
-                self.tab_list_with_tooltips.append(tooltip.tooltip(tooltips[index],t))
+                self.tab_list_with_tooltips.append(tooltip.tooltip(tooltips[index], t))
             else:
                 self.tab_list_with_tooltips.append(t)
-                
+
             self.tab_list.append(t)
             i += 1
-            
+
         content_list = []
         if not contents is None:
             content_list = [v.TabItem(children=[x]) for x in contents]
-            
-        self.slider = v.TabsSlider(color=self._color, dark=dark)
-        
+
+        self.slider = v.TabsSlider(color=self._color, dark=self.dark)
+
         backcolor = 'white'
         textcolor = settings.textcolor_notdark
-        if dark:
+        if self.dark:
             backcolor = settings.dark_background
             textcolor = settings.textcolor_dark
 
-        self.tabswidget = v.Tabs(v_model=self.index, vertical=not row, dense=True, class_='pa-0 ma-0', 
-                                 #background_color='white', color=settings.textcolor_notdark,
-                                 background_color=backcolor, color=textcolor, 
-                                 children=[self.slider] + self.tab_list_with_tooltips + content_list)
-        
-   
+        super().__init__(v_model=self.index, vertical=not row, dense=True, class_='pa-0 ma-0',
+                         # background_color='white', color=settings.textcolor_notdark,
+                         background_color=backcolor, color=textcolor,
+                         children=[self.slider] + self.tab_list_with_tooltips + content_list,
+                         **kwargs)
+
+        for alias, new in self.deprecation_alias.items():
+            create_deprecated_alias(self, alias, new)
 
     # Manage onchange event
     def __internal_onchange(self, widget, event, data):
         self.index = self.tab_list.index(widget)
-        if self.onchange:
-            self.onchange(self.index)
-    
+        if self.on_change:
+            self.on_change(self.index)
+
     # Returns the vuetify object to display
     def draw(self):
         """Returns the ipyvuetify object to display (the internal v.Tabs widget)"""
-        return self.tabswidget
+        warnings.warn('The "draw" method is deprecated, please just use the object widget itself.',
+                      category=DeprecationWarning,
+                      stacklevel=2)
+        return self
 
-    
     # Get the active tab
     @property
     def value(self):
@@ -170,18 +189,16 @@ class tabs:
         
         """
         return self.index
-   
-    
+
     # Set the active button
     @value.setter
     def value(self, index):
         if index >= 0 and index < len(self.labels):
             self.index = index
-            self.tabswidget.v_model = self.index
-            if self.onchange:
-                self.onchange(self.index)
+            self.v_model = self.index
+            if self.on_change:
+                self.on_change(self.index)
 
-                
     # disabled property
     @property
     def disabled(self):
@@ -189,13 +206,12 @@ class tabs:
         Get/Set the disabled state.
         """
         return max([x.disabled for x in self.tab_list])
-    
+
     @disabled.setter
     def disabled(self, flag):
         for tab in self.tab_list:
             tab.disabled = flag
-            
-            
+
     @property
     def color(self):
         """
@@ -215,10 +231,9 @@ class tabs:
         
         """
         return self._color
-        
+
     @color.setter
     def color(self, c):
         if isinstance(c, str):
             self._color = c
             self.slider.color = self._color
-            

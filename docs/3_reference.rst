@@ -124,7 +124,7 @@ Vuetify package
  sortableList
  svgsGrid
  switch
- tabs
+ Tabs
  textlist
  title
  Toggle

@@ -358,10 +358,10 @@ Switch widget
 
 .. image:: figures/line.png
 
-tabs widget
+Tabs widget
 -----------
 
-.. automodule:: tabs
+.. automodule:: Tabs
     :members: 
 
 .. image:: figures/line.png

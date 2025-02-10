@@ -233,25 +233,6 @@ class Test_MultiSwitch:
 
         assert_vois_compare_image(image=parent.screenshot(animations='disabled'), postfix='3')
 
-        # my_color_1_locator.click()
-        #
-        # canvas_1_locator = page_session.locator('canvas').locator('..').locator('..')
-        #
-        # assert_vois_compare_image(image=canvas_1_locator.screenshot(animations='disabled'), postfix='1_canvas')
-        #
-        # # To remove overlay old canvas
-        # page_session.mouse.click(0, 0)
-        #
-        # my_color_2_locator = page_session.get_by_role("button", name='Color2')
-        # my_color_2_locator.wait_for()
-        #
-        # assert_vois_compare_image(image=my_color_2_locator.screenshot(animations='disabled'), postfix='2')
-        #
-        # my_color_2_locator.click()
-        #
-        # canvas_2_locator = page_session.locator("canvas").nth(1).locator('..').locator('..')
-
-        # assert_vois_compare_image(image=canvas_2_locator.screenshot(animations='disabled'), postfix='2_canvas')
 
     def test_click(self, ipywidgets_vois_runner, page_session, assert_vois_compare_image,
                    assert_vois_bytes_image):
