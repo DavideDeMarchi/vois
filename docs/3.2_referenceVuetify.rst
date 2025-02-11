@@ -254,10 +254,10 @@ Radio widget
 
 .. image:: figures/line.png
 
-rangeSlider widget
+RangeSlider widget
 -------------------
 
-.. automodule:: rangeSlider
+.. automodule:: RangeSlider
     :members:
     
 .. image:: figures/line.png

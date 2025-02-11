@@ -111,7 +111,7 @@ Vuetify package
  Progress
  queryStrings
  Radio
- rangeSlider
+ RangeSlider
  rangeSliderFloat
  selectImage
  selectMultiple

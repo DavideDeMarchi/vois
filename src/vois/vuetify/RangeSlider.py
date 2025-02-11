@@ -17,31 +17,29 @@
 # 
 # See the Licence for the specific language governing permissions and
 # limitations under the Licence.
-from IPython.display import display
+import warnings
 import ipyvuetify as v
 
-try:
-    from . import settings
-except:
-    import settings
+from vois.vuetify.utils.util import *
+from typing import Callable, Any, Union, Optional
 
 
 #####################################################################################################################################################
 # Integer range slider class
 #####################################################################################################################################################
-class rangeSlider:
+class RangeSlider(v.RangeSlider):
     """
     Slider to select a range of numeric values.
         
     Parameters
     ----------
-    selectedminvalue : numeric
+    selected_min_value : numeric
         Minimum value of the selected range
-    selectedmaxvalue : numeric
+    selected_max_value : numeric
         Maximum value of the selected range
-    minvalue : numeric
+    min_value : numeric
         Minimum value selectable by the user
-    maxvalue : numeric
+    max_value : numeric
         Maximum value selectable by the user
     color : str, optional
         Color used for the widget (default is the color_first defined in the settings.py module)
@@ -56,10 +54,10 @@ class rangeSlider:
     -------
     Creation and display of a range slider widget::
         
-        from vois.vuetify import rangeSlider
+        from vois.vuetify import RangeSlider
         
-        s = rangeSlider.rangeSlider(5,18, 0,20)
-        s.draw()
+        s = RangeSlider(5,18, 0,20)
+        display(s)
 
     .. figure:: figures/rangeSlider.png
        :scale: 100 %
@@ -68,40 +66,60 @@ class rangeSlider:
        RangeSlider widget example
    """
 
-   
+    deprecation_alias = dict(selectedminvalue='selected_min_value', selectedmaxvalue='selected_max_value',
+                             minvalue='min_value', maxvalue='max_value', onchange='on_change')
+
     # Initialization
-    def __init__(self, selectedminvalue, selectedmaxvalue, minvalue, maxvalue, color=settings.color_first, onchange=None,
-                 height=250, vertical=True):
-        
-        self.selectedminvalue = selectedminvalue
-        self.selectedmaxvalue = selectedmaxvalue
-        self.minvalue = minvalue
-        self.maxvalue = maxvalue
-        self.color    = color
-        self.onchange = onchange
-        self.height   = height
+    @deprecated_init_alias(**deprecation_alias)
+    def __init__(self,
+                 selected_min_value: int,
+                 selected_max_value: int,
+                 min_value: int,
+                 max_value: int,
+                 color: Optional[str] = None,
+                 on_change: Optional[Callable[[tuple[int, int]], None]] = None,
+                 height: int = 250,
+                 vertical: bool = True):
+
+        from vois.vuetify import settings
+
+        self.selected_min_value = selected_min_value
+        self.selected_max_value = selected_max_value
+        self.min_value = min_value
+        self.max_value = max_value
+        self.color = color if color is not None else settings.color_first
+        self.on_change = on_change
+        self.height = height
         self.vertical = vertical
-        
-        if self.vertical: margins = "ml-n5 mr-1 mt-n6 mb-n7"
-        else:             margins = "ml-5  mr-5 mt-4  mb-n6"
-        
-        self.slider = v.RangeSlider(v_model=[self.selectedminvalue,self.selectedmaxvalue], dense=True, small=True, thumb_color=self.color, 
-                                    thumb_label="always", thumb_size=32, ticks=True, ticks_size=10, 
-                                    color=self.color, track_color="grey", class_="pa-0 ma-0 %s" % margins,
-                                    min=self.minvalue, max=self.maxvalue, vertical=self.vertical, height=self.height) 
-        
+
+        if self.vertical:
+            margins = "ml-n5 mr-1 mt-n6 mb-n7"
+        else:
+            margins = "ml-5  mr-5 mt-4  mb-n6"
+
+        self.slider = self
+
+        super().__init__(v_model=[self.selected_min_value, self.selected_max_value], dense=True, small=True,
+                         thumb_color=self.color,
+                         thumb_label="always", thumb_size=32, ticks=True, ticks_size=10,
+                         color=self.color, track_color="grey", class_="pa-0 ma-0 %s" % margins,
+                         min=self.min_value, max=self.max_value, vertical=self.vertical, height=self.height)
+
         # If requested onchange management
-        if not self.onchange is None:
+        if not self.on_change is None:
             self.slider.on_event('end', self.__internal_onchange)
-        
-    
+
+        for alias, new in self.deprecation_alias.items():
+            create_deprecated_alias(self, alias, new)
+
     # Manage onchange event
     def __internal_onchange(self, widget=None, event=None, data=None):
-        if self.onchange:
-            self.onchange(data[0],data[1])
-    
+        if self.on_change:
+            self.on_change(data[0], data[1])
+
     # Returns the vuetify object to display (the v.Container)
     def draw(self):
-        """Returns the ipyvuetify object to display (the internal v.Html widget that contains a v.RangeSlider as its unique child)"""
-        return v.Html(tag='div',children=[self.slider], style_='overflow: hidden;')
-            
+        warnings.warn('The "draw" method is deprecated, please just use the object widget itself.',
+                      category=DeprecationWarning,
+                      stacklevel=2)
+        return self
