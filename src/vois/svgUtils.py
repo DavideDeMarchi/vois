@@ -157,8 +157,8 @@ def graduatedLegend(df,                          # Pandas dataframe indexed on c
                     minallowed_value=None,       # Minimum value allowed
                     maxallowed_value=None,       # Maximum value allowed
                     hoveronempty=False,          # If True highlights polygon on hover even if no value present in input df for the polygon
-                    legendtitle='',              # Title to add to the legend (top)
-                    legendunits='',              # Units of measure to add to the legend (bottom)
+                    legendtitle='',              # Title to add to the legend (top). Use '\n' to span into more lines.
+                    legendunits='',              # Units of measure to add to the legend (bottom). Use '\n' to span into more lines.
                     fontsize=20,
                     width=200,
                     height=600,
@@ -199,9 +199,9 @@ def graduatedLegend(df,                          # Pandas dataframe indexed on c
     hoveronempty : bool, optional
         If True highlights polygon on hover even if no value present in input df for the feature (default is False)
     legendtitle : str, optional
-        Title to add on top of the legend (default is '')
+        Title to add on top of the legend (default is ''). Use '\n' to span into more lines.
     legendunits : str, optional
-        Units of measure to add to the bottom of the legend (default is '')
+        Units of measure to add to the bottom of the legend (default is ''). Use '\n' to span into more lines
     fontsize : int, optional
         Size in pixels of the font used for texts (default is 20)
     width : int, optional
@@ -295,10 +295,12 @@ def graduatedLegend(df,                          # Pandas dataframe indexed on c
     wlineette = width // 20
     
     #y1 = height // 18
-    y1 = 2*fontsize
-    h = height - int(1.5*y1)
+    nrowstitle = len(legendtitle.split('\n'))
+    nrowsunits = len(legendunits.split('\n'))
+    y1 = (1 + nrowstitle)*fontsize
+    h = height - int(y1 + 0.2*fontsize)
     if len(legendunits) > 0:
-        h -= y1//2
+        h -= int(nrowsunits*fontsize + 0.5*fontsize)
     y2 = y1 + h
     
     barthickness = width/120
@@ -312,6 +314,9 @@ def graduatedLegend(df,                          # Pandas dataframe indexed on c
      @import url('%s');
 ''' % (width,height,fontsettings.font_url)
 
+    # Background
+    svg += '<rect x="0" y="0" width="%d" height="%d" style="fill: white; stroke-width:0;" />' % (width, height)
+    
     # Colors indexed by iso2_code of countries
     polycolors = {}    # Fill color of the polygon
     polyclass  = {}    # class to assign to the polygon ("country" or "")
@@ -368,10 +373,18 @@ def graduatedLegend(df,                          # Pandas dataframe indexed on c
     
     # Legend on the right
     if len(legendtitle) > 0:
-        svg += '<text x="%d" y="%d" text-anchor="middle" font-size="%f" font-family="%s" font-weight="bold" fill="%s">%s</text>' % (x1+w/2.0, y1-fontsize, fontsize, fontsettings.font_name, textcolor, legendtitle)
+        vt = legendtitle.split('\n')
+        yyy = y1 - len(vt)*fontsize
+        for t in vt:
+            svg += '<text x="%d" y="%d" text-anchor="middle" font-size="%f" font-family="%s" font-weight="bold" fill="%s">%s</text>' % (x1+w/2.0, yyy, fontsize, fontsettings.font_name, textcolor, t)
+            yyy += fontsize
         
     if len(legendunits) > 0:
-        svg += '<text x="%d" y="%d" text-anchor="middle" font-size="%f" font-family="%s" font-weight="bold" fill="%s">%s</text>' % (x1+w/2.0, int(y2+fontsize*1.5), fontsize2, fontsettings.font_name, textcolor, legendunits)
+        vt = legendunits.split('\n')
+        yyy = y2+fontsize*1.5
+        for t in vt:
+            svg += '<text x="%d" y="%d" text-anchor="middle" font-size="%f" font-family="%s" font-weight="bold" fill="%s">%s</text>' % (x1+w/2.0, yyy, fontsize2, fontsettings.font_name, textcolor, t)
+            yyy += fontsize
         
     svg += '<rect x="%d" y="%d" width="%d" height="%d" style="fill:none; stroke-width:%f; stroke:%s;" />' % (x1, y1, w, h+1, barthickness*2, bordercolor)
     
@@ -422,7 +435,6 @@ def graduatedLegend(df,                          # Pandas dataframe indexed on c
     
     svg += '</svg>'
     return svg
-
 
 
 

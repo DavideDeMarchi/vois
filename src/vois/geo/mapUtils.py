@@ -458,7 +458,14 @@ def toImage(m):
             yt = ytile1 + y
             ypos = y*256
             for baseurl, opacity in zip(baseUrls, opacities):
-                image = Image.open(requests.get(url(baseurl, xt, yt, zoom), stream=True).raw)
+                u = url(baseurl, xt, yt, zoom)
+                try:
+                    imgbytes = requests.get(u, stream=True).raw
+                except:
+                    print('Retrying to download %s'%u)
+                    imgbytes = requests.get(u, stream=True).raw
+                    
+                image = Image.open(imgbytes)
                 image = image.convert('RGBA')
 
                 if opacity < 1.0:
