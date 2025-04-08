@@ -71,6 +71,8 @@ class palettePickerEx():
         If True the dwopdown list of palettes will allow for no selection (default is True)
     color : str, optional
         Color of the selection widget (default is settings.color_first)
+    horizontal: bool, optional
+        If True, the family and palette selection widgets are positioned on the same horizontal line (default is False)
     onchange : function, optional
         Python function to call when the user selects one of the palettes. The function will pass as parameters the list of colors and the interpolate flag (default is None)
     show_opacity_slider : bool, optional
@@ -114,6 +116,7 @@ class palettePickerEx():
                  width=400,
                  clearable=True,
                  color=None,
+                 horizontal=False,
                  show_opacity_slider=True,
                  onchangeOpacity=None):
         
@@ -126,6 +129,7 @@ class palettePickerEx():
         if self._color is None:
             self._color = settings.color_first
         
+        self.horizontal = horizontal
         self.show_interpolate_switch = show_interpolate_switch
         
         self.show_opacity_slider = show_opacity_slider
@@ -150,10 +154,17 @@ class palettePickerEx():
             r = widgets.HBox([self.sel.draw(), self.spacer, self.sw.draw()])
         else:
             if self.show_opacity_slider:
-                r = widgets.HBox([self.sel.draw(), self.spacer, self.op.draw()])
+                if self.horizontal:
+                    r = widgets.HBox([self.op.draw(), self.spacer, self.sel.draw()])
+                else:
+                    r = widgets.HBox([self.sel.draw(), self.spacer, self.op.draw()])
             else:
                 r = self.sel.draw()
-        return widgets.VBox([r, self.p.draw()])
+                
+        if self.horizontal:
+            return widgets.HBox([r, self.spacer, self.p.draw()])
+        else:
+            return widgets.VBox([r, self.p.draw()])
 
 
     # Selection of a palette
