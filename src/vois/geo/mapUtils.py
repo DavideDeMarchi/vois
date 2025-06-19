@@ -123,7 +123,12 @@ def BDAPLayer(p):
     """
     Returns a TileLayer instance from a BDAP ImageProcess or VectorLayer instance passed as input parameter.
     """
-    procid = p.toLayer()
+    #procid = p.toLayer()  # Gives an error!
+    
+    from geolayerBDAP import rasterAPI
+    strjson = p.toJson()
+    procid = rasterAPI.saveLayer(strjson)
+    
     return ipyleaflet.TileLayer(url='https://jeodpp.jrc.ec.europa.eu/jiplib-view?x={x}&y={y}&z={z}&procid=%s'%procid, max_zoom=21, max_native_zoom=21)
 
 
