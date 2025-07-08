@@ -32,6 +32,8 @@ The vois library can be installed using this command:
 
 Vois is also available on conda-forge: [![Anaconda-Server Badge](https://anaconda.org/conda-forge/vois/badges/version.svg)](https://anaconda.org/conda-forge/vois)
 
+Repository is: https://anaconda.org/conda-forge/vois/
+
 To install vois from conda-forge please run:
 
 `conda install conda-forge::vois`
