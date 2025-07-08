@@ -12,7 +12,8 @@ Setup
 
 The vois library can be installed by executing: **pip install vois**
 
-Vois is also available on conda-forge: 
+Vois is also available on conda-forge:
+
 .. image:: https://anaconda.org/conda-forge/vois/badges/version.svg   :target: https://anaconda.org/conda-forge/vois
 
 To install vois from conda-forge please run: **conda install conda-forge::vois**
