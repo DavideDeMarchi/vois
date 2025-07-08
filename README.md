@@ -15,6 +15,8 @@ package **vois**: helper functions for tasks not directly related to ipyvuetify 
 
 package **vois/vuetify**: classes to simplify the development of GUIs using ipyvuetify (each source file contains a wrapper to simplify the usage of a ipyvuetify widget)
 
+package **vois/geo**: classes to display geospatial content on an interactive map, using ipyleaflet
+
 
 ## License
 
@@ -27,6 +29,12 @@ VOIS library is released under a
 The vois library can be installed using this command:
 
 `pip install vois`
+
+Vois is also available on conda-forge: [![Anaconda-Server Badge](https://anaconda.org/conda-forge/vois/badges/version.svg)](https://anaconda.org/conda-forge/vois)
+
+To install vois from conda-forge please run:
+
+`conda install conda-forge::vois`
 
 
 ## News
