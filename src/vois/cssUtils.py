@@ -104,6 +104,26 @@ def switchFontSize(output=None, size=14):
 
     
 ###########################################################################################################################################################################
+# Change opacity of a card background when the card is clicked (has focus)
+###########################################################################################################################################################################
+def CardOpacityOnFocus(output=None, opacity=0.1):
+    "Set the opacity of card widgets background when the card is clicked (has focus). Default is 0.1"
+    
+    command = '''
+<style>
+.vuetify-styles .v-card--link:focus::before {
+  opacity: %f;
+}
+</style>'''%(float(opacity))
+    
+    if output is None:
+        display(HTML(command))
+    else:
+        with output:
+            display(HTML(command))
+
+            
+###########################################################################################################################################################################
 # Execute all settings by displaying all the <style> instructions
 ###########################################################################################################################################################################
 def allSettings(output=None):

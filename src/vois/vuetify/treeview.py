@@ -115,6 +115,10 @@ class CustomTreeview(v.VuetifyTemplate):
     @traitlets.default('template')
     def _template(self):
 
+        #return '''<template>
+  #<v-treeview :items="items"></v-treeview>
+#</template>'''
+
         # Code to add to activate the icons
         # if item.isfolder is True, the open/closed icon is added, else the item.icon is added
         icons_template = ''
@@ -149,8 +153,64 @@ class CustomTreeview(v.VuetifyTemplate):
 </template>
 ''' % self.tooltips_chars
 
+
+        self.style = '''
+<style id="treeview-item-style">
+
+.vuetify-styles .v-treeview-node__root {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.vuetify-styles .v-treeview--dense .v-treeview-node__root {
+    min-height: %dpx;
+    font-size: %dpx;
+}
+
+.vuetify-styles .v-application--is-ltr .v-treeview-node__checkbox {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+.vuetify-styles .v-treeview-node__checkbox {
+    width: %dpx;
+}
+.vuetify-styles .v-icon.v-icon {
+    font-size: %dpx;
+}
+
+</style>
+'''% (self.item_height, self.font_size, self.checkbox_size, self.icon_size)
+        
+        return '''
+<v-treeview 
+    :selectable="selectable"
+    :activatable="activatable"
+    :active="[active]"
+    hoverable
+    dense
+    :dark="dark"
+    :transition="transition"
+    class="pa-0 ma-0"
+    :items="items"
+    v-model="selected"
+    :search="search"
+    :open="opened"
+    :open-all="opened_all"
+    :color="color"
+    :selected-color="color"
+    :open-on-click="open_on_click"
+    @input="change_selection"
+    @update:active="activate"
+    @update:open="onopening">
+    %s
+    %s
+</v-treeview>
+'''% (tooltip_template, icons_template)
+            
             
         return '''
+        
 <v-treeview 
     :selectable="selectable"
     :activatable="activatable"

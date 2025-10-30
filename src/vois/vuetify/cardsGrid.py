@@ -100,9 +100,16 @@ class cardsGrid(v.VuetifyTemplate):
     fontsizemultiplier = traitlets.Float(1.0).tag(sync=True)
     tooltipwidth = traitlets.Unicode('600px').tag(sync=True)  # Width of the tooltip
 
-
+        
     @traitlets.default('template')
     def _template(self):
+        
+        title_style    = ''
+        subtitle_style = ''
+        if self.responsive:
+            title_style    = 'font-size: %fvh !important;'% (1.9*self.fontsizemultiplier)
+            subtitle_style = 'font-size: %fvh !important;'% (1.6*self.fontsizemultiplier)
+        
         return '''
 <v-container fluid>
   <v-row dense>
@@ -131,15 +138,15 @@ class cardsGrid(v.VuetifyTemplate):
                       <div :style="card.color">
                          <v-tooltip v-if="card.titletooltip" bottom :max-width="tooltipwidth">
                             <template v-slot:activator="{ on, attrs }">
-                               <v-card-title v-bind="attrs" v-on="on" class="mt-n2 mb-1" :style="fontSizeTitle" v-text="card.title"></v-card-title>
+                               <v-card-title v-bind="attrs" v-on="on" class="mt-n2 mb-1" style="%s" v-text="card.title"></v-card-title>
                             </template>
                             <span>{{card.titletooltip}}</span>
                          </v-tooltip>
-                         <v-card-title v-else class="mt-n2 mb-1" :style="fontSizeTitle" v-text="card.title"></v-card-title>
+                         <v-card-title v-else class="mt-n2 mb-1" style="%s" v-text="card.title"></v-card-title>
                       </div>
                   </v-row>
                   <div :style="card.color">
-                    <div :class="card.margins" :style="fontSizeSubTitle" v-html="card.subtitle"/>
+                    <div :class="card.margins" style="%s" v-html="card.subtitle"/>
                   </div>
               </div>
               <v-avatar class="ma-0" :size="card.imagesize" tile >
@@ -150,51 +157,7 @@ class cardsGrid(v.VuetifyTemplate):
     </v-col>
   </v-row>
 </v-container>
-
-<script>
-  export default {
-    computed: {
-      fontSizeTitle (num)
-        {
-         if( this.responsive )
-           {
-            switch( this.$vuetify.breakpoint.name )
-              {
-               case 'xs': return 'font-size: ' + (0.75*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'sm': return 'font-size: ' + (1.00*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'md': return 'font-size: ' + (1.25*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'lg': return 'font-size: ' + (1.45*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'xl': return 'font-size: ' + (1.60*this.fontsizemultiplier).toFixed(3) + 'em;'
-              }
-           }
-         else
-           {
-            return 'font-size: ' + (1.25*this.fontsizemultiplier).toFixed(3) + 'em;'
-           }
-      },
-        
-      fontSizeSubTitle ()
-        {
-         if( this.responsive )
-           {
-            switch( this.$vuetify.breakpoint.name )
-              {
-               case 'xs': return 'font-size: ' + (0.8*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'sm': return 'font-size: ' + (0.9*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'md': return 'font-size: ' + (1.0*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'lg': return 'font-size: ' + (1.1*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'xl': return 'font-size: ' + (1.2*this.fontsizemultiplier).toFixed(3) + 'em;'
-              }
-           }
-         else
-           {
-            return 'font-size: ' + (1.0*this.fontsizemultiplier).toFixed(3) + 'em;'
-           }
-        },
-    },
-  }
-</script>
-'''
+'''%(title_style, title_style, subtitle_style)
 
     def __init__(self, *args,
                  cards=[],

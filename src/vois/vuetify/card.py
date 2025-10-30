@@ -63,8 +63,6 @@ class card(v.VuetifyTemplate):
         Text to display as tooltip of the whole card (default is '')
     titletooltip : str, optional
         Text to display as tooltip of the card title (default is '')
-    focusedopacity : float, optional
-        Opacity of the card background when the card is clicked (has focus). Default is 0.1
     textcolor : str, optional
         Color of the text (default is 'black')
     titleweight : int, optional
@@ -121,16 +119,18 @@ class card(v.VuetifyTemplate):
     fontsizemultiplier = traitlets.Float(1.0).tag(sync=True)
     backgroundimageurl = traitlets.Unicode('').tag(sync=True)
     
-    subtitlemargins = traitlets.Unicode('ma-0 ml-4 mb-4 mt-0 mr-4').tag(sync=True)
+    subtitlemargins = traitlets.Unicode('ma-0 ml-0 mb-4 mt-n3 mr-4').tag(sync=True)
     focusedopacity  = traitlets.Float(0.1).tag(sync=True)
     textcolor       = traitlets.Unicode('black').tag(sync=True)
     titleweight     = traitlets.Int(700).tag(sync=True)
     subtitleweight  = traitlets.Int(400).tag(sync=True)
 
+    # <div :class="subtitlemargins" style="%s" v-html="subtitle"></div>
+    # <v-card-text :class="subtitlemargins" style="%s">%s</v-card-text>
     
     @traitlets.default('template')
     def _template(self):
-        
+
         pre  = ''
         ttip = ''
         post = ''
@@ -149,7 +149,12 @@ class card(v.VuetifyTemplate):
             title_att  = 'v-bind="attrs" v-on="on"'
             title_post = '</template><span>%s</span></v-tooltip>' % self.titletooltip
                   
-
+        title_style    = 'color: %s;'%self.textcolor
+        subtitle_style = 'color: %s;'%self.textcolor
+        if self.responsive:
+            title_style    += ' font-size: %fvh !important;'% (1.9*self.fontsizemultiplier)
+            subtitle_style += ' font-size: %fvh !important;'% (1.6*self.fontsizemultiplier)
+        
         return '''
 %s
 
@@ -177,10 +182,10 @@ class card(v.VuetifyTemplate):
                 </v-avatar>
                 
                 %s
-                <v-card-title %s class="mt-n2 mb-1" :style="fontSizeTitle" v-text="title"></v-card-title>
+                <v-card-title %s class="mt-n2 mb-1" style="%s" v-text="title"></v-card-title>
                 %s
             </v-row>
-          <div :class="subtitlemargins" :style="fontSizeSubTitle" v-html="subtitle"/>
+            <v-card-text :class="subtitlemargins" style="%s">%s</v-card-text>
       </div>
       <v-avatar class="ma-n1" :size="imagesize" tile >
          <v-img :src="image" contain></v-img>
@@ -188,63 +193,8 @@ class card(v.VuetifyTemplate):
     </div>
   </v-card>
 %s
-
-<script>
-  export default {
-    computed: {
-      fontSizeTitle ()
-        {
-         if( this.responsive )
-           {
-            switch( this.$vuetify.breakpoint.name )
-              {
-               case 'xs': return 'color: %s; font-weight: %d; font-size: ' + (0.75*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'sm': return 'color: %s; font-weight: %d; font-size: ' + (1.00*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'md': return 'color: %s; font-weight: %d; font-size: ' + (1.25*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'lg': return 'color: %s; font-weight: %d; font-size: ' + (1.45*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'xl': return 'color: %s; font-weight: %d; font-size: ' + (1.60*this.fontsizemultiplier).toFixed(3) + 'em;'
-              }
-           }
-         else
-           {
-            return 'colors: %s; font-weight: %d; font-size: ' + (1.25*this.fontsizemultiplier).toFixed(3) + 'em;'
-           }
-      },
-        
-      fontSizeSubTitle ()
-        {
-         if( this.responsive )
-           {
-            switch( this.$vuetify.breakpoint.name )
-              {
-               case 'xs': return 'color: %s; font-weight: %d; font-size: ' + (0.8*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'sm': return 'color: %s; font-weight: %d; font-size: ' + (0.9*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'md': return 'color: %s; font-weight: %d; font-size: ' + (1.0*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'lg': return 'color: %s; font-weight: %d; font-size: ' + (1.1*this.fontsizemultiplier).toFixed(3) + 'em;'
-               case 'xl': return 'color: %s; font-weight: %d; font-size: ' + (1.2*this.fontsizemultiplier).toFixed(3) + 'em;'
-              }
-           }
-         else
-           {
-            return 'color: %s; font-weight: %d; font-size: ' + (1.0*this.fontsizemultiplier).toFixed(3) + 'em;'
-           }
-        },
-    },
-  }
-</script>
-
-<style>
-.vuetify-styles .v-card--link:focus::before {
-  opacity: %f;
-}
-</style>
-
-
-''' % (pre,ttip, title_pre,title_att,title_post, post,
-       self.textcolor,self.titleweight,    self.textcolor,self.titleweight,    self.textcolor,self.titleweight,    self.textcolor,self.titleweight,    self.textcolor,self.titleweight,    self.textcolor,self.titleweight, 
-       self.textcolor,self.subtitleweight, self.textcolor,self.subtitleweight, self.textcolor,self.subtitleweight, self.textcolor,self.subtitleweight, self.textcolor,self.subtitleweight, self.textcolor,self.subtitleweight, 
-       self.focusedopacity)
-    
+''' % (pre,ttip, title_pre, title_att, title_style, title_post, subtitle_style, self.subtitle, post)
+   
     def __init__(self,
                  *args,
                  width='400px',
@@ -267,7 +217,7 @@ class card(v.VuetifyTemplate):
                  backgroundimageurl='',
                  tooltip='',
                  titletooltip='',
-                 focusedopacity=0.1,     # Opacity for the background when the card is clicked (has focus)
+                 focusedopacity=0.1,     # Opacity for the background when the card is clicked (has focus) REMOVED: use cssUtils.CardOpacityOnFocus
                  textcolor='black',
                  titleweight=700,
                  subtitleweight=400,
@@ -290,7 +240,7 @@ class card(v.VuetifyTemplate):
         self.title     = title
         self.subtitle  = subtitle
         if len(self.subtitle) == 0:
-            self.subtitlemargins = 'ma-0 ml-4 mb-n4 mt-0'
+            self.subtitlemargins = 'ma-0 ml-0 mb-n4 mt-n3'
 
         self.icon = icon
         if len(icon) == 0: self.iconsize = '0px'
