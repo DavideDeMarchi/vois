@@ -100,6 +100,8 @@ class sortableList:
         In cases when confirmation_for_remove is True, this is the height in pixels of the confirmation dialog-box title (default is 40)
     confirmation_dialog_width : int, optional
         In cases when confirmation_for_remove is True, this is the width in pixels of the confirmation dialog-box (default is 400)
+    custom_new : function, optional
+        Custom function to call when the "Add new item" icon is clicked (default is None)
 
     Examples
     --------
@@ -251,7 +253,8 @@ class sortableList:
                  confirmation_title_callback=None,
                  confirmation_dialog_output=None,
                  confirmation_dialog_titleheight=40,
-                 confirmation_dialog_width=400
+                 confirmation_dialog_width=400,
+                 custom_new=None
                 ):
         
         self._items         = items
@@ -291,6 +294,8 @@ class sortableList:
         self.confirmation_dialog_titleheight = confirmation_dialog_titleheight
         self.confirmation_dialog_width       = confirmation_dialog_width
                 
+        self.custom_new = custom_new
+                
         self.output     = v.Card(flat=True, max_height='%dpx'%maxheightlist, children=[])
         self.outputplus = v.Card(flat=True, children=[])
 
@@ -324,15 +329,18 @@ class sortableList:
 
     # Click on + button
     def onadd(self, widget, event, data):
-        if self.itemNew:
-            item = self.itemNew()
-            if not item is None:
-                self.doAddItem(item)
-                if not self.onadded is None:
-                    if self.newOnTop:
-                        self.onadded(0)
-                    else:
-                        self.onadded(len(self.cards)-1)
+        if self.custom_new is not None:
+            self.custom_new()
+        else:
+            if self.itemNew:
+                item = self.itemNew()
+                if not item is None:
+                    self.doAddItem(item)
+                    if not self.onadded is None:
+                        if self.newOnTop:
+                            self.onadded(0)
+                        else:
+                            self.onadded(len(self.cards)-1)
 
                         
     # Effective add of a new item
