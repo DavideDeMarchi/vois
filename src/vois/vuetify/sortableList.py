@@ -24,9 +24,11 @@ import ipyvuetify as v
 try:
     from . import settings
     from . import tooltip
+    from . import dialogYesNo
 except:
     import settings
     import tooltip
+    import dialogYesNo
 
 
 #####################################################################################################################################################
@@ -86,7 +88,18 @@ class sortableList:
         Python function to call just after an item that was the active one, is deactivated. The function will receive as parameter the zero-based index of the deactivated item (default is None)
     onactivated : function, optional
         Python function to call just after an item becomes the active one (or by user-clicking or by setting the active property). The function will receive as parameter the zero-based index of the active item (default is None)
-
+    confirmation_for_remove : bool, optional
+        If True the removal of an item displays a cobfirmation dialog-box allowing for yes/no with a custom text (default is False)
+    confirmation_text_callback : function, optional
+        In cases when confirmation_for_remove is True, this function is called passing the index of the item to be removed and the function should return the text of the question to ask to the user for confirmation (default is None)
+    confirmation_title_callback : function, optional
+        In cases when confirmation_for_remove is True, this function is called passing the index of the item to be removed and the function should return the title to be displayed on the confirmation dialog-box (default is None)
+    confirmation_dialog_output : Output widget, optional
+        In cases when confirmation_for_remove is True, this is the Output widget to be used for the display of the confirmation dialog-box (default is None)
+    confirmation_dialog_titleheight : int, optional
+        In cases when confirmation_for_remove is True, this is the height in pixels of the confirmation dialog-box title (default is 40)
+    confirmation_dialog_width : int, optional
+        In cases when confirmation_for_remove is True, this is the width in pixels of the confirmation dialog-box (default is 400)
 
     Examples
     --------
@@ -232,7 +245,14 @@ class sortableList:
                  allowNew=True, newOnTop=False, newButtonOnTop=False, itemNew=None, itemContent=None, bottomContent=[],
                  onchange=None, onmovedown=None, onmoveup=None, onremoving=None, onremoved=None, onadded=None, buttonstooltip=False,
                  tooltipadd='Add new', tooltipdown='Move down', tooltipup='Move up', tooltipremove='Remove',
-                 activatable=False, ondeactivated=None, onactivated=None):
+                 activatable=False, ondeactivated=None, onactivated=None,
+                 confirmation_for_remove=False,
+                 confirmation_text_callback=None,
+                 confirmation_title_callback=None,
+                 confirmation_dialog_output=None,
+                 confirmation_dialog_titleheight=40,
+                 confirmation_dialog_width=400
+                ):
         
         self._items         = items
         self.width          = width
@@ -264,6 +284,13 @@ class sortableList:
         self.onactivated    = onactivated
         self.activeindex    = -1
         
+        self.confirmation_for_remove         = confirmation_for_remove
+        self.confirmation_text_callback      = confirmation_text_callback
+        self.confirmation_title_callback     = confirmation_title_callback
+        self.confirmation_dialog_output      = confirmation_dialog_output
+        self.confirmation_dialog_titleheight = confirmation_dialog_titleheight
+        self.confirmation_dialog_width       = confirmation_dialog_width
+                
         self.output     = v.Card(flat=True, max_height='%dpx'%maxheightlist, children=[])
         self.outputplus = v.Card(flat=True, children=[])
 
@@ -421,6 +448,31 @@ class sortableList:
     # Remove item
     def ondel(self, widget, event, data):
         index = self.bremoves.index(widget)
+
+        def on_yes():
+            self.doDeleteItem(index)
+        
+        if self.confirmation_for_remove:
+            text = 'Confirm removal of the selected item?'
+            if self.confirmation_text_callback is not None:
+                text = self.confirmation_text_callback(index)
+            
+            title = 'Question'
+            if self.confirmation_title_callback is not None:
+                title = self.confirmation_title_callback(index)
+                
+            dialogYesNo.dialogYesNo(title=title,
+                                    text=text,
+                                    titleheight=self.confirmation_dialog_titleheight,
+                                    width=self.confirmation_dialog_width,
+                                    output=self.confirmation_dialog_output,
+                                    show=True,
+                                    on_yes=on_yes)
+        else:
+            self.doDeleteItem(index)
+        
+    # Real deletion of an item
+    def doDeleteItem(self, index):
         if self.onremoving:
             self.onremoving(index)
             
@@ -589,4 +641,18 @@ class sortableList:
             self.cards[self.activeindex].raised = True
             if not self.onactivated is None:
                 self.onactivated(self.activeindex)
+                
+                
+    # Disable the buttons that allow the movement of items up and down in the list
+    def disableMoveItems(self):
+        """Disable the buttons that allow the movement of items up and down in the list"""
+        
+        for b in self.bdowns:
+            b.children = []
+            b.disabled = True
+        
+        for b in self.bups:
+            b.children = []
+            b.disabled = True
+        
             
