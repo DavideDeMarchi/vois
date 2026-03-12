@@ -105,7 +105,7 @@ class MainConfigurator(page.page):
         self.text_color = ColorPicker(dark=False, color=self.main.text_color, width=50, height=30, rounded=False, on_change=self.text_colorChange,  offset_x=True, offset_y=False, color_theory_popup=True)
         ct  = v.Card(flat=True, children=[self.tftitle], width=titwidth, min_width=titwidth, max_width=titwidth)
         cc  = v.Card(flat=True, children=[widgets.HBox([PageConfigurator.label('Text color:', color='black', width=66), self.text_color, self.text_color.ctpopup.draw()])], class_='pa-0 ma-0 mt-4')
-        cr1 = v.Card(flat=True, children=[widgets.HBox([ct, cc])], width=netwidth, max_width=netwidth)
+        cr1 = v.Card(flat=True, children=[widgets.HBox([ct, cc])], width=netwidth, max_width=netwidth, style_='overflow: hidden;')
         
         self.tfsubtitle = v.TextField(label='Application subtitle:', autofocus=False, v_model=self.main.subtitle, dense=True, color=settings.color_first, clearable=True, class_="pa-0 ma-0 mt-3 mr-3")
         
