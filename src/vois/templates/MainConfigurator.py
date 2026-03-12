@@ -97,7 +97,7 @@ class MainConfigurator(page.page):
         self.controls = v.Card(flat=True, width=maxwidth, min_width=maxwidth, max_width=maxwidth, class_='pa-3 pt-1 ma-0', style_='overflow: auto;')
         
         netwidth = 'calc(%s - 58px)'%LEFT_WIDTH
-        titwidth = 'calc(%s - 210px)'%LEFT_WIDTH
+        titwidth = 'calc(%s - 226px)'%LEFT_WIDTH
         
         self.upload = UploadImage.UploadImage(self.output, width=620)
         
