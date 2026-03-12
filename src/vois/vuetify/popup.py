@@ -180,7 +180,8 @@ class popup:
                          style_='font-family: %s; font-weight: %d; text-transform: none' % (fontsettings.font_name, 450),
                          children=children)
         
-        self.menu = v.Menu(v_model=False, offset_y=True, open_on_hover=open_on_hover, dense=True, internal_activator=True,
+        # V.I.!!! Removed v_model=False to solve the multiple display of popup!!!
+        self.menu = v.Menu(offset_y=True, open_on_hover=open_on_hover, dense=True, internal_activator=True,
                            close_on_click=close_on_click, close_on_content_click=close_on_content_click,
                            v_slots=[{'name': 'activator', 'variable': variable, 'children': self.btn }],
                            children=[card], style_='overflow: hidden;')

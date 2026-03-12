@@ -10,7 +10,10 @@ import sys
 
 chunk_listener_id = 0
 
-nest_asyncio.apply()
+try:
+    nest_asyncio.apply()
+except:
+    print('Error in nest_asyncio.apply() inside file_input.py')
 
 
 def load_template(filename):
