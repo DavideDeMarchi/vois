@@ -93,14 +93,14 @@ dict with key=EUROSTAT code of countries, value=name of the country.
 # Utility: Returns a modified SVG string by substituting the original width with the width passed as argument
 ###########################################################################################################################################################################
 def svgChangeWidth(svgstring, width='500px'):
-    return re.sub('width="\w*"', 'width="%s"'%width, svgstring, 1)
+    return re.sub(r'width="\w*"', 'width="%s"'%width, svgstring, 1)
 
 
 ###########################################################################################################################################################################
 # Utility: Returns a modified SVG string by substituting the original width with the width passed as argument
 ###########################################################################################################################################################################
 def svgChangeHeight(svgstring, height='600px'):
-    return re.sub('height="\w*"', 'height="%s"'%height, svgstring, 1)
+    return re.sub(r'height="\w*"', 'height="%s"'%height, svgstring, 1)
 
 
 ###########################################################################################################################################################################
