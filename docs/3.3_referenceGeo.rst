@@ -16,7 +16,6 @@ Map module
 ----------
 
 .. automodule:: Map
-    :member-order: bysource
     :members:
     
 .. image:: figures/line.png
@@ -25,7 +24,6 @@ mapUtils module
 ---------------
 
 .. automodule:: mapUtils
-    :member-order: bysource
     :members:
     
 .. image:: figures/line.png
