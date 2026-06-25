@@ -25,6 +25,7 @@ numpy           -------> BSD-3-Clause
 Jupyter         -------> BSD-3-Clause
 Ipython         -------> BSD-3-Clause 
 traitlets       -------> BSD-3-Clause
+
 ipywidgets      -------> BSD-3-Clause
 ipyleaflet      -------> MIT
 GDAL            -------> Apache 2.0
